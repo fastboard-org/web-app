@@ -45,7 +45,7 @@ const HomeNavbarLayout = ({
     <div className="flex">
       <nav
         className={
-          "flex flex-col bg-[#fdfdfd] min-w-[120px] justify-center items-center gap-8"
+          "flex flex-col bg-foreground-100 min-w-[120px] justify-center items-center gap-8"
         }
       >
         {navItems.map((item, index) => (
