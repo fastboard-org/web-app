@@ -14,11 +14,14 @@ const NavButton = ({
 }) => {
   const currentPath = usePathname();
 
-  const bgColor = currentPath === href ? "dark" : "light";
+  const bgColor = currentPath === href ? "bg-foreground-300" : "bg-transparent";
 
   return (
     <Link href={href}>
-      <Button isIconOnly className={`${bgColor} rounded-[50%]`}>
+      <Button
+        isIconOnly
+        className={`${bgColor} rounded-[50%] w-[50px] h-[50px]`}
+      >
         {children}
       </Button>
     </Link>
@@ -27,11 +30,11 @@ const NavButton = ({
 
 const navItems = [
   {
-    icon: <Folder size="24" color="white" />,
+    icon: <Folder size="24" />,
     href: "/home/dashboards",
   },
   {
-    icon: <Data size="24" color="white" />,
+    icon: <Data size="24" />,
     href: "/home/connections",
   },
 ];
