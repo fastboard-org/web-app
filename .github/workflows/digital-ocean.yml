@@ -1,0 +1,15 @@
+name: DigitalOcean Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: digitalocean/app_action@v1.1.5
+        with:
+          app_name: fastboard-web-app
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
