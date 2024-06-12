@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/app/providers";
-import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
 
