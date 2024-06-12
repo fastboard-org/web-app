@@ -13,19 +13,17 @@ const NavButton = ({
   href: string;
 }) => {
   const currentPath = usePathname();
+  const isCurrentPath = currentPath === href;
 
-  const bgColor = currentPath === href ? "bg-foreground-300" : "bg-transparent";
+  const bgColor = isCurrentPath ? "bg-foreground-300" : "bg-transparent";
 
-  return (
-    <Link href={href}>
-      <Button
-        isIconOnly
-        className={`${bgColor} rounded-[50%] w-[50px] h-[50px]`}
-      >
-        {children}
-      </Button>
-    </Link>
+  const button = (
+    <Button isIconOnly className={`${bgColor} rounded-[50%] w-[50px] h-[50px]`}>
+      {children}
+    </Button>
   );
+
+  return !isCurrentPath ? <Link href={href}>{button}</Link> : button;
 };
 
 const navItems = [
@@ -48,7 +46,7 @@ const HomeNavbarLayout = ({
     <div className="flex">
       <nav
         className={
-          "flex flex-col bg-foreground-100 min-w-[120px] justify-center items-center gap-8"
+          "flex flex-col bg-foreground-100 min-w-[120px] justify-center items-center gap-8 h-[100vh] fixed"
         }
       >
         {navItems.map((item, index) => (
@@ -57,7 +55,7 @@ const HomeNavbarLayout = ({
           </NavButton>
         ))}
       </nav>
-      <main className={"flex-1"}>{children}</main>
+      <main className={"flex-1 ml-[120px]"}>{children}</main>
     </div>
   );
 };
