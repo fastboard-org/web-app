@@ -1,3 +1,9 @@
+import EditorCanvas from "@/components/editor/EditorCanvas";
+
 export default function Editor() {
-  return <div></div>;
+  return (
+    <div className="h-full">
+      <EditorCanvas />
+    </div>
+  );
 }

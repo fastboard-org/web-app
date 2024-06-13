@@ -1,3 +1,4 @@
+import EditorCanvas from "@/components/editor/EditorCanvas";
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 
@@ -7,11 +8,9 @@ export default function EditorLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="relative flex flex-col h-screen w-screen bg-content2 overflow-hidden">
+    <div className="flex flex-col h-screen w-screen bg-content2">
       <EditorNavbar />
-      <main className="flex flex-grow items-center justify-center">
-        {children}
-      </main>
+      <main className="h-full w-full p-6">{children}</main>
     </div>
   );
 }
