@@ -10,14 +10,14 @@ export default function LogInLayout({
   return (
     <div className="flex min-h-screen flex-row">
       <div className="flex-1 light bg-background">{children}</div>
-      <div className="flex-1 flex flex-col justify-center items-center bg-content3-foreground">
+      <div className="flex-1 flex flex-col justify-center items-center bg-content3">
         <Image
           width={300}
           alt="NextUI hero Image"
           src="https://nextui-docs-v2.vercel.app/images/hero-card-complete.jpeg"
         />
         <Spacer y={5}></Spacer>
-        <h1 className="text-4xl text-content2">Fastboard</h1>
+        <h1 className="text-4xl">Fastboard</h1>
       </div>
     </div>
   );
