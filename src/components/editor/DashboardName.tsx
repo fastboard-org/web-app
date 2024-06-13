@@ -14,12 +14,12 @@ export default function DashboardName() {
     setIsEditing(false);
   };
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
   return (
-    <div>
+    <div className="relative">
       {isEditing ? (
         <Input
           value={name}
@@ -31,7 +31,10 @@ export default function DashboardName() {
           }}
         />
       ) : (
-        <h1 onDoubleClick={handleDoubleClick} className="text-4xl">
+        <h1
+          onDoubleClick={handleDoubleClick}
+          className="text-4xl cursor-pointer border-transparent hover:border-primary hover:border-2 rounded-2xl px-2 py-1"
+        >
           {name}
         </h1>
       )}
