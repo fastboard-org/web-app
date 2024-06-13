@@ -1,45 +1,51 @@
-import { DashboardInterface } from "@/types";
+import { DashboardInterface, FolderInterface } from "@/types";
 import { useEffect, useState } from "react";
 
 const mockDashboards: DashboardInterface[] = [
   {
-    id: "2",
-    name: "My Project",
-    isFolder: true,
-    dashboards: [
-      {
-        id: "3",
-        name: "Dashboard 1",
-        isFolder: false,
-      },
-      {
-        id: "4",
-        name: "Dashboard 2",
-        isFolder: false,
-      },
-    ],
+    user_id: "1",
+    id: "3",
+    name: "Dashboard 1",
+    folder_id: "1",
   },
   {
+    user_id: "1",
+    id: "4",
+    name: "Dashboard 2",
+    folder_id: "1",
+  },
+  {
+    user_id: "1",
     id: "1",
     name: "API Dashboard",
-    isFolder: false,
   },
   {
+    user_id: "1",
     id: "5",
     name: "DB Dashboard",
-    isFolder: false,
+  },
+];
+
+const mockFolders: FolderInterface[] = [
+  {
+    id: "1",
+    name: "My Project",
+    user_id: "1",
+    dashboards: [mockDashboards[0], mockDashboards[1]],
   },
 ];
 
 const useDashboards = () => {
+  const [folders, setFolders] = useState<FolderInterface[]>([]);
   const [dashboards, setDashboards] = useState<DashboardInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [mounted, setMounted] = useState<boolean>(false);
 
   const fetchDashboards = async () => {
-    //TODO fetch dashboards
+    //TODO fetch dashboards and folders from API
     setTimeout(() => {
       setDashboards(mockDashboards);
+      setFolders(mockFolders);
       setLoading(false);
     }, 1000);
   };
@@ -52,7 +58,7 @@ const useDashboards = () => {
     fetchDashboards();
   }, [mounted]);
 
-  return { dashboards, loading };
+  return { dashboards, folders, loading };
 };
 
 export default useDashboards;
