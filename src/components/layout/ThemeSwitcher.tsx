@@ -24,11 +24,12 @@ export function ThemeSwitcher() {
             <Button
               isIconOnly
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              className={"bg-foreground bg-opacity-5"}
             >
               {theme === "dark" ? (
-                <Sun1 size="24" variant="Bold" />
+                <Sun1 size="24" variant="Bold" className={"text-primary"} />
               ) : (
-                <Moon size="24" variant="Bold" />
+                <Moon size="24" variant="Bold" className={"text-primary"} />
               )}
             </Button>
           </motion.div>
