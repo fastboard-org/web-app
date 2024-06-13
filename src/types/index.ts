@@ -3,3 +3,10 @@ export interface UserInterface {
   name: string;
   email: string;
 }
+
+export interface DashboardInterface {
+  id: string;
+  name: string;
+  isFolder: boolean;
+  dashboards?: DashboardInterface[];
+}
