@@ -6,6 +6,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Spacer,
 } from "@nextui-org/react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { useState } from "react";
@@ -30,29 +31,33 @@ export default function PublishButton() {
   const selectedOptionValue = Array.from(selectedOption)[0];
 
   return (
-    <ButtonGroup color="primary">
-      <Button className="w-[100px]">{selectedOptionValue}</Button>
-      <Dropdown placement="bottom-end">
-        <DropdownTrigger>
-          <Button isIconOnly>
-            <IoMdArrowDropdown />
-          </Button>
-        </DropdownTrigger>
-        <DropdownMenu
-          disallowEmptySelection
-          aria-label="Publish options"
-          selectedKeys={selectedOption}
-          selectionMode="single"
-          onSelectionChange={setSelectedOption}
-          className="max-w-[300px]"
-        >
-          {publishOptions.map((option: PublishOption) => (
-            <DropdownItem key={option.label} description={option.description}>
-              {option.label}
-            </DropdownItem>
-          ))}
-        </DropdownMenu>
-      </Dropdown>
-    </ButtonGroup>
+    <div className="flex flex-row items-center">
+      <Button variant="flat">Preview</Button>
+      <Spacer x={1} />
+      <ButtonGroup color="primary">
+        <Button className="w-[100px]">{selectedOptionValue}</Button>
+        <Dropdown placement="bottom-end">
+          <DropdownTrigger>
+            <Button isIconOnly>
+              <IoMdArrowDropdown />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            disallowEmptySelection
+            aria-label="Publish options"
+            selectedKeys={selectedOption}
+            selectionMode="single"
+            onSelectionChange={setSelectedOption}
+            className="max-w-[300px]"
+          >
+            {publishOptions.map((option: PublishOption) => (
+              <DropdownItem key={option.label} description={option.description}>
+                {option.label}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
+      </ButtonGroup>
+    </div>
   );
 }
