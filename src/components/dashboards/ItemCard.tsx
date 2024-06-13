@@ -8,7 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import { Copy, Edit, Element, Folder2, More, Trash } from "iconsax-react";
+import { Copy, Edit, Folder2, More, Trash } from "iconsax-react";
 
 const Actions = () => {
   return (
@@ -52,7 +52,7 @@ const Actions = () => {
   );
 };
 
-const DashboardCard = ({ dashboard }: { dashboard: DashboardInterface }) => {
+const ItemCard = ({ item }: { item: DashboardInterface  || FolderInterface}) => {
   return (
     <Card className={"w-[300px] h-[200px]"}>
       <CardHeader className={"p-5 flex gap-2"}>
@@ -72,4 +72,4 @@ const DashboardCard = ({ dashboard }: { dashboard: DashboardInterface }) => {
   );
 };
 
-export default DashboardCard;
+export default ItemCard;

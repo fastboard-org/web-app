@@ -1,14 +1,21 @@
 "use client";
-import { DashboardInterface } from "@/types";
-import DashboardCard from "@/components/dashboards/DashboardCard";
+import { DashboardInterface, FolderInterface } from "@/types";
+import ItemCard from "@/components/dashboards/ItemCard";
 
 const DashboardList = ({
   dashboards,
+  folders,
   search,
 }: {
   dashboards: DashboardInterface[];
+  folders: FolderInterface[];
   search: string;
 }) => {
+  const getItemsToRender = (): {
+    dashboards: DashboardInterface[];
+    folders: FolderInterface[];
+  } => {};
+
   return (
     <section className={"flex flex-wrap w-full h-full gap-10 mt-5 "}>
       {dashboards
@@ -16,7 +23,7 @@ const DashboardList = ({
           dashboard.name.toLowerCase().includes(search.toLowerCase()),
         )
         .map((dashboard) => (
-          <DashboardCard key={dashboard.id} dashboard={dashboard} />
+          <ItemCard key={dashboard.id} name={dashboard.name} />
         ))}
     </section>
   );
