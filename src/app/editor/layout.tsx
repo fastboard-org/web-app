@@ -7,7 +7,7 @@ export default function EditorLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="relative flex flex-col h-screen w-screen bg-background overflow-hidden">
+    <div className="relative flex flex-col h-screen w-screen bg-content2 overflow-hidden">
       <EditorNavbar />
       <main className="flex flex-grow items-center justify-center">
         {children}

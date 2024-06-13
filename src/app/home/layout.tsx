@@ -8,7 +8,9 @@ export default function HomeLayout({
 }>) {
   return (
     <HomeNavbarLayout>
-      <ThemeSwitcher />
+      <div className="flex justify-end mr-5 mt-5 absolute right-3">
+        <ThemeSwitcher />
+      </div>
       {children}
     </HomeNavbarLayout>
   );
