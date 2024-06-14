@@ -24,11 +24,21 @@ const config: Config = {
       themes: {
         light: {
           layout: {}, // light theme layout tokens
-          colors: {}, // light theme colors
+          colors: {
+            background: "#FEFEFE",
+            foreground: {
+              100: "#F9F9FB",
+            },
+          }, // light theme colors
         },
         dark: {
           layout: {}, // dark theme layout tokens
-          colors: {}, // dark theme colors
+          colors: {
+            background: "#111212",
+            foreground: {
+              100: "#161619",
+            },
+          }, // dark theme colors
         },
       },
     }),
