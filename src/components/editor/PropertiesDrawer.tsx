@@ -1,12 +1,12 @@
 "use client";
-import { isComponentsDrawerOpen } from "@/atoms/editor";
+import { isPropertiesDrawerOpen } from "@/atoms/editor";
 import { Divider } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 
-export default function ComponentsDrawer() {
-  const isOpen = useRecoilValue(isComponentsDrawerOpen);
+export default function PropertiesDrawer() {
+  const isOpen = useRecoilValue(isPropertiesDrawerOpen);
   const [shouldRender, setShouldRender] = useState(isOpen);
 
   useEffect(() => {
@@ -27,13 +27,13 @@ export default function ComponentsDrawer() {
 
   return (
     <motion.div
-      initial={{ x: "-100%" }}
-      animate={{ x: isOpen ? 0 : "-100%" }}
+      initial={{ x: "100%" }}
+      animate={{ x: isOpen ? 0 : "100%" }}
       transition={{ ease: "easeInOut" }}
       onAnimationComplete={handleAnimationComplete}
-      className={"h-full w-[20%] bg-background absolute top-0 left-0"}
+      className={"h-full w-[22%] bg-background absolute top-0 right-0"}
     >
-      <h3 className={"text-xl font-semibold p-5"}>Components</h3>
+      <h3 className={"text-xl font-semibold p-5"}>Properties</h3>
       <Divider />
     </motion.div>
   );

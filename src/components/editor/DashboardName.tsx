@@ -27,13 +27,14 @@ export default function DashboardName() {
           onChange={handleInputChange}
           autoFocus
           classNames={{
-            input: ["text-4xl"],
+            input: ["text-2xl"],
           }}
         />
       ) : (
         <h1
+          onClick={handleDoubleClick}
           onDoubleClick={handleDoubleClick}
-          className="text-4xl cursor-pointer border-transparent hover:border-primary hover:border-2 rounded-2xl px-2 py-1"
+          className="text-2xl cursor-pointer border-transparent hover:border-primary hover:border-2 rounded-2xl px-2 py-1"
         >
           {name}
         </h1>
