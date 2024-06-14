@@ -5,7 +5,12 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-export function ThemeSwitcher() {
+type ThemeSwitcherProps = {
+  size: "sm" | "md" | "lg" | undefined;
+};
+
+export function ThemeSwitcher(props: ThemeSwitcherProps) {
+  const { size } = props;
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -22,6 +27,7 @@ export function ThemeSwitcher() {
         >
           <Button
             isIconOnly
+            size={size}
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}
           >
             {theme === "dark" ? (

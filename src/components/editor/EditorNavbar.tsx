@@ -12,7 +12,7 @@ export default function EditorNavbar() {
           <EditorMenu />
         </NavbarItem>
         <NavbarItem>
-          <ThemeSwitcher />
+          <ThemeSwitcher size="sm" />
         </NavbarItem>
       </NavbarContent>
 
