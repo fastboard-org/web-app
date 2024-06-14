@@ -19,7 +19,7 @@ export default function SingUp() {
   const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
-    <main className="flex min-h-screen flex-col p-24 items-center justify-center">
+    <main className="flex w-full flex-col items-center justify-center">
       <Card className="w-full max-w-md p-4">
         <CardBody>
           <h1 className="text-4xl font-bold text-foreground">Get started</h1>
