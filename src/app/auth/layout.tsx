@@ -1,13 +1,16 @@
-import HomeNavbarLayout from "@/components/layout/HomeNavbarLayout";
+"use client";
 import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 import Logo from "@/components/layout/shared/Logo";
 import { Image, Spacer } from "@nextui-org/react";
+import { useTheme } from "next-themes";
 
 export default function LogInLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { theme } = useTheme();
+
   return (
     <div className="flex min-h-screen flex-row">
       <div className="flex-1 bg-background flex flex-col justify-center items-center">
@@ -22,7 +25,9 @@ export default function LogInLayout({
         <Image
           sizes="2xl"
           alt="Fastboard SingUp Image"
-          src="../SingUpImage.png"
+          src={
+            theme === "light" ? "../SingUpImage.png" : "../SingUpImageDark.png"
+          }
         />
       </div>
     </div>
