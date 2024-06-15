@@ -62,9 +62,14 @@ export default function SignUp() {
               isInvalid={!!errors.email}
               aria-label="Email"
             />
+            <Spacer y={2}></Spacer>
             <Input
               {...register("password", {
                 required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must have at least 8 characters",
+                },
               })}
               label="Password"
               aria-label="Password"
