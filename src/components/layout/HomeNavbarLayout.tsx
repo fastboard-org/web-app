@@ -4,6 +4,7 @@ import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { Data, Folder } from "iconsax-react";
 import { usePathname } from "next/navigation";
+import Logo from "@/components/shared/Logo";
 
 const NavButton = ({
   children,
@@ -15,11 +16,18 @@ const NavButton = ({
   const currentPath = usePathname();
   const isCurrentPath = currentPath === href;
 
-  const bgColor = isCurrentPath ? "bg-foreground-300" : "bg-transparent";
+  const bgColor = isCurrentPath ? "bg-foreground" : "bg-transparent";
+
+  const childrenClassName = isCurrentPath ? "text-primary" : "opacity-30";
 
   const button = (
-    <Button isIconOnly className={`${bgColor} rounded-[50%] w-[50px] h-[50px]`}>
-      {children}
+    <Button
+      isIconOnly
+      className={`${bgColor} rounded-xl w-[50px] h-[50px] bg-opacity-5`}
+    >
+      {React.cloneElement(children as React.ReactElement, {
+        className: childrenClassName,
+      })}
     </Button>
   );
 
@@ -46,14 +54,22 @@ const HomeNavbarLayout = ({
     <div className="flex">
       <nav
         className={
-          "flex flex-col bg-foreground-100 min-w-[120px] justify-center items-center gap-8 h-[100vh] fixed"
+          "flex flex-col bg-foreground-100 border-r-1 border-foreground-200 min-w-[120px] justify-between items-center h-[100vh] fixed"
         }
       >
-        {navItems.map((item, index) => (
-          <NavButton key={index} href={item.href}>
-            {item.icon}
-          </NavButton>
-        ))}
+        <div className={"flex justify-center items-center h-[20%]"}>
+          <Logo classname={"text-primary"} />
+        </div>
+        <div
+          className={"flex flex-col justify-center items-center gap-8 h-[60%]"}
+        >
+          {navItems.map((item, index) => (
+            <NavButton key={index} href={item.href}>
+              {item.icon}
+            </NavButton>
+          ))}
+        </div>
+        <div className={"flex justify-center items-center h-[20%]"}></div>
       </nav>
       <main className={"flex-1 ml-[120px]"}>{children}</main>
     </div>
