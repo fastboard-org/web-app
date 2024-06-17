@@ -14,7 +14,7 @@ export default function EditorCanvas() {
       transition={{
         ease: "easeInOut",
       }}
-      className="flex justify-center items-center h-full min-w-[90rem] bg-background overflow-y-auto"
+      className="flex justify-center items-center h-full min-w-[75%] bg-background shadow-lg overflow-y-auto"
     >
       Some content here
     </motion.div>

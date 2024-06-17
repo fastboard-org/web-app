@@ -10,6 +10,7 @@ export default function EditorMenu() {
   return (
     <ButtonGroup size="sm">
       <Button
+        className="bg-foreground bg-opacity-5 text-foreground-500"
         isIconOnly
         onClick={() => {
           setIsComponentsDrawerOpen((isOpen) => !isOpen);
@@ -18,10 +19,14 @@ export default function EditorMenu() {
       >
         <Category size={20} />
       </Button>
-      <Button isIconOnly>
+      <Button
+        className="bg-foreground bg-opacity-5 text-foreground-500"
+        isIconOnly
+      >
         <People size={20} />
       </Button>
       <Button
+        className="bg-foreground bg-opacity-5 text-foreground-500"
         isIconOnly
         onClick={() => {
           setIsPropertiesDrawerOpen((isOpen) => !isOpen);
