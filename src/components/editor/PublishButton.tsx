@@ -23,19 +23,14 @@ export default function PublishButton() {
       description: "Public this dashboard as template in the community.",
     },
   ];
-  const [selectedOption, setSelectedOption] = useState(
-    new Set([publishOptions[0].label])
-  );
-
-  // Convert the Set to an Array and get the first value.
-  const selectedOptionValue = Array.from(selectedOption)[0];
+  const [selectedOption, setSelectedOption] = useState(publishOptions[0].label);
 
   return (
     <div className="flex flex-row items-center">
       <Button variant="flat">Preview</Button>
       <Spacer x={1} />
       <ButtonGroup color="primary">
-        <Button className="w-[100px]">{selectedOptionValue}</Button>
+        <Button className="w-[100px]">{selectedOption}</Button>
         <Dropdown placement="bottom-end">
           <DropdownTrigger>
             <Button isIconOnly>
@@ -45,9 +40,8 @@ export default function PublishButton() {
           <DropdownMenu
             disallowEmptySelection
             aria-label="Publish options"
-            selectedKeys={selectedOption}
             selectionMode="single"
-            onSelectionChange={setSelectedOption}
+            onSelectionChange={(option) => setSelectedOption(option as string)}
             className="max-w-[300px]"
           >
             {publishOptions.map((option: PublishOption) => (
