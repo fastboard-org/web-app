@@ -8,7 +8,7 @@ export enum LayoutType {
   Row = "row",
 }
 
-interface Layout {
+export interface Layout {
   type: LayoutType;
 }
 
@@ -20,7 +20,7 @@ interface RowLayout extends Layout {
   component2: FastboardComponent;
 }
 
-interface FastboardComponent {
+export interface FastboardComponent {
   type: string;
   properties: Record<string, any>;
 }
