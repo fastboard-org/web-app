@@ -1,4 +1,4 @@
-import { DashboardInterface, FolderInterface } from "@/types";
+import { DashboardInterface, FolderInterface } from "@/types/dashboards";
 import { useEffect, useState } from "react";
 
 const mockDashboards: DashboardInterface[] = [
