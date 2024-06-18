@@ -1,14 +1,18 @@
-import { Card, CardBody } from "@nextui-org/react";
+"use client";
+import useConnections from "@/hooks/useConnections";
+import ViewConnections from "@/components/connections/view/ViewConnections";
+import { ConnectionInterface } from "@/types/connections";
 
 export default function Connections() {
+  const { connections, loading } = useConnections();
+
+  const handleConnectionClick = (connection: ConnectionInterface) => {};
+
   return (
-    <main className="flex min-h-screen flex-col p-24">
-      <h2 className="text-4xl mb-8">Connections</h2>
-      <Card>
-        <CardBody>
-          <p>Make beautiful websites regardless of your design experience.</p>
-        </CardBody>
-      </Card>
-    </main>
+    <ViewConnections
+      connections={connections}
+      loading={loading}
+      onConnectionClick={handleConnectionClick}
+    />
   );
 }
