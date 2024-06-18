@@ -1,9 +1,3 @@
-export interface UserInterface {
-  id: string;
-  name: string;
-  email: string;
-}
-
 export interface DashboardInterface {
   user_id: string;
   id: string;
