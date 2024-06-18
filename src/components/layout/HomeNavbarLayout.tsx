@@ -4,7 +4,7 @@ import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import { Data, Folder } from "iconsax-react";
 import { usePathname } from "next/navigation";
-import Logo from "@/components/shared/Logo";
+import Logo from "@/components/layout/shared/Logo";
 
 const NavButton = ({
   children,
@@ -14,7 +14,7 @@ const NavButton = ({
   href: string;
 }) => {
   const currentPath = usePathname();
-  const isCurrentPath = currentPath === href;
+  const isCurrentPath = currentPath.includes(href);
 
   const bgColor = isCurrentPath ? "bg-foreground" : "bg-transparent";
 
