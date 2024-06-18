@@ -1,11 +1,28 @@
-import { isComponentsDrawerOpen, isPropertiesDrawerOpen } from "@/atoms/editor";
+import {
+  dashboardMetadataAtom,
+  isComponentsDrawerOpen,
+  isPropertiesDrawerOpen,
+} from "@/atoms/editor";
 import { motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
-import FastboardTable from "./fastboard-components/FastboardTable";
+import { Layout, LayoutType } from "@/types/editor";
+import FullLayout from "./layouts/FullLayout";
 
 export default function EditorCanvas() {
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
   const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
+  const dashboardMetadata = useRecoilValue(dashboardMetadataAtom);
+
+  function getLayoutComponent(layout: Layout) {
+    switch (layout.type) {
+      case LayoutType.Full:
+        return (
+          <FullLayout
+            component1={dashboardMetadata.layouts[0].component1}
+          ></FullLayout>
+        );
+    }
+  }
 
   return (
     <motion.div
@@ -17,7 +34,7 @@ export default function EditorCanvas() {
       }}
       className="flex justify-center items-center h-full min-w-[75%] bg-background shadow-lg overflow-y-auto"
     >
-      <FastboardTable />
+      {getLayoutComponent(dashboardMetadata.layouts[0])}
     </motion.div>
   );
 }

@@ -10,7 +10,7 @@ export const isPropertiesDrawerOpen = atom({
   default: false,
 });
 
-export const dashboardMetadata = atom<DashboardMetadata>({
+export const dashboardMetadataAtom = atom<DashboardMetadata>({
   key: "dashboardMetadata",
   default: {
     layouts: [
