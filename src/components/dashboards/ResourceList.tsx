@@ -1,5 +1,5 @@
 "use client";
-import { DashboardInterface, FolderInterface } from "@/types";
+import { DashboardInterface, FolderInterface } from "@/types/dashboards";
 import ItemCard from "@/components/dashboards/ItemCard";
 import { Element, Folder2 } from "iconsax-react";
 
