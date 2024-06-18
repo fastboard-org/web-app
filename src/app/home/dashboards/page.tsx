@@ -1,14 +1,12 @@
 "use client";
-import { BreadcrumbItem, Breadcrumbs, Input } from "@nextui-org/react";
-import { Back } from "iconsax-react";
-import { CiSearch } from "react-icons/ci";
+import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
 import AddDashboardButton from "@/components/dashboards/AddDashboardButton";
 import ResourceList from "@/components/dashboards/ResourceList";
 import useDashboards from "@/hooks/useDashboards";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import { SetStateAction, useState } from "react";
-import { DashboardInterface, FolderInterface } from "@/types";
-import { AnimatePresence, motion } from "framer-motion";
+import { DashboardInterface, FolderInterface } from "@/types/dashboards";
+import Search from "@/components/shared/Search";
 
 export default function Dashboards() {
   const { dashboards, folders, loading } = useDashboards();
@@ -52,15 +50,10 @@ export default function Dashboards() {
         className={"flex justify-between w-full items-center gap-8 flex-wrap"}
       >
         <CustomSkeleton className={"rounded-lg"} isLoaded={!loading}>
-          <Input
-            className={"w-[450px] bg-opacity-5"}
-            isClearable
-            startContent={<CiSearch className={"text-primary"} size={25} />}
-            placeholder={"Search"}
-            size={"lg"}
+          <Search
+            search={search}
             onChange={handleSearch}
             onClear={() => setSearch("")}
-            value={search}
           />
         </CustomSkeleton>
 
