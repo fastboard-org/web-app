@@ -41,7 +41,7 @@ export default function FastboardTableDraggeable({
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
       >
-        <Table className={"z-10"} aria-label={"Example table"}>
+        <Table aria-label={"Table draggeable"}>
           <TableHeader>
             <TableColumn>key</TableColumn>
             <TableColumn>key</TableColumn>
