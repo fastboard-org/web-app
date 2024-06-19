@@ -32,12 +32,6 @@ export default function FastboardTableDraggeable({
             h: overlappedElements.length > 1 ? "full" : "1/2",
           });
         }}
-        whileNotOverlap={(element) => {
-          element.style.backgroundColor = "transparent";
-        }}
-        whileOverlap={(element) => {
-          element.style.backgroundColor = "rgba(135,207,232,0.1)";
-        }}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
       >

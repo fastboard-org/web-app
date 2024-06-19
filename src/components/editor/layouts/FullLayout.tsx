@@ -14,7 +14,7 @@ export default function FullLayout(props: FullLayoutProps) {
   }
 
   return (
-    <div className="flex h-full w-full justify-center items-center">
+    <div className="flex h-full w-full justify-center items-center fastboard-container">
       {getComponent(props.component1)}
     </div>
   );

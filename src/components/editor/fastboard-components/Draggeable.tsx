@@ -3,8 +3,6 @@ import { useEffect, useRef, useState, ReactNode } from "react";
 
 interface BaseDraggeableProps {
   onDrop: (elements: HTMLElement[]) => void;
-  whileOverlap: (element: HTMLElement) => void;
-  whileNotOverlap: (element: HTMLElement) => void;
   onDragStart?: () => void;
   onDragEnd?: () => void;
   children?: ReactNode;
@@ -12,13 +10,10 @@ interface BaseDraggeableProps {
 
 export default function Draggable({
   onDrop,
-  whileOverlap,
-  whileNotOverlap,
   onDragStart = () => {},
   onDragEnd = () => {},
   children,
 }: BaseDraggeableProps) {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const draggableRef = useRef(null);
   const [elements, setElements] = useState<HTMLElement[]>([]);
@@ -40,28 +35,26 @@ export default function Draggable({
 
   useEffect(() => {
     const elements = Array.from(
-      document.querySelectorAll(".dashboard-row")
+      document.querySelectorAll(".fastboard-container")
     ) as HTMLElement[];
     setElements(elements);
   }, []);
 
   const checkForOverlap = () => {
-    if (!draggableRef.current) return;
+    if (!draggableRef.current) {
+      return;
+    }
     const currentElement = draggableRef.current as HTMLElement;
     const draggableRect = currentElement.getBoundingClientRect();
     const currentlyOverlapped = [] as HTMLElement[];
-    elements.forEach((el) => {
-      const rect = el.getBoundingClientRect();
+    elements.forEach((element) => {
+      const rect = element.getBoundingClientRect();
       if (isOverlapping(draggableRect, rect)) {
-        currentlyOverlapped.push(el);
+        currentlyOverlapped.push(element);
       }
     });
     setOverlappedElements(currentlyOverlapped);
     return currentlyOverlapped;
-  };
-
-  const resetPosition = () => {
-    setPosition({ x: 0, y: 0 });
   };
 
   const resetElementsBackground = () => {
@@ -73,9 +66,9 @@ export default function Draggable({
   useEffect(() => {
     elements.forEach((el) => {
       if (overlappedElements.filter((element) => element.id === el.id).length) {
-        whileOverlap(el);
+        el.style.backgroundColor = "rgba(135,207,232,0.1)";
       } else {
-        whileNotOverlap(el);
+        el.style.backgroundColor = "transparent";
       }
     });
   }, [overlappedElements, elements]);
@@ -96,8 +89,8 @@ export default function Draggable({
         isDragging ? "cursor-grabbing" : "cursor-grab"
       } drag-item`}
       drag
-      animate={position}
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+      dragSnapToOrigin
       dragElastic={1}
       onDragStart={() => {
         setIsDragging(true);
@@ -107,7 +100,6 @@ export default function Draggable({
         if (overlappedElements.length) {
           onDrop(overlappedElements);
         }
-        resetPosition();
         setIsDragging(false);
         resetElementsBackground();
         onDragEnd();
