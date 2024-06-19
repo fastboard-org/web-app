@@ -6,9 +6,16 @@ interface FullLayoutProps {
 }
 
 export default function FullLayout(props: FullLayoutProps) {
+  function getComponent(component: FastboardComponent) {
+    switch (component.type) {
+      case "Table":
+        return <FastboardTable />;
+    }
+  }
+
   return (
     <div className="flex h-full w-full justify-center items-center">
-      <FastboardTable />
+      {getComponent(props.component1)}
     </div>
   );
 }
