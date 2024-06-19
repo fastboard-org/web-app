@@ -4,6 +4,7 @@ import { Divider } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
+import FastboardTableDraggeable from "./fastboard-components/FastboardTableDraggeable";
 
 export default function ComponentsDrawer() {
   const isOpen = useRecoilValue(isComponentsDrawerOpen);
@@ -17,6 +18,11 @@ export default function ComponentsDrawer() {
     >
       <h3 className={"text-xl font-semibold p-5"}>Components</h3>
       <Divider />
+      <FastboardTableDraggeable
+        onDrop={(element) => {}}
+        onDragStart={() => {}}
+        onDragEnd={() => {}}
+      />
     </motion.div>
   );
 }
