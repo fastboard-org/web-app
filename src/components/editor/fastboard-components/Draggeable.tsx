@@ -80,10 +80,6 @@ export default function Draggable({
     });
   }, [overlappedElements, elements]);
 
-  const handleRightClick = () => {
-    resetPosition();
-  };
-
   useEffect(() => {
     if (isDragging) {
       const interval = setInterval(() => {
@@ -95,14 +91,10 @@ export default function Draggable({
 
   return (
     <motion.div
-      onContextMenu={handleRightClick}
       ref={draggableRef}
-      className={`w-10/12 relative transform ${
+      className={`w-10/12 ${
         isDragging ? "cursor-grabbing" : "cursor-grab"
       } drag-item`}
-      style={{
-        zIndex: 1000,
-      }}
       drag
       animate={position}
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
@@ -120,7 +112,6 @@ export default function Draggable({
         resetElementsBackground();
         onDragEnd();
       }}
-      whileDrag={{ scale: 1.1 }}
     >
       {children}
     </motion.div>

@@ -14,7 +14,9 @@ export default function ComponentsDrawer() {
       initial={{ x: "-100%" }}
       animate={{ x: isOpen ? 0 : "-100%" }}
       transition={{ ease: "easeInOut" }}
-      className={"h-full w-[22%] bg-background shadow-lg absolute top-0 left-0"}
+      className={
+        "h-full w-[22%] bg-background shadow-lg absolute top-0 left-0 z-10"
+      }
     >
       <h3 className={"text-xl font-semibold p-5"}>Components</h3>
       <Divider />
