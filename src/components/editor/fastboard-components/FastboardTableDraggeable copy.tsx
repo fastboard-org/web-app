@@ -10,12 +10,12 @@ import {
 import { useDraggable } from "@dnd-kit/core";
 import { FastboardTableProperties } from "./FastboardTable";
 
-export default function FastboardTableDraggeable() {
+export default function FastboardTableDraggeable2() {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: "table-draggable",
+    id: "table2-draggable",
     data: {
       type: "table",
-      defaultProperties: FastboardTableProperties.default(),
+      defaultProperties: { hideHeader: true },
     },
   });
   const style = transform
@@ -28,7 +28,7 @@ export default function FastboardTableDraggeable() {
     <>
       <h4 className={"text-lg font-semibold p-5 pb-2 w-full"}>Table</h4>
       <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-        <Table aria-label={"Table draggeable"}>
+        <Table hideHeader aria-label={"Table draggeable"}>
           <TableHeader>
             <TableColumn>key</TableColumn>
             <TableColumn>key</TableColumn>
