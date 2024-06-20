@@ -26,8 +26,7 @@ export default function FastboardTableDraggeable() {
     : undefined;
 
   return (
-    <>
-      <h4 className={"text-lg font-semibold p-5 pb-2 w-full"}>Table</h4>
+    <div className="flex flex-col justify-center items-center">
       <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
         <Table aria-label={"Table draggeable"}>
           <TableHeader>
@@ -42,6 +41,7 @@ export default function FastboardTableDraggeable() {
           </TableBody>
         </Table>
       </div>
-    </>
+      <h4 className={"text-md pt-2"}>Table</h4>
+    </div>
   );
 }
