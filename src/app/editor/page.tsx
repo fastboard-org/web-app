@@ -4,13 +4,38 @@ import ComponentsDrawer from "@/components/editor/ComponentsDrawer";
 import EditorCanvas from "@/components/editor/EditorCanvas";
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
-import { LayoutType } from "@/types/editor";
-import { DndContext } from "@dnd-kit/core";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useSetRecoilState } from "recoil";
 
 export default function Editor() {
   const setDashboardMetadata = useSetRecoilState(dashboardMetadataAtom);
+
+  function updateDashboardMetadata(event: DragEndEvent) {
+    const { over, active } = event;
+    if (!over) return;
+    if (!active) return;
+
+    const layoutIndex: number = over.data.current?.layoutIndex;
+    const container: string = over.data.current?.container;
+    const componentType: string = active.data.current?.type;
+    const defaultProperties: Object = active.data.current?.defaultProperties;
+
+    setDashboardMetadata((prev) => ({
+      layouts: prev.layouts.map((layout, index) => {
+        if (index === layoutIndex) {
+          return {
+            ...layout,
+            [container]: {
+              type: componentType,
+              properties: defaultProperties,
+            },
+          };
+        }
+        return layout;
+      }),
+    }));
+  }
 
   return (
     <div className="flex flex-col h-screen w-full bg-foreground-200 dark:bg-default-100">
@@ -19,24 +44,7 @@ export default function Editor() {
       <div className="relative h-full w-full flex overflow-hidden ">
         <DndContext
           modifiers={[restrictToWindowEdges]}
-          onDragEnd={(event) => {
-            console.log("Drag end", event);
-            const { over, active } = event;
-            if (!over) return;
-            if (!active) return;
-
-            setDashboardMetadata((prev) => ({
-              layouts: [
-                {
-                  type: LayoutType.Full,
-                  component1: {
-                    type: active.data.current?.type,
-                    properties: active.data.current?.defaultProperties,
-                  },
-                },
-              ],
-            }));
-          }}
+          onDragEnd={updateDashboardMetadata}
         >
           <ComponentsDrawer />
           <div className="flex justify-center items-center h-full w-full p-6">
