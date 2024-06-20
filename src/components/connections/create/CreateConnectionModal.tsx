@@ -34,7 +34,7 @@ const CreateConnectionModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
-      <ModalContent className={"p-4"}>
+      <ModalContent className={"py-2 px-2"}>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1 text-2xl font-medium">
