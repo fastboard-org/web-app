@@ -28,10 +28,6 @@ export default function EditorMenu() {
       <Button
         className="bg-foreground bg-opacity-5 text-foreground-500"
         isIconOnly
-        onClick={() => {
-          setIsPropertiesDrawerOpen((isOpen) => !isOpen);
-          setIsComponentsDrawerOpen((isOpen) => false);
-        }}
       >
         <Setting2 size={20} />
       </Button>

@@ -33,3 +33,9 @@ export interface FastboardComponent {
 export interface DashboardMetadata {
   layouts: Array<FullLayout | RowLayout>;
 }
+
+export interface PropertiesDrawerComponent {
+  layoutIndex: number;
+  container: "component1" | "component2";
+  properties: Record<string, any>;
+}
