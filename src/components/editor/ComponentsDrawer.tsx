@@ -21,8 +21,7 @@ export default function ComponentsDrawer() {
     >
       <h3 className={"text-xl font-semibold p-5"}>Components</h3>
       <Divider />
-      <Spacer y={4} />
-      <div className="grid grid-cols-2">
+      <div className="flex flex-col">
         <FastboardTableDraggeable />
         <FastboardTableDraggeable2 />
       </div>

@@ -1,5 +1,5 @@
 import {
-  dashboardMetadataAtom,
+  dashboardMetadataState,
   isComponentsDrawerOpen,
   isPropertiesDrawerOpen,
 } from "@/atoms/editor";
@@ -11,7 +11,7 @@ import FullLayout from "./layouts/FullLayout";
 export default function EditorCanvas() {
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
   const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
-  const dashboardMetadata = useRecoilValue(dashboardMetadataAtom);
+  const dashboardMetadata = useRecoilValue(dashboardMetadataState);
 
   function getLayoutComponent(layout: Layout) {
     switch (layout.type) {
@@ -20,7 +20,7 @@ export default function EditorCanvas() {
           <FullLayout
             index={0}
             component1={dashboardMetadata.layouts[0].component1}
-          ></FullLayout>
+          />
         );
     }
   }
