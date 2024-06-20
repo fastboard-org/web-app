@@ -1,3 +1,4 @@
+import { isComponentsDrawerOpen, isPropertiesDrawerOpen } from "@/atoms/editor";
 import {
   Table,
   TableBody,
@@ -7,27 +8,34 @@ import {
   TableRow,
   getKeyValue,
 } from "@nextui-org/react";
+import { useSetRecoilState } from "recoil";
 
 export class FastboardTableProperties {
   hideHeader: boolean;
+  isStriped: boolean;
 
-  constructor(hideHeader: boolean) {
+  constructor(hideHeader: boolean, isStriped: boolean) {
     this.hideHeader = hideHeader;
+    this.isStriped = isStriped;
   }
 
   static default(): FastboardTableProperties {
     return {
       hideHeader: false,
+      isStriped: false,
     };
   }
 }
 
 interface FastboardTableProps {
   properties: FastboardTableProperties;
+  onClick: () => void;
 }
 
 export default function FastboardTable(props: FastboardTableProps) {
-  const { hideHeader } = props.properties;
+  const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
+  const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
+  const { hideHeader, isStriped } = props.properties;
 
   const rows = [
     {
@@ -74,7 +82,14 @@ export default function FastboardTable(props: FastboardTableProps) {
   return (
     <Table
       hideHeader={hideHeader}
+      isStriped={isStriped}
       aria-label="Example table with dynamic content"
+      onClick={(e) => {
+        e.preventDefault();
+        setIsComponentsDrawerOpen(false);
+        setIsPropertiesDrawerOpen(true);
+        props.onClick();
+      }}
     >
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}

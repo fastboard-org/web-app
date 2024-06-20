@@ -15,7 +15,7 @@ export default function FastboardTableDraggeable2() {
     id: "table2-draggable",
     data: {
       type: ComponentType.Table,
-      defaultProperties: { hideHeader: true },
+      defaultProperties: { hideHeader: true, isStripped: false },
     },
   });
   const style = transform

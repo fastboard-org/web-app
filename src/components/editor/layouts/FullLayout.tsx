@@ -3,6 +3,8 @@ import FastboardTable, {
   FastboardTableProperties,
 } from "../fastboard-components/FastboardTable";
 import { useDroppable } from "@dnd-kit/core";
+import { useSetRecoilState } from "recoil";
+import { propertiesDrawerComponentAtom } from "@/atoms/editor";
 
 interface FullLayoutProps {
   index: number;
@@ -15,6 +17,9 @@ export default function FullLayout(props: FullLayoutProps) {
     id: `full_layout_${index}_component1`,
     data: { layout: "full", layoutIndex: index, container: "component1" },
   });
+  const setPropertiesDrawerComponent = useSetRecoilState(
+    propertiesDrawerComponentAtom
+  );
 
   function getComponent(component: FastboardComponent) {
     switch (component.type) {
@@ -22,6 +27,13 @@ export default function FullLayout(props: FullLayoutProps) {
         return (
           <FastboardTable
             properties={component.properties as FastboardTableProperties}
+            onClick={() => {
+              setPropertiesDrawerComponent({
+                layoutIndex: index,
+                container: "component1",
+                properties: component.properties,
+              });
+            }}
           />
         );
     }
