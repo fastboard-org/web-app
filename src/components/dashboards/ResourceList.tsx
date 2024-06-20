@@ -1,5 +1,5 @@
 "use client";
-import { DashboardInterface, FolderInterface } from "@/types";
+import { Dashboard, Folder } from "@/types/dashboards";
 import ItemCard from "@/components/dashboards/ItemCard";
 import { Element, Folder2 } from "iconsax-react";
 
@@ -7,14 +7,14 @@ const ResourceList = ({
   dashboards,
   folders,
   search,
-  onFolderClick = (folder: FolderInterface) => {},
+  onFolderClick = (folder: Folder) => {},
   onDashboardClick,
 }: {
-  dashboards: DashboardInterface[];
-  folders: FolderInterface[];
+  dashboards: Dashboard[];
+  folders: Folder[];
   search: string;
-  onFolderClick?: (folder: FolderInterface) => void;
-  onDashboardClick: (dashboard: DashboardInterface) => void;
+  onFolderClick?: (folder: Folder) => void;
+  onDashboardClick: (dashboard: Dashboard) => void;
 }) => {
   return (
     <section className={"flex flex-wrap w-full h-full gap-10 mt-5 "}>

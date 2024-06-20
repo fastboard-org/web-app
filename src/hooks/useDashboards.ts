@@ -1,7 +1,7 @@
-import { DashboardInterface, FolderInterface } from "@/types";
+import { Dashboard, Folder } from "@/types/dashboards";
 import { useEffect, useState } from "react";
 
-const mockDashboards: DashboardInterface[] = [
+const mockDashboards: Dashboard[] = [
   {
     user_id: "1",
     id: "3",
@@ -26,7 +26,7 @@ const mockDashboards: DashboardInterface[] = [
   },
 ];
 
-const mockFolders: FolderInterface[] = [
+const mockFolders: Folder[] = [
   {
     id: "1",
     name: "My Project",
@@ -36,8 +36,8 @@ const mockFolders: FolderInterface[] = [
 ];
 
 const useDashboards = () => {
-  const [folders, setFolders] = useState<FolderInterface[]>([]);
-  const [dashboards, setDashboards] = useState<DashboardInterface[]>([]);
+  const [folders, setFolders] = useState<Folder[]>([]);
+  const [dashboards, setDashboards] = useState<Dashboard[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [mounted, setMounted] = useState<boolean>(false);
 
