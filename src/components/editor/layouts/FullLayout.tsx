@@ -1,22 +1,24 @@
-import { FastboardComponent, LayoutType } from "@/types/editor";
+import { ComponentType, FastboardComponent, LayoutType } from "@/types/editor";
 import FastboardTable, {
   FastboardTableProperties,
 } from "../fastboard-components/FastboardTable";
 import { useDroppable } from "@dnd-kit/core";
 
 interface FullLayoutProps {
+  index: number;
   component1: FastboardComponent;
 }
 
 export default function FullLayout(props: FullLayoutProps) {
+  const { index, component1 } = props;
   const { isOver, setNodeRef } = useDroppable({
-    id: "full-layout-container",
-    data: { layout: "full" },
+    id: `full_layout_${index}_component1`,
+    data: { layout: "full", layoutIndex: index, container: "component1" },
   });
 
   function getComponent(component: FastboardComponent) {
     switch (component.type) {
-      case "table":
+      case ComponentType.Table:
         return (
           <FastboardTable
             properties={component.properties as FastboardTableProperties}
@@ -33,7 +35,7 @@ export default function FullLayout(props: FullLayoutProps) {
         backgroundColor: isOver ? "rgba(135,207,232,0.1)" : "transparent",
       }}
     >
-      {getComponent(props.component1)}
+      {getComponent(component1)}
     </div>
   );
 }

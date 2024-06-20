@@ -20,8 +20,13 @@ interface RowLayout extends Layout {
   component2: FastboardComponent;
 }
 
+export enum ComponentType {
+  Table = "table",
+  Image = "image",
+}
+
 export interface FastboardComponent {
-  type: string;
+  type: ComponentType;
   properties: Record<string, any>;
 }
 

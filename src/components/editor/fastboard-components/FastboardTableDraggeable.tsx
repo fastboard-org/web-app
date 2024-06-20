@@ -9,12 +9,13 @@ import {
 } from "@nextui-org/react";
 import { useDraggable } from "@dnd-kit/core";
 import { FastboardTableProperties } from "./FastboardTable";
+import { ComponentType } from "@/types/editor";
 
 export default function FastboardTableDraggeable() {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: "table-draggable",
     data: {
-      type: "table",
+      type: ComponentType.Table,
       defaultProperties: FastboardTableProperties.default(),
     },
   });

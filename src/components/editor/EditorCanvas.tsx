@@ -18,6 +18,7 @@ export default function EditorCanvas() {
       case LayoutType.Full:
         return (
           <FullLayout
+            index={0}
             component1={dashboardMetadata.layouts[0].component1}
           ></FullLayout>
         );
