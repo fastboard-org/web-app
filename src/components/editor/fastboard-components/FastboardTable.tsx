@@ -8,7 +8,27 @@ import {
   getKeyValue,
 } from "@nextui-org/react";
 
-export default function FastboardTable() {
+export class FastboardTableProperties {
+  hideHeader: boolean;
+
+  constructor(hideHeader: boolean) {
+    this.hideHeader = hideHeader;
+  }
+
+  static default(): FastboardTableProperties {
+    return {
+      hideHeader: false,
+    };
+  }
+}
+
+interface FastboardTableProps {
+  properties: FastboardTableProperties;
+}
+
+export default function FastboardTable(props: FastboardTableProps) {
+  const { hideHeader } = props.properties;
+
   const rows = [
     {
       key: "1",
@@ -52,7 +72,10 @@ export default function FastboardTable() {
   ];
 
   return (
-    <Table aria-label="Example table with dynamic content">
+    <Table
+      hideHeader={hideHeader}
+      aria-label="Example table with dynamic content"
+    >
       <TableHeader columns={columns}>
         {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>

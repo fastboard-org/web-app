@@ -66,9 +66,9 @@ export default function Draggable({
   useEffect(() => {
     elements.forEach((el) => {
       if (overlappedElements.filter((element) => element.id === el.id).length) {
-        el.style.backgroundColor = "rgba(135,207,232,0.1)";
+        //el.style.backgroundColor = "rgba(135,207,232,0.1)";
       } else {
-        el.style.backgroundColor = "transparent";
+        //el.style.backgroundColor = "transparent";
       }
     });
   }, [overlappedElements, elements]);
