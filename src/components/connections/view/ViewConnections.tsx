@@ -8,7 +8,7 @@ import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import Search from "@/components/shared/Search";
 import { Add } from "iconsax-react";
 import ConnectionList from "@/components/connections/view/ConnectionList";
-import { ConnectionInterface } from "@/types/connections";
+import { Connection } from "@/types/connections";
 import { useState } from "react";
 import CreateConnectionModal from "@/components/connections/create/CreateConnectionModal";
 
@@ -17,9 +17,9 @@ const ViewConnections = ({
   loading,
   onConnectionClick,
 }: {
-  connections: ConnectionInterface[];
+  connections: Connection[];
   loading: boolean;
-  onConnectionClick: (connection: ConnectionInterface) => void;
+  onConnectionClick: (connection: Connection) => void;
 }) => {
   const [search, setSearch] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -28,7 +28,7 @@ const ViewConnections = ({
     setSearch(e.target.value);
   };
 
-  const handleConnectionClick = (connection: ConnectionInterface) => {
+  const handleConnectionClick = (connection: Connection) => {
     onConnectionClick(connection);
   };
 

@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
-import { ConnectionInterface, ConnectionType } from "@/types/connections";
+import { Connection, ConnectionType } from "@/types/connections";
 import { SiMongodb } from "react-icons/si";
 import { Hierarchy3 } from "iconsax-react";
 import CardActions from "@/components/shared/CardActions";
@@ -31,8 +31,8 @@ const ConnectionCard = ({
   connection,
   onClick,
 }: {
-  connection: ConnectionInterface;
-  onClick: (connection: ConnectionInterface) => void;
+  connection: Connection;
+  onClick: (connection: Connection) => void;
 }) => {
   return (
     <Card

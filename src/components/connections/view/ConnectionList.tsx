@@ -1,4 +1,4 @@
-import { ConnectionInterface } from "@/types/connections";
+import { Connection } from "@/types/connections";
 import ConnectionCard from "@/components/connections/view/ConnectionCard";
 
 const ConnectionList = ({
@@ -6,9 +6,9 @@ const ConnectionList = ({
   search,
   onConnectionClick,
 }: {
-  connections: ConnectionInterface[];
+  connections: Connection[];
   search: string;
-  onConnectionClick: (connection: ConnectionInterface) => void;
+  onConnectionClick: (connection: Connection) => void;
 }) => {
   return (
     <section className={"flex flex-wrap w-full h-full gap-10 mt-5 "}>

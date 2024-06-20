@@ -1,4 +1,4 @@
-export interface DashboardInterface {
+export interface Dashboard {
   user_id: string;
   id: string;
   name: string;
@@ -6,9 +6,9 @@ export interface DashboardInterface {
   metadata?: object;
 }
 
-export interface FolderInterface {
+export interface Folder {
   id: string;
   name: string;
   user_id: string;
-  dashboards: DashboardInterface[];
+  dashboards: Dashboard[];
 }

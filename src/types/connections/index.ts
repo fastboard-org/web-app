@@ -4,7 +4,7 @@ export enum ConnectionType {
   SQL = "SQL",
 }
 
-export interface ConnectionInterface {
+export interface Connection {
   id: string;
   name: string;
   type: ConnectionType;
@@ -12,7 +12,7 @@ export interface ConnectionInterface {
   variables: object;
 }
 
-export interface QueryInterface {
+export interface Query {
   id: string;
   name: string;
   connection_id: string;

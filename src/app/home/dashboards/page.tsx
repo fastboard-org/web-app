@@ -5,13 +5,13 @@ import ResourceList from "@/components/dashboards/ResourceList";
 import useDashboards from "@/hooks/useDashboards";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import { SetStateAction, useState } from "react";
-import { DashboardInterface, FolderInterface } from "@/types/dashboards";
+import { Dashboard, Folder } from "@/types/dashboards";
 import Search from "@/components/shared/Search";
 
 export default function Dashboards() {
   const { dashboards, folders, loading } = useDashboards();
   const [search, setSearch] = useState("");
-  const [folderSelected, setFolderSelected] = useState<FolderInterface | null>(
+  const [folderSelected, setFolderSelected] = useState<Folder | null>(
     null,
   );
 
@@ -19,11 +19,11 @@ export default function Dashboards() {
     setSearch(e.target.value);
   };
 
-  const handleFolderClick = (folder: FolderInterface) => {
+  const handleFolderClick = (folder: Folder) => {
     setFolderSelected(folder);
   };
 
-  const handleDashboardClick = (dashboard: DashboardInterface) => {
+  const handleDashboardClick = (dashboard: Dashboard) => {
     //TODO redirect to editor
   };
 

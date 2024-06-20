@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { ConnectionInterface, ConnectionType } from "@/types/connections";
+import { Connection, ConnectionType } from "@/types/connections";
 
-const mockConnections: ConnectionInterface[] = [
+const mockConnections: Connection[] = [
   {
     id: "1",
     name: "PokeApi",
@@ -40,7 +40,7 @@ const mockConnections: ConnectionInterface[] = [
 ];
 
 const useConnections = () => {
-  const [connections, setConnections] = useState<ConnectionInterface[]>([]);
+  const [connections, setConnections] = useState<Connection[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [mounted, setMounted] = useState<boolean>(false);
 
