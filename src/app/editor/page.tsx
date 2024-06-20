@@ -1,5 +1,5 @@
 "use client";
-import { dashboardMetadataAtom } from "@/atoms/editor";
+import { dashboardMetadataState } from "@/atoms/editor";
 import ComponentsDrawer from "@/components/editor/ComponentsDrawer";
 import EditorCanvas from "@/components/editor/EditorCanvas";
 import EditorNavbar from "@/components/editor/EditorNavbar";
@@ -9,7 +9,7 @@ import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useSetRecoilState } from "recoil";
 
 export default function Editor() {
-  const setDashboardMetadata = useSetRecoilState(dashboardMetadataAtom);
+  const setDashboardMetadata = useSetRecoilState(dashboardMetadataState);
 
   function updateDashboardMetadata(event: DragEndEvent) {
     const { over, active } = event;
