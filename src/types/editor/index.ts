@@ -34,7 +34,7 @@ export interface DashboardMetadata {
   layouts: Array<FullLayout | RowLayout>;
 }
 
-export interface PropertiesDrawerComponent {
+export interface PropertiesDrawerState {
   layoutIndex: number;
   container: "component1" | "component2";
   properties: Record<string, any>;
