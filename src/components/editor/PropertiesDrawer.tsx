@@ -26,7 +26,7 @@ export default function PropertiesDrawer() {
         "h-full w-[22%] bg-background shadow-lg absolute top-0 right-0 p-5"
       }
     >
-      <h3 className={"text-xl font-semibold p-5"}>Properties</h3>
+      <h3 className={"text-xl font-medium p-2 mb-2"}>Properties</h3>
       <Divider />
       <Spacer y={4} />
       {propertiesDrawerComponent && (

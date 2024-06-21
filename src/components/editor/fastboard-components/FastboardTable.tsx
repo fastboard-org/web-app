@@ -84,6 +84,7 @@ export default function FastboardTable(props: FastboardTableProps) {
       isHeaderSticky
       classNames={{
         thead: "-z-10",
+        table: "cursor-pointer",
       }}
       hideHeader={hideHeader}
       isStriped={isStriped}

@@ -40,7 +40,7 @@ export default function FullLayout(props: FullLayoutProps) {
   return (
     <div
       ref={setNodeRef}
-      className="flex h-full w-full justify-center items-center fastboard-container"
+      className="flex h-full w-full justify-center fastboard-container p-10"
       style={{
         backgroundColor: isOver ? "rgba(135,207,232,0.1)" : "transparent",
       }}
