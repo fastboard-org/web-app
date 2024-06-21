@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
-import CardActions from "@/components/dashboards/CardActions";
+import CardActions from "@/components/shared/CardActions";
 
 const ItemCard = ({
   name,

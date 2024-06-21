@@ -24,7 +24,7 @@ export const propertiesDrawerComponentAtom = atom<PropertiesDrawerComponent>({
   },
 });
 
-export const dashboardMetadataAtom = atom<DashboardMetadata>({
+export const dashboardMetadataState = atom<DashboardMetadata>({
   key: "dashboardMetadata",
   default: {
     layouts: [
