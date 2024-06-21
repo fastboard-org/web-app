@@ -1,6 +1,6 @@
 "use client";
 import {
-  dashboardMetadataAtom,
+  dashboardMetadataState,
   isPropertiesDrawerOpen,
   propertiesDrawerComponentAtom,
 } from "@/atoms/editor";
@@ -19,7 +19,7 @@ export default function PropertiesDrawer() {
   const setPropertiesDrawerComponent = useSetRecoilState(
     propertiesDrawerComponentAtom
   );
-  const setDashboardMetadata = useSetRecoilState(dashboardMetadataAtom);
+  const setDashboardMetadata = useSetRecoilState(dashboardMetadataState);
 
   return (
     <motion.div
