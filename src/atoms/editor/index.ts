@@ -2,7 +2,7 @@ import {
   ComponentType,
   DashboardMetadata,
   LayoutType,
-  PropertiesDrawerComponent,
+  PropertiesDrawerState,
 } from "@/types/editor";
 import { atom } from "recoil";
 
@@ -15,8 +15,8 @@ export const isPropertiesDrawerOpen = atom({
   default: false,
 });
 
-export const propertiesDrawerComponentAtom = atom<PropertiesDrawerComponent>({
-  key: "propertiesDrawerComponent",
+export const propertiesDrawerState = atom<PropertiesDrawerState>({
+  key: "propertiesDrawerState",
   default: {
     layoutIndex: 0,
     container: "component1",

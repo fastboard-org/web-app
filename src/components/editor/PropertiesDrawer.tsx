@@ -2,7 +2,7 @@
 import {
   dashboardMetadataState,
   isPropertiesDrawerOpen,
-  propertiesDrawerComponentAtom,
+  propertiesDrawerState,
 } from "@/atoms/editor";
 import { Divider } from "@nextui-org/react";
 import { motion } from "framer-motion";
@@ -13,12 +13,8 @@ import { FastboardTableProperties } from "./fastboard-components/FastboardTable"
 
 export default function PropertiesDrawer() {
   const isOpen = useRecoilValue(isPropertiesDrawerOpen);
-  const propertiesDrawerComponent = useRecoilValue(
-    propertiesDrawerComponentAtom
-  );
-  const setPropertiesDrawerComponent = useSetRecoilState(
-    propertiesDrawerComponentAtom
-  );
+  const propertiesDrawerComponent = useRecoilValue(propertiesDrawerState);
+  const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
   const setDashboardMetadata = useSetRecoilState(dashboardMetadataState);
 
   return (
@@ -38,7 +34,7 @@ export default function PropertiesDrawer() {
             propertiesDrawerComponent.properties as FastboardTableProperties
           }
           onValueChange={(properties) => {
-            setPropertiesDrawerComponent((prev) => ({
+            setPropertiesDrawerState((prev) => ({
               ...prev,
               properties: properties,
             }));
