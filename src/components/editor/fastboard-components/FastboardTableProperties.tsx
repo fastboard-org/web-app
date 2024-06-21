@@ -1,4 +1,4 @@
-import { Checkbox } from "@nextui-org/react";
+import { Checkbox, Spacer } from "@nextui-org/react";
 import { FastboardTableProperties } from "./FastboardTable";
 
 const FastboardTablePropertiesComponent = ({
@@ -23,6 +23,7 @@ const FastboardTablePropertiesComponent = ({
       >
         Hide Header
       </Checkbox>
+      <Spacer y={1} />
       <Checkbox
         isSelected={isStriped}
         onValueChange={(isSelected) => {
