@@ -6,8 +6,6 @@ import React from "react";
 import { useRecoilValue } from "recoil";
 import FastboardTableDraggeable from "./fastboard-components/FastboardTableDraggeable";
 import FastboardTableDraggeable2 from "./fastboard-components/FastboardTableDraggeable copy";
-import FastboardTableDraggeable from "./fastboard-components/FastboardTableDraggeable";
-import FastboardTableDraggeable2 from "./fastboard-components/FastboardTableDraggeable copy";
 
 export default function ComponentsDrawer() {
   const isOpen = useRecoilValue(isComponentsDrawerOpen);
