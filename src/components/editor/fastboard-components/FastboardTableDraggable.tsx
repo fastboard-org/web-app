@@ -7,36 +7,22 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { useDraggable } from "@dnd-kit/core";
+import { FastboardTableProperties } from "./FastboardTable";
 import { ComponentType } from "@/types/editor";
-import { motion } from "framer-motion";
+import Draggable from "./Draggable";
 
-export default function FastboardTableDraggeable2() {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: "table2-draggable",
-    data: {
-      type: ComponentType.Table,
-      defaultProperties: { hideHeader: true, isStripped: false },
-    },
-  });
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
-
+export default function FastboardTableDraggable() {
   return (
-    <div className="flex flex-col justify-center items-center">
-      <motion.div
-        drag
-        ref={setNodeRef}
-        style={style}
-        {...listeners}
-        {...attributes}
+    <div className="flex flex-col justify-center items-center p-5">
+      <Draggable
+        id="table-draggable"
+        data={{
+          type: ComponentType.Table,
+          defaultProperties: FastboardTableProperties.default(),
+        }}
         dragSnapToOrigin
       >
         <Table
-          hideHeader
           aria-label={"Table draggeable"}
           isHeaderSticky
           classNames={{
@@ -54,7 +40,7 @@ export default function FastboardTableDraggeable2() {
             </TableRow>
           </TableBody>
         </Table>
-      </motion.div>
+      </Draggable>
       <h4 className={"text-md pt-2"}>Table</h4>
     </div>
   );
