@@ -9,6 +9,7 @@ import {
 } from "@nextui-org/react";
 import { useDraggable } from "@dnd-kit/core";
 import { ComponentType } from "@/types/editor";
+import { motion } from "framer-motion";
 
 export default function FastboardTableDraggeable2() {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
@@ -26,8 +27,22 @@ export default function FastboardTableDraggeable2() {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-        <Table hideHeader aria-label={"Table draggeable"}>
+      <motion.div
+        drag
+        ref={setNodeRef}
+        style={style}
+        {...listeners}
+        {...attributes}
+        dragSnapToOrigin
+      >
+        <Table
+          hideHeader
+          aria-label={"Table draggeable"}
+          isHeaderSticky
+          classNames={{
+            thead: "-z-10",
+          }}
+        >
           <TableHeader>
             <TableColumn>key</TableColumn>
             <TableColumn>key</TableColumn>
@@ -39,7 +54,7 @@ export default function FastboardTableDraggeable2() {
             </TableRow>
           </TableBody>
         </Table>
-      </div>
+      </motion.div>
       <h4 className={"text-md pt-2"}>Table</h4>
     </div>
   );

@@ -81,6 +81,10 @@ export default function FastboardTable(props: FastboardTableProps) {
 
   return (
     <Table
+      isHeaderSticky
+      classNames={{
+        thead: "-z-10",
+      }}
       hideHeader={hideHeader}
       isStriped={isStriped}
       aria-label="Example table with dynamic content"
