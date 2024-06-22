@@ -10,29 +10,33 @@ const useData = (url: string, rowsPerPage: number) => {
   const [keys, setKeys] = useState<Column[]>([]);
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
 
   const fetchData = async () => {
     //TODO fetch data from connections
+    try {
+      const response = await fetch(url);
+      let data = (await response.json())["results"];
+      setKeys(
+        Object.keys(data[0]).map((key) => {
+          return { key: key, label: key };
+        })
+      );
 
-    const response = await fetch(url);
-    let data = (await response.json())["results"];
-    setKeys(
-      Object.keys(data[0]).map((key) => {
-        return { key: key, label: key };
-      })
-    );
+      data = data.map((item: any, index: number) => {
+        return { key: index, ...item };
+      });
 
-    data = data.map((item: any, index: number) => {
-      return { key: index, ...item };
-    });
+      setData(data);
 
-    setData(data);
-
-    //set loading to false after 3 seconds
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+      //set loading to false after 3 seconds
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+    } catch (error) {
+      setError(true);
+    }
   };
 
   useEffect(() => {
@@ -54,7 +58,7 @@ const useData = (url: string, rowsPerPage: number) => {
 
   const pages = Math.ceil(data.length / rowsPerPage);
 
-  return { keys, items, isLoading, page, setPage, pages };
+  return { keys, items, isLoading, error, page, setPage, pages };
 };
 
 export default useData;

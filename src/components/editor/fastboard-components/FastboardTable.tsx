@@ -42,15 +42,23 @@ export default function FastboardTable(props: FastboardTableProps) {
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
   const { hideHeader, isStriped } = props.properties;
-  const { keys, isLoading, items, page, setPage, pages } = useData(
+  const { keys, isLoading, error, items, page, setPage, pages } = useData(
     "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
     4
   );
 
+  if (error) {
+    return (
+      <Card className="flex flex-col w-full h-[30%] p-5 justify-center items-center">
+        <h1 className="text-xl text-danger">Failed loading data</h1>
+      </Card>
+    );
+  }
+
   return (
     <>
       {isLoading ? (
-        <Card className="flex flex-col w-[50%] h-[50%] p-5">
+        <Card className="flex flex-col w-full h-[30%] p-5">
           <div className="flex flex-row">
             <CustomSkeleton className="w-full rounded-lg">
               <Spinner />
