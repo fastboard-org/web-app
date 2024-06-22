@@ -6,7 +6,7 @@ interface Column {
   label: string;
 }
 
-const useData = (url: string, rowsPerPage: number) => {
+const usePaginatedData = (url: string, field: string, rowsPerPage: number) => {
   const [keys, setKeys] = useState<Column[]>([]);
   const [data, setData] = useState<any[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
@@ -17,7 +17,7 @@ const useData = (url: string, rowsPerPage: number) => {
     //TODO fetch data from connections
     try {
       const response = await fetch(url);
-      let data = (await response.json())["results"];
+      let data = (await response.json())[field];
       setKeys(
         Object.keys(data[0]).map((key) => {
           return { key: key, label: key };
@@ -61,4 +61,4 @@ const useData = (url: string, rowsPerPage: number) => {
   return { keys, items, isLoading, error, page, setPage, pages };
 };
 
-export default useData;
+export default usePaginatedData;

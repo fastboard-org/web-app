@@ -1,6 +1,6 @@
 import { isComponentsDrawerOpen, isPropertiesDrawerOpen } from "@/atoms/editor";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
-import useData from "@/hooks/useData";
+import usePaginatedData from "@/hooks/usePaginatedData";
 import {
   Card,
   Pagination,
@@ -42,10 +42,12 @@ export default function FastboardTable(props: FastboardTableProps) {
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
   const { hideHeader, isStriped } = props.properties;
-  const { keys, isLoading, error, items, page, setPage, pages } = useData(
-    "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
-    4
-  );
+  const { keys, isLoading, error, items, page, setPage, pages } =
+    usePaginatedData(
+      "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
+      "results",
+      4
+    );
 
   if (error) {
     return (
