@@ -28,7 +28,11 @@ const useData = (url: string, rowsPerPage: number) => {
     });
 
     setData(data);
-    setLoading(false);
+
+    //set loading to false after 3 seconds
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
   };
 
   useEffect(() => {
