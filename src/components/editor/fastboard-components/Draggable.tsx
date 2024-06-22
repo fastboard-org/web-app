@@ -31,6 +31,8 @@ const Draggable = ({
       {...listeners}
       {...attributes}
       dragSnapToOrigin={dragSnapToOrigin}
+      className={"cursor-grab"}
+      whileDrag={{ scale: 1.1, zIndex: 1000, cursor: "grabbing" }}
     >
       {children}
     </motion.div>

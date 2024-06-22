@@ -11,7 +11,7 @@ const FastboardTablePropertiesComponent = ({
   const { hideHeader, isStriped } = properties;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-2">
       <Checkbox
         isSelected={hideHeader}
         onValueChange={(isSelected) => {
@@ -23,7 +23,6 @@ const FastboardTablePropertiesComponent = ({
       >
         Hide Header
       </Checkbox>
-      <Spacer y={1} />
       <Checkbox
         isSelected={isStriped}
         onValueChange={(isSelected) => {

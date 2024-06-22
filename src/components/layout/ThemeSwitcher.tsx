@@ -25,20 +25,20 @@ export function ThemeSwitcher(props: ThemeSwitcherProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
         >
-            <Button
-              size={size}
-              isIconOnly
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              className={"bg-foreground bg-opacity-5"}
-            >
-              {theme === "dark" ? (
-                <Sun1 size="24" variant="Bold" className={"text-primary"} />
-              ) : (
-                <Moon size="24" variant="Bold" className={"text-primary"} />
-              )}
-            </Button>
-          </motion.div>
-        )}
+          <Button
+            size={size}
+            isIconOnly
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            className={"bg-foreground bg-opacity-5"}
+          >
+            {theme === "dark" ? (
+              <Sun1 size="20" variant="Bold" className={"text-primary"} />
+            ) : (
+              <Moon size="20" variant="Bold" className={"text-primary"} />
+            )}
+          </Button>
+        </motion.div>
+      )}
     </AnimatePresence>
   );
 }

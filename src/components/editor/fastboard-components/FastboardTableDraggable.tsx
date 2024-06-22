@@ -13,7 +13,8 @@ import Draggable from "./Draggable";
 
 export default function FastboardTableDraggable() {
   return (
-    <div className="flex flex-col justify-center items-center p-5">
+    <div className="flex flex-col justify-center">
+      <h4 className={"text-md pb-2"}>Table</h4>
       <Draggable
         id="table-draggable"
         data={{
@@ -23,6 +24,7 @@ export default function FastboardTableDraggable() {
         dragSnapToOrigin
       >
         <Table
+          fullWidth
           aria-label={"Table draggeable"}
           isHeaderSticky
           classNames={{
@@ -41,7 +43,6 @@ export default function FastboardTableDraggable() {
           </TableBody>
         </Table>
       </Draggable>
-      <h4 className={"text-md pt-2"}>Table</h4>
     </div>
   );
 }

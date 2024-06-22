@@ -38,7 +38,7 @@ export default function Editor() {
   }
 
   return (
-    <div className="flex flex-col h-screen w-full bg-foreground-200 dark:bg-default-100">
+    <div className="flex flex-col h-screen w-full bg-foreground-100 dark:bg-content1">
       <EditorNavbar />
 
       <div className="relative h-full w-full flex overflow-hidden ">
