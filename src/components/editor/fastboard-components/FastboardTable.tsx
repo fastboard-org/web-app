@@ -1,7 +1,10 @@
 import { isComponentsDrawerOpen, isPropertiesDrawerOpen } from "@/atoms/editor";
+import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import useData from "@/hooks/useData";
 import {
+  Card,
   Pagination,
+  Spacer,
   Spinner,
   Table,
   TableBody,
@@ -11,7 +14,6 @@ import {
   TableRow,
   getKeyValue,
 } from "@nextui-org/react";
-import { useMemo, useState } from "react";
 import { useSetRecoilState } from "recoil";
 
 export class FastboardTableProperties {
@@ -48,7 +50,21 @@ export default function FastboardTable(props: FastboardTableProps) {
   return (
     <>
       {isLoading ? (
-        <Spinner />
+        <Card className="flex flex-col w-[50%] h-[50%] p-5">
+          <div className="flex flex-row">
+            <CustomSkeleton className="w-full rounded-lg">
+              <Spinner />
+            </CustomSkeleton>
+            <Spacer x={2} />
+            <CustomSkeleton className="w-full rounded-lg">
+              <Spinner />
+            </CustomSkeleton>
+          </div>
+          <Spacer y={2} />
+          <CustomSkeleton className="w-full h-full rounded-lg">
+            <Spinner />
+          </CustomSkeleton>
+        </Card>
       ) : (
         <Table
           isHeaderSticky
