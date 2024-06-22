@@ -1,6 +1,7 @@
 import { isComponentsDrawerOpen, isPropertiesDrawerOpen } from "@/atoms/editor";
 import useData from "@/hooks/useData";
 import {
+  Pagination,
   Spinner,
   Table,
   TableBody,
@@ -10,6 +11,7 @@ import {
   TableRow,
   getKeyValue,
 } from "@nextui-org/react";
+import { useMemo, useState } from "react";
 import { useSetRecoilState } from "recoil";
 
 export class FastboardTableProperties {
@@ -38,8 +40,9 @@ export default function FastboardTable(props: FastboardTableProps) {
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
   const { hideHeader, isStriped } = props.properties;
-  const { keys, data, isLoading } = useData(
-    "https://pokeapi.co/api/v2/pokemon"
+  const { keys, isLoading, items, page, setPage, pages } = useData(
+    "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
+    4
   );
 
   return (
@@ -61,6 +64,18 @@ export default function FastboardTable(props: FastboardTableProps) {
             setIsPropertiesDrawerOpen(true);
             props.onClick();
           }}
+          bottomContent={
+            <div className="flex w-full justify-center">
+              <Pagination
+                isCompact
+                showControls
+                showShadow
+                page={page}
+                total={pages}
+                onChange={(page) => setPage(page)}
+              />
+            </div>
+          }
         >
           <TableHeader columns={keys}>
             {(column) => (
@@ -72,7 +87,7 @@ export default function FastboardTable(props: FastboardTableProps) {
           <TableBody
             isLoading={isLoading}
             loadingContent={<Spinner label="Loading..." />}
-            items={data}
+            items={items}
             emptyContent={"No rows to display."}
           >
             {(item) => (
