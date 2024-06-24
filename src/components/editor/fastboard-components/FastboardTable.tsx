@@ -17,16 +17,22 @@ import {
 import { useSetRecoilState } from "recoil";
 
 export class FastboardTableProperties {
+  query: Object;
   hideHeader: boolean;
   isStriped: boolean;
 
-  constructor(hideHeader: boolean, isStriped: boolean) {
+  constructor(query: Object, hideHeader: boolean, isStriped: boolean) {
+    this.query = query;
     this.hideHeader = hideHeader;
     this.isStriped = isStriped;
   }
 
   static default(): FastboardTableProperties {
     return {
+      query: {
+        url: "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
+        field: "results",
+      },
       hideHeader: false,
       isStriped: false,
     };
@@ -41,13 +47,11 @@ interface FastboardTableProps {
 export default function FastboardTable(props: FastboardTableProps) {
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
-  const { hideHeader, isStriped } = props.properties;
-  const { keys, isLoading, error, items, page, setPage, pages } =
-    usePaginatedData(
-      "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
-      "results",
-      4
-    );
+  const { query, hideHeader, isStriped } = props.properties;
+  const { keys, items, isLoading, error, page, setPage, pages, updateQuery } =
+    usePaginatedData(query.url, query.field, 4);
+
+  updateQuery(query.url, query.field);
 
   if (error) {
     return (
