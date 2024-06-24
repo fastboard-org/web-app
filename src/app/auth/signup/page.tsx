@@ -13,6 +13,7 @@ import { IoLogoGithub } from "react-icons/io";
 import { Eye, EyeSlash } from "iconsax-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 interface SignUpFormInterface {
   email: string;
@@ -21,14 +22,21 @@ interface SignUpFormInterface {
 
 export default function SignUp() {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<SignUpFormInterface>();
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<SignUpFormInterface> = (signUpData) => {
     console.log(signUpData);
+    setLoading(true);
+    //TODO: register with user service and validate response
+    setTimeout(() => {
+      router.push("/home/dashboards");
+    }, 3000);
   };
 
   return (
@@ -87,7 +95,8 @@ export default function SignUp() {
               isInvalid={!!errors.password}
             />
             <Spacer y={4} />
-            <Button type="submit" color="primary" fullWidth>
+
+            <Button type="submit" color="primary" fullWidth isLoading={loading}>
               Continue
             </Button>
           </form>
