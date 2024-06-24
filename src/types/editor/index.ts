@@ -37,5 +37,6 @@ export interface DashboardMetadata {
 export interface PropertiesDrawerState {
   layoutIndex: number;
   container: "component1" | "component2";
+  type: ComponentType | null;
   properties: Record<string, any>;
 }

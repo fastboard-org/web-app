@@ -9,6 +9,7 @@ const FastboardTablePropertiesComponent = ({
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
+  console.log(properties);
   const { query, hideHeader, isStriped } = properties;
 
   const queries = [
@@ -31,6 +32,9 @@ const FastboardTablePropertiesComponent = ({
       <Autocomplete
         allowsCustomValue
         defaultItems={queries}
+        defaultSelectedKey={
+          queries.find((q) => q.value.url === query.url)?.key || ""
+        }
         label="Url"
         placeholder="Select url"
         onSelectionChange={(key) => {

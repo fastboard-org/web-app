@@ -6,8 +6,8 @@ interface Column {
   label: string;
 }
 
-const usePaginatedData = (url: string, field: string, rowsPerPage: number) => {
-  const [query, setQuery] = useState<{ url: string; field: string }>({
+const usePaginatedData = (rowsPerPage: number) => {
+  const [query, setQuery] = useState<{ url: string; field: string | null }>({
     url: "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
     field: "results",
   });
@@ -80,9 +80,9 @@ const usePaginatedData = (url: string, field: string, rowsPerPage: number) => {
     fetchData();
   }, [mounted, query]);
 
-  const updateQuery = (newUrl: string, newField: string) => {
-    if (newUrl !== query.url || newField !== query.field) {
-      setQuery({ url: newUrl, field: newField });
+  const updateQuery = (url: string, field: string | null) => {
+    if (url !== query.url || field !== query.field) {
+      setQuery({ url: url, field: field });
       setPage(1); // Reset page to 1 when query changes
     }
   };

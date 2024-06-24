@@ -17,11 +17,15 @@ import {
 import { useSetRecoilState } from "recoil";
 
 export class FastboardTableProperties {
-  query: Object;
+  query: { url: string; field: string | null };
   hideHeader: boolean;
   isStriped: boolean;
 
-  constructor(query: Object, hideHeader: boolean, isStriped: boolean) {
+  constructor(
+    query: { url: string; field: string | null },
+    hideHeader: boolean,
+    isStriped: boolean
+  ) {
     this.query = query;
     this.hideHeader = hideHeader;
     this.isStriped = isStriped;
@@ -49,7 +53,7 @@ export default function FastboardTable(props: FastboardTableProps) {
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
   const { query, hideHeader, isStriped } = props.properties;
   const { keys, items, isLoading, error, page, setPage, pages, updateQuery } =
-    usePaginatedData(query.url, query.field, 4);
+    usePaginatedData(4);
 
   updateQuery(query.url, query.field);
 
