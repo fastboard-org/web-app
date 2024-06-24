@@ -20,6 +20,7 @@ export const propertiesDrawerState = atom<PropertiesDrawerState>({
   default: {
     layoutIndex: 0,
     container: "component1",
+    type: null,
     properties: {},
   },
 });
