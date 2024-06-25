@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Connection, ConnectionType } from "@/types/connections";
 
-const mockConnections: Connection[] = [
+export const mockConnections: Connection[] = [
   {
     id: "1",
     name: "PokeApi",
