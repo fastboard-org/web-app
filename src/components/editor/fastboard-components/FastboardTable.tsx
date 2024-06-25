@@ -69,7 +69,7 @@ export default function FastboardTable(props: FastboardTableProps) {
   }
 
   return (
-    <CustomSkeleton isLoaded={!isLoading} className="w-full">
+    <CustomSkeleton isLoaded={!isLoading} onlyRenderOnLoad className="w-full">
       <Table
         isHeaderSticky
         classNames={{
