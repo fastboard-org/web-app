@@ -4,14 +4,24 @@ const CustomSkeleton = ({
   children,
   isLoaded = false,
   className = "",
+  loadingClassName = "",
 }: {
   children: React.ReactNode;
   isLoaded?: boolean;
   className?: string;
+  loadingClassName?: string;
 }) => {
-  const before = isLoaded ? " before:hidden" : "";
+  const loaded = isLoaded ? " before:hidden w-full" : "";
+  const loading = isLoaded ? "" : " " + loadingClassName;
+
   return (
-    <Skeleton isLoaded={isLoaded} className={className + before}>
+    <Skeleton
+      isLoaded={isLoaded}
+      className={className + loaded + loading}
+      classNames={{
+        content: "w-full",
+      }}
+    >
       {children}
     </Skeleton>
   );
