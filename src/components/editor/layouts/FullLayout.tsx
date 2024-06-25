@@ -29,6 +29,7 @@ export default function FullLayout(props: FullLayoutProps) {
               setPropertiesDrawerState({
                 layoutIndex: index,
                 container: "component1",
+                type: ComponentType.Table,
                 properties: component.properties,
               });
             }}

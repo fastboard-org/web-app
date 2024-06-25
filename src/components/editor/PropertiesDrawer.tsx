@@ -29,7 +29,7 @@ export default function PropertiesDrawer() {
       <h3 className={"text-xl font-medium p-2 mb-2"}>Properties</h3>
       <Divider />
       <Spacer y={4} />
-      {propertiesDrawerComponent && (
+      {isOpen && propertiesDrawerComponent.type && (
         <FastboardTablePropertiesComponent
           properties={
             propertiesDrawerComponent.properties as FastboardTableProperties

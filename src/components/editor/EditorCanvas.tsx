@@ -33,7 +33,7 @@ export default function EditorCanvas() {
       transition={{
         ease: "easeInOut",
       }}
-      className="flex justify-center items-center h-full min-w-[75%] bg-background shadow-lg overflow-y-auto rounded-lg"
+      className="flex justify-center items-center h-full w-[75%] bg-background shadow-lg overflow-y-auto rounded-lg"
     >
       {getLayoutComponent(dashboardMetadata.layouts[0])}
     </motion.div>
