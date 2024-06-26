@@ -7,13 +7,13 @@ import { useRecoilValue } from "recoil";
 export default function Preview() {
   const dashboardMetadata = useRecoilValue(dashboardMetadataState);
 
-  function getLayoutComponent(layout: Layout) {
+  function getLayoutComponent(layout: Layout, index: number) {
     switch (layout.type) {
       case LayoutType.Full:
         return (
           <FullLayout
-            index={0}
-            component1={dashboardMetadata.layouts[0].component1}
+            index={index}
+            component1={dashboardMetadata.layouts[index].component1}
           />
         );
     }
@@ -21,7 +21,9 @@ export default function Preview() {
 
   return (
     <div className="flex justify-center items-center h-screen w-full bg-background">
-      {getLayoutComponent(dashboardMetadata.layouts[0])}
+      {dashboardMetadata.layouts.map((layout, index) =>
+        getLayoutComponent(layout, index)
+      )}
     </div>
   );
 }
