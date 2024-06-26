@@ -5,13 +5,15 @@ const CustomSkeleton = ({
   isLoaded = false,
   className = "",
   loadingClassName = "",
+  loadedClassName = "",
 }: {
   children: React.ReactNode;
   isLoaded?: boolean;
   className?: string;
   loadingClassName?: string;
+  loadedClassName?: string;
 }) => {
-  const loaded = isLoaded ? " before:hidden w-full" : "";
+  const loaded = isLoaded ? " before:hidden " + loadedClassName : "";
   const loading = isLoaded ? "" : " " + loadingClassName;
 
   return (
