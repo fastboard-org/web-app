@@ -13,6 +13,7 @@ export default function Preview() {
         return (
           <FullLayout
             index={index}
+            isEditor={false}
             component1={dashboardMetadata.layouts[index].component1}
           />
         );

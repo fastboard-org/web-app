@@ -5,14 +5,16 @@ import FastboardTable, {
 import { useDroppable } from "@dnd-kit/core";
 import { useSetRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
+import FastboardTableView from "../fastboard-components/FastboardTableView";
 
 interface FullLayoutProps {
   index: number;
+  isEditor: boolean;
   component1: FastboardComponent;
 }
 
 export default function FullLayout(props: FullLayoutProps) {
-  const { index, component1 } = props;
+  const { index, isEditor, component1 } = props;
   const { isOver, setNodeRef } = useDroppable({
     id: `full_layout_${index}_component1`,
     data: { layout: "full", layoutIndex: index, container: "component1" },
@@ -22,7 +24,7 @@ export default function FullLayout(props: FullLayoutProps) {
   function getComponent(component: FastboardComponent) {
     switch (component.type) {
       case ComponentType.Table:
-        return (
+        return isEditor ? (
           <FastboardTable
             properties={component.properties as FastboardTableProperties}
             onClick={() => {
@@ -33,6 +35,10 @@ export default function FullLayout(props: FullLayoutProps) {
                 properties: component.properties,
               });
             }}
+          />
+        ) : (
+          <FastboardTableView
+            properties={component.properties as FastboardTableProperties}
           />
         );
     }
