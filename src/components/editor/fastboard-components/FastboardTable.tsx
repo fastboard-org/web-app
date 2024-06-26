@@ -14,6 +14,7 @@ import {
 } from "@nextui-org/react";
 import { useEffect } from "react";
 import FastboardComponent from "./FastboardComponent";
+import { ComponentType } from "@/types/editor";
 
 export class FastboardTableProperties {
   query: { url: string; field: string | null };
@@ -44,11 +45,12 @@ export class FastboardTableProperties {
 
 interface FastboardTableProps {
   properties: FastboardTableProperties;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export default function FastboardTable(props: FastboardTableProps) {
-  const { query, hideHeader, isStriped } = props.properties;
+  const { properties } = props;
+  const { query, hideHeader, isStriped } = properties;
   const { keys, items, isLoading, error, page, setPage, pages, updateQuery } =
     usePaginatedData(4);
 
@@ -65,52 +67,54 @@ export default function FastboardTable(props: FastboardTableProps) {
   }
 
   return (
-    <CustomSkeleton isLoaded={!isLoading} onlyRenderOnLoad className="w-full">
-      <FastboardComponent name="table" onClick={props.onClick}>
-        <Table
-          isHeaderSticky
-          classNames={{
-            thead: "-z-10",
-          }}
-          hideHeader={hideHeader}
-          isStriped={isStriped}
-          aria-label="Example table with dynamic content"
-          bottomContent={
-            <div className="flex w-full justify-center">
-              <Pagination
-                isCompact
-                showControls
-                showShadow
-                page={page}
-                total={pages}
-                onChange={(page) => setPage(page)}
-              />
-            </div>
-          }
+    <CustomSkeleton
+      isLoaded={!isLoading}
+      onlyRenderOnLoad
+      className="w-full h-full"
+    >
+      <Table
+        isHeaderSticky
+        classNames={{
+          thead: "-z-10",
+        }}
+        hideHeader={hideHeader}
+        isStriped={isStriped}
+        aria-label="Example table with dynamic content"
+        bottomContent={
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              page={page}
+              total={pages}
+              onChange={(page) => setPage(page)}
+            />
+          </div>
+        }
+      >
+        <TableHeader columns={keys}>
+          {(column) => (
+            <TableColumn key={column.key}>
+              {column.label.toUpperCase()}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody
+          isLoading={isLoading}
+          loadingContent={<Spinner label="Loading..." />}
+          items={items}
+          emptyContent={"No rows to display."}
         >
-          <TableHeader columns={keys}>
-            {(column) => (
-              <TableColumn key={column.key}>
-                {column.label.toUpperCase()}
-              </TableColumn>
-            )}
-          </TableHeader>
-          <TableBody
-            isLoading={isLoading}
-            loadingContent={<Spinner label="Loading..." />}
-            items={items}
-            emptyContent={"No rows to display."}
-          >
-            {(item) => (
-              <TableRow key={item.key}>
-                {(columnKey) => (
-                  <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-                )}
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </FastboardComponent>
+          {(item) => (
+            <TableRow key={item.key}>
+              {(columnKey) => (
+                <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </CustomSkeleton>
   );
 }
