@@ -25,6 +25,7 @@ export default function EditorCanvas() {
         return (
           <FullLayout
             index={0}
+            isEditor={true}
             component1={dashboardMetadata.layouts[0].component1}
           />
         );
