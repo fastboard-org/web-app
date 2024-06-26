@@ -32,7 +32,31 @@ const useConnection = (id: string) => {
     });
   };
 
-  return { connection, loading, editConnectionName };
+  const editConnectionCredentials = (credentials: any) => {
+    setConnection((prev) => {
+      if (prev) {
+        return { ...prev, credentials };
+      }
+      return null;
+    });
+  };
+
+  const editConnectionVariables = (variables: any) => {
+    setConnection((prev) => {
+      if (prev) {
+        return { ...prev, variables };
+      }
+      return null;
+    });
+  };
+
+  return {
+    connection,
+    loading,
+    editConnectionName,
+    editConnectionCredentials,
+    editConnectionVariables,
+  };
 };
 
 export default useConnection;
