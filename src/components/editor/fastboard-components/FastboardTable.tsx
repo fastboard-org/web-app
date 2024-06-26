@@ -1,4 +1,11 @@
+import { isComponentsDrawerOpen, isPropertiesDrawerOpen } from "@/atoms/editor";
+import CustomSkeleton from "@/components/shared/CustomSkeleton";
+import usePaginatedData from "@/hooks/usePaginatedData";
 import {
+  Card,
+  Pagination,
+  Spacer,
+  Spinner,
   Table,
   TableBody,
   TableCell,
@@ -7,87 +14,111 @@ import {
   TableRow,
   getKeyValue,
 } from "@nextui-org/react";
+import { useEffect } from "react";
+import { useSetRecoilState } from "recoil";
 
 export class FastboardTableProperties {
+  query: { url: string; field: string | null };
   hideHeader: boolean;
+  isStriped: boolean;
 
-  constructor(hideHeader: boolean) {
+  constructor(
+    query: { url: string; field: string | null },
+    hideHeader: boolean,
+    isStriped: boolean
+  ) {
+    this.query = query;
     this.hideHeader = hideHeader;
+    this.isStriped = isStriped;
   }
 
   static default(): FastboardTableProperties {
     return {
+      query: {
+        url: "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
+        field: "results",
+      },
       hideHeader: false,
+      isStriped: false,
     };
   }
 }
 
 interface FastboardTableProps {
   properties: FastboardTableProperties;
+  onClick: () => void;
 }
 
 export default function FastboardTable(props: FastboardTableProps) {
-  const { hideHeader } = props.properties;
+  const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
+  const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
+  const { query, hideHeader, isStriped } = props.properties;
+  const { keys, items, isLoading, error, page, setPage, pages, updateQuery } =
+    usePaginatedData(4);
 
-  const rows = [
-    {
-      key: "1",
-      name: "Tony Reichert",
-      role: "CEO",
-      status: "Active",
-    },
-    {
-      key: "2",
-      name: "Zoey Lang",
-      role: "Technical Lead",
-      status: "Paused",
-    },
-    {
-      key: "3",
-      name: "Jane Fisher",
-      role: "Senior Developer",
-      status: "Active",
-    },
-    {
-      key: "4",
-      name: "William Howard",
-      role: "Community Manager",
-      status: "Vacation",
-    },
-  ];
+  useEffect(() => {
+    updateQuery(query.url, query.field);
+  }, [query?.url, query?.field]);
 
-  const columns = [
-    {
-      key: "name",
-      label: "NAME",
-    },
-    {
-      key: "role",
-      label: "ROLE",
-    },
-    {
-      key: "status",
-      label: "STATUS",
-    },
-  ];
+  if (error) {
+    return (
+      <Card className="flex flex-col w-full h-[30%] p-5 justify-center items-center">
+        <p className="text-xl text-danger">Failed loading data</p>
+      </Card>
+    );
+  }
 
   return (
-    <Table
-      hideHeader={hideHeader}
-      aria-label="Example table with dynamic content"
-    >
-      <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
-      </TableHeader>
-      <TableBody items={rows}>
-        {(item) => (
-          <TableRow key={item.key}>
-            {(columnKey) => (
-              <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <CustomSkeleton isLoaded={!isLoading} onlyRenderOnLoad className="w-full">
+      <Table
+        isHeaderSticky
+        classNames={{
+          thead: "-z-10",
+        }}
+        hideHeader={hideHeader}
+        isStriped={isStriped}
+        aria-label="Example table with dynamic content"
+        onClick={(e) => {
+          e.preventDefault();
+          setIsComponentsDrawerOpen(false);
+          setIsPropertiesDrawerOpen(true);
+          props.onClick();
+        }}
+        bottomContent={
+          <div className="flex w-full justify-center">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              page={page}
+              total={pages}
+              onChange={(page) => setPage(page)}
+            />
+          </div>
+        }
+      >
+        <TableHeader columns={keys}>
+          {(column) => (
+            <TableColumn key={column.key}>
+              {column.label.toUpperCase()}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody
+          isLoading={isLoading}
+          loadingContent={<Spinner label="Loading..." />}
+          items={items}
+          emptyContent={"No rows to display."}
+        >
+          {(item) => (
+            <TableRow key={item.key}>
+              {(columnKey) => (
+                <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </CustomSkeleton>
   );
 }

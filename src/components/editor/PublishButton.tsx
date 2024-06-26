@@ -8,6 +8,7 @@ import {
   DropdownTrigger,
   Spacer,
 } from "@nextui-org/react";
+import { ArrowDown2} from "iconsax-react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { useState } from "react";
 import PublishOption from "@/types/editor";
@@ -28,13 +29,13 @@ export default function PublishButton() {
   return (
     <div className="flex flex-row items-center">
       <Button variant="flat">Preview</Button>
-      <Spacer x={1} />
+      <Spacer x={3} />
       <ButtonGroup color="primary">
-        <Button className="w-[100px]">{selectedOption}</Button>
+        <Button >{selectedOption}</Button>
         <Dropdown placement="bottom-end">
           <DropdownTrigger>
             <Button isIconOnly>
-              <IoMdArrowDropdown />
+              <ArrowDown2 size={18} />
             </Button>
           </DropdownTrigger>
           <DropdownMenu

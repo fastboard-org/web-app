@@ -8,32 +8,28 @@ export default function EditorMenu() {
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
 
   return (
-    <ButtonGroup size="sm">
+    <ButtonGroup size="md" >
       <Button
-        className="bg-foreground bg-opacity-5 text-foreground-500"
+        className="bg-foreground bg-opacity-5 text-default-400 text-opacity-75"
         isIconOnly
         onClick={() => {
           setIsComponentsDrawerOpen((isOpen) => !isOpen);
           setIsPropertiesDrawerOpen((isOpen) => false);
         }}
       >
-        <Category size={20} />
+        <Category size={20} variant={"Bold"}/>
       </Button>
       <Button
-        className="bg-foreground bg-opacity-5 text-foreground-500"
+        className="bg-foreground bg-opacity-5 text-foreground-400 text-opacity-75"
         isIconOnly
       >
-        <People size={20} />
+        <People size={20} variant={"Bold"}/>
       </Button>
       <Button
-        className="bg-foreground bg-opacity-5 text-foreground-500"
+        className="bg-foreground bg-opacity-5 text-foreground-400 text-opacity-75"
         isIconOnly
-        onClick={() => {
-          setIsPropertiesDrawerOpen((isOpen) => !isOpen);
-          setIsComponentsDrawerOpen((isOpen) => false);
-        }}
       >
-        <Setting2 size={20} />
+        <Setting2 size={20} variant={"Bold"}/>
       </Button>
     </ButtonGroup>
   );

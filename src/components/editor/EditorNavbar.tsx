@@ -6,16 +6,13 @@ import { ThemeSwitcher } from "../layout/ThemeSwitcher";
 
 export default function EditorNavbar() {
   return (
-    <Navbar
-      maxWidth="full"
-      className="bg-background border-b-1 border-foreground-200 shadow"
-    >
+    <Navbar maxWidth="full" className="bg-background shadow p-0.5">
       <NavbarContent justify="start">
         <NavbarItem>
           <EditorMenu />
         </NavbarItem>
         <NavbarItem>
-          <ThemeSwitcher size="sm" />
+          <ThemeSwitcher size="md" />
         </NavbarItem>
       </NavbarContent>
 
