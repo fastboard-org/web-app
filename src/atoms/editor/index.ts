@@ -30,13 +30,9 @@ export const dashboardMetadataState = atom<DashboardMetadata>({
   default: {
     layouts: [
       {
-        type: LayoutType.Full,
-        component1: {
-          type: ComponentType.Image,
-          properties: {
-            src: "https://source.unsplash.com/random/800x600",
-          },
-        },
+        type: LayoutType.Row,
+        component1: undefined,
+        component2: undefined,
       },
     ],
   },
