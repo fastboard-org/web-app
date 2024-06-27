@@ -1,19 +1,21 @@
-import { BreadcrumbItem, Breadcrumbs, Button } from "@nextui-org/react";
+import {
+  BreadcrumbItem,
+  Breadcrumbs,
+  Button,
+  Tooltip,
+} from "@nextui-org/react";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { Setting2 } from "iconsax-react";
 
 const ConnectionTitle = ({
   title,
   loading,
-  onChange,
+  onButtonClick,
 }: {
   title: string;
   loading: boolean;
-  onChange: (title: string) => void;
+  onButtonClick?: () => void;
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
   return (
     <Breadcrumbs
       itemClasses={{
@@ -24,31 +26,30 @@ const ConnectionTitle = ({
       <BreadcrumbItem href={"/home/connections"}>
         <h2>Connections</h2>
       </BreadcrumbItem>
-      <BreadcrumbItem
-        onClick={() => inputRef.current?.focus()}
-        className={"flex flex-1"}
-        classNames={{
-          item: "flex-1",
-        }}
-      >
+      <BreadcrumbItem>
         <CustomSkeleton
           className={
             "flex rounded-full min-w-[300px] bg-transparent dark:bg-transparent"
           }
           loadingClassName={"h-8 w-[300px]"}
-          loadedClassName={"w-full"}
           isLoaded={!loading}
         >
-          <div className={"flex items-center gap-4 w-full"}>
-            <input
-              ref={inputRef}
-              placeholder={"Connection name"}
-              className={
-                "dark:text-white bg-transparent dark:bg-transparent text-[40px] focus:outline-none w-full"
-              }
-              value={title}
-              onChange={(e) => onChange(e.target.value)}
-            />
+          <div className={"flex items-center gap-6"}>
+            <h2 className={"text-[40px]"}>{title}</h2>
+            <Tooltip content={"Settings"} placement={"bottom"} closeDelay={0}>
+              <Button
+                isIconOnly
+                size={"md"}
+                className={"bg-foreground bg-opacity-5"}
+                onClick={onButtonClick}
+              >
+                <Setting2
+                  size={20}
+                  variant={"Bold"}
+                  className={"text-primary"}
+                />
+              </Button>
+            </Tooltip>
           </div>
         </CustomSkeleton>
       </BreadcrumbItem>
