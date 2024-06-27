@@ -22,7 +22,7 @@ const VariableRow = ({
     <div className={"flex items-center gap-4 w-full"}>
       <Input
         size={"lg"}
-        className={"w-[48%] max-w-[600px]"}
+        className={"w-full"}
         classNames={{
           inputWrapper: isError ? "border-2 border-danger" : "",
         }}
@@ -33,7 +33,7 @@ const VariableRow = ({
       <ArrowRight size={30} className={"text-foreground-400"} />
       <Input
         size={"lg"}
-        className={"w-[48%] max-w-[600px]"}
+        className={"w-full"}
         placeholder={"variable_value"}
         value={value}
         onChange={(e) => onValueChange(e.target.value)}
@@ -44,63 +44,22 @@ const VariableRow = ({
 };
 
 const ConnectionVariables = ({
-  variables,
-  onSave,
+  entries,
+  onChange,
 }: {
-  variables: any;
-  onSave: (variables: any) => void;
+  entries: [string, string][];
+  onChange: (entries: [string, string][]) => void;
 }) => {
-  const [entries, setEntries] = useState(Object.entries(variables));
   const [newVariable, setNewVariable] = useState({ name: "", value: "" });
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setEntries(Object.entries(variables));
-  }, [variables]);
 
   const isDuplicate = (name: string) => entries.some(([key]) => key === name);
   const isInvalid = (name: string, value: string) =>
     name === "" || isDuplicate(name) || value === "";
 
-  const showButton =
-    entries.length !== Object.entries(variables).length ||
-    entries.some(([key, value], index) => {
-      const [oldKey, oldValue] = Object.entries(variables)[index];
-      return key !== oldKey || value !== oldValue;
-    });
-
-  const handleSaveClick = () => {
-    setLoading(true);
-    setTimeout(() => {
-      // TODO: Save variables
-      onSave(Object.fromEntries(entries));
-      setLoading(false);
-    }, 1000);
-  };
-
   return (
     <div className={"w-auto mt-[35px]"}>
       <div className={"flex items-center gap-4 mb-[35px]"}>
         <h4 className={"text-2xl font-medium"}>Variables</h4>
-        <AnimatePresence>
-          {showButton && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              <Button
-                size={"sm"}
-                color={"primary"}
-                variant={"flat"}
-                onClick={handleSaveClick}
-                isLoading={loading}
-              >
-                Save
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
       <div className={"flex flex-col gap-5"}>
         {entries.map(([key, value], index) => (
@@ -111,17 +70,17 @@ const ConnectionVariables = ({
             onNameChange={(value) => {
               const newEntries = [...entries];
               newEntries[index] = [value, newEntries[index][1]];
-              setEntries(newEntries);
+              onChange(newEntries);
             }}
             onValueChange={(value) => {
               const newEntries = [...entries];
               newEntries[index] = [newEntries[index][0], value];
-              setEntries(newEntries);
+              onChange(newEntries);
             }}
             button={
               <Button
                 onClick={() => {
-                  setEntries((prev) => prev.filter((_, i) => i !== index));
+                  onChange(entries.filter((_, i) => i !== index));
                 }}
                 isIconOnly
                 color={"danger"}
@@ -145,7 +104,7 @@ const ConnectionVariables = ({
           button={
             <Button
               onClick={() => {
-                setEntries([...entries, [newVariable.name, newVariable.value]]);
+                onChange([...entries, [newVariable.name, newVariable.value]]);
                 setNewVariable({ name: "", value: "" });
               }}
               isDisabled={isInvalid(newVariable.name, newVariable.value)}

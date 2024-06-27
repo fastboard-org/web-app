@@ -9,9 +9,7 @@ export default function Connections() {
   const router = useRouter();
 
   const handleConnectionClick = (connection: Connection) => {
-    setTimeout(() => {
-      router.push(`/home/connections/${connection.id}`);
-    }, 250);
+    router.push(`/home/connections/${connection.id}`);
   };
 
   return (

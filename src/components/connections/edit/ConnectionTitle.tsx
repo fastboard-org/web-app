@@ -6,30 +6,13 @@ import { AnimatePresence, motion } from "framer-motion";
 const ConnectionTitle = ({
   title,
   loading,
-  onSave,
+  onChange,
 }: {
   title: string;
   loading: boolean;
-  onSave: (title: string) => void;
+  onChange: (title: string) => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [name, setName] = useState(title);
-  const [saveLoading, setSaveLoading] = useState(false);
-
-  useEffect(() => {
-    setName(title);
-  }, [title]);
-
-  const showButton = name !== title && name !== "";
-
-  const handleSave = () => {
-    setSaveLoading(true);
-    setTimeout(() => {
-      // TODO: Save connection name
-      onSave(name);
-      setSaveLoading(false);
-    }, 1000);
-  };
 
   return (
     <Breadcrumbs
@@ -63,28 +46,9 @@ const ConnectionTitle = ({
               className={
                 "dark:text-white bg-transparent dark:bg-transparent text-[40px] focus:outline-none w-full"
               }
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={title}
+              onChange={(e) => onChange(e.target.value)}
             />
-            <AnimatePresence>
-              {showButton && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <Button
-                    size={"sm"}
-                    color={"primary"}
-                    variant={"flat"}
-                    onClick={handleSave}
-                    isLoading={saveLoading}
-                  >
-                    Save
-                  </Button>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
         </CustomSkeleton>
       </BreadcrumbItem>
