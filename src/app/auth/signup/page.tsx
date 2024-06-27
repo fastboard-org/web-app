@@ -14,8 +14,9 @@ import { Eye, EyeSlash } from "iconsax-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { signUp } from "@/lib/auth";
 
-interface SignUpFormInterface {
+export interface SignUpForm {
   email: string;
   password: string;
 }
@@ -27,16 +28,15 @@ export default function SignUp() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignUpFormInterface>();
+  } = useForm<SignUpForm>();
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<SignUpFormInterface> = (signUpData) => {
+  const onSubmit: SubmitHandler<SignUpForm> = async (signUpData) => {
     console.log(signUpData);
     setLoading(true);
     //TODO: register with user service and validate response
-    setTimeout(() => {
-      router.push("/home/dashboards");
-    }, 3000);
+    const jwt = await signUp(signUpData);
+    router.push("/home/dashboards");
   };
 
   return (
