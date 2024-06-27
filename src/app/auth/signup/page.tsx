@@ -15,6 +15,7 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import { signUp } from "@/lib/auth";
 
 export interface SignUpForm {
   email: string;
@@ -32,14 +33,12 @@ export default function SignUp() {
   const router = useRouter();
   const { data: session } = useSession();
 
-  if (session) {
-    router.push("/home/dashboards");
-  }
-
   const onSubmit: SubmitHandler<SignUpForm> = async (signUpData) => {
     console.log(signUpData);
     setLoading(true);
     //TODO: register with user service and validate response
+    const jwt = await signUp(signUpData);
+    router.push("/home/dashboards");
   };
 
   return (
