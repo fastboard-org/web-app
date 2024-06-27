@@ -26,6 +26,7 @@ const FastboardComponent = ({
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
   const propertiesDrawerOpen = useRecoilValue(isPropertiesDrawerOpen);
+  const propertiesDrawerStateValue = useRecoilValue(propertiesDrawerState);
   const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -54,8 +55,14 @@ const FastboardComponent = ({
   }
 
   function isSelected() {
-    //TODO: only is selected if the properties drawer is open for this component
-    return isHovered || propertiesDrawerOpen;
+    if (
+      propertiesDrawerOpen &&
+      propertiesDrawerStateValue.layoutIndex === layoutIndex &&
+      propertiesDrawerStateValue.container === containerIndex
+    )
+      return true;
+
+    return isHovered;
   }
 
   const component = getComponent(type, properties);
