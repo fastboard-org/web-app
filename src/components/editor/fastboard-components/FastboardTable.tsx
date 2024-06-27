@@ -13,8 +13,6 @@ import {
   getKeyValue,
 } from "@nextui-org/react";
 import { useEffect } from "react";
-import FastboardComponent from "./FastboardComponent";
-import { ComponentType } from "@/types/editor";
 
 export class FastboardTableProperties {
   query: { url: string; field: string | null };
