@@ -23,39 +23,14 @@ const useConnection = (id: string) => {
     fetchConnection();
   }, [id]);
 
-  const editConnectionName = (name: string) => {
-    setConnection((prev) => {
-      if (prev) {
-        return { ...prev, name };
-      }
-      return null;
-    });
-  };
-
-  const editConnectionCredentials = (credentials: any) => {
-    setConnection((prev) => {
-      if (prev) {
-        return { ...prev, credentials };
-      }
-      return null;
-    });
-  };
-
-  const editConnectionVariables = (variables: any) => {
-    setConnection((prev) => {
-      if (prev) {
-        return { ...prev, variables };
-      }
-      return null;
-    });
+  const updateConnection = (updatedConnection: Connection) => {
+    setConnection(updatedConnection);
   };
 
   return {
     connection,
     loading,
-    editConnectionName,
-    editConnectionCredentials,
-    editConnectionVariables,
+    updateConnection,
   };
 };
 
