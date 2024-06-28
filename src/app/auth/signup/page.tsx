@@ -14,7 +14,7 @@ import { Eye, EyeSlash } from "iconsax-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { signUp } from "@/lib/auth";
+import { signIn, useSession } from "next-auth/react";
 
 export interface SignUpForm {
   email: string;
@@ -30,13 +30,16 @@ export default function SignUp() {
     formState: { errors },
   } = useForm<SignUpForm>();
   const router = useRouter();
+  const { data: session } = useSession();
+
+  if (session) {
+    router.push("/home/dashboards");
+  }
 
   const onSubmit: SubmitHandler<SignUpForm> = async (signUpData) => {
     console.log(signUpData);
     setLoading(true);
     //TODO: register with user service and validate response
-    const jwt = await signUp(signUpData);
-    router.push("/home/dashboards");
   };
 
   return (
@@ -47,7 +50,12 @@ export default function SignUp() {
           <Spacer y={2}></Spacer>
           <h2 className="text-foreground">Create new account</h2>
           <Spacer y={14}></Spacer>
-          <Button startContent={<FcGoogle size={24} />}>
+          <Button
+            startContent={<FcGoogle size={24} />}
+            onClick={() => {
+              signIn("google");
+            }}
+          >
             Continue with Google
           </Button>
           <Spacer y={2}></Spacer>
