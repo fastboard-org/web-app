@@ -37,8 +37,6 @@ export default function SignUp() {
     console.log(signUpData);
     setLoading(true);
     //TODO: register with user service and validate response
-    const jwt = await signUp(signUpData);
-    router.push("/home/dashboards");
   };
 
   return (
