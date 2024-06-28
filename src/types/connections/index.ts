@@ -8,8 +8,8 @@ export interface Connection {
   id: string;
   name: string;
   type: ConnectionType;
-  credentials: object;
-  variables: object;
+  credentials: any;
+  variables: any;
 }
 
 export interface Query {

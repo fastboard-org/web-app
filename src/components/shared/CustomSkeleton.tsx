@@ -4,14 +4,19 @@ const CustomSkeleton = ({
   children,
   isLoaded = false,
   className = "",
+  loadingClassName = "",
+  loadedClassName = "",
   onlyRenderOnLoad = false,
 }: {
   children: React.ReactNode;
   isLoaded?: boolean;
   className?: string;
+  loadingClassName?: string;
+  loadedClassName?: string;
   onlyRenderOnLoad?: boolean;
 }) => {
-  const before = isLoaded ? " before:hidden" : "";
+  const loaded = isLoaded ? " before:hidden " + loadedClassName : "";
+  const loading = isLoaded ? "" : " " + loadingClassName;
 
   const renderItems = () => {
     if (onlyRenderOnLoad) {
@@ -21,7 +26,13 @@ const CustomSkeleton = ({
   };
 
   return (
-    <Skeleton isLoaded={isLoaded} className={className + before}>
+    <Skeleton
+      isLoaded={isLoaded}
+      className={className + loaded + loading}
+      classNames={{
+        content: "w-full",
+      }}
+    >
       {renderItems()}
     </Skeleton>
   );
