@@ -11,9 +11,7 @@ import Search from "@/components/shared/Search";
 export default function Dashboards() {
   const { dashboards, folders, loading } = useDashboards();
   const [search, setSearch] = useState("");
-  const [folderSelected, setFolderSelected] = useState<Folder | null>(
-    null,
-  );
+  const [folderSelected, setFolderSelected] = useState<Folder | null>(null);
 
   const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
     setSearch(e.target.value);
@@ -32,7 +30,7 @@ export default function Dashboards() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col p-16 w-full h-full gap-4">
+    <>
       <Breadcrumbs
         itemClasses={{
           item: "text-[40px]",
@@ -82,6 +80,6 @@ export default function Dashboards() {
           />
         )}
       </CustomSkeleton>
-    </main>
+    </>
   );
 }

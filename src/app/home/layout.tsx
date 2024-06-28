@@ -8,10 +8,12 @@ export default function HomeLayout({
 }>) {
   return (
     <HomeNavbarLayout>
-      <div className="flex justify-end mr-5 mt-5 absolute right-3">
+      <div className="flex justify-end p-10 mt-2.5 absolute right-0">
         <ThemeSwitcher size="md" />
       </div>
-      {children}
+      <main className="flex min-h-screen flex-col p-10 w-full h-full gap-4">
+        {children}
+      </main>
     </HomeNavbarLayout>
   );
 }
