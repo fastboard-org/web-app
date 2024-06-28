@@ -65,14 +65,16 @@ const FastboardComponent = ({
     <div
       className={`w-full ${
         isSelected()
-          ? "border-2 border-primary rounded-xl p-2 cursor-pointer"
+          ? "transition border-2 border-primary box-border rounded-xl p-2 cursor-pointer"
           : ""
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClickComponent}
     >
-      {isSelected() && <p className="absolute text-primary z-10">{name}</p>}
+      {isSelected() && (
+        <p className="absolute right-14 bottom-12 text-primary z-10">{name}</p>
+      )}
       {component}
     </div>
   );
