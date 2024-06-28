@@ -30,7 +30,7 @@ const CustomSkeleton = ({
       isLoaded={isLoaded}
       className={className + loaded + loading}
       classNames={{
-        content: "w-full",
+        content: "w-full h-full",
       }}
     >
       {renderItems()}
