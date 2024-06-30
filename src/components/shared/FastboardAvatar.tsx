@@ -1,8 +1,9 @@
+import { auth } from "@/lib/auth";
 import { Avatar } from "@nextui-org/react";
-import { useSession } from "next-auth/react";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export default function FastboardAvatar() {
-  const { data: session } = useSession();
+  const [user, error] = useAuthState(auth);
 
-  return <Avatar showFallback src={session?.user?.image as string}></Avatar>;
+  return <Avatar showFallback src={user?.photoURL as string}></Avatar>;
 }

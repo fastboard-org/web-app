@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Data, Folder } from "iconsax-react";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/layout/shared/Logo";
-import { SessionProvider } from "next-auth/react";
 import FastboardAvatar from "../shared/FastboardAvatar";
 
 const NavButton = ({
@@ -71,9 +70,7 @@ const HomeNavbarLayout = ({
             </NavButton>
           ))}
         </div>
-        <SessionProvider>
-          <FastboardAvatar />
-        </SessionProvider>
+        <FastboardAvatar />
         <div className={"flex justify-center items-center h-[5%]"}></div>
       </nav>
       <main className={"flex-1 ml-[120px]"}>{children}</main>

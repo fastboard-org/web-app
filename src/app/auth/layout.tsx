@@ -1,8 +1,6 @@
 "use client";
-import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 import Logo from "@/components/layout/shared/Logo";
 import { Image, Spacer } from "@nextui-org/react";
-import { SessionProvider } from "next-auth/react";
 import { useTheme } from "next-themes";
 
 export default function LogInLayout({
@@ -20,7 +18,7 @@ export default function LogInLayout({
           <Spacer x={2} />
           <h1 className="font-bold text-primary text-2xl">Fastboard</h1>
         </div>
-        <SessionProvider>{children}</SessionProvider>
+        {children}
       </div>
       <div className="flex-1 flex flex-col justify-center items-center bg-content2">
         <Image
