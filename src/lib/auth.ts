@@ -11,12 +11,12 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA6zh0HUv7PxuOHKvA5AqaMJ7GE_kh_Npw",
-  authDomain: "fastboard-9bcbe.firebaseapp.com",
-  projectId: "fastboard-9bcbe",
-  storageBucket: "fastboard-9bcbe.appspot.com",
-  messagingSenderId: "277710678568",
-  appId: "1:277710678568:web:33e4b5d24d62d4b35d631d",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
