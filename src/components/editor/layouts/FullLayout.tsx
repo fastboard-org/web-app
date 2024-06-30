@@ -1,14 +1,10 @@
-import { ComponentType, FastboardComponent, LayoutType } from "@/types/editor";
-import FastboardTable, {
-  FastboardTableProperties,
-} from "../fastboard-components/FastboardTable";
 import { useDroppable } from "@dnd-kit/core";
-import { useSetRecoilState } from "recoil";
-import { propertiesDrawerState } from "@/atoms/editor";
+import FastboardComponent from "../fastboard-components/FastboardComponent";
+import { FastboardComponent as FastboardComponentInterface } from "@/types/editor";
 
 interface FullLayoutProps {
   index: number;
-  component1: FastboardComponent;
+  component1: FastboardComponentInterface;
 }
 
 export default function FullLayout(props: FullLayoutProps) {
@@ -17,26 +13,6 @@ export default function FullLayout(props: FullLayoutProps) {
     id: `full_layout_${index}_component1`,
     data: { layout: "full", layoutIndex: index, container: "component1" },
   });
-  const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
-
-  function getComponent(component: FastboardComponent) {
-    switch (component.type) {
-      case ComponentType.Table:
-        return (
-          <FastboardTable
-            properties={component.properties as FastboardTableProperties}
-            onClick={() => {
-              setPropertiesDrawerState({
-                layoutIndex: index,
-                container: "component1",
-                type: ComponentType.Table,
-                properties: component.properties,
-              });
-            }}
-          />
-        );
-    }
-  }
 
   return (
     <div
@@ -46,7 +22,13 @@ export default function FullLayout(props: FullLayoutProps) {
         backgroundColor: isOver ? "rgba(135,207,232,0.1)" : "transparent",
       }}
     >
-      {getComponent(component1)}
+      <FastboardComponent
+        name="table"
+        type={component1.type}
+        layoutIndex={index}
+        containerIndex="component1"
+        properties={component1.properties}
+      />
     </div>
   );
 }
