@@ -63,10 +63,8 @@ const FastboardComponent = ({
 
   return (
     <div
-      className={`w-full ${
-        isSelected()
-          ? "transition border-2 border-primary box-border rounded-xl p-2 cursor-pointer"
-          : ""
+      className={`w-full transition border-2 rounded-2xl cursor-pointer p-2 ${
+        isSelected() ? "border-primary" : "border-transparent"
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
