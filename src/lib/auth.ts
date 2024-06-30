@@ -1,8 +1,14 @@
-"use server";
+"use client";
 import { SignUpForm } from "@/app/auth/signup/page";
-import { cookies } from "next/headers";
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  signInWithRedirect,
+  signInWithPopup,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA6zh0HUv7PxuOHKvA5AqaMJ7GE_kh_Npw",
@@ -15,21 +21,35 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+export const auth = getAuth(app);
 
 export async function signUp(signUpData: SignUpForm) {
-  const userCredential = await createUserWithEmailAndPassword(
-    auth,
-    signUpData.email,
-    signUpData.password
-  );
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      signUpData.email,
+      signUpData.password
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-  cookies().set("currentUser", JSON.stringify(userCredential.user));
-
-  const jwt = await userCredential.user.getIdToken();
-  return new Promise<string>((resolve) => {
-    setTimeout(() => {
-      resolve(jwt);
-    }, 3000);
-  });
+export async function signIn(providerName: "google" | "github" = "google") {
+  try {
+    let result;
+    switch (providerName) {
+      case "google":
+        result = await signInWithPopup(auth, new GoogleAuthProvider());
+        break;
+      case "github":
+        result = await signInWithPopup(auth, new GithubAuthProvider());
+        break;
+      default:
+        throw new Error("Invalid provider");
+    }
+    return result;
+  } catch (error) {
+    console.error(error);
+  }
 }

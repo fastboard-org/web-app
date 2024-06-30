@@ -11,10 +11,11 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { IoLogoGithub } from "react-icons/io";
 import { Eye, EyeSlash } from "iconsax-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { auth, signIn, signUp } from "@/lib/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 export interface SignUpForm {
   email: string;
@@ -30,17 +31,19 @@ export default function SignUp() {
     formState: { errors },
   } = useForm<SignUpForm>();
   const router = useRouter();
-  const { data: session } = useSession();
-
-  if (session) {
-    router.push("/home/dashboards");
-  }
+  const [user, error] = useAuthState(auth);
 
   const onSubmit: SubmitHandler<SignUpForm> = async (signUpData) => {
-    console.log(signUpData);
     setLoading(true);
-    //TODO: register with user service and validate response
+    signUp(signUpData);
+    setLoading(false);
   };
+
+  useEffect(() => {
+    if (user) {
+      router.push("/home/dashboards");
+    }
+  }, [user]);
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
@@ -59,7 +62,12 @@ export default function SignUp() {
             Continue with Google
           </Button>
           <Spacer y={2}></Spacer>
-          <Button startContent={<IoLogoGithub size={23} />}>
+          <Button
+            startContent={<IoLogoGithub size={23} />}
+            onClick={() => {
+              signIn("github");
+            }}
+          >
             Continue with Github
           </Button>
           <Divider className="my-4" />
