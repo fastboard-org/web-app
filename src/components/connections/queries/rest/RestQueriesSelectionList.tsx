@@ -1,5 +1,5 @@
 import { Query } from "@/types/connections";
-import { Listbox, ListboxItem } from "@nextui-org/react";
+import { Input, Listbox, ListboxItem } from "@nextui-org/react";
 
 const RestQueriesSelectionList = ({
   queries,
@@ -8,7 +8,7 @@ const RestQueriesSelectionList = ({
 }: {
   queries: Query[];
   selectedQuery: Query;
-  onSelectQuery: (query: Query) => void;
+  onSelectQuery: (index: number) => void;
 }) => {
   return (
     <div className={"w-[250px] h-full"}>
@@ -24,11 +24,11 @@ const RestQueriesSelectionList = ({
                  p-3 mb-1`,
         }}
       >
-        {queries.map((query) => (
+        {queries.map((query, index) => (
           <ListboxItem
             key={query.id}
             value={query.id}
-            onClick={() => onSelectQuery(query)}
+            onClick={() => onSelectQuery(index)}
             classNames={{
               title: "text-md",
             }}
