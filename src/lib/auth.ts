@@ -40,15 +40,31 @@ export async function signIn(providerName: "google" | "github" = "google") {
     let result;
     switch (providerName) {
       case "google":
-        result = await signInWithPopup(auth, new GoogleAuthProvider());
+        const googleProvider = new GoogleAuthProvider();
+        googleProvider.setCustomParameters({
+          prompt: "select_account",
+        });
+        result = await signInWithPopup(auth, googleProvider);
         break;
       case "github":
-        result = await signInWithPopup(auth, new GithubAuthProvider());
+        const githubProvider = new GithubAuthProvider();
+        githubProvider.setCustomParameters({
+          prompt: "select_account",
+        });
+        result = await signInWithPopup(auth, githubProvider);
         break;
       default:
         throw new Error("Invalid provider");
     }
     return result;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function signOut() {
+  try {
+    await auth.signOut();
   } catch (error) {
     console.error(error);
   }

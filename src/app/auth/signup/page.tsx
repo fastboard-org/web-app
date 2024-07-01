@@ -31,7 +31,7 @@ export default function SignUp() {
     formState: { errors },
   } = useForm<SignUpForm>();
   const router = useRouter();
-  const [user, error] = useAuthState(auth);
+  const [user, loaded, error] = useAuthState(auth);
 
   const onSubmit: SubmitHandler<SignUpForm> = async (signUpData) => {
     setLoading(true);
