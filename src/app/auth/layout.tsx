@@ -1,5 +1,4 @@
 "use client";
-import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 import Logo from "@/components/layout/shared/Logo";
 import { Image, Spacer } from "@nextui-org/react";
 import { useTheme } from "next-themes";

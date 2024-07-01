@@ -1,10 +1,11 @@
 "use client";
 import React from "react";
-import { Button } from "@nextui-org/react";
+import { Avatar, Button, User } from "@nextui-org/react";
 import Link from "next/link";
 import { Data, Folder } from "iconsax-react";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/layout/shared/Logo";
+import FastboardAvatar from "../shared/FastboardAvatar";
 
 const NavButton = ({
   children,
@@ -69,7 +70,8 @@ const HomeNavbarLayout = ({
             </NavButton>
           ))}
         </div>
-        <div className={"flex justify-center items-center h-[20%]"}></div>
+        <FastboardAvatar />
+        <div className={"flex justify-center items-center h-[5%]"}></div>
       </nav>
       <main className={"flex-1 ml-[120px]"}>{children}</main>
     </div>
