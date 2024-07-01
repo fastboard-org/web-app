@@ -2,55 +2,13 @@
 import { useParams, useRouter } from "next/navigation";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import useConnection from "@/hooks/useConnection";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ConnectionTitle from "@/components/connections/edit/ConnectionTitle";
 import ConnectionSettingsModal from "@/components/connections/edit/ConnectionSettingsModal";
 import { useDisclosure } from "@nextui-org/react";
 import { Connection, Query } from "@/types/connections";
-import RestQueriesSelectionList from "@/components/connections/queries/RestQueriesSelectionList";
-
-const mockQueries: Query[] = [
-  {
-    id: "1",
-    name: "Users",
-    connection_id: "1",
-    metadata: {
-      method: "GET",
-    },
-  },
-  {
-    id: "2",
-    name: "Products",
-    connection_id: "1",
-    metadata: {
-      method: "POST",
-    },
-  },
-  {
-    id: "3",
-    name: "Orders",
-    connection_id: "1",
-    metadata: {
-      method: "GET",
-    },
-  },
-  {
-    id: "4",
-    name: "Categories",
-    connection_id: "1",
-    metadata: {
-      method: "GET",
-    },
-  },
-  {
-    id: "5",
-    name: "Customers",
-    connection_id: "1",
-    metadata: {
-      method: "PUT",
-    },
-  },
-];
+import QueryEditor from "@/components/connections/queries/QueryEditor";
+import useQueries from "@/hooks/useQueries";
 
 export default function Connections() {
   const { id } = useParams();
@@ -58,7 +16,11 @@ export default function Connections() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { connection, loading, updateConnection } = useConnection(id as string);
-  const [selectedQuery, setSelectedQuery] = useState<Query>(mockQueries[0]);
+  const {
+    queries,
+    loading: queriesLoading,
+    updateQuery,
+  } = useQueries(id as string);
 
   useEffect(() => {
     if (!loading && !connection) {
@@ -78,16 +40,14 @@ export default function Connections() {
         onButtonClick={onOpen}
       />
       <CustomSkeleton
-        className={"w-full h-[80%] mt-[35px] rounded-lg"}
-        isLoaded={!loading}
+        className={"w-full h-[85%] mt-[35px] rounded-lg"}
+        isLoaded={!loading && !queriesLoading}
       >
-        <section className={"w-full h-full flex"}>
-          <RestQueriesSelectionList
-            queries={mockQueries}
-            selectedQuery={selectedQuery}
-            onSelectQuery={(query: Query) => setSelectedQuery(query)}
-          />
-        </section>
+        <QueryEditor
+          connection={connection}
+          queries={queries}
+          onQueryUpdate={updateQuery}
+        />
       </CustomSkeleton>
       <ConnectionSettingsModal
         isOpen={isOpen}
