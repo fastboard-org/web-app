@@ -18,3 +18,8 @@ export interface Query {
   connection_id: string;
   metadata: any;
 }
+
+export interface QueryParameter {
+  name: string;
+  preview: string;
+}
