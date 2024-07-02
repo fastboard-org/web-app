@@ -122,7 +122,7 @@ export default function SignUp() {
       <div className="flex flex-row">
         <h3 className="text-foreground">Have an account?</h3>
         <Spacer x={1}></Spacer>
-        <Link href="#">Login</Link>
+        <Link href="/auth/login">Login</Link>
       </div>
     </main>
   );
