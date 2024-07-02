@@ -50,7 +50,7 @@ export default function FastboardTable(props: FastboardTableProps) {
   const { properties } = props;
   const { query, hideHeader, isStriped } = properties;
   const { keys, items, isLoading, error, page, setPage, pages, updateQuery } =
-    usePaginatedData(4);
+    usePaginatedData(10);
 
   useEffect(() => {
     updateQuery(query.url, query.field);
