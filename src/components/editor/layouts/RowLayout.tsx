@@ -11,7 +11,7 @@ export default function RowLayout({
   component2?: FastboardComponent;
 }) {
   return (
-    <div className="flex flex-row h-full w-full">
+    <div className="flex flex-col h-full w-full">
       <Container
         layoutIndex={index}
         containerIndex="component1"
