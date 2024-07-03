@@ -4,10 +4,11 @@ import { Query } from "@/types/connections";
 const mockQueries: Query[] = [
   {
     id: "1",
-    name: "Users",
+    name: "Pokemons",
     connection_id: "1",
     metadata: {
       method: "GET",
+      path: "/pokemon",
     },
   },
   {
