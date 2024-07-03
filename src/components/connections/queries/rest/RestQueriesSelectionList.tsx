@@ -1,22 +1,29 @@
 import { Query } from "@/types/connections";
-import { Input, Listbox, ListboxItem } from "@nextui-org/react";
+import { Button, Listbox, ListboxItem } from "@nextui-org/react";
+import scrollbarStyles from "@/styles/scrollbar.module.css";
 
 const RestQueriesSelectionList = ({
   queries,
   selectedQuery,
   onSelectQuery,
+  onAddClick,
 }: {
   queries: Query[];
   selectedQuery: Query;
   onSelectQuery: (index: number) => void;
+  onAddClick: () => void;
 }) => {
   return (
-    <div className={"w-[250px] h-full"}>
+    <div className={"w-[18%] max-w-[250px] h-full flex items-center flex-col"}>
       <Listbox
         aria-label="Single selection example"
         disallowEmptySelection
         selectionMode="single"
         selectedKeys={[selectedQuery.id]}
+        classNames={{
+          base:
+            "overflow-y-auto w-full max-h-full " + scrollbarStyles.scrollbar,
+        }}
         itemClasses={{
           base: `data-[hover=true]:bg-primary data-[hover=true]:bg-opacity-10
                  data-[selected=true]:bg-primary data-[selected=true]:bg-opacity-20 
@@ -40,6 +47,9 @@ const RestQueriesSelectionList = ({
           </ListboxItem>
         ))}
       </Listbox>
+      <Button className={"w-[95%]"} onClick={onAddClick}>
+        Add Query
+      </Button>
     </div>
   );
 };

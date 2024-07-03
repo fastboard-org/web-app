@@ -32,6 +32,7 @@ const QueryParametersDrawer = ({
         block: "end",
         inline: "end",
       });
+      lastParamRef.current.focus();
     }
   }, [
     queryParameters,
@@ -87,7 +88,7 @@ const QueryParametersDrawer = ({
       <CardBody className={"gap-4 p-3"}>
         <div
           className={
-            "overflow-y-auto flex flex-col gap-4 h-[90%] pr-2 " +
+            "overflow-y-auto flex flex-col gap-4 h-[90%] pr-2 items-center pt-1 " +
             scrollbarStyles.scrollbar
           }
         >
@@ -103,6 +104,7 @@ const QueryParametersDrawer = ({
                 setQueryParameters(newQueryParameters);
               }}
               ref={index === queryParameters.length - 1 ? lastParamRef : null}
+              className={"w-[95%]"}
               endContent={
                 <IoIosClose
                   onClick={() => handleRemoveParameter(index)}

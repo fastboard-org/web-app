@@ -20,6 +20,17 @@ const QueryEditor = ({
         queries={queries}
         selectedQuery={queries[selectedQueryIndex] || null}
         onSelectQuery={(index: number) => setSelectedQueryIndex(index)}
+        onAddClick={() => {
+          onQueryUpdate(queries.length, {
+            id: `${queries.length + 1} new`,
+            name: "New Query",
+            connection_id: connection?.id || "",
+            metadata: {
+              method: "GET",
+            },
+          });
+          setSelectedQueryIndex(queries.length);
+        }}
       />
     ),
     [ConnectionType.MONGO]: <div></div>,
@@ -29,6 +40,7 @@ const QueryEditor = ({
   const queryEditor = {
     [ConnectionType.REST]: (
       <RestQueryEditor
+        connection={connection as Connection}
         query={queries[selectedQueryIndex] || {}}
         onChange={(query: Query) => {
           onQueryUpdate(selectedQueryIndex, query);
