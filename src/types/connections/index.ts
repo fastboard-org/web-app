@@ -23,3 +23,8 @@ export interface QueryParameter {
   name: string;
   preview: string;
 }
+
+export interface RestHeader {
+  key: string;
+  value: string;
+}
