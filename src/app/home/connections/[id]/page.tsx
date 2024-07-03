@@ -33,7 +33,7 @@ export default function Connections() {
   };
 
   return (
-    <section className={"w-full h-full max-w-[1400px]"}>
+    <section className={"w-full h-full"}>
       <ConnectionTitle
         title={connection?.name || ""}
         loading={loading}
