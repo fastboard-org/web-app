@@ -10,11 +10,11 @@ export default function AuthError({ message }: { message: string }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="max-w-md bg-danger">
+      <Card className="max-w-md bg-danger-50">
         <CardBody>
           <div className="flex flex-row gap-4">
-            <p className="text-white text-sm">{message}</p>
-            <Danger color="white" variant="Bold" />
+            <p className="text-danger-400 text-sm">{message}</p>
+            <Danger variant="Bold" className="text-danger-400" />
           </div>
         </CardBody>
       </Card>
