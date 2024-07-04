@@ -21,7 +21,7 @@ const HeadersTable = ({
 }) => {
   return (
     <Table
-      aria-label="Variables table"
+      aria-label="Headers table"
       removeWrapper
       className={"overflow-y-auto h-[100%] pr-2 " + scrollBarStyles.scrollbar}
     >

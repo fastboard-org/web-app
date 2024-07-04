@@ -16,7 +16,7 @@ const RestQueriesSelectionList = ({
   return (
     <div className={"w-[18%] max-w-[250px] h-full flex items-center flex-col"}>
       <Listbox
-        aria-label="Single selection example"
+        aria-label="Queries List"
         disallowEmptySelection
         selectionMode="single"
         selectedKeys={[selectedQuery.id]}
