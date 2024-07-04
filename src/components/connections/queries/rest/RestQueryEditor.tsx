@@ -19,6 +19,7 @@ import {
 import "react-json-view-lite/dist/index.css";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { useTheme } from "next-themes";
+import { Lock } from "iconsax-react";
 
 const fillParams = (query: Query, params: QueryParameter[]) => {
   //TODO: this will be done by the backend instead
@@ -124,7 +125,11 @@ const RestQueryEditor = ({
             placeholder={"Enter a query name"}
           />
           <div className={"flex gap-2"}>
-            <Button isLoading={saveLoading} onClick={handleSave}>
+            <Button
+              isLoading={saveLoading}
+              onClick={handleSave}
+              variant={"flat"}
+            >
               Save
             </Button>
             <Button
@@ -146,35 +151,41 @@ const RestQueryEditor = ({
             onChange({ ...query, metadata: { ...query.metadata, path } })
           }
         />
-        <Tabs
-          classNames={{
-            panel: "max-h-[30%] p-0",
-          }}
-        >
-          <Tab key={"headers"} title={"Headers"}>
-            <HeadersTable
-              headers={
-                query.metadata?.headers?.length
-                  ? query.metadata.headers
-                  : [
-                      {
-                        key: "",
-                        value: "",
-                      },
-                    ]
-              }
-              onChange={(headers: RestHeader[]) => {
-                onChange({
-                  ...query,
-                  metadata: { ...query.metadata, headers },
-                });
-              }}
-            />
-          </Tab>
-          <Tab key={"body"} title={"Body"}>
-            {/*TODO: implement body editor*/}
-          </Tab>
-        </Tabs>
+        <div className={"relative"}>
+          <Tabs
+            classNames={{
+              panel: "max-h-[30%] p-0 mt-3",
+            }}
+          >
+            <Tab key={"headers"} title={"Headers"}>
+              <HeadersTable
+                headers={
+                  query.metadata?.headers?.length
+                    ? query.metadata.headers
+                    : [
+                        {
+                          key: "",
+                          value: "",
+                        },
+                      ]
+                }
+                onChange={(headers: RestHeader[]) => {
+                  onChange({
+                    ...query,
+                    metadata: { ...query.metadata, headers },
+                  });
+                }}
+              />
+            </Tab>
+            <Tab key={"body"} title={"Body"}>
+              {/*TODO: implement body editor*/}
+            </Tab>
+          </Tabs>
+          <Button className={"absolute right-0 top-0"} variant={"flat"}>
+            <Lock size={15} />
+            Auth
+          </Button>
+        </div>
         <Card className={"w-full h-full p-4"}>
           {response && (
             <>
