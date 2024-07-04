@@ -6,6 +6,7 @@ import { Data, Folder } from "iconsax-react";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/layout/shared/Logo";
 import FastboardAvatar from "../shared/FastboardAvatar";
+import SignOutTest from "../auth/SignOutTest";
 
 const NavButton = ({
   children,
@@ -71,6 +72,7 @@ const HomeNavbarLayout = ({
           ))}
         </div>
         <FastboardAvatar />
+        <SignOutTest />
         <div className={"flex justify-center items-center h-[5%]"}></div>
       </nav>
       <main className={"w-[calc(100vw-120px)] ml-[120px]"}>{children}</main>

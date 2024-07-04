@@ -1,4 +1,6 @@
 "use client";
+import AuthError from "@/components/auth/AuthError";
+import { auth, logIn } from "@/lib/auth";
 import {
   Button,
   Card,
@@ -9,12 +11,52 @@ import {
   Spacer,
 } from "@nextui-org/react";
 import { Eye, EyeSlash } from "iconsax-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { IoLogoGithub } from "react-icons/io";
 
+interface LogInForm {
+  email: string;
+  password: string;
+}
+
 export default function Login() {
-  const [isVisible, setIsVisible] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<LogInForm>();
+  const [showLogInError, setShowLogInError] = useState(false);
+  const router = useRouter();
+  const [user, authLoading, authError] = useAuthState(auth);
+
+  useEffect(() => {
+    if (user) {
+      router.push("/home/dashboards");
+    }
+  }, [user]);
+
+  const onSubmit: SubmitHandler<LogInForm> = async (logInData) => {
+    setLoading(true);
+    try {
+      await logIn(logInData.email, logInData.password);
+    } catch (error) {
+      setShowLogInError(true);
+      setError("email", {
+        type: "manual",
+      });
+      setError("password", {
+        type: "manual",
+      });
+    }
+    setLoading(false);
+  };
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
@@ -32,26 +74,55 @@ export default function Login() {
             Log in with Github
           </Button>
           <Divider className="my-4" />
-          <Input isRequired type="email" label="Email" />
-          <Spacer y={2}></Spacer>
-          <Input
-            isRequired
-            label="Password"
-            endContent={
-              <button
-                className="focus:outline-none"
-                type="button"
-                onClick={() => setIsVisible(!isVisible)}
-              >
-                {isVisible ? <EyeSlash /> : <Eye />}
-              </button>
-            }
-            type={isVisible ? "text" : "password"}
-          />
-          <Spacer y={4} />
-          <Button color="primary">Log in</Button>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Input
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Please enter a valid email address",
+                },
+              })}
+              type="email"
+              label="Email"
+              errorMessage={errors.email?.message}
+              isInvalid={!!errors.email}
+              aria-label="Email"
+            />
+            <Spacer y={2}></Spacer>
+            <Input
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must have at least 8 characters",
+                },
+              })}
+              label="Password"
+              aria-label="Password"
+              endContent={
+                <button
+                  className="focus:outline-none"
+                  type="button"
+                  onClick={() => setPasswordVisible(!passwordVisible)}
+                >
+                  {passwordVisible ? <EyeSlash /> : <Eye />}
+                </button>
+              }
+              type={passwordVisible ? "text" : "password"}
+              errorMessage={errors.password?.message}
+              isInvalid={!!errors.password}
+            />
+            <Spacer y={4} />
+
+            <Button type="submit" color="primary" fullWidth isLoading={loading}>
+              Log in
+            </Button>
+          </form>
         </CardBody>
       </Card>
+      <Spacer y={2} />
+      {showLogInError && <AuthError message="Invalid email or password" />}
       <Spacer y={2} />
       <div className="flex flex-row">
         <h3 className="text-foreground">Don't have an account?</h3>

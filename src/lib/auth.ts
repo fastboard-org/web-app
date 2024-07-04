@@ -1,9 +1,9 @@
 "use client";
-import { SignUpForm } from "@/app/auth/signup/page";
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   GoogleAuthProvider,
   GithubAuthProvider,
   signInWithRedirect,
@@ -23,16 +23,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
-export async function signUp(signUpData: SignUpForm) {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      signUpData.email,
-      signUpData.password
-    );
-  } catch (error) {
-    console.error(error);
-  }
+export async function signUp(email: string, password: string) {
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  return userCredential;
+}
+
+export async function logIn(email: string, password: string) {
+  const userCredential = await signInWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+  return userCredential;
 }
 
 export async function signIn(providerName: "google" | "github" = "google") {
