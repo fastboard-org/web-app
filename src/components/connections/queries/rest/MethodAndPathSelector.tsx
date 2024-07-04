@@ -1,6 +1,12 @@
 import { Input, Select, SelectItem } from "@nextui-org/react";
 
-const HTTP_METHODS = ["GET", "POST", "PUT", "DELETE", "PATCH"];
+enum HTTP_METHOD {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
+  PATCH = "PATCH",
+}
 
 const MethodAndPathSelector = ({
   method,
@@ -21,7 +27,7 @@ const MethodAndPathSelector = ({
         selectedKeys={[method]}
         onChange={(e) => onMethodChange(e.target.value as string)}
       >
-        {HTTP_METHODS.map((method) => (
+        {Object.keys(HTTP_METHOD).map((method) => (
           <SelectItem key={method} value={method}>
             {method}
           </SelectItem>
