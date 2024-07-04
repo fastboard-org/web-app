@@ -1,6 +1,6 @@
 "use client";
 import AuthError from "@/components/auth/AuthError";
-import { auth, logIn } from "@/lib/auth";
+import { auth, logIn, signIn } from "@/lib/auth";
 import {
   Button,
   Card,
@@ -66,11 +66,21 @@ export default function Login() {
           <Spacer y={2}></Spacer>
           <h2 className="text-foreground">Log in to your account</h2>
           <Spacer y={14}></Spacer>
-          <Button startContent={<FcGoogle size={24} />}>
+          <Button
+            startContent={<FcGoogle size={24} />}
+            onClick={() => {
+              signIn("google");
+            }}
+          >
             Log in with Google
           </Button>
           <Spacer y={2}></Spacer>
-          <Button startContent={<IoLogoGithub size={23} />}>
+          <Button
+            startContent={<IoLogoGithub size={23} />}
+            onClick={() => {
+              signIn("github");
+            }}
+          >
             Log in with Github
           </Button>
           <Divider className="my-4" />
