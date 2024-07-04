@@ -2,11 +2,13 @@
 import { useParams, useRouter } from "next/navigation";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import useConnection from "@/hooks/useConnection";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ConnectionTitle from "@/components/connections/edit/ConnectionTitle";
 import ConnectionSettingsModal from "@/components/connections/edit/ConnectionSettingsModal";
 import { useDisclosure } from "@nextui-org/react";
-import { Connection } from "@/types/connections";
+import { Connection, Query } from "@/types/connections";
+import QueryEditor from "@/components/connections/queries/QueryEditor";
+import useQueries from "@/hooks/useQueries";
 
 export default function Connections() {
   const { id } = useParams();
@@ -14,6 +16,11 @@ export default function Connections() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { connection, loading, updateConnection } = useConnection(id as string);
+  const {
+    queries,
+    loading: queriesLoading,
+    updateQuery,
+  } = useQueries(id as string);
 
   useEffect(() => {
     if (!loading && !connection) {
@@ -26,17 +33,21 @@ export default function Connections() {
   };
 
   return (
-    <section className={"w-full h-full max-w-[1400px]"}>
+    <section className={"w-full h-full"}>
       <ConnectionTitle
         title={connection?.name || ""}
         loading={loading}
         onButtonClick={onOpen}
       />
       <CustomSkeleton
-        className={"w-full h-[80%] mt-[35px] rounded-lg"}
-        isLoaded={!loading}
+        className={"w-full h-[85%] mt-[35px] rounded-lg"}
+        isLoaded={!loading && !queriesLoading}
       >
-        <div></div>
+        <QueryEditor
+          connection={connection}
+          queries={queries}
+          onQueryUpdate={updateQuery}
+        />
       </CustomSkeleton>
       <ConnectionSettingsModal
         isOpen={isOpen}

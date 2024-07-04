@@ -73,7 +73,7 @@ const HomeNavbarLayout = ({
         <FastboardAvatar />
         <div className={"flex justify-center items-center h-[5%]"}></div>
       </nav>
-      <main className={"flex-1 ml-[120px]"}>{children}</main>
+      <main className={"w-[calc(100vw-120px)] ml-[120px]"}>{children}</main>
     </div>
   );
 };

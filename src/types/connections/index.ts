@@ -16,5 +16,23 @@ export interface Query {
   id: string;
   name: string;
   connection_id: string;
-  metadata: object;
+  metadata: any;
+}
+
+export interface QueryParameter {
+  name: string;
+  preview: string;
+}
+
+export interface RestHeader {
+  key: string;
+  value: string;
+}
+
+export enum HTTP_METHOD {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
+  PATCH = "PATCH",
 }

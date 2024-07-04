@@ -7,7 +7,7 @@ export const mockConnections: Connection[] = [
     name: "PokeApi",
     type: ConnectionType.REST,
     credentials: {
-      url: "https://jsonplaceholder.typicode.com/",
+      url: "https://pokeapi.co/api/v2",
     },
     variables: {
       posts_endpoint: "posts",
