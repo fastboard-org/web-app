@@ -26,6 +26,7 @@ const FastboardComponent = ({
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
   const propertiesDrawerOpen = useRecoilValue(isPropertiesDrawerOpen);
+  const propertiesDrawerStateValue = useRecoilValue(propertiesDrawerState);
   const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -54,8 +55,14 @@ const FastboardComponent = ({
   }
 
   function isSelected() {
-    //TODO: only is selected if the properties drawer is open for this component
-    return isHovered || propertiesDrawerOpen;
+    if (
+      propertiesDrawerOpen &&
+      propertiesDrawerStateValue.layoutIndex === layoutIndex &&
+      propertiesDrawerStateValue.container === containerIndex
+    )
+      return true;
+
+    return isHovered;
   }
 
   const component = getComponent(type, properties);
@@ -63,7 +70,7 @@ const FastboardComponent = ({
 
   return (
     <div
-      className={`w-full transition border-2 rounded-2xl cursor-pointer p-2 ${
+      className={`relative w-full h-full transition border-2 rounded-2xl cursor-pointer p-2 ${
         isSelected() ? "border-primary" : "border-transparent"
       }`}
       onMouseEnter={() => setIsHovered(true)}
@@ -71,7 +78,7 @@ const FastboardComponent = ({
       onClick={onClickComponent}
     >
       {isSelected() && (
-        <p className="absolute right-14 bottom-12 text-primary z-10">{name}</p>
+        <p className="absolute right-4 bottom-2 text-primary z-10">{name}</p>
       )}
       {component}
     </div>

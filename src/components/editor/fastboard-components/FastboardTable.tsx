@@ -13,8 +13,6 @@ import {
   getKeyValue,
 } from "@nextui-org/react";
 import { useEffect } from "react";
-import FastboardComponent from "./FastboardComponent";
-import { ComponentType } from "@/types/editor";
 
 export class FastboardTableProperties {
   query: { url: string; field: string | null };
@@ -52,7 +50,7 @@ export default function FastboardTable(props: FastboardTableProps) {
   const { properties } = props;
   const { query, hideHeader, isStriped } = properties;
   const { keys, items, isLoading, error, page, setPage, pages, updateQuery } =
-    usePaginatedData(4);
+    usePaginatedData(10);
 
   useEffect(() => {
     updateQuery(query.url, query.field);
