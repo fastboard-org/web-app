@@ -47,7 +47,7 @@ const RestQueriesSelectionList = ({
           </ListboxItem>
         ))}
       </Listbox>
-      <Button className={"w-[95%]"} onClick={onAddClick}>
+      <Button className={"w-[95%]"} onClick={onAddClick} variant={"flat"}>
         Add Query
       </Button>
     </div>
