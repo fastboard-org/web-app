@@ -23,7 +23,7 @@ const HeadersTable = ({
     <Table
       aria-label="Headers table"
       removeWrapper
-      className={"overflow-y-auto h-[100%] pr-2 " + scrollBarStyles.scrollbar}
+      className={"overflow-y-auto h-[110px] pr-2 " + scrollBarStyles.scrollbar}
     >
       <TableHeader>
         <TableColumn>Key</TableColumn>
@@ -70,6 +70,7 @@ const HeadersTable = ({
               <TableCell className={"p-0"}>
                 <Button
                   isIconOnly
+                  variant={"flat"}
                   onClick={() => {
                     if (isLast) {
                       onChange([...headers, { key: "", value: "" }]);
