@@ -1,12 +1,5 @@
 import { Input, Select, SelectItem } from "@nextui-org/react";
-
-enum HTTP_METHOD {
-  GET = "GET",
-  POST = "POST",
-  PUT = "PUT",
-  DELETE = "DELETE",
-  PATCH = "PATCH",
-}
+import { HTTP_METHOD } from "@/types/connections";
 
 const MethodAndPathSelector = ({
   method,
@@ -14,7 +7,7 @@ const MethodAndPathSelector = ({
   onMethodChange,
   onPathChange,
 }: {
-  method: string;
+  method: HTTP_METHOD;
   path: string;
   onMethodChange: (method: string) => void;
   onPathChange: (path: string) => void;
@@ -25,6 +18,7 @@ const MethodAndPathSelector = ({
         className={"w-1/5 min-w-[100px]"}
         placeholder={"Method"}
         selectedKeys={[method]}
+        disallowEmptySelection
         onChange={(e) => onMethodChange(e.target.value as string)}
       >
         {Object.keys(HTTP_METHOD).map((method) => (
