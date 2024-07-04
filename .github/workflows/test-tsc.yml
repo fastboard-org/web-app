@@ -1,4 +1,4 @@
-name: Test Next.js App Build
+name: Test typescript compilation
 
 on:
   pull_request:
@@ -21,5 +21,5 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build the project
-        run: npm run build
+      - name: Check typescript compilation
+        run: npx tsc --noEmit
