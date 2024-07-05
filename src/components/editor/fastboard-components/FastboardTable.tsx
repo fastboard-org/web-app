@@ -15,43 +15,31 @@ import {
 import { useEffect } from "react";
 
 export class FastboardTableProperties {
-  query: { url: string; field: string | null };
-  hideHeader: boolean;
-  isStriped: boolean;
-
-  constructor(
-    query: { url: string; field: string | null },
-    hideHeader: boolean,
-    isStriped: boolean
-  ) {
-    this.query = query;
-    this.hideHeader = hideHeader;
-    this.isStriped = isStriped;
-  }
+  query: { url: string; field: string | null } = {
+    url: "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
+    field: "results",
+  };
+  rowsPerPage: number = 10;
+  emptyMessage: string = "No rows to display.";
+  hideHeader: boolean = false;
+  isStriped: boolean = false;
 
   static default(): FastboardTableProperties {
-    return {
-      query: {
-        url: "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
-        field: "results",
-      },
-      hideHeader: false,
-      isStriped: false,
-    };
+    return new FastboardTableProperties();
   }
 }
 
-interface FastboardTableProps {
+export default function FastboardTable({
+  properties,
+}: {
   properties: FastboardTableProperties;
-  onClick?: () => void;
-}
-
-export default function FastboardTable(props: FastboardTableProps) {
-  const { properties } = props;
-  const { query, hideHeader, isStriped } = properties;
+}) {
+  const { query, emptyMessage, hideHeader, isStriped, rowsPerPage } =
+    properties;
   const { keys, items, isLoading, error, page, setPage, pages, updateQuery } =
-    usePaginatedData(10);
+    usePaginatedData(rowsPerPage);
 
+  console.log(properties);
   useEffect(() => {
     updateQuery(query.url, query.field);
   }, [query?.url, query?.field]);
@@ -90,6 +78,7 @@ export default function FastboardTable(props: FastboardTableProps) {
             />
           </div>
         }
+        bottomContentPlacement="outside"
       >
         <TableHeader columns={keys}>
           {(column) => (
@@ -102,7 +91,7 @@ export default function FastboardTable(props: FastboardTableProps) {
           isLoading={isLoading}
           loadingContent={<Spinner label="Loading..." />}
           items={items}
-          emptyContent={"No rows to display."}
+          emptyContent={emptyMessage}
         >
           {(item) => (
             <TableRow key={item.key}>
