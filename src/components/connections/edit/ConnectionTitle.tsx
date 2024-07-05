@@ -6,6 +6,7 @@ import {
 } from "@nextui-org/react";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import { Setting2 } from "iconsax-react";
+import Link from "next/link";
 
 const ConnectionTitle = ({
   title,
@@ -23,8 +24,8 @@ const ConnectionTitle = ({
         separator: "text-[40px]",
       }}
     >
-      <BreadcrumbItem href={"/home/connections"}>
-        <h2>Connections</h2>
+      <BreadcrumbItem>
+        <Link href={"/home/connections"}>Connections</Link>
       </BreadcrumbItem>
       <BreadcrumbItem>
         <CustomSkeleton

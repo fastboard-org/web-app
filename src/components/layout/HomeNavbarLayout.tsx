@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { Avatar, Button, User } from "@nextui-org/react";
 import Link from "next/link";
 import { Data, Folder } from "iconsax-react";
 import { usePathname } from "next/navigation";
@@ -21,18 +20,26 @@ const NavButton = ({
 
   const childrenClassName = isCurrentPath ? "text-primary" : "opacity-30";
 
-  const button = (
-    <Button
-      isIconOnly
-      className={`${bgColor} rounded-xl w-[50px] h-[50px] bg-opacity-5`}
+  const icon = (
+    <div
+      className={`${bgColor} rounded-xl w-[50px] h-[50px] bg-opacity-5 flex items-center justify-center`}
     >
       {React.cloneElement(children as React.ReactElement, {
         className: childrenClassName,
       })}
-    </Button>
+    </div>
   );
 
-  return !isCurrentPath ? <Link href={href}>{button}</Link> : button;
+  return !isCurrentPath ? (
+    <Link
+      href={href}
+      className={`${bgColor} rounded-xl w-[50px] h-[50px] bg-opacity-5`}
+    >
+      {icon}
+    </Link>
+  ) : (
+    icon
+  );
 };
 
 const navItems = [
