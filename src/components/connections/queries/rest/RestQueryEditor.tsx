@@ -7,19 +7,13 @@ import {
 import EditableTitle from "@/components/shared/EditableTitle";
 import QueryParametersDrawer from "@/components/connections/queries/QueryParametersDrawer";
 import MethodAndPathSelector from "@/components/connections/queries/rest/MethodAndPathSelector";
-import { Button, Card, Tab, Tabs } from "@nextui-org/react";
+import { Button, Card, Tab, Tabs, useDisclosure } from "@nextui-org/react";
 import HeadersTable from "@/components/connections/queries/rest/HeadersTable";
 import { useEffect, useState } from "react";
-import {
-  collapseAllNested,
-  darkStyles,
-  defaultStyles,
-  JsonView,
-} from "react-json-view-lite";
-import "react-json-view-lite/dist/index.css";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import { useTheme } from "next-themes";
 import { Lock } from "iconsax-react";
+import RestResponse from "@/components/connections/queries/rest/RestResponse";
+import AuthModal from "@/components/connections/queries/rest/AuthModal";
 
 const fillParams = (query: Query, params: QueryParameter[]) => {
   //TODO: this will be done by the backend instead
@@ -56,11 +50,13 @@ const RestQueryEditor = ({
   query: Query;
   onChange: (query: Query) => void;
 }) => {
-  const { theme } = useTheme();
   const [response, setResponse] = useState<any>(null);
   const [responseData, setResponseData] = useState<any>(null);
   const [responseLoading, setResponseLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<string>("headers");
+  const [previewToken, setPreviewToken] = useState<string>("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     setResponse(null);
@@ -69,10 +65,13 @@ const RestQueryEditor = ({
 
   const handleSend = async () => {
     setResponseLoading(true);
-    const { filledPath, filledHeaders } = fillParams(
-      query,
-      query.metadata.parameters,
-    );
+    const { filledPath, filledHeaders } = fillParams(query, [
+      ...(query.metadata.parameters ?? []),
+      {
+        name: "token",
+        preview: previewToken,
+      },
+    ]);
 
     let response;
     try {
@@ -98,6 +97,8 @@ const RestQueryEditor = ({
       console.error(e);
       setResponseData({});
     }
+
+    setSelectedTab("response");
     setResponseLoading(false);
   };
 
@@ -151,24 +152,18 @@ const RestQueryEditor = ({
             onChange({ ...query, metadata: { ...query.metadata, path } })
           }
         />
-        <div className={"relative"}>
+        <Card className={"w-full h-full p-4"}>
           <Tabs
             classNames={{
-              panel: "max-h-[30%] p-0 mt-3",
+              panel:
+                "p-0 mt-2 h-full overflow-y-auto " + scrollbarStyles.scrollbar,
             }}
+            selectedKey={selectedTab}
+            onSelectionChange={(key) => setSelectedTab(key as string)}
           >
             <Tab key={"headers"} title={"Headers"}>
               <HeadersTable
-                headers={
-                  query.metadata?.headers?.length
-                    ? query.metadata.headers
-                    : [
-                        {
-                          key: "",
-                          value: "",
-                        },
-                      ]
-                }
+                headers={query?.metadata?.headers}
                 onChange={(headers: RestHeader[]) => {
                   onChange({
                     ...query,
@@ -180,30 +175,18 @@ const RestQueryEditor = ({
             <Tab key={"body"} title={"Body"}>
               {/*TODO: implement body editor*/}
             </Tab>
+            <Tab key={"response"} title={"Response"}>
+              <RestResponse response={response} responseData={responseData} />
+            </Tab>
           </Tabs>
-          <Button className={"absolute right-0 top-0"} variant={"flat"}>
+          <Button
+            className={"absolute right-5 top-4"}
+            variant={"flat"}
+            onClick={onOpen}
+          >
             <Lock size={15} />
             Auth
           </Button>
-        </div>
-        <Card className={"w-full h-full p-4"}>
-          {response && (
-            <>
-              <p className={"text-sm absolute right-10 text-foreground-500"}>
-                Status: {response.status}
-              </p>
-              <JsonView
-                data={responseData}
-                shouldExpandNode={collapseAllNested}
-                style={{
-                  ...(theme === "dark" ? darkStyles : defaultStyles),
-                  container:
-                    "bg-transparent overflow-y-auto text-md " +
-                    scrollbarStyles.scrollbar,
-                }}
-              />
-            </>
-          )}
         </Card>
       </div>
       <QueryParametersDrawer
@@ -214,6 +197,14 @@ const RestQueryEditor = ({
             metadata: { ...query.metadata, parameters: queryParameters },
           })
         }
+      />
+      <AuthModal
+        preview_token={previewToken}
+        onChange={(preview_token) => {
+          setPreviewToken(preview_token);
+        }}
+        isOpen={isOpen}
+        onClose={onClose}
       />
     </div>
   );

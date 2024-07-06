@@ -19,12 +19,10 @@ const HeadersTable = ({
   headers: RestHeader[];
   onChange: (headers: RestHeader[]) => void;
 }) => {
+  headers = headers?.length ? headers : [{ key: "", value: "" }];
+
   return (
-    <Table
-      aria-label="Headers table"
-      removeWrapper
-      className={"overflow-y-auto h-[110px] pr-2 " + scrollBarStyles.scrollbar}
-    >
+    <Table aria-label="Headers table" removeWrapper className={"h-full pr-2 "}>
       <TableHeader>
         <TableColumn>Key</TableColumn>
         <TableColumn>Value</TableColumn>
