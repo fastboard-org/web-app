@@ -11,6 +11,11 @@ import {
 } from "@nextui-org/react";
 import { FastboardTableProperties } from "./FastboardTable";
 import { Add, Hierarchy3 } from "iconsax-react";
+import { useEffect, useState } from "react";
+import { IoIosClose } from "react-icons/io";
+import { ConnectionType, HTTP_METHOD } from "@/types/connections";
+import ReorderableColumns from "./ReorderableColumns";
+import { mock } from "node:test";
 
 const FastboardTablePropertiesComponent = ({
   properties,
@@ -19,23 +24,77 @@ const FastboardTablePropertiesComponent = ({
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
-  const { query, emptyMessage, hideHeader, isStriped } = properties;
+  const { query, emptyMessage, columns, actions, isStriped } = properties;
+  const [columnsProperties, setColumnsProperties] = useState(columns);
+  const [currentActions, setCurrentActions] = useState(actions);
+  const [hideHeader, setHideHeader] = useState(properties.hideHeader);
 
-  const queries = [
+  console.log("rendering properties");
+
+  useEffect(() => {
+    console.log("update columns", columns);
+    setColumnsProperties(columns);
+  }, [columns]);
+
+  const mockQueries = [
     {
-      key: "1",
-      label: "get all pokemons",
-      value: {
-        url: "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
+      id: "1",
+      name: "Pokemons",
+      connection: {
+        id: "1",
+        name: "PokeApi",
+        type: ConnectionType.REST,
+        credentials: {
+          url: "https://pokeapi.co/api/v2",
+        },
+        variables: {
+          posts_endpoint: "posts",
+        },
+      },
+      metadata: {
+        method: HTTP_METHOD.GET,
+        path: "/pokemon?limit=100000&offset=0",
         field: "results",
+        columns: [
+          { key: "name", label: "Name" },
+          { key: "url", label: "URL" },
+        ],
       },
     },
     {
-      key: "2",
-      label: "get pokemon by id 1",
-      value: { url: "https://pokeapi.co/api/v2/pokemon/1", field: null },
+      id: "2",
+      name: "Pokemon by id",
+      connection: {
+        id: "1",
+        name: "PokeApi",
+        type: ConnectionType.REST,
+        credentials: {
+          url: "https://pokeapi.co/api/v2",
+        },
+        variables: {
+          posts_endpoint: "posts",
+        },
+      },
+      metadata: {
+        method: HTTP_METHOD.GET,
+        path: "/pokemon/1",
+        field: null,
+        columns: [
+          { key: "abilities", label: "Abilities" },
+          { key: "base_experience", label: "Base Experience" },
+        ],
+      },
     },
   ];
+
+  function addAction() {
+    setCurrentActions([...currentActions, { key: "new", label: "New Action" }]);
+    onValueChange({
+      ...properties,
+      actions: [...currentActions, { key: "new", label: "New Action" }],
+    });
+  }
+
   return (
     <Accordion
       selectionMode="multiple"
@@ -43,35 +102,69 @@ const FastboardTablePropertiesComponent = ({
       fullWidth
       defaultExpandedKeys={["basic", "actions", "style"]}
     >
-      <AccordionItem key="basic" title="Basic">
-        <div className="flex flex-col gap-2">
+      <AccordionItem
+        key="basic"
+        title="Basic"
+        classNames={{
+          title: "font-bold",
+        }}
+      >
+        <div className="flex flex-col gap-2 overflow-x-hidden">
           <Autocomplete
+            aria-label="Query data selector"
             allowsCustomValue
-            defaultItems={queries}
-            defaultSelectedKey={
-              queries.find((q) => q.value.url === query.url)?.key || ""
-            }
-            label="Url"
-            placeholder="Select url"
+            defaultItems={mockQueries}
+            defaultSelectedKey={mockQueries[0].id}
+            selectedKey={mockQueries.find((q) => q.id === query.id)?.id}
+            label="Query"
+            labelPlacement="outside"
+            placeholder="Select query"
+            startContent={<Hierarchy3 className={"text-primary"} />}
             onSelectionChange={(key) => {
-              const url = queries.find((q) => q.key === key);
-              if (!url) return;
+              const query = mockQueries.find((q) => q.id === key);
+              if (!query) return;
+
+              setColumnsProperties(
+                query.metadata.columns.map((c) => ({
+                  column: c,
+                  visible: true,
+                }))
+              );
 
               onValueChange({
                 ...properties,
-                query: url.value,
+                columns: query.metadata.columns.map((c) => ({
+                  column: c,
+                  visible: true,
+                })),
+                query: {
+                  id: query.id,
+                  url: `${query.connection.credentials.url}/${query.metadata.path}`,
+                  field: query.metadata.field,
+                },
               });
             }}
           >
-            {(url) => (
+            {(query) => (
               <AutocompleteItem
-                key={url.key}
+                key={query.id}
                 startContent={<Hierarchy3 className={"text-primary"} />}
               >
-                {url.label}
+                {query.name}
               </AutocompleteItem>
             )}
           </Autocomplete>
+
+          <ReorderableColumns
+            columnsProperties={columnsProperties}
+            onChange={(newOrder) => {
+              onValueChange({
+                ...properties,
+                columns: newOrder,
+              });
+            }}
+          />
+
           <Input
             type="number"
             label="Rows per page"
@@ -87,7 +180,7 @@ const FastboardTablePropertiesComponent = ({
           />
           <Input
             label="Empty message"
-            labelPlacement="outside"
+            labelPlacement="outside-left"
             placeholder=""
             value={emptyMessage}
             onValueChange={(value) => {
@@ -99,25 +192,64 @@ const FastboardTablePropertiesComponent = ({
           />
         </div>
       </AccordionItem>
-      <AccordionItem key="actions" title="Actions">
+      <AccordionItem
+        key="actions"
+        title="Actions"
+        classNames={{
+          title: "font-bold",
+        }}
+      >
         <div>
           <div className="flex justify-end w-full">
-            <Button endContent={<Add />} variant="light">
+            <Button endContent={<Add />} variant="light" onClick={addAction}>
               Add
             </Button>
           </div>
-          <Listbox aria-label="Action list" className="bg-content2 rounded-lg">
-            <ListboxItem key={"1"}>Add</ListboxItem>
-            <ListboxItem key={"2"}>Delete</ListboxItem>
-            <ListboxItem key={"3"}>a</ListboxItem>
+          <Listbox
+            aria-label="Action list"
+            className="bg-content2 rounded-lg"
+            emptyContent=""
+          >
+            {currentActions.map((action) => (
+              <ListboxItem
+                key={action.key}
+                endContent={
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    onClick={() => {
+                      const newActions = currentActions.filter(
+                        (a) => a.key !== action.key
+                      );
+                      setCurrentActions(newActions);
+                      onValueChange({
+                        ...properties,
+                        actions: newActions,
+                      });
+                    }}
+                  >
+                    <IoIosClose size={20} className="text-foreground-600" />
+                  </Button>
+                }
+              >
+                {action.label}
+              </ListboxItem>
+            ))}
           </Listbox>
         </div>
       </AccordionItem>
-      <AccordionItem key="style" title="Style">
+      <AccordionItem
+        key="style"
+        title="Style"
+        classNames={{
+          title: "font-bold",
+        }}
+      >
         <div className="flex flex-col gap-2">
           <Checkbox
             isSelected={hideHeader}
             onValueChange={(isSelected) => {
+              setHideHeader(isSelected);
               onValueChange({
                 ...properties,
                 hideHeader: isSelected,

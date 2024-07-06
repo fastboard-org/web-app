@@ -23,7 +23,7 @@ export default function PropertiesDrawer() {
       animate={{ x: isOpen ? 0 : "100%" }}
       transition={{ ease: "easeInOut" }}
       className={
-        "h-full w-[22%] bg-background shadow-lg absolute top-0 right-0 p-5"
+        "h-full w-[22%] bg-background shadow-lg absolute top-0 right-0 p-5 overflow-y-auto"
       }
     >
       <h3 className={"text-xl font-medium p-2 mb-2"}>Properties</h3>

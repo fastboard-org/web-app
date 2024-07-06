@@ -34,6 +34,7 @@ const FastboardComponent = ({
     e.preventDefault();
     setIsComponentsDrawerOpen(false);
     setIsPropertiesDrawerOpen(true);
+    console.log(properties);
     setPropertiesDrawerState({
       layoutIndex: layoutIndex,
       container: containerIndex,

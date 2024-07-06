@@ -1,7 +1,12 @@
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import usePaginatedData from "@/hooks/usePaginatedData";
 import {
+  Button,
   Card,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Pagination,
   Spinner,
   Table,
@@ -13,14 +18,22 @@ import {
   getKeyValue,
 } from "@nextui-org/react";
 import { useEffect } from "react";
+import { IoIosMore } from "react-icons/io";
+import { TableColumnProperties } from "./ReorderableColumns";
 
 export class FastboardTableProperties {
-  query: { url: string; field: string | null } = {
+  query: { id: string; url: string; field: string | null } = {
+    id: "1",
     url: "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
     field: "results",
   };
   rowsPerPage: number = 10;
   emptyMessage: string = "No rows to display.";
+  columns: TableColumnProperties[] = [
+    { column: { key: "name", label: "Name" }, visible: true },
+    { column: { key: "url", label: "URL" }, visible: true },
+  ];
+  actions: { key: string; label: string }[] = [];
   hideHeader: boolean = false;
   isStriped: boolean = false;
 
@@ -34,13 +47,20 @@ export default function FastboardTable({
 }: {
   properties: FastboardTableProperties;
 }) {
-  const { query, emptyMessage, hideHeader, isStriped, rowsPerPage } =
-    properties;
-  const { keys, items, isLoading, error, page, setPage, pages, updateQuery } =
+  const {
+    query,
+    emptyMessage,
+    columns,
+    actions,
+    hideHeader,
+    isStriped,
+    rowsPerPage,
+  } = properties;
+  const { items, isLoading, error, page, setPage, pages, updateQuery } =
     usePaginatedData(rowsPerPage);
 
-  console.log(properties);
   useEffect(() => {
+    console.log("update query");
     updateQuery(query.url, query.field);
   }, [query?.url, query?.field]);
 
@@ -51,6 +71,35 @@ export default function FastboardTable({
       </Card>
     );
   }
+
+  if (!columns.some((c) => c.visible)) {
+    return (
+      <Card className="flex flex-col w-full h-full p-5 justify-center items-center">
+        {" "}
+        <p className="text-xl text-danger">No columns selected</p>
+      </Card>
+    );
+  }
+
+  const renderCell = (item: any, columnKey: string) => {
+    if (columnKey === "actions") {
+      return (
+        <Dropdown>
+          <DropdownTrigger>
+            <Button isIconOnly size="sm" variant="light">
+              <IoIosMore size={24} />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu>
+            {actions.map((action) => (
+              <DropdownItem key={action.key}>{action.label}</DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
+      );
+    }
+    return getKeyValue(item, columnKey);
+  };
 
   return (
     <CustomSkeleton
@@ -80,7 +129,9 @@ export default function FastboardTable({
         }
         bottomContentPlacement="outside"
       >
-        <TableHeader columns={keys}>
+        <TableHeader
+          columns={columns.filter((c) => c.visible).map((c) => c.column)}
+        >
           {(column) => (
             <TableColumn key={column.key}>
               {column.label.toUpperCase()}
@@ -96,7 +147,7 @@ export default function FastboardTable({
           {(item) => (
             <TableRow key={item.key}>
               {(columnKey) => (
-                <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                <TableCell>{renderCell(item, columnKey as string)}</TableCell>
               )}
             </TableRow>
           )}

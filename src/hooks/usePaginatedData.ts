@@ -1,7 +1,7 @@
 import { Dashboard } from "@/types/dashboards";
 import { useEffect, useMemo, useState } from "react";
 
-interface Column {
+export interface Column {
   key: string;
   label: string;
 }
@@ -58,8 +58,6 @@ const usePaginatedData = (rowsPerPage: number) => {
         mapItem(item);
         return { key: index, ...item };
       });
-
-      console.log(data);
 
       setData(data);
       //set loading to false after 3 seconds
