@@ -19,7 +19,7 @@ const fillParams = (query: Query, params: QueryParameter[]) => {
   //TODO: this will be done by the backend instead
   const filledPath =
     params?.reduce((path, param) => {
-      return path.replace(`{{${param.name}}}`, param.preview);
+      return path?.replace(`{{${param.name}}}`, param.preview);
     }, query.metadata.path) ?? query.metadata.path;
 
   const filledHeaders = query?.metadata?.headers
