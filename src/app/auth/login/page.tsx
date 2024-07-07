@@ -31,7 +31,6 @@ export default function Login() {
     setError,
     formState: { errors },
   } = useForm<LogInForm>();
-  const [showLogInError, setShowLogInError] = useState(false);
   const router = useRouter();
   const [user, authLoading, authError] = useAuthState(auth);
 
@@ -48,7 +47,6 @@ export default function Login() {
     } catch (error) {
       if (error instanceof FastboardAuthError) {
         error.cause.forEach((error) => {
-          // @ts-ignore
           setError(error.inputKey, {
             type: "manual",
             message: error.message,

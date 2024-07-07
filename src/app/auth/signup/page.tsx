@@ -31,7 +31,6 @@ export default function SignUp() {
     setError,
     formState: { errors },
   } = useForm<SignUpForm>();
-  const [showSignUpError, setShowSignUpError] = useState(false);
   const router = useRouter();
   const [user, authLoading, authError] = useAuthState(auth);
 
@@ -42,7 +41,6 @@ export default function SignUp() {
     } catch (error) {
       if (error instanceof FastboardAuthError) {
         error.cause.forEach((error) => {
-          // @ts-ignore
           setError(error.inputKey, {
             type: "manual",
             message: error.message,

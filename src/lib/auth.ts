@@ -23,9 +23,9 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
 export class FastboardAuthError extends Error {
-  cause: { inputKey: string; message: string }[];
+  cause: { inputKey: "email" | "password"; message: string }[];
 
-  constructor(cause: { inputKey: string; message: string }[]) {
+  constructor(cause: { inputKey: "email" | "password"; message: string }[]) {
     super("FastboardAuthError");
     this.cause = cause;
   }
