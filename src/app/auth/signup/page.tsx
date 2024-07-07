@@ -14,9 +14,8 @@ import { Eye, EyeSlash } from "iconsax-react";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { auth, signIn, signUp } from "@/lib/auth";
+import { auth, FastboardAuthError, signIn, signUp } from "@/lib/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
-import AuthError from "@/components/auth/AuthError";
 
 export interface SignUpForm {
   email: string;
@@ -41,11 +40,15 @@ export default function SignUp() {
     try {
       await signUp(signUpData.email, signUpData.password);
     } catch (error) {
-      console.error(error);
-      setShowSignUpError(true);
-      setError("email", {
-        type: "manual",
-      });
+      if (error instanceof FastboardAuthError) {
+        error.cause.forEach((error) => {
+          // @ts-ignore
+          setError(error.inputKey, {
+            type: "manual",
+            message: error.message,
+          });
+        });
+      }
     }
     setLoading(false);
   };
@@ -129,8 +132,6 @@ export default function SignUp() {
           </form>
         </CardBody>
       </Card>
-      <Spacer y={2} />
-      {showSignUpError && <AuthError message="Email already in use" />}
       <Spacer y={2} />
       <div className="flex flex-row">
         <h3 className="text-foreground">Have an account?</h3>

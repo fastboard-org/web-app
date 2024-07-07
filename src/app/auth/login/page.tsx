@@ -1,6 +1,5 @@
 "use client";
-import AuthError from "@/components/auth/AuthError";
-import { auth, logIn, signIn } from "@/lib/auth";
+import { auth, FastboardAuthError, logIn, signIn } from "@/lib/auth";
 import {
   Button,
   Card,
@@ -47,13 +46,15 @@ export default function Login() {
     try {
       await logIn(logInData.email, logInData.password);
     } catch (error) {
-      setShowLogInError(true);
-      setError("email", {
-        type: "manual",
-      });
-      setError("password", {
-        type: "manual",
-      });
+      if (error instanceof FastboardAuthError) {
+        error.cause.forEach((error) => {
+          // @ts-ignore
+          setError(error.inputKey, {
+            type: "manual",
+            message: error.message,
+          });
+        });
+      }
     }
     setLoading(false);
   };
@@ -131,8 +132,6 @@ export default function Login() {
           </form>
         </CardBody>
       </Card>
-      <Spacer y={2} />
-      {showLogInError && <AuthError message="Invalid email or password" />}
       <Spacer y={2} />
       <div className="flex flex-row">
         <h3 className="text-foreground">Don't have an account?</h3>
