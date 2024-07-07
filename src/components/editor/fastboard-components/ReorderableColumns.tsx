@@ -3,6 +3,7 @@ import { Column } from "@/hooks/usePaginatedData";
 import { Checkbox, Spacer } from "@nextui-org/react";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export interface TableColumnProperties {
   column: Column;
@@ -70,32 +71,42 @@ export default function ReorderableColumns({
     <div>
       <h1 className="text-sm">Columns</h1>
       <Spacer y={2} />
-      <Reorder.Group
-        axis="y"
-        values={columns}
-        onReorder={(newOrder) => {
-          setColumns(newOrder);
-          if (onChange) {
-            onChange(newOrder);
-          }
-        }}
-      >
-        {columns.map((column) => (
-          <ReorderableColumn
-            key={column.column.key}
-            column={column}
-            onChange={(value) => {
-              const newColumns = columns.map((c) =>
-                c.column.key === value.column.key ? value : c
-              );
-              setColumns(newColumns);
-              if (onChange) {
-                onChange(newColumns);
-              }
-            }}
-          />
-        ))}
-      </Reorder.Group>
+      <div className="flex items-center justify-center">
+        <Reorder.Group
+          axis="y"
+          layoutScroll
+          style={{
+            height: 150,
+            width: 400,
+            border: "1px solid #e5e5e5",
+            overflowY: "auto",
+            borderRadius: 4,
+          }}
+          values={columns}
+          onReorder={(newOrder) => {
+            setColumns(newOrder);
+            if (onChange) {
+              onChange(newOrder);
+            }
+          }}
+        >
+          {columns.map((column) => (
+            <ReorderableColumn
+              key={column.column.key}
+              column={column}
+              onChange={(value) => {
+                const newColumns = columns.map((c) =>
+                  c.column.key === value.column.key ? value : c
+                );
+                setColumns(newColumns);
+                if (onChange) {
+                  onChange(newColumns);
+                }
+              }}
+            />
+          ))}
+        </Reorder.Group>
+      </div>
     </div>
   );
 }

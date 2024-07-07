@@ -15,7 +15,18 @@ import { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { ConnectionType, HTTP_METHOD } from "@/types/connections";
 import ReorderableColumns from "./ReorderableColumns";
-import { mock } from "node:test";
+import { SiMongodb } from "react-icons/si";
+import { BiLogoPostgresql } from "react-icons/bi";
+
+const connectionIcons = {
+  [ConnectionType.MONGO]: <SiMongodb size={24} className={"text-primary"} />,
+  [ConnectionType.SQL]: (
+    <BiLogoPostgresql size={24} className={"text-primary"} />
+  ),
+  [ConnectionType.REST]: (
+    <Hierarchy3 size={24} className={"text-primary"} variant={"Bold"} />
+  ),
+};
 
 const FastboardTablePropertiesComponent = ({
   properties,
@@ -85,6 +96,22 @@ const FastboardTablePropertiesComponent = ({
         ],
       },
     },
+    {
+      id: "3",
+      name: "Custom data",
+      connection: {
+        id: "1",
+        name: "PokeApi",
+        type: ConnectionType.SQL,
+        credentials: {
+          url: "https://pokeapi.co/api/v2",
+        },
+        variables: {
+          posts_endpoint: "posts",
+        },
+      },
+      metadata: {},
+    },
   ];
 
   function addAction() {
@@ -114,6 +141,9 @@ const FastboardTablePropertiesComponent = ({
             aria-label="Query data selector"
             allowsCustomValue
             defaultItems={mockQueries}
+            disabledKeys={mockQueries
+              .filter((q) => q.connection.type !== ConnectionType.REST)
+              .map((q) => q.id)}
             defaultSelectedKey={mockQueries[0].id}
             selectedKey={mockQueries.find((q) => q.id === query.id)?.id}
             label="Query"
@@ -123,6 +153,7 @@ const FastboardTablePropertiesComponent = ({
             onSelectionChange={(key) => {
               const query = mockQueries.find((q) => q.id === key);
               if (!query) return;
+              if (!query.metadata.columns) return;
 
               setColumnsProperties(
                 query.metadata.columns.map((c) => ({
@@ -137,6 +168,7 @@ const FastboardTablePropertiesComponent = ({
                   column: c,
                   visible: true,
                 })),
+                //This will change in future, //TODO: only send query id
                 query: {
                   id: query.id,
                   url: `${query.connection.credentials.url}/${query.metadata.path}`,
@@ -148,7 +180,7 @@ const FastboardTablePropertiesComponent = ({
             {(query) => (
               <AutocompleteItem
                 key={query.id}
-                startContent={<Hierarchy3 className={"text-primary"} />}
+                startContent={connectionIcons[query.connection.type]}
               >
                 {query.name}
               </AutocompleteItem>
@@ -165,19 +197,6 @@ const FastboardTablePropertiesComponent = ({
             }}
           />
 
-          <Input
-            type="number"
-            label="Rows per page"
-            placeholder="10"
-            labelPlacement="outside-left"
-            value={String(properties.rowsPerPage)}
-            onValueChange={(value) => {
-              onValueChange({
-                ...properties,
-                rowsPerPage: Number(value),
-              });
-            }}
-          />
           <Input
             label="Empty message"
             labelPlacement="outside-left"
@@ -201,7 +220,12 @@ const FastboardTablePropertiesComponent = ({
       >
         <div>
           <div className="flex justify-end w-full">
-            <Button endContent={<Add />} variant="light" onClick={addAction}>
+            <Button
+              disabled
+              endContent={<Add />}
+              variant="light"
+              onClick={addAction}
+            >
               Add
             </Button>
           </div>
