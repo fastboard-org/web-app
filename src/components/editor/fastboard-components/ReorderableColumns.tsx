@@ -23,7 +23,20 @@ function ReorderableColumn({
       className="bg-content2 p-2 rounded-sm"
     >
       <div className="flex flex-row columns-center justify-between">
-        <EditableTitle value={column.column.label} onChange={() => {}} />
+        <EditableTitle
+          value={column.column.label}
+          onChange={(value) => {
+            if (onChange) {
+              onChange({
+                ...column,
+                column: {
+                  ...column.column,
+                  label: value,
+                },
+              });
+            }
+          }}
+        />
         <Checkbox
           isSelected={column.visible}
           onValueChange={(value) => {
