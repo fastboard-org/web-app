@@ -3,7 +3,7 @@ import { Column } from "@/hooks/usePaginatedData";
 import { Checkbox, Spacer } from "@nextui-org/react";
 import { Reorder } from "framer-motion";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import scrollBarStyles from "@/styles/scrollbar.module.css";
 
 export interface TableColumnProperties {
   column: Column;
@@ -21,7 +21,7 @@ function ReorderableColumn({
     <Reorder.Item
       key={column.column.key}
       value={column}
-      className="bg-content2 p-2 rounded-sm"
+      className="bg-content2 p-2 rounded-sm hover:bg-content3 cursor-pointer"
     >
       <div className="flex flex-row columns-center justify-between">
         <EditableTitle
@@ -71,17 +71,13 @@ export default function ReorderableColumns({
     <div>
       <h1 className="text-sm">Columns</h1>
       <Spacer y={2} />
-      <div className="flex items-center justify-center">
+      <div
+        className={"flex w-full justify-center items-center  overflow-y-auto"}
+      >
         <Reorder.Group
+          className="w-[90%] border-content4 border"
           axis="y"
           layoutScroll
-          style={{
-            height: 150,
-            width: 400,
-            border: "1px solid #e5e5e5",
-            overflowY: "auto",
-            borderRadius: 4,
-          }}
           values={columns}
           onReorder={(newOrder) => {
             setColumns(newOrder);
