@@ -1,5 +1,6 @@
 import { Input, Select, SelectItem } from "@nextui-org/react";
 import { HTTP_METHOD } from "@/types/connections";
+import { methodColor } from "@/lib/rest-methods";
 
 const MethodAndPathSelector = ({
   method,
@@ -15,14 +16,23 @@ const MethodAndPathSelector = ({
   return (
     <div className={"flex w-full gap-3"}>
       <Select
-        className={"w-1/5 min-w-[100px]"}
+        className={"w-1/5 min-w-[100px] text-${methodColor(method)}"}
         placeholder={"Method"}
         selectedKeys={[method]}
         disallowEmptySelection
         onChange={(e) => onMethodChange(e.target.value as string)}
+        classNames={{
+          value: `text-${methodColor(method)} group-data-[has-value=true]:text-${methodColor(method)}`,
+        }}
       >
         {Object.keys(HTTP_METHOD).map((method) => (
-          <SelectItem key={method} value={method}>
+          <SelectItem
+            key={method}
+            value={method}
+            className={`text-${methodColor(method as HTTP_METHOD)} data-[selectable=true]:focus:text-${methodColor(
+              method as HTTP_METHOD,
+            )}`}
+          >
             {method}
           </SelectItem>
         ))}

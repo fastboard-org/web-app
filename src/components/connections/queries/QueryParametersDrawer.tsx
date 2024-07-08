@@ -76,7 +76,7 @@ const QueryParametersDrawer = ({
               access them in your query.
             </div>
           }
-          className={"p-3 w-[275px] -translate-x-[40px] text-xs"}
+          className={"p-3 w-[275px] -translate-x-[35px] text-xs"}
           placement={"bottom"}
           offset={10}
         >

@@ -7,24 +7,19 @@ import {
 import EditableTitle from "@/components/shared/EditableTitle";
 import QueryParametersDrawer from "@/components/connections/queries/QueryParametersDrawer";
 import MethodAndPathSelector from "@/components/connections/queries/rest/MethodAndPathSelector";
-import { Button, Card, Tab, Tabs } from "@nextui-org/react";
+import { Button, Card, Tab, Tabs, useDisclosure } from "@nextui-org/react";
 import HeadersTable from "@/components/connections/queries/rest/HeadersTable";
 import { useEffect, useState } from "react";
-import {
-  collapseAllNested,
-  darkStyles,
-  defaultStyles,
-  JsonView,
-} from "react-json-view-lite";
-import "react-json-view-lite/dist/index.css";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import { useTheme } from "next-themes";
+import { Lock } from "iconsax-react";
+import RestResponse from "@/components/connections/queries/rest/RestResponse";
+import AuthModal from "@/components/connections/queries/rest/AuthModal";
 
 const fillParams = (query: Query, params: QueryParameter[]) => {
   //TODO: this will be done by the backend instead
   const filledPath =
     params?.reduce((path, param) => {
-      return path.replace(`{{${param.name}}}`, param.preview);
+      return path?.replace(`{{${param.name}}}`, param.preview);
     }, query.metadata.path) ?? query.metadata.path;
 
   const filledHeaders = query?.metadata?.headers
@@ -55,11 +50,13 @@ const RestQueryEditor = ({
   query: Query;
   onChange: (query: Query) => void;
 }) => {
-  const { theme } = useTheme();
   const [response, setResponse] = useState<any>(null);
   const [responseData, setResponseData] = useState<any>(null);
   const [responseLoading, setResponseLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<string>("headers");
+  const [previewToken, setPreviewToken] = useState<string>("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     setResponse(null);
@@ -68,10 +65,13 @@ const RestQueryEditor = ({
 
   const handleSend = async () => {
     setResponseLoading(true);
-    const { filledPath, filledHeaders } = fillParams(
-      query,
-      query.metadata.parameters,
-    );
+    const { filledPath, filledHeaders } = fillParams(query, [
+      ...(query.metadata.parameters ?? []),
+      {
+        name: "token",
+        preview: previewToken,
+      },
+    ]);
 
     let response;
     try {
@@ -97,6 +97,8 @@ const RestQueryEditor = ({
       console.error(e);
       setResponseData({});
     }
+
+    setSelectedTab("response");
     setResponseLoading(false);
   };
 
@@ -124,7 +126,11 @@ const RestQueryEditor = ({
             placeholder={"Enter a query name"}
           />
           <div className={"flex gap-2"}>
-            <Button isLoading={saveLoading} onClick={handleSave}>
+            <Button
+              isLoading={saveLoading}
+              onClick={handleSave}
+              variant={"flat"}
+            >
               Save
             </Button>
             <Button
@@ -146,53 +152,41 @@ const RestQueryEditor = ({
             onChange({ ...query, metadata: { ...query.metadata, path } })
           }
         />
-        <Tabs
-          classNames={{
-            panel: "max-h-[30%] p-0",
-          }}
-        >
-          <Tab key={"headers"} title={"Headers"}>
-            <HeadersTable
-              headers={
-                query.metadata?.headers?.length
-                  ? query.metadata.headers
-                  : [
-                      {
-                        key: "",
-                        value: "",
-                      },
-                    ]
-              }
-              onChange={(headers: RestHeader[]) => {
-                onChange({
-                  ...query,
-                  metadata: { ...query.metadata, headers },
-                });
-              }}
-            />
-          </Tab>
-          <Tab key={"body"} title={"Body"}>
-            {/*TODO: implement body editor*/}
-          </Tab>
-        </Tabs>
         <Card className={"w-full h-full p-4"}>
-          {response && (
-            <>
-              <p className={"text-sm absolute right-10 text-foreground-500"}>
-                Status: {response.status}
-              </p>
-              <JsonView
-                data={responseData}
-                shouldExpandNode={collapseAllNested}
-                style={{
-                  ...(theme === "dark" ? darkStyles : defaultStyles),
-                  container:
-                    "bg-transparent overflow-y-auto text-md " +
-                    scrollbarStyles.scrollbar,
+          <Tabs
+            classNames={{
+              panel:
+                "p-0 mt-2 h-full overflow-y-auto " + scrollbarStyles.scrollbar,
+            }}
+            selectedKey={selectedTab}
+            onSelectionChange={(key) => setSelectedTab(key as string)}
+          >
+            <Tab key={"headers"} title={"Headers"}>
+              <HeadersTable
+                headers={query?.metadata?.headers}
+                onChange={(headers: RestHeader[]) => {
+                  onChange({
+                    ...query,
+                    metadata: { ...query.metadata, headers },
+                  });
                 }}
               />
-            </>
-          )}
+            </Tab>
+            <Tab key={"body"} title={"Body"}>
+              {/*TODO: implement body editor*/}
+            </Tab>
+            <Tab key={"response"} title={"Response"}>
+              <RestResponse response={response} responseData={responseData} />
+            </Tab>
+          </Tabs>
+          <Button
+            className={"absolute right-5 top-4"}
+            variant={"flat"}
+            onClick={onOpen}
+          >
+            <Lock size={15} />
+            Auth
+          </Button>
         </Card>
       </div>
       <QueryParametersDrawer
@@ -203,6 +197,14 @@ const RestQueryEditor = ({
             metadata: { ...query.metadata, parameters: queryParameters },
           })
         }
+      />
+      <AuthModal
+        preview_token={previewToken}
+        onChange={(preview_token) => {
+          setPreviewToken(preview_token);
+        }}
+        isOpen={isOpen}
+        onClose={onClose}
       />
     </div>
   );

@@ -40,7 +40,7 @@ export default function Connections() {
         onButtonClick={onOpen}
       />
       <CustomSkeleton
-        className={"w-full h-[85%] mt-[35px] rounded-lg"}
+        className={"w-full h-[85%] mt-[20px] rounded-lg"}
         isLoaded={!loading && !queriesLoading}
       >
         <QueryEditor
