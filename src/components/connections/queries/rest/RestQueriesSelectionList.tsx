@@ -1,6 +1,7 @@
-import { Query } from "@/types/connections";
+import { HTTP_METHOD, Query } from "@/types/connections";
 import { Button, Listbox, ListboxItem } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
+import { methodColor } from "@/lib/rest-methods";
 
 const RestQueriesSelectionList = ({
   queries,
@@ -40,7 +41,11 @@ const RestQueriesSelectionList = ({
               title: "text-md",
             }}
           >
-            <span className={`text-foreground-400 inline-block w-[50px]`}>
+            <span
+              className={`text-${methodColor(
+                query.metadata.method as HTTP_METHOD,
+              )} inline-block w-[60px]`}
+            >
               {query.metadata.method}
             </span>{" "}
             {query.name}
