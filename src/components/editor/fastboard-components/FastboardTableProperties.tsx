@@ -93,6 +93,7 @@ const FastboardTablePropertiesComponent = ({
         columns: [
           { key: "abilities", label: "Abilities" },
           { key: "base_experience", label: "Base Experience" },
+          { key: "height", label: "Height" },
         ],
       },
     },
@@ -221,7 +222,7 @@ const FastboardTablePropertiesComponent = ({
         <div>
           <div className="flex justify-end w-full">
             <Button
-              disabled
+              isDisabled
               endContent={<Add />}
               variant="light"
               onClick={addAction}
