@@ -1,12 +1,11 @@
 "use client";
-import { SignUpForm } from "@/app/auth/signup/page";
-import { initializeApp } from "firebase/app";
+import { FirebaseError, initializeApp } from "firebase/app";
 import {
   getAuth,
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   GoogleAuthProvider,
   GithubAuthProvider,
-  signInWithRedirect,
   signInWithPopup,
 } from "firebase/auth";
 
@@ -23,15 +22,66 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
-export async function signUp(signUpData: SignUpForm) {
+export class FastboardAuthError extends Error {
+  cause: { inputKey: "email" | "password"; message: string }[];
+
+  constructor(cause: { inputKey: "email" | "password"; message: string }[]) {
+    super("FastboardAuthError");
+    this.cause = cause;
+  }
+}
+
+export async function signUp(email: string, password: string) {
   try {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
-      signUpData.email,
-      signUpData.password
+      email,
+      password
     );
+    return userCredential;
   } catch (error) {
-    console.error(error);
+    if (error instanceof FirebaseError) {
+      switch (error.code) {
+        case "auth/email-already-in-use": {
+          throw new FastboardAuthError([
+            { inputKey: "email", message: "Email already in use" },
+          ]);
+        }
+        case "auth/invalid-email": {
+          throw new FastboardAuthError([
+            { inputKey: "email", message: "Invalid email" },
+          ]);
+        }
+        default: {
+          console.error(error.code, error.message);
+        }
+      }
+    }
+  }
+}
+
+export async function logIn(email: string, password: string) {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    return userCredential;
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      switch (error.code) {
+        case "auth/invalid-credential": {
+          throw new FastboardAuthError([
+            { inputKey: "email", message: "Invalid credentials" },
+            { inputKey: "password", message: "Invalid credentials" },
+          ]);
+        }
+        default: {
+          console.error(error.code, error.message);
+        }
+      }
+    }
   }
 }
 

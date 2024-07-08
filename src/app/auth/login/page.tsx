@@ -1,4 +1,5 @@
 "use client";
+import { auth, FastboardAuthError, logIn, signIn } from "@/lib/auth";
 import {
   Button,
   Card,
@@ -8,21 +9,20 @@ import {
   Link,
   Spacer,
 } from "@nextui-org/react";
+import { Eye, EyeSlash } from "iconsax-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { IoLogoGithub } from "react-icons/io";
-import { Eye, EyeSlash } from "iconsax-react";
-import { useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { auth, FastboardAuthError, signIn, signUp } from "@/lib/auth";
-import { useAuthState } from "react-firebase-hooks/auth";
 
-export interface SignUpForm {
+interface LogInForm {
   email: string;
   password: string;
 }
 
-export default function SignUp() {
+export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const {
@@ -30,14 +30,20 @@ export default function SignUp() {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<SignUpForm>();
+  } = useForm<LogInForm>();
   const router = useRouter();
   const [user, authLoading, authError] = useAuthState(auth);
 
-  const onSubmit: SubmitHandler<SignUpForm> = async (signUpData) => {
+  useEffect(() => {
+    if (user) {
+      router.push("/home/dashboards");
+    }
+  }, [user]);
+
+  const onSubmit: SubmitHandler<LogInForm> = async (logInData) => {
     setLoading(true);
     try {
-      await signUp(signUpData.email, signUpData.password);
+      await logIn(logInData.email, logInData.password);
     } catch (error) {
       if (error instanceof FastboardAuthError) {
         error.cause.forEach((error) => {
@@ -51,19 +57,13 @@ export default function SignUp() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (user) {
-      router.push("/home/dashboards");
-    }
-  }, [user]);
-
   return (
     <main className="flex w-full flex-col items-center justify-center">
       <Card className="w-full max-w-md p-4">
         <CardBody>
-          <h1 className="text-4xl font-bold text-foreground">Get started</h1>
+          <h1 className="text-4xl font-bold text-foreground">Welcome back!</h1>
           <Spacer y={2}></Spacer>
-          <h2 className="text-foreground">Create new account</h2>
+          <h2 className="text-foreground">Log in to your account</h2>
           <Spacer y={14}></Spacer>
           <Button
             startContent={<FcGoogle size={24} />}
@@ -71,7 +71,7 @@ export default function SignUp() {
               signIn("google");
             }}
           >
-            Continue with Google
+            Log in with Google
           </Button>
           <Spacer y={2}></Spacer>
           <Button
@@ -80,7 +80,7 @@ export default function SignUp() {
               signIn("github");
             }}
           >
-            Continue with Github
+            Log in with Github
           </Button>
           <Divider className="my-4" />
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -125,16 +125,16 @@ export default function SignUp() {
             <Spacer y={4} />
 
             <Button type="submit" color="primary" fullWidth isLoading={loading}>
-              Continue
+              Log in
             </Button>
           </form>
         </CardBody>
       </Card>
       <Spacer y={2} />
       <div className="flex flex-row">
-        <h3 className="text-foreground">Have an account?</h3>
+        <h3 className="text-foreground">Don't have an account?</h3>
         <Spacer x={1}></Spacer>
-        <Link href="/auth/login">Login</Link>
+        <Link href="/auth/signup">Sign up</Link>
       </div>
     </main>
   );
