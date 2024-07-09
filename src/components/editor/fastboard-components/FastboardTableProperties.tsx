@@ -3,20 +3,17 @@ import {
   AccordionItem,
   Autocomplete,
   AutocompleteItem,
-  Button,
   Checkbox,
   Input,
-  Listbox,
-  ListboxItem,
 } from "@nextui-org/react";
 import { FastboardTableProperties } from "./FastboardTable";
-import { Add, Hierarchy3 } from "iconsax-react";
+import { Hierarchy3 } from "iconsax-react";
 import { useEffect, useState } from "react";
-import { IoIosClose } from "react-icons/io";
 import { ConnectionType, HTTP_METHOD } from "@/types/connections";
 import ReorderableColumns from "./ReorderableColumns";
 import { SiMongodb } from "react-icons/si";
 import { BiLogoPostgresql } from "react-icons/bi";
+import TableActionsList from "./TableActionsList";
 
 const connectionIcons = {
   [ConnectionType.MONGO]: <SiMongodb size={24} className={"text-primary"} />,
@@ -37,7 +34,6 @@ const FastboardTablePropertiesComponent = ({
 }) => {
   const { query, emptyMessage, columns, actions, isStriped } = properties;
   const [columnsProperties, setColumnsProperties] = useState(columns);
-  const [currentActions, setCurrentActions] = useState(actions);
   const [hideHeader, setHideHeader] = useState(properties.hideHeader);
 
   console.log("rendering properties");
@@ -114,14 +110,6 @@ const FastboardTablePropertiesComponent = ({
       metadata: {},
     },
   ];
-
-  function addAction() {
-    setCurrentActions([...currentActions, { key: "new", label: "New Action" }]);
-    onValueChange({
-      ...properties,
-      actions: [...currentActions, { key: "new", label: "New Action" }],
-    });
-  }
 
   return (
     <Accordion
@@ -219,49 +207,15 @@ const FastboardTablePropertiesComponent = ({
           title: "font-bold",
         }}
       >
-        <div>
-          <div className="flex justify-end w-full">
-            <Button
-              isDisabled
-              endContent={<Add />}
-              variant="light"
-              onClick={addAction}
-            >
-              Add
-            </Button>
-          </div>
-          <Listbox
-            aria-label="Action list"
-            className="bg-content2 rounded-lg"
-            emptyContent=""
-          >
-            {currentActions.map((action) => (
-              <ListboxItem
-                key={action.key}
-                endContent={
-                  <Button
-                    isIconOnly
-                    variant="light"
-                    onClick={() => {
-                      const newActions = currentActions.filter(
-                        (a) => a.key !== action.key
-                      );
-                      setCurrentActions(newActions);
-                      onValueChange({
-                        ...properties,
-                        actions: newActions,
-                      });
-                    }}
-                  >
-                    <IoIosClose size={20} className="text-foreground-600" />
-                  </Button>
-                }
-              >
-                {action.label}
-              </ListboxItem>
-            ))}
-          </Listbox>
-        </div>
+        <TableActionsList
+          actionsProperties={actions}
+          onChange={(newActions) => {
+            onValueChange({
+              ...properties,
+              actions: newActions,
+            });
+          }}
+        />
       </AccordionItem>
       <AccordionItem
         key="style"
