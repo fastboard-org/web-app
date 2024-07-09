@@ -42,6 +42,19 @@ export class FastboardTableProperties {
   }
 }
 
+function getFinalColumns(
+  columns: TableColumnProperties[],
+  actions: { key: string; label: string }[]
+) {
+  const finalColumns = columns
+    .filter((column) => column.visible)
+    .map((column) => column.column);
+  if (actions.length > 0) {
+    finalColumns.push({ key: "actions", label: "Actions" });
+  }
+  return finalColumns;
+}
+
 export default function FastboardTable({
   properties,
 }: {
@@ -58,6 +71,7 @@ export default function FastboardTable({
   } = properties;
   const { items, isLoading, error, page, setPage, pages, updateQuery } =
     usePaginatedData(rowsPerPage);
+  const finalColumns = getFinalColumns(columns, actions);
 
   useEffect(() => {
     console.log("update query");
@@ -72,7 +86,7 @@ export default function FastboardTable({
     );
   }
 
-  if (!columns.some((c) => c.visible)) {
+  if (finalColumns.length === 0) {
     return (
       <Card className="flex flex-col w-full h-full p-5 justify-center items-center">
         {" "}
@@ -87,7 +101,7 @@ export default function FastboardTable({
         <Dropdown>
           <DropdownTrigger>
             <Button isIconOnly size="sm" variant="light">
-              <IoIosMore size={24} />
+              <IoIosMore size={20} />
             </Button>
           </DropdownTrigger>
           <DropdownMenu>
@@ -108,13 +122,13 @@ export default function FastboardTable({
       className="w-full h-full"
     >
       <Table
+        aria-label="Fastboard table component"
         isHeaderSticky
         classNames={{
           thead: "-z-10",
         }}
         hideHeader={hideHeader}
         isStriped={isStriped}
-        aria-label="Example table with dynamic content"
         bottomContent={
           <div className="flex w-full justify-center">
             <Pagination
@@ -129,9 +143,7 @@ export default function FastboardTable({
         }
         bottomContentPlacement="outside"
       >
-        <TableHeader
-          columns={columns.filter((c) => c.visible).map((c) => c.column)}
-        >
+        <TableHeader columns={finalColumns}>
           {(column) => (
             <TableColumn key={column.key}>
               {column.label.toUpperCase()}
