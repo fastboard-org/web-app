@@ -76,7 +76,7 @@ function ReorderableColumn({
       dragListener={false}
       dragControls={dragControls}
       value={column}
-      className="p-2 m-2 rounded-md border-2 border-content2"
+      className="p-2 mb-2 rounded-md border-2 border-content2"
     >
       <div className="flex flex-row columns-center justify-between">
         <EditableTitle
