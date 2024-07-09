@@ -81,10 +81,10 @@ function ReorderableColumn({
       <div className="flex flex-row columns-center justify-between">
         <EditableTitle
           titleClassName={
-            "max-w-[300px] flex items-center hover:text-foreground-400 truncate"
+            "max-w-[150px] flex items-center hover:text-foreground-400 truncate"
           }
           inputClassName={
-            "border-none max-w-[400px] bg-transparent outline-none text-foreground-300 placeholder-foreground-300"
+            "border-none max-w-[150px] bg-transparent outline-none text-foreground-300 placeholder-foreground-300"
           }
           value={column.column.label}
           onChange={(value) => {
@@ -138,7 +138,7 @@ export default function ReorderableColumns({
       <h1 className="text-sm">Columns</h1>
       <Spacer y={2} />
       <div
-        className={"flex w-full justify-center items-center overflow-y-hidden"}
+        className={"flex w-full justify-center items-center overflow-hidden"}
       >
         <Reorder.Group
           className="w-[90%] border-content4 border"
