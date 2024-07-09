@@ -1,10 +1,5 @@
-import { Dashboard } from "@/types/dashboards";
+import { Column } from "@/types/editor/table-types";
 import { useEffect, useMemo, useState } from "react";
-
-export interface Column {
-  key: string;
-  label: string;
-}
 
 const usePaginatedData = (rowsPerPage: number) => {
   const [query, setQuery] = useState<{ url: string; field: string | null }>({

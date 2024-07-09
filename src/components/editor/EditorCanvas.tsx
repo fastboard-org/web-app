@@ -12,6 +12,7 @@ import {
 } from "@/types/editor";
 import FullLayout from "./layouts/FullLayout";
 import RowLayout from "./layouts/RowLayout";
+import scrollbarStyles from "@/styles/scrollbar.module.css";
 
 export default function EditorCanvas() {
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
@@ -48,7 +49,11 @@ export default function EditorCanvas() {
       transition={{
         ease: "easeInOut",
       }}
-      className="flex justify-center items-center h-full w-[75%] bg-background shadow-lg overflow-y-auto rounded-lg"
+      className={
+        "flex justify-center items-center h-full w-[75%] bg-background shadow-lg overflow-y-auto rounded-lg" +
+        " " +
+        scrollbarStyles.scrollbar
+      }
     >
       {getLayoutComponent(dashboardMetadata.layouts[0])}
     </motion.div>

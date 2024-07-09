@@ -1,6 +1,10 @@
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import usePaginatedData from "@/hooks/usePaginatedData";
 import {
+  FastboardTableProperties,
+  TableColumnProperties,
+} from "@/types/editor/table-types";
+import {
   Button,
   Card,
   Dropdown,
@@ -19,28 +23,6 @@ import {
 } from "@nextui-org/react";
 import { useEffect } from "react";
 import { IoIosMore } from "react-icons/io";
-import { TableColumnProperties } from "./ReorderableColumns";
-
-export class FastboardTableProperties {
-  query: { id: string; url: string; field: string | null } = {
-    id: "1",
-    url: "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
-    field: "results",
-  };
-  rowsPerPage: number = 10;
-  emptyMessage: string = "No rows to display.";
-  columns: TableColumnProperties[] = [
-    { column: { key: "name", label: "Name" }, visible: true },
-    { column: { key: "url", label: "URL" }, visible: true },
-  ];
-  actions: { key: string; label: string }[] = [];
-  hideHeader: boolean = false;
-  isStriped: boolean = false;
-
-  static default(): FastboardTableProperties {
-    return new FastboardTableProperties();
-  }
-}
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -74,7 +56,6 @@ export default function FastboardTable({
   const finalColumns = getFinalColumns(columns, actions);
 
   useEffect(() => {
-    console.log("update query");
     updateQuery(query.url, query.field);
   }, [query?.url, query?.field]);
 

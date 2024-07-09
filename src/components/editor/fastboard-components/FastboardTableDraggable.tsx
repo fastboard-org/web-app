@@ -7,9 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-import { FastboardTableProperties } from "./FastboardTable";
 import { ComponentType } from "@/types/editor";
 import Draggable from "./Draggable";
+import { FastboardTableProperties } from "@/types/editor/table-types";
 
 export default function FastboardTableDraggable() {
   return (

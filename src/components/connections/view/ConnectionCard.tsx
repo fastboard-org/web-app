@@ -1,25 +1,7 @@
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import { Connection, ConnectionType } from "@/types/connections";
-import { SiMongodb } from "react-icons/si";
-import { Hierarchy3 } from "iconsax-react";
 import CardActions from "@/components/shared/CardActions";
-import { BiLogoPostgresql } from "react-icons/bi";
-
-const connectionIcons = {
-  [ConnectionType.MONGO]: (
-    <SiMongodb size={38} className={"text-primary mt-2 w-[15%]"} />
-  ),
-  [ConnectionType.SQL]: (
-    <BiLogoPostgresql size={45} className={"text-primary mt-1 w-[15%]"} />
-  ),
-  [ConnectionType.REST]: (
-    <Hierarchy3
-      size={38}
-      className={"text-primary mt-2 w-[15%]"}
-      variant={"Bold"}
-    />
-  ),
-};
+import ConnectionIcon from "@/components/shared/ConnectionIcon";
 
 const connectionTexts = {
   [ConnectionType.MONGO]: "MongoDB Connection",
@@ -42,7 +24,11 @@ const ConnectionCard = ({
       onClick={() => onClick(connection)}
     >
       <CardHeader className={"p-5 flex items-start gap-4"}>
-        {connectionIcons[connection.type]}
+        <ConnectionIcon
+          type={connection.type}
+          size={50}
+          className="text-primary"
+        />
         <div className={"flex flex-col w-[80%]"}>
           <h3
             className={

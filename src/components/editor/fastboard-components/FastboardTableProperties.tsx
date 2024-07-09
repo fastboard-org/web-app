@@ -6,24 +6,13 @@ import {
   Checkbox,
   Input,
 } from "@nextui-org/react";
-import { FastboardTableProperties } from "./FastboardTable";
 import { Hierarchy3 } from "iconsax-react";
 import { useEffect, useState } from "react";
 import { ConnectionType, HTTP_METHOD } from "@/types/connections";
 import ReorderableColumns from "./ReorderableColumns";
-import { SiMongodb } from "react-icons/si";
-import { BiLogoPostgresql } from "react-icons/bi";
 import TableActionsList from "./TableActionsList";
-
-const connectionIcons = {
-  [ConnectionType.MONGO]: <SiMongodb size={24} className={"text-primary"} />,
-  [ConnectionType.SQL]: (
-    <BiLogoPostgresql size={24} className={"text-primary"} />
-  ),
-  [ConnectionType.REST]: (
-    <Hierarchy3 size={24} className={"text-primary"} variant={"Bold"} />
-  ),
-};
+import ConnectionIcon from "@/components/shared/ConnectionIcon";
+import { FastboardTableProperties } from "@/types/editor/table-types";
 
 const FastboardTablePropertiesComponent = ({
   properties,
@@ -36,10 +25,7 @@ const FastboardTablePropertiesComponent = ({
   const [columnsProperties, setColumnsProperties] = useState(columns);
   const [hideHeader, setHideHeader] = useState(properties.hideHeader);
 
-  console.log("rendering properties");
-
   useEffect(() => {
-    console.log("update columns", columns);
     setColumnsProperties(columns);
   }, [columns]);
 
@@ -121,11 +107,12 @@ const FastboardTablePropertiesComponent = ({
       <AccordionItem
         key="basic"
         title="Basic"
+        className="pb-2"
         classNames={{
-          title: "font-bold",
+          title: "font-medium",
         }}
       >
-        <div className="flex flex-col gap-2 overflow-x-hidden">
+        <div className="flex flex-col gap-5  overflow-x-hidden">
           <Autocomplete
             aria-label="Query data selector"
             allowsCustomValue
@@ -169,7 +156,13 @@ const FastboardTablePropertiesComponent = ({
             {(query) => (
               <AutocompleteItem
                 key={query.id}
-                startContent={connectionIcons[query.connection.type]}
+                startContent={
+                  <ConnectionIcon
+                    type={query.connection.type}
+                    size={20}
+                    className={"text-primary"}
+                  />
+                }
               >
                 {query.name}
               </AutocompleteItem>
@@ -188,7 +181,7 @@ const FastboardTablePropertiesComponent = ({
 
           <Input
             label="Empty message"
-            labelPlacement="outside-left"
+            labelPlacement="outside"
             placeholder=""
             value={emptyMessage}
             onValueChange={(value) => {
@@ -202,9 +195,10 @@ const FastboardTablePropertiesComponent = ({
       </AccordionItem>
       <AccordionItem
         key="actions"
+        className="pb-2"
         title="Actions"
         classNames={{
-          title: "font-bold",
+          title: "font-medium",
         }}
       >
         <TableActionsList
@@ -219,9 +213,10 @@ const FastboardTablePropertiesComponent = ({
       </AccordionItem>
       <AccordionItem
         key="style"
+        className="pb-2"
         title="Style"
         classNames={{
-          title: "font-bold",
+          title: "font-medium",
         }}
       >
         <div className="flex flex-col gap-2">

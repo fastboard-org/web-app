@@ -46,10 +46,9 @@ export default function TableActionsList({
   const [actions, setActions] = useState(actionsProperties);
   const [lastIndex, setLastIndex] = useState(0);
 
-  /*
   useEffect(() => {
     setActions(actionsProperties);
-  }, [actionsProperties]);*/
+  }, [actionsProperties]);
 
   function addAction() {
     const key = `new-${lastIndex}`;
@@ -62,10 +61,16 @@ export default function TableActionsList({
     }
   }
 
-  function removeAction(key: string, isLast: boolean) {
-    if (isLast) {
-      setLastIndex(actions.length - 1);
+  function removeAction(key: string, index: number) {
+    if (index === actions.length - 1) {
+      if (actions.length === 1) {
+        setLastIndex(0);
+      } else {
+        const lastAction = actions[index - 1];
+        setLastIndex(parseInt(lastAction.key.split("-")[1]) + 1);
+      }
     }
+
     const newActions = actions.filter((action) => action.key !== key);
     setActions(newActions);
     if (onChange) {
@@ -87,11 +92,11 @@ export default function TableActionsList({
         </Button>
       </div>
       <ul className=" bg-content2 rounded-lg p-2">
-        {actions.map((action) => (
+        {actions.map((action, index) => (
           <TableAction
             action={action}
             onDelete={() => {
-              removeAction(action.key, actions.length === 1);
+              removeAction(action.key, index);
             }}
           />
         ))}
