@@ -4,9 +4,10 @@ import {
   propertiesDrawerState,
 } from "@/atoms/editor";
 import { ComponentType } from "@/types/editor";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import FastboardTable, { FastboardTableProperties } from "./FastboardTable";
+import FastboardTable from "./FastboardTable";
+import { FastboardTableProperties } from "@/types/editor/table-types";
 
 const FastboardComponent = ({
   onClick,

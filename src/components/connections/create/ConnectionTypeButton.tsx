@@ -1,18 +1,6 @@
 import { ConnectionType } from "@/types/connections";
 import { Button, Tooltip } from "@nextui-org/react";
-import { Hierarchy3 } from "iconsax-react";
-import { SiMongodb } from "react-icons/si";
-import { BiLogoPostgresql } from "react-icons/bi";
-
-const connectionIcons = {
-  [ConnectionType.MONGO]: <SiMongodb size={60} className={"text-primary"} />,
-  [ConnectionType.SQL]: (
-    <BiLogoPostgresql size={60} className={"text-primary"} />
-  ),
-  [ConnectionType.REST]: (
-    <Hierarchy3 size={55} className={"text-primary"} variant={"Bold"} />
-  ),
-};
+import ConnectionIcon from "@/components/shared/ConnectionIcon";
 
 const connectionTexts = {
   [ConnectionType.MONGO]: "MongoDB",
@@ -44,7 +32,7 @@ const ConnectionTypeButton = ({
         className={"w-[120px] h-[100px] " + selectedClassName}
         onClick={onClick}
       >
-        {connectionIcons[type]}
+        <ConnectionIcon type={type} size={50} className="text-primary" />
       </Button>
     </Tooltip>
   );

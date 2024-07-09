@@ -9,7 +9,8 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import FastboardTablePropertiesComponent from "./fastboard-components/FastboardTableProperties";
-import { FastboardTableProperties } from "./fastboard-components/FastboardTable";
+import scrollbarStyles from "@/styles/scrollbar.module.css";
+import { FastboardTableProperties } from "@/types/editor/table-types";
 
 export default function PropertiesDrawer() {
   const isOpen = useRecoilValue(isPropertiesDrawerOpen);
@@ -23,7 +24,9 @@ export default function PropertiesDrawer() {
       animate={{ x: isOpen ? 0 : "100%" }}
       transition={{ ease: "easeInOut" }}
       className={
-        "h-full w-[22%] bg-background shadow-lg absolute top-0 right-0 p-5"
+        "h-full w-[22%] bg-background shadow-lg absolute top-0 right-0 p-5 overflow-y-auto" +
+        " " +
+        scrollbarStyles.scrollbar
       }
     >
       <h3 className={"text-xl font-medium p-2 mb-2"}>Properties</h3>

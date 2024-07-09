@@ -1,7 +1,16 @@
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import usePaginatedData from "@/hooks/usePaginatedData";
 import {
+  FastboardTableProperties,
+  TableColumnProperties,
+} from "@/types/editor/table-types";
+import {
+  Button,
   Card,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Pagination,
   Spinner,
   Table,
@@ -13,44 +22,38 @@ import {
   getKeyValue,
 } from "@nextui-org/react";
 import { useEffect } from "react";
+import { IoIosMore } from "react-icons/io";
 
-export class FastboardTableProperties {
-  query: { url: string; field: string | null };
-  hideHeader: boolean;
-  isStriped: boolean;
-
-  constructor(
-    query: { url: string; field: string | null },
-    hideHeader: boolean,
-    isStriped: boolean
-  ) {
-    this.query = query;
-    this.hideHeader = hideHeader;
-    this.isStriped = isStriped;
+function getFinalColumns(
+  columns: TableColumnProperties[],
+  actions: { key: string; label: string }[]
+) {
+  const finalColumns = columns
+    .filter((column) => column.visible)
+    .map((column) => column.column);
+  if (actions.length > 0) {
+    finalColumns.push({ key: "actions", label: "Actions" });
   }
-
-  static default(): FastboardTableProperties {
-    return {
-      query: {
-        url: "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
-        field: "results",
-      },
-      hideHeader: false,
-      isStriped: false,
-    };
-  }
+  return finalColumns;
 }
 
-interface FastboardTableProps {
+export default function FastboardTable({
+  properties,
+}: {
   properties: FastboardTableProperties;
-  onClick?: () => void;
-}
-
-export default function FastboardTable(props: FastboardTableProps) {
-  const { properties } = props;
-  const { query, hideHeader, isStriped } = properties;
-  const { keys, items, isLoading, error, page, setPage, pages, updateQuery } =
-    usePaginatedData(10);
+}) {
+  const {
+    query,
+    emptyMessage,
+    columns,
+    actions,
+    hideHeader,
+    isStriped,
+    rowsPerPage,
+  } = properties;
+  const { items, isLoading, error, page, setPage, pages, updateQuery } =
+    usePaginatedData(rowsPerPage);
+  const finalColumns = getFinalColumns(columns, actions);
 
   useEffect(() => {
     updateQuery(query.url, query.field);
@@ -64,6 +67,35 @@ export default function FastboardTable(props: FastboardTableProps) {
     );
   }
 
+  if (finalColumns.length === 0) {
+    return (
+      <Card className="flex flex-col w-full h-full p-5 justify-center items-center">
+        {" "}
+        <p className="text-xl text-danger">No columns selected</p>
+      </Card>
+    );
+  }
+
+  const renderCell = (item: any, columnKey: string) => {
+    if (columnKey === "actions") {
+      return (
+        <Dropdown>
+          <DropdownTrigger>
+            <Button isIconOnly size="sm" variant="light">
+              <IoIosMore size={20} />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu>
+            {actions.map((action) => (
+              <DropdownItem key={action.key}>{action.label}</DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
+      );
+    }
+    return getKeyValue(item, columnKey);
+  };
+
   return (
     <CustomSkeleton
       isLoaded={!isLoading}
@@ -71,13 +103,13 @@ export default function FastboardTable(props: FastboardTableProps) {
       className="w-full h-full"
     >
       <Table
+        aria-label="Fastboard table component"
         isHeaderSticky
         classNames={{
           thead: "-z-10",
         }}
         hideHeader={hideHeader}
         isStriped={isStriped}
-        aria-label="Example table with dynamic content"
         bottomContent={
           <div className="flex w-full justify-center">
             <Pagination
@@ -90,8 +122,9 @@ export default function FastboardTable(props: FastboardTableProps) {
             />
           </div>
         }
+        bottomContentPlacement="outside"
       >
-        <TableHeader columns={keys}>
+        <TableHeader columns={finalColumns}>
           {(column) => (
             <TableColumn key={column.key}>
               {column.label.toUpperCase()}
@@ -102,12 +135,12 @@ export default function FastboardTable(props: FastboardTableProps) {
           isLoading={isLoading}
           loadingContent={<Spinner label="Loading..." />}
           items={items}
-          emptyContent={"No rows to display."}
+          emptyContent={emptyMessage}
         >
           {(item) => (
             <TableRow key={item.key}>
               {(columnKey) => (
-                <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                <TableCell>{renderCell(item, columnKey as string)}</TableCell>
               )}
             </TableRow>
           )}

@@ -1,17 +1,17 @@
 .scrollbar::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+  width: 8px;
+  height: 5px;
 }
 
 .scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
+  background: #888;
+  border-radius: 10px;
 }
 
 .scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #555;
+  background: #555;
 }
