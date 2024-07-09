@@ -14,6 +14,8 @@ import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { Lock } from "iconsax-react";
 import RestResponse from "@/components/connections/queries/rest/RestResponse";
 import AuthModal from "@/components/connections/queries/rest/AuthModal";
+import { useRecoilValue } from "recoil";
+import { isMethodListClosedState } from "@/atoms/rest-query-editor";
 
 const fillParams = (query: Query, params: QueryParameter[]) => {
   //TODO: this will be done by the backend instead
@@ -57,6 +59,7 @@ const RestQueryEditor = ({
   const [selectedTab, setSelectedTab] = useState<string>("headers");
   const [previewToken, setPreviewToken] = useState<string>("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const isMethodListClosed = useRecoilValue(isMethodListClosedState);
 
   useEffect(() => {
     setResponse(null);
@@ -111,7 +114,9 @@ const RestQueryEditor = ({
   };
 
   return (
-    <div className={"flex w-[calc(100%-250px)] h-full gap-10"}>
+    <div
+      className={`flex ${!isMethodListClosed ? "w-[calc(100%-250px)]" : "w-full"} h-full gap-10`}
+    >
       <div className={"flex w-[calc(100%-300px)] h-full flex-col gap-3"}>
         <div className={"flex items-center justify-between"}>
           <EditableTitle
