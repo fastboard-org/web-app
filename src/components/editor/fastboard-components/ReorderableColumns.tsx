@@ -76,7 +76,7 @@ function ReorderableColumn({
       dragListener={false}
       dragControls={dragControls}
       value={column}
-      className="bg-content2 p-2 rounded-sm hover:bg-content3"
+      className="p-2 m-2 rounded-md border-2 border-content2"
     >
       <div className="flex flex-row columns-center justify-between">
         <EditableTitle
@@ -141,7 +141,7 @@ export default function ReorderableColumns({
         className={"flex w-full justify-center items-center overflow-hidden"}
       >
         <Reorder.Group
-          className="w-[90%] border-content4 border"
+          className="w-full"
           axis="y"
           layoutScroll
           values={columns}
