@@ -4,7 +4,7 @@ import { Input } from "@nextui-org/react";
 
 export default function DashboardName() {
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState("Dashboard name");
+  const [name, setName] = useState("API Dashboard");
 
   const handleDoubleClick = () => {
     setIsEditing(true);

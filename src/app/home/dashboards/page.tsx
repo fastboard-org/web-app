@@ -7,11 +7,13 @@ import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import { SetStateAction, useState } from "react";
 import { Dashboard, Folder } from "@/types/dashboards";
 import Search from "@/components/shared/Search";
+import { useRouter } from "next/navigation";
 
 export default function Dashboards() {
   const { dashboards, folders, loading } = useDashboards();
   const [search, setSearch] = useState("");
   const [folderSelected, setFolderSelected] = useState<Folder | null>(null);
+  const router = useRouter();
 
   const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
     setSearch(e.target.value);
@@ -23,6 +25,8 @@ export default function Dashboards() {
 
   const handleDashboardClick = (dashboard: Dashboard) => {
     //TODO redirect to editor
+    //TODO this line is only for "presentacion de medio termino"
+    router.push("/editor");
   };
 
   const handleBack = () => {
