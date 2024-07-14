@@ -4,11 +4,11 @@ import Container from "./Container";
 export default function FullLayout({
   index,
   component1,
-  mode = "editor",
+  mode = "editable",
 }: {
   index: number;
   component1?: FastboardComponent;
-  mode?: "editor" | "view";
+  mode?: "editable" | "view";
 }) {
   return (
     <Container

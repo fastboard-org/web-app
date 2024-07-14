@@ -6,8 +6,7 @@ import {
 import { ComponentType } from "@/types/editor";
 import { useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import FastboardTable from "./FastboardTable";
-import { FastboardTableProperties } from "@/types/editor/table-types";
+import getComponent from "./utils";
 
 const FastboardComponent = ({
   onClick,
@@ -16,7 +15,7 @@ const FastboardComponent = ({
   properties,
   layoutIndex,
   containerIndex,
-  mode = "editor",
+  mode = "editable",
 }: {
   onClick?: () => void;
   name: string;
@@ -24,7 +23,7 @@ const FastboardComponent = ({
   properties: Record<string, any>;
   layoutIndex: number;
   containerIndex: string;
-  mode?: "editor" | "view";
+  mode?: "editable" | "view";
 }) => {
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
@@ -48,15 +47,6 @@ const FastboardComponent = ({
     }
   }
 
-  function getComponent(type: ComponentType, properties: Record<string, any>) {
-    switch (type) {
-      case ComponentType.Table:
-        return (
-          <FastboardTable properties={properties as FastboardTableProperties} />
-        );
-    }
-  }
-
   function isSelected() {
     if (
       propertiesDrawerOpen &&
@@ -68,7 +58,7 @@ const FastboardComponent = ({
     return isHovered;
   }
 
-  const component = getComponent(type, properties);
+  const component = getComponent(type, mode, properties);
   if (!component) return null;
 
   if (mode === "view") {

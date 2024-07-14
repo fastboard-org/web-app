@@ -1,10 +1,11 @@
 "use client";
 import { isComponentsDrawerOpen } from "@/atoms/editor";
-import { Divider, Spacer } from "@nextui-org/react";
+import { Divider } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
-import FastboardTableDraggable from "./fastboard-components/FastboardTableDraggable";
+import { ComponentType } from "@/types/editor";
+import getComponent from "./fastboard-components/utils";
 
 export default function ComponentsDrawer() {
   const isOpen = useRecoilValue(isComponentsDrawerOpen);
@@ -21,7 +22,9 @@ export default function ComponentsDrawer() {
       <h3 className={"text-xl font-medium p-2 mb-2"}>Components</h3>
       <Divider />
       <div className="flex flex-col gap-5 mt-5">
-        <FastboardTableDraggable />
+        {Object.values(ComponentType).map((componentType) =>
+          getComponent(componentType, "draggable")
+        )}
       </div>
     </motion.div>
   );
