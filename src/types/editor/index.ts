@@ -12,7 +12,7 @@ export interface Layout {
   type: LayoutType;
 }
 
-interface FullLayout extends Layout {
+export interface FullLayout extends Layout {
   component1?: FastboardComponent;
 }
 export interface RowLayout extends Layout {

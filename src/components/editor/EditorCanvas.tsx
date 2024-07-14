@@ -5,41 +5,13 @@ import {
 } from "@/atoms/editor";
 import { motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
-import {
-  Layout,
-  LayoutType,
-  RowLayout as RowLayoutInterface,
-} from "@/types/editor";
-import FullLayout from "./layouts/FullLayout";
-import RowLayout from "./layouts/RowLayout";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
+import { getLayout } from "./fastboard-components/utils";
 
 export default function EditorCanvas() {
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
   const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
   const dashboardMetadata = useRecoilValue(dashboardMetadataState);
-
-  function getLayoutComponent(layout: Layout) {
-    switch (layout.type) {
-      case LayoutType.Full:
-        return (
-          <FullLayout
-            index={0}
-            component1={dashboardMetadata.layouts[0].component1}
-          />
-        );
-      case LayoutType.Row:
-        const layoutData = layout as RowLayoutInterface;
-
-        return (
-          <RowLayout
-            index={0}
-            component1={layoutData.component1}
-            component2={layoutData.component2}
-          />
-        );
-    }
-  }
 
   return (
     <motion.div
@@ -55,7 +27,9 @@ export default function EditorCanvas() {
         scrollbarStyles.scrollbar
       }
     >
-      {getLayoutComponent(dashboardMetadata.layouts[0])}
+      {dashboardMetadata.layouts.map((layout, index) =>
+        getLayout(layout, index, "editable")
+      )}
     </motion.div>
   );
 }

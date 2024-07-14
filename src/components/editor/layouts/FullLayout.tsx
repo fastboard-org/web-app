@@ -1,12 +1,17 @@
-import { FastboardComponent } from "@/types/editor";
+import {
+  FastboardComponent,
+  FullLayout as FullLayoutInterface,
+} from "@/types/editor";
 import Container from "./Container";
 
 export default function FullLayout({
   index,
+  properties,
   component1,
   mode = "editable",
 }: {
   index: number;
+  properties: FullLayoutInterface;
   component1?: FastboardComponent;
   mode?: "editable" | "view";
 }) {
@@ -14,7 +19,7 @@ export default function FullLayout({
     <Container
       layoutIndex={index}
       containerIndex="component1"
-      component={component1}
+      component={properties?.component1}
       mode={mode}
     />
   );
