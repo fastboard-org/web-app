@@ -6,7 +6,7 @@ import {
 import { ComponentType } from "@/types/editor";
 import { useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import getComponent from "./utils";
+import { getComponent } from "./utils";
 
 const FastboardComponent = ({
   onClick,

@@ -4,7 +4,7 @@ import FastboardTable from "./FastboardTable";
 import { FastboardTableProperties } from "@/types/editor/table-types";
 import FastboardTablePropertiesComponent from "./FastboardTableProperties";
 
-export default function getComponent(
+export function getComponent(
   id: ComponentType,
   type: "draggable" | "editable" | "view" | "properties",
   properties?: Record<string, any>,

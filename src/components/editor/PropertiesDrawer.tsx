@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import getComponent from "./fastboard-components/utils";
+import { getComponent } from "./fastboard-components/utils";
 
 export default function PropertiesDrawer() {
   const isOpen = useRecoilValue(isPropertiesDrawerOpen);
