@@ -1,11 +1,19 @@
 "use client";
-import { dashboardMetadataState } from "@/atoms/editor";
 import FullLayout from "@/components/editor/layouts/FullLayout";
+import useDashboard from "@/hooks/useDashboard";
 import { Layout, LayoutType } from "@/types/editor";
-import { useRecoilValue } from "recoil";
+import { Spinner } from "@nextui-org/react";
 
 export default function Preview() {
-  const dashboardMetadata = useRecoilValue(dashboardMetadataState);
+  const { dashboard: dashboardMetadata, loading } = useDashboard("1");
+
+  if (loading || !dashboardMetadata) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full">
+        <Spinner />
+      </div>
+    );
+  }
 
   function getLayoutComponent(layout: Layout, index: number) {
     switch (layout.type) {
@@ -13,8 +21,8 @@ export default function Preview() {
         return (
           <FullLayout
             index={index}
-            isEditor={false}
-            component1={dashboardMetadata.layouts[index].component1}
+            component1={dashboardMetadata?.layouts[index].component1}
+            mode="view"
           />
         );
     }

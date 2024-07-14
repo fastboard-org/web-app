@@ -7,11 +7,13 @@ export default function Container({
   containerIndex,
   component,
   className,
+  mode = "editor",
 }: {
   layoutIndex: number;
   containerIndex: string;
   component?: FastboardComponentInterface;
   className?: string;
+  mode?: "editor" | "view";
 }) {
   const { isOver, setNodeRef } = useDroppable({
     id: `layout_${layoutIndex}_${containerIndex}`,
@@ -36,6 +38,7 @@ export default function Container({
           layoutIndex={layoutIndex}
           containerIndex={containerIndex}
           properties={component.properties}
+          mode={mode}
         />
       ) : null}
     </div>

@@ -16,6 +16,7 @@ const FastboardComponent = ({
   properties,
   layoutIndex,
   containerIndex,
+  mode = "editor",
 }: {
   onClick?: () => void;
   name: string;
@@ -23,6 +24,7 @@ const FastboardComponent = ({
   properties: Record<string, any>;
   layoutIndex: number;
   containerIndex: string;
+  mode?: "editor" | "view";
 }) => {
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
@@ -68,6 +70,10 @@ const FastboardComponent = ({
 
   const component = getComponent(type, properties);
   if (!component) return null;
+
+  if (mode === "view") {
+    return component;
+  }
 
   return (
     <div
