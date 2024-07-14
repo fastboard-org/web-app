@@ -1,20 +1,13 @@
-import {
-  FastboardComponent,
-  RowLayout as RowLayoutInterface,
-} from "@/types/editor";
+import { RowLayout as RowLayoutInterface } from "@/types/editor";
 import Container from "./Container";
 
 export default function RowLayout({
   index,
   properties,
-  component1,
-  component2,
   mode = "editable",
 }: {
   index: number;
   properties: RowLayoutInterface;
-  component1?: FastboardComponent;
-  component2?: FastboardComponent;
   mode?: "editable" | "view";
 }) {
   return (
