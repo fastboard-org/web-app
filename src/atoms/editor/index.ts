@@ -1,5 +1,4 @@
 import {
-  ComponentType,
   DashboardMetadata,
   LayoutType,
   PropertiesDrawerState,
@@ -24,21 +23,6 @@ export const propertiesDrawerState = atom<PropertiesDrawerState>({
     properties: {},
   },
 });
-
-const localStorageEffect =
-  (key: string) =>
-  ({ setSelf, onSet }: { setSelf: any; onSet: any }) => {
-    const savedValue = localStorage.getItem(key);
-    if (savedValue != null) {
-      setSelf(JSON.parse(savedValue));
-    }
-
-    onSet((newValue: DashboardMetadata, _: any, isReset: boolean) => {
-      isReset
-        ? localStorage.removeItem(key)
-        : localStorage.setItem(key, JSON.stringify(newValue));
-    });
-  };
 
 export const dashboardMetadataState = atom<DashboardMetadata>({
   key: "dashboardMetadata",
