@@ -16,9 +16,7 @@ const useDashboard = (id: string) => {
 
   const fetchDashboardById = async (id: string) => {
     try {
-      const response = await axiosInstance.get<Dashboard>(
-        `https://fastboard-api-gateway-ap9dy.ondigitalocean.app/1/dashboards/${id}`
-      );
+      const response = await axiosInstance.get<Dashboard>(`/dashboards/${id}`);
       return response.data;
     } catch (error) {
       console.error(error);
