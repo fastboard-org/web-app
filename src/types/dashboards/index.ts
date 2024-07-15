@@ -1,9 +1,11 @@
+import { DashboardMetadata } from "../editor";
+
 export interface Dashboard {
   user_id: string;
   id: string;
   name: string;
   folder_id?: string;
-  metadata?: object;
+  metadata?: DashboardMetadata;
 }
 
 export interface Folder {

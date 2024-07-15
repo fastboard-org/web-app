@@ -1,45 +1,36 @@
-import { useEffect, useState } from "react";
-import { Connection } from "@/types/connections";
-import { mockConnections } from "@/hooks/useConnections";
-import { ComponentType, DashboardMetadata, LayoutType } from "@/types/editor";
-import { FastboardTableProperties } from "@/types/editor/table-types";
-
-const dashboardData: DashboardMetadata = {
-  layouts: [
-    {
-      type: LayoutType.Full,
-      component1: {
-        type: ComponentType.Table,
-        properties: FastboardTableProperties.default(),
-      },
-    },
-  ],
-};
+import { useQuery } from "@tanstack/react-query";
+import { Dashboard } from "@/types/dashboards";
+import { axiosInstance } from "@/lib/axios";
 
 const useDashboard = (id: string) => {
-  const [dashboard, setDashboard] = useState<DashboardMetadata | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(true);
+  const {
+    isPending: loading,
+    isError,
+    data: dashboard,
+    error,
+  } = useQuery({
+    queryKey: ["dashboards", id],
+    queryFn: () => fetchDashboardById(id),
+    refetchOnWindowFocus: false,
+  });
 
-  const fetchDashboard = async () => {
-    // TODO: fetch dashboard by id
-    setTimeout(() => {
-      setDashboard(dashboardData);
-      setLoading(false);
-    }, 3000);
-  };
-
-  useEffect(() => {
-    if (!mounted) {
-      setMounted(true);
+  const fetchDashboardById = async (id: string) => {
+    try {
+      const response = await axiosInstance.get<Dashboard>(
+        `https://fastboard-api-gateway-ap9dy.ondigitalocean.app/1/dashboards/${id}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
-
-    fetchDashboard();
-  }, [id]);
+  };
 
   return {
     dashboard,
     loading,
+    isError,
+    error,
   };
 };
 
