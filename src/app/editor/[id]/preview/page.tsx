@@ -26,7 +26,7 @@ export default function Preview() {
 
   return (
     <div className="flex justify-center items-center h-screen w-full bg-background">
-      {dashboard?.metadata?.layouts.map((layout, index) =>
+      {dashboard?.metadata?.layouts?.map((layout, index) =>
         getLayout(layout, index, "view")
       )}
     </div>
