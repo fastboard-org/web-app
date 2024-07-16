@@ -16,6 +16,7 @@ import RestResponse from "@/components/connections/queries/rest/RestResponse";
 import AuthModal from "@/components/connections/queries/rest/AuthModal";
 import { useRecoilValue } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
+import RestBodyEditor from "@/components/connections/queries/rest/RestBodyEditor";
 
 const fillParams = (query: Query, params: QueryParameter[]) => {
   //TODO: this will be done by the backend instead
@@ -37,9 +38,17 @@ const fillParams = (query: Query, params: QueryParameter[]) => {
     })
     .filter((header: RestHeader) => header.key && header.value);
 
+  const queryBody = query.metadata.body || "{}";
+
+  const filledBody =
+    params?.reduce((body, param) => {
+      return body.replace(`{{${param.name}}}`, param.preview);
+    }, queryBody) ?? queryBody;
+
   return {
     filledPath,
     filledHeaders,
+    filledBody,
   };
 };
 
@@ -68,7 +77,7 @@ const RestQueryEditor = ({
 
   const handleSend = async () => {
     setResponseLoading(true);
-    const { filledPath, filledHeaders } = fillParams(query, [
+    const { filledPath, filledHeaders, filledBody } = fillParams(query, [
       ...(query.metadata.parameters ?? []),
       {
         name: "token",
@@ -86,6 +95,7 @@ const RestQueryEditor = ({
           },
           {},
         ),
+        body: query.metadata.method !== "GET" ? filledBody : undefined,
       });
     } catch (e) {
       //TODO: show error message to user
@@ -103,6 +113,17 @@ const RestQueryEditor = ({
 
     setSelectedTab("response");
     setResponseLoading(false);
+  };
+
+  const hasValidBody = () => {
+    if (!query.metadata.body) return true;
+    try {
+      JSON.parse(query.metadata.body);
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   };
 
   const handleSave = () => {
@@ -135,6 +156,7 @@ const RestQueryEditor = ({
               isLoading={saveLoading}
               onClick={handleSave}
               variant={"flat"}
+              isDisabled={!hasValidBody()}
             >
               Save
             </Button>
@@ -142,6 +164,7 @@ const RestQueryEditor = ({
               color={"primary"}
               onClick={handleSend}
               isLoading={responseLoading}
+              isDisabled={!hasValidBody()}
             >
               Send
             </Button>
@@ -178,14 +201,23 @@ const RestQueryEditor = ({
               />
             </Tab>
             <Tab key={"body"} title={"Body"}>
-              {/*TODO: implement body editor*/}
+              <RestBodyEditor
+                body={query.metadata.body || "{}"}
+                onChange={(body) => {
+                  onChange({
+                    ...query,
+                    metadata: { ...query.metadata, body },
+                  });
+                }}
+                invalidBody={!hasValidBody()}
+              />
             </Tab>
             <Tab key={"response"} title={"Response"}>
               <RestResponse response={response} responseData={responseData} />
             </Tab>
           </Tabs>
           <Button
-            className={"absolute right-5 top-4"}
+            className={"absolute right-4 top-4"}
             variant={"flat"}
             onClick={onOpen}
           >
