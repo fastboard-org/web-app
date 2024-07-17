@@ -11,7 +11,6 @@ import {
 import { ArrowDown2 } from "iconsax-react";
 import { useState } from "react";
 import PublishOption from "@/types/editor";
-import { useRouter } from "next/navigation";
 
 export default function PublishButton() {
   const publishOptions: PublishOption[] = [
@@ -27,7 +26,8 @@ export default function PublishButton() {
   const [selectedOption, setSelectedOption] = useState(publishOptions[0].label);
 
   function handlePreview() {
-    window.open("editor/preview", "_blank");
+    //TODO: open preview with current dashboard id
+    window.open("editor/6696b1756cf37e65c45f959b/preview", "_blank");
   }
 
   return (
