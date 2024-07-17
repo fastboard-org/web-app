@@ -9,11 +9,11 @@ import {
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
-import QuerySelector from "../QuerySelector";
 import EditableTitle from "@/components/shared/EditableTitle";
 import { RiQuestionLine } from "react-icons/ri";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { TableActionProperty } from "@/types/editor/table-types";
+import QuerySelection from "../QuerySelection";
 
 function TableAction({
   action,
@@ -57,8 +57,7 @@ function TableAction({
             }
           >
             <EditableTitle value={action.label} onChange={(value) => {}} />
-            <QuerySelector
-              queries={[]}
+            <QuerySelection
               selectedQueryId={""}
               onSelectionChange={(key) => {}}
             />

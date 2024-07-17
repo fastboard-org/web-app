@@ -5,11 +5,10 @@ import { Key } from "react";
 import useQueries from "@/hooks/useQueries";
 import CustomSkeleton from "../shared/CustomSkeleton";
 
-export default function QuerySelector({
+export default function QuerySelection({
   selectedQueryId,
   onSelectionChange,
 }: {
-  queries: any[];
   selectedQueryId: string;
   onSelectionChange: (key: Key) => void;
 }) {
@@ -22,7 +21,11 @@ export default function QuerySelector({
   const selectedQuery = queries?.find((q) => q.id === selectedQueryId);
 
   return (
-    <CustomSkeleton isLoaded={!loading} loadingClassName="h-10 rounded-lg">
+    <CustomSkeleton
+      isLoaded={!loading}
+      loadingClassName="h-10 rounded-lg"
+      onlyRenderOnLoad
+    >
       <Autocomplete
         aria-label="Query selector"
         allowsCustomValue

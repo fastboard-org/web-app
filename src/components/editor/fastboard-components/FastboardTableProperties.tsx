@@ -4,7 +4,7 @@ import { ConnectionType, HTTP_METHOD } from "@/types/connections";
 import ReorderableColumns from "./ReorderableColumns";
 import TableActionsList from "./TableActionsList";
 import { FastboardTableProperties } from "@/types/editor/table-types";
-import QuerySelector from "../QuerySelector";
+import QuerySelection from "../QuerySelection";
 
 const FastboardTablePropertiesComponent = ({
   properties,
@@ -105,8 +105,7 @@ const FastboardTablePropertiesComponent = ({
         }}
       >
         <div className="flex flex-col gap-5  overflow-x-hidden">
-          <QuerySelector
-            queries={mockQueries}
+          <QuerySelection
             selectedQueryId={query.id}
             onSelectionChange={(key) => {
               const query = mockQueries.find((q) => q.id === key);
