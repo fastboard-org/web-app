@@ -13,6 +13,7 @@ import ReorderableColumns from "./ReorderableColumns";
 import TableActionsList from "./TableActionsList";
 import ConnectionIcon from "@/components/shared/ConnectionIcon";
 import { FastboardTableProperties } from "@/types/editor/table-types";
+import QuerySelector from "../QuerySelector";
 
 const FastboardTablePropertiesComponent = ({
   properties,
@@ -113,19 +114,9 @@ const FastboardTablePropertiesComponent = ({
         }}
       >
         <div className="flex flex-col gap-5  overflow-x-hidden">
-          <Autocomplete
-            aria-label="Query data selector"
-            allowsCustomValue
-            defaultItems={mockQueries}
-            disabledKeys={mockQueries
-              .filter((q) => q.connection.type !== ConnectionType.REST)
-              .map((q) => q.id)}
-            defaultSelectedKey={mockQueries[0].id}
-            selectedKey={mockQueries.find((q) => q.id === query.id)?.id}
-            label="Query"
-            labelPlacement="outside"
-            placeholder="Select query"
-            startContent={<Hierarchy3 className={"text-primary"} />}
+          <QuerySelector
+            queries={mockQueries}
+            selectedQueryId={query.id}
             onSelectionChange={(key) => {
               const query = mockQueries.find((q) => q.id === key);
               if (!query) return;
@@ -152,23 +143,7 @@ const FastboardTablePropertiesComponent = ({
                 },
               });
             }}
-          >
-            {(query) => (
-              <AutocompleteItem
-                key={query.id}
-                startContent={
-                  <ConnectionIcon
-                    type={query.connection.type}
-                    size={20}
-                    className={"text-primary"}
-                  />
-                }
-              >
-                {query.name}
-              </AutocompleteItem>
-            )}
-          </Autocomplete>
-
+          />
           <ReorderableColumns
             columnsProperties={columnsProperties}
             onChange={(newOrder) => {

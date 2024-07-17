@@ -32,13 +32,13 @@ export default function FastboardTableDraggable() {
           }}
         >
           <TableHeader>
-            <TableColumn>key</TableColumn>
-            <TableColumn>key</TableColumn>
+            <TableColumn key={1}>key</TableColumn>
+            <TableColumn key={2}>key</TableColumn>
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableCell>value</TableCell>
-              <TableCell>value</TableCell>
+              <TableCell key={1}>value</TableCell>
+              <TableCell key={2}>value</TableCell>
             </TableRow>
           </TableBody>
         </Table>
