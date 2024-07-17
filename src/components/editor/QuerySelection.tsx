@@ -28,7 +28,6 @@ export default function QuerySelection({
     >
       <Autocomplete
         aria-label="Query selector"
-        allowsCustomValue
         defaultItems={queries}
         disabledKeys={queries
           ?.filter((q) => q.metadata.type !== ConnectionType.REST)
