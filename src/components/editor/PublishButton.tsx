@@ -8,8 +8,7 @@ import {
   DropdownTrigger,
   Spacer,
 } from "@nextui-org/react";
-import { ArrowDown2} from "iconsax-react";
-import { IoMdArrowDropdown } from "react-icons/io";
+import { ArrowDown2 } from "iconsax-react";
 import { useState } from "react";
 import PublishOption from "@/types/editor";
 
@@ -26,12 +25,19 @@ export default function PublishButton() {
   ];
   const [selectedOption, setSelectedOption] = useState(publishOptions[0].label);
 
+  function handlePreview() {
+    //TODO: open preview with current dashboard id
+    window.open("editor/6696b1756cf37e65c45f959b/preview", "_blank");
+  }
+
   return (
     <div className="flex flex-row items-center">
-      <Button variant="flat">Preview</Button>
+      <Button variant="flat" onClick={handlePreview}>
+        Preview
+      </Button>
       <Spacer x={3} />
       <ButtonGroup color="primary">
-        <Button >{selectedOption}</Button>
+        <Button>{selectedOption}</Button>
         <Dropdown placement="bottom-end">
           <DropdownTrigger>
             <Button isIconOnly>

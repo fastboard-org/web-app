@@ -2,17 +2,22 @@
 "use client";
 
 import { NextUIProvider } from "@nextui-org/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { RecoilRoot } from "recoil";
 
+const queryClient = new QueryClient();
+
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <RecoilRoot>
-      <NextUIProvider>
-        <NextThemesProvider attribute="class" defaultTheme="dark">
-          {children}
-        </NextThemesProvider>
-      </NextUIProvider>
-    </RecoilRoot>
+    <QueryClientProvider client={queryClient}>
+      <RecoilRoot>
+        <NextUIProvider>
+          <NextThemesProvider attribute="class" defaultTheme="dark">
+            {children}
+          </NextThemesProvider>
+        </NextUIProvider>
+      </RecoilRoot>
+    </QueryClientProvider>
   );
 }

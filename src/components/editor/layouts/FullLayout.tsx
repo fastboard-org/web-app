@@ -1,18 +1,21 @@
-import { FastboardComponent } from "@/types/editor";
+import { FullLayout as FullLayoutInterface } from "@/types/editor";
 import Container from "./Container";
 
 export default function FullLayout({
   index,
-  component1,
+  properties,
+  mode = "editable",
 }: {
   index: number;
-  component1?: FastboardComponent;
+  properties: FullLayoutInterface;
+  mode?: "editable" | "view";
 }) {
   return (
     <Container
       layoutIndex={index}
       containerIndex="component1"
-      component={component1}
+      component={properties?.component1}
+      mode={mode}
     />
   );
 }

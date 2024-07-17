@@ -8,9 +8,8 @@ import { Divider, Spacer } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import FastboardTablePropertiesComponent from "./fastboard-components/FastboardTableProperties";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import { FastboardTableProperties } from "@/types/editor/table-types";
+import { getComponent } from "./fastboard-components/utils";
 
 export default function PropertiesDrawer() {
   const isOpen = useRecoilValue(isPropertiesDrawerOpen);
@@ -32,12 +31,13 @@ export default function PropertiesDrawer() {
       <h3 className={"text-xl font-medium p-2 mb-2"}>Properties</h3>
       <Divider />
       <Spacer y={4} />
-      {isOpen && propertiesDrawerComponent.type && (
-        <FastboardTablePropertiesComponent
-          properties={
-            propertiesDrawerComponent.properties as FastboardTableProperties
-          }
-          onValueChange={(properties) => {
+      {isOpen &&
+        propertiesDrawerComponent.type &&
+        getComponent(
+          propertiesDrawerComponent.type,
+          "properties",
+          propertiesDrawerComponent.properties,
+          (properties) => {
             setPropertiesDrawerState((prev) => ({
               ...prev,
               properties: properties,
@@ -56,9 +56,8 @@ export default function PropertiesDrawer() {
                 return layout;
               }),
             }));
-          }}
-        />
-      )}
+          }
+        )}
     </motion.div>
   );
 }

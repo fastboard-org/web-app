@@ -1,5 +1,4 @@
 import {
-  ComponentType,
   DashboardMetadata,
   LayoutType,
   PropertiesDrawerState,
