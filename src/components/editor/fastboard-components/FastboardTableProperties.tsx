@@ -1,17 +1,8 @@
-import {
-  Accordion,
-  AccordionItem,
-  Autocomplete,
-  AutocompleteItem,
-  Checkbox,
-  Input,
-} from "@nextui-org/react";
-import { Hierarchy3 } from "iconsax-react";
+import { Accordion, AccordionItem, Checkbox, Input } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { ConnectionType, HTTP_METHOD } from "@/types/connections";
 import ReorderableColumns from "./ReorderableColumns";
 import TableActionsList from "./TableActionsList";
-import ConnectionIcon from "@/components/shared/ConnectionIcon";
 import { FastboardTableProperties } from "@/types/editor/table-types";
 import QuerySelector from "../QuerySelector";
 
@@ -22,9 +13,9 @@ const FastboardTablePropertiesComponent = ({
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
-  const { query, emptyMessage, columns, actions, isStriped } = properties;
+  const { query, emptyMessage, columns, actions, hideHeader, isStriped } =
+    properties;
   const [columnsProperties, setColumnsProperties] = useState(columns);
-  const [hideHeader, setHideHeader] = useState(properties.hideHeader);
 
   useEffect(() => {
     setColumnsProperties(columns);
@@ -198,7 +189,6 @@ const FastboardTablePropertiesComponent = ({
           <Checkbox
             isSelected={hideHeader}
             onValueChange={(isSelected) => {
-              setHideHeader(isSelected);
               onValueChange({
                 ...properties,
                 hideHeader: isSelected,
