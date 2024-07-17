@@ -1,7 +1,6 @@
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import ConnectionIcon from "../shared/ConnectionIcon";
-import { ConnectionType, HTTP_METHOD } from "@/types/connections";
-import { Hierarchy3 } from "iconsax-react";
+import { ConnectionType } from "@/types/connections";
 import { Key } from "react";
 
 export default function QuerySelector({
@@ -13,6 +12,8 @@ export default function QuerySelector({
   selectedQueryId: string;
   onSelectionChange: (key: Key) => void;
 }) {
+  const selectedQuery = queries.find((q) => q.id === selectedQueryId);
+
   return (
     <Autocomplete
       aria-label="Query selector"
@@ -22,11 +23,17 @@ export default function QuerySelector({
         .filter((q) => q.connection.type !== ConnectionType.REST)
         .map((q) => q.id)}
       defaultSelectedKey={queries[0]?.id}
-      selectedKey={queries.find((q) => q.id === selectedQueryId)?.id}
+      selectedKey={selectedQuery?.id}
       label="Query"
       labelPlacement="outside"
       placeholder="Select query"
-      startContent={<Hierarchy3 className={"text-primary"} />}
+      startContent={
+        <ConnectionIcon
+          type={selectedQuery?.connection.type}
+          size={25}
+          className="text-primary"
+        />
+      }
       onSelectionChange={onSelectionChange}
     >
       {(query) => (
