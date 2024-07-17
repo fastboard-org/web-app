@@ -85,7 +85,7 @@ const RestQueriesSelectionList = ({
             selectedKeys={[selectedQuery.id]}
             classNames={{
               base:
-                "overflow-y-auto w-full max-h-full " +
+                "overflow-y-auto w-full max-h-[90%] " +
                 scrollbarStyles.scrollbar,
             }}
             itemClasses={{
