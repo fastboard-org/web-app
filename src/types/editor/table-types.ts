@@ -8,6 +8,13 @@ export interface TableColumnProperties {
   visible: boolean;
 }
 
+export interface TableActionProperty {
+  key: string;
+  label: string;
+  queryId: string;
+  parameters: { key: string; value: string }[];
+}
+
 export class FastboardTableProperties {
   query: { id: string; url: string; field: string | null } = {
     id: "1",
@@ -20,7 +27,7 @@ export class FastboardTableProperties {
     { column: { key: "name", label: "Name" }, visible: true },
     { column: { key: "url", label: "URL" }, visible: true },
   ];
-  actions: { key: string; label: string }[] = [];
+  actions: TableActionProperty[] = [];
   hideHeader: boolean = false;
   isStriped: boolean = false;
 

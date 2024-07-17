@@ -5,16 +5,15 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Spacer,
   Tooltip,
 } from "@nextui-org/react";
-import { Add } from "iconsax-react";
 import { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import QuerySelector from "../QuerySelector";
 import EditableTitle from "@/components/shared/EditableTitle";
 import { RiQuestionLine } from "react-icons/ri";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
+import { TableActionProperty } from "@/types/editor/table-types";
 
 function TableAction({
   action,
@@ -26,12 +25,12 @@ function TableAction({
   return (
     <li
       key={action.key}
-      className="flex flex-row justify-between items-center w-full"
+      className="flex flex-row justify-between items-center w-full my-2"
     >
       <Popover placement="top-start">
         <PopoverTrigger>
           <Button
-            className="w-full justify-between "
+            className="w-full justify-between border "
             variant="light"
             onPress={() => {}}
             endContent={
@@ -75,6 +74,7 @@ function TableAction({
                 className={"p-3 w-[275px] -translate-x-[35px] text-xs"}
                 placement={"bottom"}
                 offset={10}
+                closeDelay={0}
               >
                 <div>
                   <RiQuestionLine className={"text-foreground-500"} size={15} />
@@ -113,8 +113,8 @@ export default function TableActionsList({
   actionsProperties,
   onChange,
 }: {
-  actionsProperties: { key: string; label: string }[];
-  onChange?: (actions: { key: string; label: string }[]) => void;
+  actionsProperties: TableActionProperty[];
+  onChange?: (actions: TableActionProperty[]) => void;
 }) {
   const [actions, setActions] = useState(actionsProperties);
   const [lastIndex, setLastIndex] = useState(0);
@@ -124,13 +124,17 @@ export default function TableActionsList({
   }, [actionsProperties]);
 
   function addAction() {
-    const key = `new-${lastIndex}`;
-    const label = `New Action ${lastIndex}`;
+    const newAction: TableActionProperty = {
+      key: `new-${lastIndex}`,
+      label: `New Action ${lastIndex}`,
+      queryId: "",
+      parameters: [],
+    };
 
     setLastIndex(lastIndex + 1);
-    setActions((previous) => [...previous, { key, label }]);
+    setActions((previous) => [...previous, newAction]);
     if (onChange) {
-      onChange([...actions, { key, label }]);
+      onChange([...actions, newAction]);
     }
   }
 
@@ -152,19 +156,8 @@ export default function TableActionsList({
   }
 
   return (
-    <div>
-      <div className="flex justify-end w-full">
-        <Button
-          isIconOnly
-          variant="light"
-          onClick={() => {
-            addAction();
-          }}
-        >
-          <Add />
-        </Button>
-      </div>
-      <ul className=" bg-content2 rounded-lg p-2">
+    <div className="flex flex-col items-center">
+      <ul className="w-[95%] rounded-lg p-2">
         {actions.map((action, index) => (
           <TableAction
             action={action}
@@ -174,6 +167,15 @@ export default function TableActionsList({
           />
         ))}
       </ul>
+      <Button
+        className={"w-[90%]"}
+        onPress={() => {
+          addAction();
+        }}
+        variant={"flat"}
+      >
+        Add Action
+      </Button>
     </div>
   );
 }
