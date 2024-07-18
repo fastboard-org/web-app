@@ -14,6 +14,7 @@ export interface Connection {
 
 export interface Query {
   id: string;
+  _id: string;
   name: string;
   connection_id: string;
   metadata: any;

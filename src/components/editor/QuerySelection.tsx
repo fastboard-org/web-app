@@ -1,16 +1,15 @@
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import ConnectionIcon from "../shared/ConnectionIcon";
-import { ConnectionType } from "@/types/connections";
-import { Key } from "react";
+import { Query } from "@/types/connections";
 import useQueries from "@/hooks/useQueries";
 import CustomSkeleton from "../shared/CustomSkeleton";
 
 export default function QuerySelection({
   selectedQueryId,
-  onSelectionChange,
+  onQuerySelect,
 }: {
   selectedQueryId: string;
-  onSelectionChange: (key: Key) => void;
+  onQuerySelect: (query: Query) => void;
 }) {
   const { queries, loading, isError, error } = useQueries("");
 
@@ -29,9 +28,7 @@ export default function QuerySelection({
       <Autocomplete
         aria-label="Query selector"
         defaultItems={queries}
-        disabledKeys={queries
-          ?.filter((q) => q.metadata.type !== ConnectionType.REST)
-          .map((q) => q.id)}
+        disabledKeys={[]}
         defaultSelectedKey={selectedQuery?.id}
         selectedKey={selectedQuery?.id}
         label="Query"
@@ -44,7 +41,12 @@ export default function QuerySelection({
             className="text-primary"
           />
         }
-        onSelectionChange={onSelectionChange}
+        onSelectionChange={(key) => {
+          const query = queries?.find((q) => q.id === key);
+          if (query) {
+            onQuerySelect(query);
+          }
+        }}
         errorMessage="Something went wrong, queries not found"
         isInvalid={isError}
       >

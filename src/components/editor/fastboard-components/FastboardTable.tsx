@@ -1,7 +1,9 @@
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
+import useExecuteQuery from "@/hooks/useExecuteQuery";
 import usePaginatedData from "@/hooks/usePaginatedData";
 import {
   FastboardTableProperties,
+  TableActionProperty,
   TableColumnProperties,
 } from "@/types/editor/table-types";
 import {
@@ -21,8 +23,10 @@ import {
   TableRow,
   getKeyValue,
 } from "@nextui-org/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IoIosMore } from "react-icons/io";
+import DeleteActionModal from "./shared/DeleteActionModal";
+import useData from "@/hooks/useData";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -44,6 +48,7 @@ export default function FastboardTable({
 }) {
   const {
     query,
+    sourceQuery,
     emptyMessage,
     columns,
     actions,
@@ -53,7 +58,14 @@ export default function FastboardTable({
   } = properties;
   const { items, isLoading, error, page, setPage, pages, updateQuery } =
     usePaginatedData(rowsPerPage);
+  useData(sourceQuery);
+  const { executeQuery, data } = useExecuteQuery();
   const finalColumns = getFinalColumns(columns, actions);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedRowAction, setSelectedRowAction] = useState<{
+    action: TableActionProperty;
+    item: any;
+  } | null>(null);
 
   useEffect(() => {
     updateQuery(query.url, query.field);
@@ -87,7 +99,15 @@ export default function FastboardTable({
           </DropdownTrigger>
           <DropdownMenu>
             {actions.map((action) => (
-              <DropdownItem key={action.key}>{action.label}</DropdownItem>
+              <DropdownItem
+                key={action.key}
+                onPress={() => {
+                  setSelectedRowAction({ action, item });
+                  setDeleteModalOpen(true);
+                }}
+              >
+                {action.label}
+              </DropdownItem>
             ))}
           </DropdownMenu>
         </Dropdown>
@@ -102,6 +122,18 @@ export default function FastboardTable({
       onlyRenderOnLoad
       className="w-full h-full"
     >
+      <DeleteActionModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          setDeleteModalOpen(false);
+        }}
+        onConfirm={() => {
+          console.log(selectedRowAction);
+          if (selectedRowAction) {
+            executeQuery(selectedRowAction.action.query);
+          }
+        }}
+      />
       <Table
         aria-label="Fastboard table component"
         isHeaderSticky

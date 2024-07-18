@@ -13,8 +13,15 @@ const FastboardTablePropertiesComponent = ({
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
-  const { query, emptyMessage, columns, actions, hideHeader, isStriped } =
-    properties;
+  const {
+    query,
+    sourceQuery,
+    emptyMessage,
+    columns,
+    actions,
+    hideHeader,
+    isStriped,
+  } = properties;
   const [columnsProperties, setColumnsProperties] = useState(columns);
 
   useEffect(() => {
@@ -106,9 +113,14 @@ const FastboardTablePropertiesComponent = ({
       >
         <div className="flex flex-col gap-5  overflow-x-hidden">
           <QuerySelection
-            selectedQueryId={query.id}
-            onSelectionChange={(key) => {
-              const query = mockQueries.find((q) => q.id === key);
+            selectedQueryId={sourceQuery?.id || ""}
+            onQuerySelect={(sourceQuery) => {
+              onValueChange({
+                ...properties,
+                sourceQuery: sourceQuery,
+              });
+
+              const query = mockQueries.find((q) => q.id === sourceQuery.id);
               if (!query) return;
               if (!query.metadata.columns) return;
 
@@ -131,6 +143,7 @@ const FastboardTablePropertiesComponent = ({
                   url: `${query.connection.credentials.url}/${query.metadata.path}`,
                   field: query.metadata.field,
                 },
+                sourceQuery: sourceQuery,
               });
             }}
           />

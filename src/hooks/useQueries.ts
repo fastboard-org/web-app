@@ -17,7 +17,13 @@ const useQueries = (connectionId: string) => {
   const fetchQueries = async () => {
     try {
       const response = await axiosInstance.get<Query[]>(`/queries/me`);
-      return response.data;
+      const data = response.data.map((query) => {
+        return {
+          ...query,
+          id: query._id,
+        };
+      });
+      return data;
     } catch (error) {
       console.error(error);
       throw error;
