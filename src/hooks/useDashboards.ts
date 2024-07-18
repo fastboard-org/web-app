@@ -30,6 +30,21 @@ const useDashboards = () => {
   const addDashboard = (dashboard: Dashboard) => {
     const updatedDashboards = [...(dashboards as Dashboard[]), dashboard];
     queryClient.setQueryData(["dashboards"], updatedDashboards);
+
+    if (dashboard.folder_id) {
+      queryClient.setQueryData(
+        ["folders"],
+        (folders as Folder[]).map((folder) => {
+          if (folder.id === dashboard.folder_id) {
+            return {
+              ...folder,
+              dashboards: [...folder.dashboards, dashboard],
+            };
+          }
+          return folder;
+        }),
+      );
+    }
   };
 
   const updateDashboard = (dashboard: Dashboard) => {
@@ -39,9 +54,18 @@ const useDashboards = () => {
 
     queryClient.setQueryData(["dashboards"], updatedDashboards);
 
+    let updatedFolders = [] as Folder[];
+
     if (dashboard.folder_id) {
-      const updatedFolders = (folders as Folder[]).map((folder) => {
+      updatedFolders = (folders as Folder[]).map((folder) => {
         if (folder.id === dashboard.folder_id) {
+          if (!folder.dashboards.find((d) => d.id === dashboard.id)) {
+            return {
+              ...folder,
+              dashboards: [...folder.dashboards, dashboard],
+            };
+          }
+
           return {
             ...folder,
             dashboards: folder.dashboards.map((d) =>
@@ -55,9 +79,14 @@ const useDashboards = () => {
           };
         }
       });
-
-      queryClient.setQueryData(["folders"], updatedFolders);
+    } else {
+      updatedFolders = (folders as Folder[]).map((folder) => ({
+        ...folder,
+        dashboards: folder.dashboards.filter((d) => d.id !== dashboard.id),
+      }));
     }
+
+    queryClient.setQueryData(["folders"], updatedFolders);
   };
 
   const deleteDashboard = (dashboard: Dashboard) => {
