@@ -7,21 +7,25 @@ const ResourceList = ({
   dashboards,
   folders,
   search,
-  onFolderClick = (folder: Folder) => {},
+  onFolderClick = (index: number) => {},
   onFolderActionClick = (folder: Folder, action: "edit" | "delete") => {},
   onDashboardClick,
   onDashboardActionClick,
+  emptyText,
+  folderId,
 }: {
   dashboards: Dashboard[];
   folders: Folder[];
   search: string;
-  onFolderClick?: (folder: Folder) => void;
+  onFolderClick?: (index: number) => void;
   onFolderActionClick?: (folder: Folder, action: "edit" | "delete") => void;
   onDashboardClick: (dashboard: Dashboard) => void;
   onDashboardActionClick: (
     dashboard: Dashboard,
     action: "edit" | "delete",
   ) => void;
+  emptyText: string;
+  folderId?: string;
 }) => {
   const isEmpty = folders.length === 0 && dashboards.length === 0;
 
@@ -31,23 +35,25 @@ const ResourceList = ({
         <p
           className={"text-center w-full text-xl text-foreground-400 mt-[15%]"}
         >
-          You don't have any dashboards or folders yet.
+          {emptyText}
         </p>
       )}
-      {folders
-        .filter((folder) =>
-          folder.name.toLowerCase().includes(search.toLowerCase()),
-        )
-        .map((folder) => (
+      {folders.map((folder, index) => {
+        if (!folder.name.toLowerCase().includes(search.toLowerCase())) {
+          return null;
+        }
+
+        return (
           <ItemCard
             key={folder.id}
             name={folder.name}
             icon={<Folder2 className={"text-primary"} size={20} />}
-            onClick={() => onFolderClick(folder)}
+            onClick={() => onFolderClick(index)}
             onEditClick={() => onFolderActionClick(folder, "edit")}
             onDeleteClick={() => onFolderActionClick(folder, "delete")}
           />
-        ))}
+        );
+      })}
       {dashboards
         .filter(
           (dashboard) =>
@@ -60,8 +66,18 @@ const ResourceList = ({
             name={dashboard.name}
             icon={<Element className={"text-primary"} size={20} />}
             onClick={() => onDashboardClick(dashboard)}
-            onEditClick={() => onDashboardActionClick(dashboard, "edit")}
-            onDeleteClick={() => onDashboardActionClick(dashboard, "delete")}
+            onEditClick={() =>
+              onDashboardActionClick(
+                { ...dashboard, folder_id: folderId },
+                "edit",
+              )
+            }
+            onDeleteClick={() =>
+              onDashboardActionClick(
+                { ...dashboard, folder_id: folderId },
+                "delete",
+              )
+            }
           />
         ))}
     </section>

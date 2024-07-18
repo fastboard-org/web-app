@@ -47,7 +47,7 @@ const DashboardModal = ({
       setLoading(true);
       const newDashboard = await dashboardService.createDashboard(
         name,
-        folderId,
+        folderId || null,
       );
       onSuccess(newDashboard);
       onClose();
@@ -64,8 +64,9 @@ const DashboardModal = ({
       const updatedDashboard = await dashboardService.updateDashboard(
         dashboard?.id as string,
         name,
-        folderId,
+        folderId || null,
       );
+      console.log("updatedDashboard", updatedDashboard);
       onSuccess(updatedDashboard);
       onClose();
       setLoading(false);
@@ -83,11 +84,13 @@ const DashboardModal = ({
     }
   };
 
-  const emptyOptions = [
-    <SelectItem key={0} isDisabled>
-      No folders available
-    </SelectItem>,
-  ];
+  const emptyOptions = !folders.length
+    ? [
+        <SelectItem key={0} isDisabled>
+          No folders available
+        </SelectItem>,
+      ]
+    : [];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
@@ -115,6 +118,8 @@ const DashboardModal = ({
                 size={"lg"}
                 onChange={(e) => setFolderId(e.target.value)}
                 value={folderId || ""}
+                selectedKeys={[folderId || ""]}
+                multiple={false}
               >
                 {[
                   ...folders?.map((folder) => (
