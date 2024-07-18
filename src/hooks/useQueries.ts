@@ -16,11 +16,13 @@ const useQueries = (connectionId: string) => {
 
   const fetchQueries = async () => {
     try {
-      const response = await axiosInstance.get<Query[]>(`/queries/me`);
-      const data = response.data.map((query) => {
+      const response = await axiosInstance.get(`/queries/me`);
+      const data: Query[] = response.data.map((query: any) => {
         return {
-          ...query,
           id: query._id,
+          name: query.name,
+          connection_id: query.connection_id,
+          metadata: query.metadata,
         };
       });
       return data;
