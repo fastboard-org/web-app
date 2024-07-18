@@ -4,6 +4,7 @@ import ComponentsDrawer from "@/components/editor/ComponentsDrawer";
 import EditorCanvas from "@/components/editor/EditorCanvas";
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
+import { Toaster } from "@/components/ui/sonner";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useSetRecoilState } from "recoil";
@@ -39,6 +40,8 @@ export default function Editor() {
 
   return (
     <div className="flex flex-col h-screen w-full bg-foreground-100 dark:bg-content1">
+      <Toaster position="bottom-right" richColors />
+
       <EditorNavbar />
 
       <div className="relative h-full w-full flex overflow-hidden ">

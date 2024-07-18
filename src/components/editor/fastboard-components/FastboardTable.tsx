@@ -27,6 +27,8 @@ import { useEffect, useState } from "react";
 import { IoIosMore } from "react-icons/io";
 import DeleteActionModal from "./shared/DeleteActionModal";
 import useData from "@/hooks/useData";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -58,7 +60,11 @@ export default function FastboardTable({
   } = properties;
   const { items, isLoading, error, page, setPage, pages, updateQuery } =
     usePaginatedData(rowsPerPage);
-  useData(sourceQuery);
+  const {
+    loading: dataLoading,
+    isError: isDataError,
+    error: dataError,
+  } = useData(sourceQuery);
   const { executeQuery, data } = useExecuteQuery();
   const finalColumns = getFinalColumns(columns, actions);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -70,6 +76,14 @@ export default function FastboardTable({
   useEffect(() => {
     updateQuery(query.url, query.field);
   }, [query?.url, query?.field]);
+
+  useEffect(() => {
+    if (isDataError) {
+      toast.error("Failed loading data", {
+        description: dataError?.message,
+      });
+    }
+  }, [isDataError]);
 
   if (error) {
     return (
@@ -118,7 +132,7 @@ export default function FastboardTable({
 
   return (
     <CustomSkeleton
-      isLoaded={!isLoading}
+      isLoaded={!dataLoading}
       onlyRenderOnLoad
       className="w-full h-full"
     >
@@ -129,11 +143,13 @@ export default function FastboardTable({
         }}
         onConfirm={() => {
           console.log(selectedRowAction);
+          toast("Action executed successfully");
           if (selectedRowAction) {
             executeQuery(selectedRowAction.action.query);
           }
         }}
       />
+
       <Table
         aria-label="Fastboard table component"
         isHeaderSticky
@@ -164,7 +180,7 @@ export default function FastboardTable({
           )}
         </TableHeader>
         <TableBody
-          isLoading={isLoading}
+          isLoading={dataLoading}
           loadingContent={<Spinner label="Loading..." />}
           items={items}
           emptyContent={emptyMessage}
