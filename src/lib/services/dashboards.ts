@@ -60,6 +60,15 @@ const createFolder = async (name: string) => {
   return mapFolder(response.data);
 };
 
+const updateFolder = async (id: string, name: string) => {
+  const response = await axiosInstance.patch(`/folders/${id}`, { name });
+  return mapFolder(response.data);
+};
+
+const deleteFolder = async (id: string) => {
+  await axiosInstance.delete(`/folders/${id}`);
+};
+
 export const dashboardService = {
   getDashboards,
   createDashboard,
@@ -67,4 +76,6 @@ export const dashboardService = {
   deleteDashboard,
   getFolders,
   createFolder,
+  updateFolder,
+  deleteFolder,
 };
