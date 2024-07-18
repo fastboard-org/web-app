@@ -1,5 +1,5 @@
 "use client";
-import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
+import { BreadcrumbItem, Breadcrumbs, useDisclosure } from "@nextui-org/react";
 import AddDashboardButton from "@/components/dashboards/AddDashboardButton";
 import ResourceList from "@/components/dashboards/ResourceList";
 import useDashboards from "@/hooks/useDashboards";
@@ -8,11 +8,33 @@ import { SetStateAction, useState } from "react";
 import { Dashboard, Folder } from "@/types/dashboards";
 import Search from "@/components/shared/Search";
 import { useRouter } from "next/navigation";
+import DashboardModal from "@/components/dashboards/DashboardModal";
+import QuestionModal from "@/components/shared/QuestionModal";
+import { dashboardService } from "@/lib/services/dashboards";
 
 export default function Dashboards() {
-  const { dashboards, folders, loading } = useDashboards();
+  const { dashboards, folders, loading, operations } = useDashboards();
   const [search, setSearch] = useState("");
   const [folderSelected, setFolderSelected] = useState<Folder | null>(null);
+  const [dashboardToEdit, setDashboardToEdit] = useState<Dashboard | null>(
+    null,
+  );
+  const [dashboardToDelete, setDashboardToDelete] = useState<Dashboard | null>(
+    null,
+  );
+
+  const {
+    isOpen: dashboardModalOpen,
+    onOpen: onDashboardModalOpen,
+    onClose: onDashboardModalClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: deleteDashboardModalOpen,
+    onOpen: onDeleteDashboardModalOpen,
+    onClose: onDeleteDashboardModalClose,
+  } = useDisclosure();
+
   const router = useRouter();
 
   const handleSearch = (e: { target: { value: SetStateAction<string> } }) => {
@@ -31,6 +53,35 @@ export default function Dashboards() {
 
   const handleBack = () => {
     setFolderSelected(null);
+  };
+
+  const handleDashboardActionClick = (
+    dashboard: Dashboard,
+    action: "edit" | "delete",
+  ) => {
+    if (action === "edit") {
+      setDashboardToEdit(dashboard);
+      onDashboardModalOpen();
+    } else {
+      setDashboardToDelete(dashboard);
+      onDeleteDashboardModalOpen();
+    }
+  };
+
+  const handleFolderActionClick = (
+    folder: Folder,
+    action: "edit" | "delete",
+  ) => {
+    if (action === "edit") {
+      //TODO
+    }
+  };
+
+  const handleDeleteDashboard = async () => {
+    if (dashboardToDelete) {
+      await dashboardService.deleteDashboard(dashboardToDelete.id);
+      operations.deleteDashboard(dashboardToDelete);
+    }
   };
 
   return (
@@ -60,7 +111,7 @@ export default function Dashboards() {
         </CustomSkeleton>
 
         <CustomSkeleton className={"rounded-lg"} isLoaded={!loading}>
-          <AddDashboardButton />
+          <AddDashboardButton onDashboardClick={onDashboardModalOpen} />
         </CustomSkeleton>
       </div>
       <CustomSkeleton isLoaded={!loading} className={"h-full rounded-lg"}>
@@ -73,6 +124,7 @@ export default function Dashboards() {
             folders={[]}
             search={search}
             onDashboardClick={handleDashboardClick}
+            onDashboardActionClick={handleDashboardActionClick}
           />
         ) : (
           <ResourceList
@@ -81,9 +133,27 @@ export default function Dashboards() {
             search={search}
             onFolderClick={handleFolderClick}
             onDashboardClick={handleDashboardClick}
+            onFolderActionClick={handleFolderActionClick}
+            onDashboardActionClick={handleDashboardActionClick}
           />
         )}
       </CustomSkeleton>
+      <DashboardModal
+        isOpen={dashboardModalOpen}
+        onClose={onDashboardModalClose}
+        onSuccess={
+          dashboardToEdit ? operations.updateDashboard : operations.addDashboard
+        }
+        folders={folders}
+        dashboard={dashboardToEdit}
+      />
+      <QuestionModal
+        questionText={"Are you sure you want to delete this dashboard?"}
+        warningText={"This action cannot be undone."}
+        isOpen={deleteDashboardModalOpen}
+        onClose={onDeleteDashboardModalClose}
+        onConfirm={handleDeleteDashboard}
+      />
     </>
   );
 }
