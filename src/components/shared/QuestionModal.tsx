@@ -13,7 +13,7 @@ const QuestionModal = ({
   isOpen = false,
   onClose,
   onConfirm,
-  size = "lg",
+  size = "md",
 }: {
   questionText: string;
   warningText: string;
@@ -26,7 +26,7 @@ const QuestionModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={size}>
-      <ModalContent className={"py-2 px-2"}>
+      <ModalContent className={"py-4 px-2"}>
         <ModalBody>
           <div className={"flex flex-col gap-4"}>
             <p className={"text-md text-center"}>{questionText}</p>
