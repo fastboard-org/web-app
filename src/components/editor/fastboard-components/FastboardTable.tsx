@@ -27,7 +27,6 @@ import { useEffect, useState } from "react";
 import { IoIosMore } from "react-icons/io";
 import DeleteActionModal from "./shared/DeleteActionModal";
 import useData from "@/hooks/useData";
-import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 
 function getFinalColumns(
@@ -182,16 +181,15 @@ export default function FastboardTable({
         <TableBody
           isLoading={dataLoading}
           loadingContent={<Spinner label="Loading..." />}
-          items={items}
           emptyContent={emptyMessage}
         >
-          {(item) => (
+          {items.map((item) => (
             <TableRow key={item.key}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey as string)}</TableCell>
               )}
             </TableRow>
-          )}
+          ))}
         </TableBody>
       </Table>
     </CustomSkeleton>

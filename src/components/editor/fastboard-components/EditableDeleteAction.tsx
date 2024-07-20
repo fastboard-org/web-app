@@ -71,7 +71,17 @@ export function EditableDeleteAction({
               <QuerySelection
                 selectedQueryId={actionData.query?.id || ""}
                 onQuerySelect={(query) => {
-                  setActionData({ ...actionData, query: query });
+                  console.log(query);
+                  setActionData({
+                    ...actionData,
+                    query: query,
+                    parameters: query.metadata.parameters.map(
+                      (p: { name: string; preview: string }) => ({
+                        name: p.name,
+                        value: p.preview,
+                      })
+                    ),
+                  });
                 }}
               />
               <div className="flex justify-between">
@@ -98,28 +108,27 @@ export function EditableDeleteAction({
                 </Tooltip>
               </div>
               <div className="flex flex-col gap-2 px-2 w-full">
-                <Input
-                  label="Label"
-                  labelPlacement="outside-left"
-                  placeholder="Action label"
-                  value={action.label}
-                  onChange={(e) => {}}
-                  fullWidth
-                />
-                <Input
-                  label="Label"
-                  labelPlacement="outside-left"
-                  placeholder="Action label"
-                  value={action.label}
-                  onChange={(e) => {}}
-                />
-                <Input
-                  label="Label"
-                  labelPlacement="outside-left"
-                  placeholder="Action label"
-                  value={action.label}
-                  onChange={(e) => {}}
-                />
+                {actionData.parameters.map((parameter, index) => (
+                  <Input
+                    key={`parameter-${index}`}
+                    label={parameter.name}
+                    labelPlacement="outside-left"
+                    placeholder="Action label"
+                    value={parameter.value}
+                    onValueChange={(newValue) => {
+                      const newParameters = actionData.parameters.map((p) =>
+                        p.name === parameter.name
+                          ? { ...p, value: newValue }
+                          : p
+                      );
+                      setActionData({
+                        ...actionData,
+                        parameters: newParameters,
+                      });
+                    }}
+                    fullWidth
+                  />
+                ))}
               </div>
             </div>
           </ModalBody>

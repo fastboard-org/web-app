@@ -14,7 +14,7 @@ export interface TableActionProperty {
   key: string;
   label: string;
   query: Query | null;
-  parameters: { key: string; value: string }[];
+  parameters: { name: string; value: string }[];
 }
 
 export class FastboardTableProperties {
