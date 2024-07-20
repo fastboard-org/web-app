@@ -4,6 +4,7 @@ import ComponentsDrawer from "@/components/editor/ComponentsDrawer";
 import EditorCanvas from "@/components/editor/EditorCanvas";
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
+import { addComponent } from "@/lib/editor.utis";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useSetRecoilState } from "recoil";
@@ -21,20 +22,15 @@ export default function Editor() {
     const componentType: string = active.data.current?.type;
     const defaultProperties: Object = active.data.current?.defaultProperties;
 
-    setDashboardMetadata((prev) => ({
-      layouts: prev.layouts.map((layout, index) => {
-        if (index === layoutIndex) {
-          return {
-            ...layout,
-            [container]: {
-              type: componentType,
-              properties: defaultProperties,
-            },
-          };
-        }
-        return layout;
-      }),
-    }));
+    setDashboardMetadata((prev) =>
+      addComponent(
+        layoutIndex,
+        container,
+        componentType,
+        defaultProperties,
+        prev
+      )
+    );
   }
 
   return (

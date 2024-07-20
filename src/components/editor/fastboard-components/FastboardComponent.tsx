@@ -1,12 +1,16 @@
 import {
+  dashboardMetadataState,
   isComponentsDrawerOpen,
   isPropertiesDrawerOpen,
   propertiesDrawerState,
 } from "@/atoms/editor";
 import { ComponentType } from "@/types/editor";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { getComponent } from "./utils";
+import { Button } from "@nextui-org/react";
+import { Trash } from "iconsax-react";
+import { deleteComponent } from "@/lib/editor.utis";
 
 const FastboardComponent = ({
   onClick,
@@ -30,6 +34,7 @@ const FastboardComponent = ({
   const propertiesDrawerOpen = useRecoilValue(isPropertiesDrawerOpen);
   const propertiesDrawerStateValue = useRecoilValue(propertiesDrawerState);
   const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
+  const setDashboardMetadataState = useSetRecoilState(dashboardMetadataState);
   const [isHovered, setIsHovered] = useState(false);
 
   function onClickComponent(e: React.MouseEvent<HTMLDivElement>) {
@@ -45,6 +50,13 @@ const FastboardComponent = ({
     if (onClick) {
       onClick();
     }
+  }
+
+  function onDeleteComponent() {
+    setIsPropertiesDrawerOpen(false);
+    setDashboardMetadataState((previous) => {
+      return deleteComponent(layoutIndex, containerIndex, previous);
+    });
   }
 
   function isSelected() {
@@ -76,6 +88,16 @@ const FastboardComponent = ({
     >
       {isSelected() && (
         <p className="absolute right-4 bottom-2 text-primary z-10">{name}</p>
+      )}
+      {isSelected() && (
+        <Button
+          isIconOnly
+          className="absolute top-2 right-2 z-10 text-primary"
+          variant="light"
+          onPress={onDeleteComponent}
+        >
+          <Trash />
+        </Button>
       )}
       {component}
     </div>
