@@ -10,7 +10,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { getComponent } from "./utils";
 import { Button } from "@nextui-org/react";
 import { Trash } from "iconsax-react";
-import { deleteComponent } from "@/lib/editor.utis";
+import { deleteComponent } from "@/lib/editor.utils";
 
 const FastboardComponent = ({
   onClick,
