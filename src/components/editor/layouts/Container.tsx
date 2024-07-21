@@ -11,7 +11,7 @@ export default function Container({
 }: {
   layoutIndex: number;
   containerIndex: string;
-  component?: FastboardComponentInterface;
+  component: FastboardComponentInterface | null;
   className?: string;
   mode?: "editable" | "view";
 }) {

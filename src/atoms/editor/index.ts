@@ -30,8 +30,8 @@ export const dashboardMetadataState = atom<DashboardMetadata>({
     layouts: [
       {
         type: LayoutType.Row,
-        component1: undefined,
-        component2: undefined,
+        component1: null,
+        component2: null,
       },
     ],
   },
