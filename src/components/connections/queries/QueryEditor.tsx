@@ -10,15 +10,24 @@ const QueryEditor = ({
 }: {
   connection: Connection | null;
   queries: Query[];
-  onQueryUpdate: (index: number, query: Query) => void;
+  onQueryUpdate: (index: number, query: Query | null) => void;
 }) => {
   const [selectedQueryIndex, setSelectedQueryIndex] = useState<number>(0);
+
+  const restDefaultQuery: Query = {
+    id: "0 new",
+    name: "New Query",
+    connection_id: connection?.id || "",
+    metadata: {
+      method: "GET",
+    },
+  };
 
   const querySelection = {
     [ConnectionType.REST]: (
       <RestQueriesSelectionList
-        queries={queries}
-        selectedQuery={queries[selectedQueryIndex] || null}
+        queries={queries.length ? queries : [restDefaultQuery]}
+        selectedQuery={queries[selectedQueryIndex] || restDefaultQuery}
         onSelectQuery={(index: number) => setSelectedQueryIndex(index)}
         onAddClick={() => {
           onQueryUpdate(queries.length, {
@@ -41,8 +50,11 @@ const QueryEditor = ({
     [ConnectionType.REST]: (
       <RestQueryEditor
         connection={connection as Connection}
-        query={queries[selectedQueryIndex] || {}}
-        onChange={(query: Query) => {
+        query={queries[selectedQueryIndex] || restDefaultQuery}
+        onChange={(query: Query | null) => {
+          if (!query) {
+            setSelectedQueryIndex(0);
+          }
           onQueryUpdate(selectedQueryIndex, query);
         }}
       />

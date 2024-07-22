@@ -17,15 +17,21 @@ import AuthModal from "@/components/connections/queries/rest/AuthModal";
 import { useRecoilValue } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
 import RestBodyEditor from "@/components/connections/queries/rest/RestBodyEditor";
+import { connectionsService } from "@/lib/services/connections";
 
-const fillParams = (query: Query, params: QueryParameter[]) => {
+const fillParams = (
+  params: QueryParameter[],
+  body: string,
+  headers: RestHeader[],
+  path: string,
+) => {
   //TODO: this will be done by the backend instead
   const filledPath =
     params?.reduce((path, param) => {
       return path?.replace(`{{${param.name}}}`, param.preview);
-    }, query.metadata.path) ?? query.metadata.path;
+    }, path) ?? path;
 
-  const filledHeaders = query?.metadata?.headers
+  const filledHeaders = headers
     ?.map((header: RestHeader) => {
       return {
         key: params?.reduce((key, param) => {
@@ -38,7 +44,7 @@ const fillParams = (query: Query, params: QueryParameter[]) => {
     })
     .filter((header: RestHeader) => header.key && header.value);
 
-  const queryBody = query.metadata.body || "{}";
+  const queryBody = body;
 
   const filledBody =
     params?.reduce((body, param) => {
@@ -59,35 +65,55 @@ const RestQueryEditor = ({
 }: {
   connection: Connection;
   query: Query;
-  onChange: (query: Query) => void;
+  onChange: (query: Query | null) => void;
 }) => {
   const [response, setResponse] = useState<any>(null);
   const [responseData, setResponseData] = useState<any>(null);
   const [responseLoading, setResponseLoading] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState<string>("headers");
   const [previewToken, setPreviewToken] = useState<string>("");
+
+  const [headers, setHeaders] = useState<RestHeader[]>(
+    query?.metadata?.headers || [],
+  );
+  const [path, setPath] = useState<string>(query?.metadata?.path || "");
+  const [body, setBody] = useState<string>(
+    JSON.stringify(query?.metadata?.body) || "{}",
+  );
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const isMethodListClosed = useRecoilValue(isMethodListClosedState);
+
+  const queryExists = !query?.id?.includes(" new");
 
   useEffect(() => {
     setResponse(null);
     setResponseData(null);
+    setPath(query?.metadata?.path || "");
+    setBody(JSON.stringify(query?.metadata?.body) || "{}");
+    setHeaders(query?.metadata?.headers || []);
   }, [query.id]);
 
   const handleSend = async () => {
     setResponseLoading(true);
-    const { filledPath, filledHeaders, filledBody } = fillParams(query, [
-      ...(query.metadata.parameters ?? []),
-      {
-        name: "token",
-        preview: previewToken,
-      },
-    ]);
+    const { filledPath, filledHeaders, filledBody } = fillParams(
+      [
+        ...(query.metadata.parameters ?? []),
+        {
+          name: "token",
+          preview: previewToken,
+        },
+      ],
+      body,
+      headers,
+      path,
+    );
 
     let response;
     try {
-      response = await fetch(connection?.credentials?.url + filledPath, {
+      response = await fetch(connection?.credentials?.main_url + filledPath, {
         method: query.metadata.method,
         headers: filledHeaders?.reduce(
           (headers: any, header: { key: any; value: any }) => {
@@ -116,22 +142,53 @@ const RestQueryEditor = ({
   };
 
   const hasValidBody = () => {
-    if (!query.metadata.body) return true;
+    if (!body) return true;
     try {
-      JSON.parse(query.metadata.body);
+      JSON.parse(body);
       return true;
     } catch (e) {
-      console.error(e);
       return false;
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setSaveLoading(true);
-    setTimeout(() => {
-      //TODO: save query to the backend
-      setSaveLoading(false);
-    }, 2000);
+    const shouldCreate = !queryExists;
+    if (shouldCreate) {
+      const newQuery = await connectionsService.createQuery(
+        query.name,
+        connection.id,
+        {
+          ...query.metadata,
+          path,
+          headers,
+          body: JSON.parse(body),
+        },
+      );
+      onChange(newQuery);
+    } else {
+      const updatedQuery = await connectionsService.updateQuery(
+        query.id,
+        query.name,
+        {
+          ...query.metadata,
+          path,
+          headers,
+          body: JSON.parse(body),
+        },
+      );
+      onChange(updatedQuery);
+    }
+    setSaveLoading(false);
+  };
+
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+
+    await connectionsService.deleteQuery(query.id);
+    onChange(null);
+
+    setDeleteLoading(false);
   };
 
   return (
@@ -151,8 +208,20 @@ const RestQueryEditor = ({
             }
             placeholder={"Enter a query name"}
           />
-          <div className={"flex gap-2"}>
+          <div className={"flex gap-2 items-center"}>
+            {queryExists && (
+              <Button
+                variant={"flat"}
+                color={"danger"}
+                size={"sm"}
+                isLoading={deleteLoading}
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+            )}
             <Button
+              size={"sm"}
               isLoading={saveLoading}
               onClick={handleSave}
               variant={"flat"}
@@ -160,25 +229,18 @@ const RestQueryEditor = ({
             >
               Save
             </Button>
-            <Button
-              color={"primary"}
-              onClick={handleSend}
-              isLoading={responseLoading}
-              isDisabled={!hasValidBody()}
-            >
-              Send
-            </Button>
           </div>
         </div>
         <MethodAndPathSelector
-          method={query.metadata.method ?? ""}
-          path={query.metadata.path ?? ""}
+          method={query?.metadata?.method ?? ""}
+          path={path}
           onMethodChange={(method: string) =>
             onChange({ ...query, metadata: { ...query.metadata, method } })
           }
-          onPathChange={(path: string) =>
-            onChange({ ...query, metadata: { ...query.metadata, path } })
-          }
+          onPathChange={(path: string) => setPath(path)}
+          onSendClick={handleSend}
+          loading={responseLoading}
+          disabled={!hasValidBody()}
         />
         <Card className={"w-full h-full p-4"}>
           <Tabs
@@ -191,23 +253,21 @@ const RestQueryEditor = ({
           >
             <Tab key={"headers"} title={"Headers"}>
               <HeadersTable
-                headers={query?.metadata?.headers}
+                headers={headers}
                 onChange={(headers: RestHeader[]) => {
-                  onChange({
-                    ...query,
-                    metadata: { ...query.metadata, headers },
-                  });
+                  setHeaders(headers);
                 }}
               />
             </Tab>
             <Tab key={"body"} title={"Body"}>
               <RestBodyEditor
-                body={query.metadata.body || "{}"}
+                body={body || "{}"}
                 onChange={(body) => {
-                  onChange({
-                    ...query,
-                    metadata: { ...query.metadata, body },
-                  });
+                  if (!body) {
+                    setBody("{}");
+                  } else {
+                    setBody(body);
+                  }
                 }}
                 invalidBody={!hasValidBody()}
               />
@@ -227,7 +287,7 @@ const RestQueryEditor = ({
         </Card>
       </div>
       <QueryParametersDrawer
-        queryParameters={query.metadata.parameters ?? []}
+        queryParameters={query?.metadata?.parameters ?? []}
         setQueryParameters={(queryParameters: QueryParameter[]) =>
           onChange({
             ...query,

@@ -64,6 +64,14 @@ const QueryParametersDrawer = ({
     setQueryParameters(newQueryParameters);
   };
 
+  const handleEditParameter = (index: number, value: any) => {
+    setQueryParameters(
+      queryParameters.map((p, i) =>
+        i === index ? { ...p, preview: value } : p,
+      ),
+    );
+  };
+
   return (
     <Card className={"w-[300px] h-full"}>
       <CardHeader className={"gap-2 p-5 pb-1"}>
@@ -99,9 +107,7 @@ const QueryParametersDrawer = ({
               placeholder={"Enter a parameter value"}
               value={parameter.preview}
               onChange={(e) => {
-                const newQueryParameters = [...queryParameters];
-                newQueryParameters[index].preview = e.target.value;
-                setQueryParameters(newQueryParameters);
+                handleEditParameter(index, e.target.value);
               }}
               ref={index === queryParameters.length - 1 ? lastParamRef : null}
               className={"w-[95%]"}

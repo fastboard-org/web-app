@@ -1,4 +1,4 @@
-import { Input, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { HTTP_METHOD } from "@/types/connections";
 import { methodColor } from "@/lib/rest-methods";
 
@@ -7,11 +7,17 @@ const MethodAndPathSelector = ({
   path,
   onMethodChange,
   onPathChange,
+  onSendClick,
+  loading,
+  disabled,
 }: {
   method: HTTP_METHOD;
   path: string;
   onMethodChange: (method: string) => void;
   onPathChange: (path: string) => void;
+  onSendClick: () => void;
+  loading: boolean;
+  disabled: boolean;
 }) => {
   return (
     <div className={"flex w-full gap-3"}>
@@ -46,6 +52,14 @@ const MethodAndPathSelector = ({
         onChange={(e) => onPathChange(e.target.value)}
         onClear={() => onPathChange("")}
       />
+      <Button
+        color={"primary"}
+        onClick={onSendClick}
+        isLoading={loading}
+        isDisabled={disabled}
+      >
+        Send
+      </Button>
     </div>
   );
 };
