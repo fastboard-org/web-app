@@ -1,66 +1,43 @@
-import { useEffect, useState } from "react";
 import { Connection, ConnectionType } from "@/types/connections";
-
-export const mockConnections: Connection[] = [
-  {
-    id: "1",
-    name: "PokeApi",
-    type: ConnectionType.REST,
-    credentials: {
-      url: "https://pokeapi.co/api/v2",
-    },
-    variables: {
-      posts_endpoint: "posts",
-    },
-  },
-  {
-    id: "2",
-    name: "NotificationsDB",
-    type: ConnectionType.MONGO,
-    credentials: {
-      connection_uri: "mongodb://localhost:27017/",
-    },
-    variables: {
-      users_collection: "users",
-    },
-  },
-  {
-    id: "3",
-    name: "Users Database",
-    type: ConnectionType.SQL,
-    credentials: {
-      connection_uri: "postgresql://localhost:5432/",
-      username: "admin",
-      password: "password",
-    },
-    variables: {
-      users_table: "users",
-    },
-  },
-];
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { connectionsService } from "@/lib/services/connections";
 
 const useConnections = () => {
-  const [connections, setConnections] = useState<Connection[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [mounted, setMounted] = useState<boolean>(false);
+  const {
+    isPending: loading,
+    data: connections,
+    error,
+    isError,
+  } = useQuery({
+    queryKey: ["connections"],
+    queryFn: () => connectionsService.getConnections(),
+    refetchOnWindowFocus: false,
+  });
 
-  const fetchConnections = async () => {
-    //TODO fetch connections from API
-    setTimeout(() => {
-      setConnections(mockConnections);
-      setLoading(false);
-    }, 1000);
+  const queryClient = useQueryClient();
+
+  const addConnection = (connection: Connection) => {
+    const updatedConnections = [...(connections as Connection[]), connection];
+    queryClient.setQueryData(["connections"], updatedConnections);
   };
 
-  useEffect(() => {
-    if (!mounted) {
-      setMounted(true);
-    }
+  const deleteConnection = (connectionId: string) => {
+    const updatedConnections = (connections as Connection[]).filter(
+      (connection) => connection.id !== connectionId,
+    );
+    queryClient.setQueryData(["connections"], updatedConnections);
+  };
 
-    fetchConnections();
-  }, [mounted]);
-
-  return { connections, loading };
+  return {
+    connections: connections || [],
+    loading,
+    isError,
+    error,
+    operations: {
+      addConnection,
+      deleteConnection,
+    },
+  };
 };
 
 export default useConnections;

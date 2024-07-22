@@ -1,35 +1,30 @@
-import { useEffect, useState } from "react";
 import { Connection } from "@/types/connections";
-import { mockConnections } from "@/hooks/useConnections";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { connectionsService } from "@/lib/services/connections";
 
 const useConnection = (id: string) => {
-  const [connection, setConnection] = useState<Connection | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(true);
+  const {
+    isPending: loading,
+    data: connection,
+    error,
+    isError,
+  } = useQuery({
+    queryKey: ["connection", id],
+    queryFn: () => connectionsService.getConnection(id),
+    refetchOnWindowFocus: false,
+  });
 
-  const fetchConnection = async () => {
-    // TODO: fetch connection by id
-    setTimeout(() => {
-      setConnection(mockConnections.find((c) => c.id === id) || null);
-      setLoading(false);
-    }, 1000);
-  };
-
-  useEffect(() => {
-    if (!mounted) {
-      setMounted(true);
-    }
-
-    fetchConnection();
-  }, [id]);
+  const queryClient = useQueryClient();
 
   const updateConnection = (updatedConnection: Connection) => {
-    setConnection(updatedConnection);
+    queryClient.setQueryData(["connection", id], updatedConnection);
   };
 
   return {
-    connection,
+    connection: connection as Connection,
     loading,
+    error,
+    isError,
     updateConnection,
   };
 };

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
 import { Query } from "@/types/connections";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { connectionsService } from "@/lib/services/connections";
 
 const mockQueries: Query[] = [
   {
@@ -46,35 +47,38 @@ const mockQueries: Query[] = [
 ];
 
 const useQueries = (connectionId: string) => {
-  const [queries, setQueries] = useState<Query[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(true);
+  const {
+    isPending: loading,
+    data: queries,
+    error,
+    isError,
+  } = useQuery({
+    queryKey: ["queries", connectionId],
+    queryFn: () => connectionsService.getQueriesByConnectionId(connectionId),
+    refetchOnWindowFocus: false,
+  });
 
-  const fetchQueries = async () => {
-    // TODO: fetch connection by id
-    setTimeout(() => {
-      setQueries(mockQueries.filter((q) => q.connection_id === connectionId));
-      setLoading(false);
-    }, 1000);
-  };
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (!mounted) {
-      return setMounted(true);
+  const updateQuery = (queryIndex: number, updatedQuery: Query | null) => {
+    if (!updatedQuery) {
+      const updatedQueries = queries.filter(
+        (_: Query, index: number) => index !== queryIndex,
+      );
+
+      queryClient.setQueryData(["queries", connectionId], updatedQueries);
+    } else {
+      const updatedQueries = [...queries];
+      updatedQueries[queryIndex] = updatedQuery;
+      queryClient.setQueryData(["queries", connectionId], updatedQueries);
     }
-
-    fetchQueries();
-  }, [connectionId]);
-
-  const updateQuery = (queryIndex: number, updatedQuery: Query) => {
-    const updatedQueries = [...queries];
-    updatedQueries[queryIndex] = updatedQuery;
-    setQueries(updatedQueries);
   };
 
   return {
-    queries,
+    queries: queries || [],
     loading,
+    isError,
+    error,
     updateQuery,
   };
 };
