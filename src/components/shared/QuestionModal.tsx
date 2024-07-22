@@ -4,10 +4,12 @@ import {
   ModalBody,
   ModalContent,
   ModalFooter,
+  ModalHeader,
 } from "@nextui-org/react";
 import { useState } from "react";
 
 const QuestionModal = ({
+  titleText = "",
   questionText = "",
   warningText = "",
   isOpen = false,
@@ -15,8 +17,9 @@ const QuestionModal = ({
   onConfirm,
   size = "md",
 }: {
+  titleText?: string;
   questionText: string;
-  warningText: string;
+  warningText?: string;
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -27,16 +30,15 @@ const QuestionModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={size}>
       <ModalContent className={"py-4 px-2"}>
+        <ModalHeader className={"font-normal"}>{titleText}</ModalHeader>
         <ModalBody>
           <div className={"flex flex-col gap-4"}>
-            <p className={"text-md text-center"}>{questionText}</p>
-            {warningText && (
-              <p className={"text-sm text-center"}>{warningText}</p>
-            )}
+            <p className={"text-md"}>{questionText}</p>
+            {warningText && <p className={"text-sm"}>{warningText}</p>}
           </div>
         </ModalBody>
         <ModalFooter>
-          <Button variant={"flat"} onPress={onClose} className={"w-1/2"}>
+          <Button variant={"light"} color={"danger"} onPress={onClose}>
             Cancel
           </Button>
           <Button
@@ -48,7 +50,6 @@ const QuestionModal = ({
               onClose();
             }}
             isLoading={loading}
-            className={"w-1/2"}
           >
             Confirm
           </Button>

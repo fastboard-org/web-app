@@ -102,9 +102,10 @@ const ViewConnections = ({
         onSuccess={operations.addConnection}
       />
       <QuestionModal
+        titleText={"Delete Connection"}
         questionText={"Are you sure you want to delete this connection?"}
-        warningText={"This action cannot be undone."}
         isOpen={isDeleteOpen}
+        size={"lg"}
         onClose={onDeleteClose}
         onConfirm={async () => {
           if (connectionToDelete) {

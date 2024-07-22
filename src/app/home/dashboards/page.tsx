@@ -204,15 +204,15 @@ export default function Dashboards() {
         folder={folderToEdit}
       />
       <QuestionModal
+        titleText={"Delete Dashboard"}
         questionText={"Are you sure you want to delete this dashboard?"}
-        warningText={"This action cannot be undone."}
         isOpen={deleteDashboardModalOpen}
         onClose={onDeleteDashboardModalClose}
         onConfirm={handleDeleteDashboard}
       />
       <QuestionModal
+        titleText={"Delete Folder"}
         questionText={"Are you sure you want to delete this folder?"}
-        warningText={"This action cannot be undone."}
         isOpen={deleteFolderModalOpen}
         onClose={onDeleteFolderModalClose}
         onConfirm={handleDeleteFolder}
