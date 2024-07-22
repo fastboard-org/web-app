@@ -66,7 +66,6 @@ const DashboardModal = ({
         name,
         folderId || null,
       );
-      console.log("updatedDashboard", updatedDashboard);
       onSuccess(updatedDashboard);
       onClose();
       setLoading(false);
