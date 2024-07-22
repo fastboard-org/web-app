@@ -74,7 +74,7 @@ export function EditableDeleteAction({
                   setActionData({
                     ...actionData,
                     query: query,
-                    parameters: query.metadata.parameters.map(
+                    parameters: query.metadata.parameters?.map(
                       (p: { name: string; preview: string }) => ({
                         name: p.name,
                         value: p.preview,
@@ -83,7 +83,7 @@ export function EditableDeleteAction({
                   });
                 }}
               />
-              {actionData.parameters.length > 0 && (
+              {actionData.parameters?.length > 0 && (
                 <div className="flex justify-between">
                   <h1 className="text-small">Parameters</h1>
                   <Tooltip
@@ -111,7 +111,7 @@ export function EditableDeleteAction({
                 </div>
               )}
               <div className="flex flex-col gap-2 px-2 w-full">
-                {actionData.parameters.map((parameter, index) => (
+                {actionData.parameters?.map((parameter, index) => (
                   <Input
                     key={`parameter-${index}`}
                     label={parameter.name}

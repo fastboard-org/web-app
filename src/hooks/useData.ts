@@ -3,18 +3,6 @@ import { Query } from "@/types/connections";
 import { executeQuery } from "@/lib/adapter.service";
 import { useState } from "react";
 
-const mapItem = (item: any) => {
-  Object.keys(item).forEach((key) => {
-    if (Array.isArray(item[key])) {
-      item[key] = "array";
-    } else {
-      typeof item[key] === "object"
-        ? (item[key] = "object")
-        : (item[key] = item[key]);
-    }
-  });
-};
-
 const useData = (query: Query | null) => {
   const {
     isPending: loading,
@@ -28,19 +16,32 @@ const useData = (query: Query | null) => {
   });
   const [keys, setKeys] = useState<string[]>([]);
 
+  const mapItem = (item: any) => {
+    Object.keys(item).forEach((key) => {
+      if (Array.isArray(item[key])) {
+        item[key] = "array";
+      } else {
+        typeof item[key] === "object"
+          ? (item[key] = "object")
+          : (item[key] = item[key]);
+      }
+    });
+  };
+
   const fetchData = async (query: Query | null) => {
     try {
       const response = await executeQuery(query);
-      let responseData = response?.data;
+      let responseData = response?.body;
       if (!responseData) {
-        return;
+        setKeys([]);
+        return [];
       }
-      //TODO: this is a temporary fix to handle different data types
+      //This is a temporary fix to handle different data types
       if (typeof responseData === "object" && !Array.isArray(responseData)) {
         responseData = [responseData];
       }
       setKeys(Object.keys(responseData[0]));
-
+      responseData = responseData.map((item: any) => mapItem(item));
       return responseData;
     } catch (error) {
       console.error(error);

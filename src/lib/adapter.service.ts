@@ -9,9 +9,12 @@ export async function executeQuery(
     if (!query) {
       return;
     }
-    const response = await axiosInstance.post(`/execute/${query.id}`, {
-      parameters: parameters,
-    });
+    const response = await axiosInstance.post(
+      `/adapter/${query.connection_id}/execute/${query.id}`,
+      {
+        parameters: parameters ?? {},
+      }
+    );
     return response.data;
   } catch (error) {
     console.error(error);

@@ -36,7 +36,7 @@ export default function QuerySelection({
         placeholder="Select query"
         startContent={
           <ConnectionIcon
-            type={selectedQuery?.metadata.type}
+            type={selectedQuery?.connection_type ?? null}
             size={25}
             className="text-primary"
           />
@@ -55,7 +55,7 @@ export default function QuerySelection({
             key={query.id}
             startContent={
               <ConnectionIcon
-                type={query.metadata.type}
+                type={query.connection_type}
                 size={20}
                 className={"text-primary"}
               />

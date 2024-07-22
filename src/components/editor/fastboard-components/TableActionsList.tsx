@@ -52,13 +52,14 @@ export default function TableActionsList({
     const hasEditAction = actions.some((action) => action.type === "edit");
 
     const disabledKeys = [];
-    if (hasViewAction) {
+    //TODO: delete this true conditions when implementing the logic for the actions
+    if (true) {
       disabledKeys.push("view-action");
     }
     if (hasDeleteAction) {
       disabledKeys.push("delete-action");
     }
-    if (hasEditAction) {
+    if (true) {
       disabledKeys.push("edit-action");
     }
     return disabledKeys;

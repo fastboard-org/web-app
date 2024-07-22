@@ -22,6 +22,7 @@ const useQueries = (connectionId: string) => {
           id: query._id,
           name: query.name,
           connection_id: query.connection_id,
+          connection_type: query.connection_type,
           metadata: query.metadata,
         };
       });

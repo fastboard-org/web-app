@@ -28,6 +28,8 @@ import { IoIosMore } from "react-icons/io";
 import DeleteActionModal from "./shared/DeleteActionModal";
 import useData from "@/hooks/useData";
 import { toast } from "sonner";
+import { useRecoilState } from "recoil";
+import { dashboardMetadataState, propertiesDrawerState } from "@/atoms/editor";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -43,8 +45,12 @@ function getFinalColumns(
 }
 
 export default function FastboardTable({
+  layoutIndex,
+  container,
   properties,
 }: {
+  layoutIndex: number;
+  container: string;
   properties: FastboardTableProperties;
 }) {
   const {
@@ -60,17 +66,67 @@ export default function FastboardTable({
   const { items, isLoading, error, page, setPage, pages, updateQuery } =
     usePaginatedData(rowsPerPage);
   const {
+    data: sourceData,
+    keys,
     loading: dataLoading,
     isError: isDataError,
     error: dataError,
   } = useData(sourceQuery);
-  const { executeQuery, data } = useExecuteQuery();
+  const [dashboardMetadata, setDashboardMetadata] = useRecoilState(
+    dashboardMetadataState
+  );
+  const [propertiesState, setPropertiesState] = useRecoilState(
+    propertiesDrawerState
+  );
+  const { executeQuery } = useExecuteQuery();
   const finalColumns = getFinalColumns(columns, actions);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedRowAction, setSelectedRowAction] = useState<{
     action: TableActionProperty;
     item: any;
   } | null>(null);
+
+  useEffect(() => {
+    setDashboardMetadata((previous) => {
+      return {
+        ...previous,
+        layouts: previous.layouts.map((layout, index) => {
+          if (index === layoutIndex) {
+            return {
+              ...layout,
+              [container]: {
+                type: "table",
+                properties: {
+                  ...properties,
+                  columns: keys.map((key) => {
+                    return {
+                      column: { key, label: key },
+                      visible: true,
+                    };
+                  }),
+                },
+              },
+            };
+          }
+          return layout;
+        }),
+      };
+    });
+    setPropertiesState((previous) => {
+      return {
+        ...previous,
+        properties: {
+          ...previous.properties,
+          columns: keys.map((key) => {
+            return {
+              column: { key, label: key },
+              visible: true,
+            };
+          }),
+        },
+      };
+    });
+  }, [keys]);
 
   useEffect(() => {
     updateQuery(query.url, query.field);

@@ -6,41 +6,68 @@ import FastboardTablePropertiesComponent from "./FastboardTableProperties";
 import RowLayout from "../layouts/RowLayout";
 import FullLayout from "../layouts/FullLayout";
 
+export function getDraggableComponent(id: ComponentType) {
+  const components = {
+    [ComponentType.Table]: <FastboardTableDraggable />,
+    [ComponentType.Image]: null,
+  };
+
+  return components[id];
+}
+
 export function getComponent(
+  layoutIndex: number,
+  container: string,
   id: ComponentType,
-  type: "draggable" | "editable" | "view" | "properties",
-  properties?: Record<string, any>,
-  onValueChange?: (properties: Record<string, any>) => void
+  type: "editable" | "view",
+  properties?: Record<string, any>
 ) {
   const components = {
     [ComponentType.Table]: {
-      draggable: <FastboardTableDraggable />,
       editable: (
-        <FastboardTable properties={properties as FastboardTableProperties} />
+        <FastboardTable
+          layoutIndex={layoutIndex}
+          container={container}
+          properties={properties as FastboardTableProperties}
+        />
       ),
       view: (
-        <FastboardTable properties={properties as FastboardTableProperties} />
-      ),
-      properties: (
-        <FastboardTablePropertiesComponent
+        <FastboardTable
+          layoutIndex={layoutIndex}
+          container={container}
           properties={properties as FastboardTableProperties}
-          onValueChange={(properties) => {
-            if (onValueChange) {
-              onValueChange(properties);
-            }
-          }}
         />
       ),
     },
     [ComponentType.Image]: {
-      draggable: null,
       editable: null,
       view: null,
-      properties: null,
     },
   };
 
   return components[id][type];
+}
+
+export function getPropertiesComponent(
+  id: ComponentType,
+  properties?: Record<string, any>,
+  onValueChange?: (properties: Record<string, any>) => void
+) {
+  const components = {
+    [ComponentType.Table]: (
+      <FastboardTablePropertiesComponent
+        properties={properties as FastboardTableProperties}
+        onValueChange={(properties) => {
+          if (onValueChange) {
+            onValueChange(properties);
+          }
+        }}
+      />
+    ),
+    [ComponentType.Image]: null,
+  };
+
+  return components[id];
 }
 
 export function getLayout(
