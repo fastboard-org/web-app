@@ -92,7 +92,7 @@ const FastboardComponent = ({
       {isSelected() && (
         <Button
           isIconOnly
-          className="absolute top-2 right-2 z-10 text-primary"
+          className="absolute bottom-2 left-2 z-10 text-danger"
           variant="light"
           onPress={onDeleteComponent}
         >
