@@ -18,6 +18,8 @@ import { useRecoilValue } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
 import RestBodyEditor from "@/components/connections/queries/rest/RestBodyEditor";
 import { connectionsService } from "@/lib/services/connections";
+import { convertToHeaders, convertToObject } from "@/lib/rest-queries";
+import QuestionModal from "@/components/shared/QuestionModal";
 
 const fillParams = (
   params: QueryParameter[],
@@ -76,7 +78,7 @@ const RestQueryEditor = ({
   const [previewToken, setPreviewToken] = useState<string>("");
 
   const [headers, setHeaders] = useState<RestHeader[]>(
-    query?.metadata?.headers || [],
+    convertToHeaders(query?.metadata?.headers),
   );
   const [path, setPath] = useState<string>(query?.metadata?.path || "");
   const [body, setBody] = useState<string>(
@@ -84,6 +86,13 @@ const RestQueryEditor = ({
   );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const {
+    isOpen: isDeleteModalOpen,
+    onOpen: onOpenDeleteModal,
+    onClose: onCloseDeleteModal,
+  } = useDisclosure();
+
   const isMethodListClosed = useRecoilValue(isMethodListClosedState);
 
   const queryExists = !query?.id?.includes(" new");
@@ -93,7 +102,7 @@ const RestQueryEditor = ({
     setResponseData(null);
     setPath(query?.metadata?.path || "");
     setBody(JSON.stringify(query?.metadata?.body) || "{}");
-    setHeaders(query?.metadata?.headers || []);
+    setHeaders(convertToHeaders(query?.metadata?.headers));
   }, [query.id]);
 
   const handleSend = async () => {
@@ -154,6 +163,7 @@ const RestQueryEditor = ({
   const handleSave = async () => {
     setSaveLoading(true);
     const shouldCreate = !queryExists;
+    const headersObject = convertToObject(headers);
     if (shouldCreate) {
       const newQuery = await connectionsService.createQuery(
         query.name,
@@ -161,7 +171,7 @@ const RestQueryEditor = ({
         {
           ...query.metadata,
           path,
-          headers,
+          headers: headersObject,
           body: JSON.parse(body),
         },
       );
@@ -173,7 +183,7 @@ const RestQueryEditor = ({
         {
           ...query.metadata,
           path,
-          headers,
+          headers: headersObject,
           body: JSON.parse(body),
         },
       );
@@ -215,7 +225,7 @@ const RestQueryEditor = ({
                 color={"danger"}
                 size={"sm"}
                 isLoading={deleteLoading}
-                onClick={handleDelete}
+                onClick={onOpenDeleteModal}
               >
                 Delete
               </Button>
@@ -302,6 +312,13 @@ const RestQueryEditor = ({
         }}
         isOpen={isOpen}
         onClose={onClose}
+      />
+      <QuestionModal
+        titleText={"Delete Query"}
+        questionText={"Are you sure you want to delete this query?"}
+        isOpen={isDeleteModalOpen}
+        onClose={onCloseDeleteModal}
+        onConfirm={handleDelete}
       />
     </div>
   );
