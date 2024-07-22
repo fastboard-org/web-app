@@ -10,6 +10,7 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 import ConnectionVariablesTable from "@/components/connections/edit/ConnectionVariablesTable";
+import { connectionsService } from "@/lib/services/connections";
 
 const ConnectionSettingsModal = ({
   isOpen,
@@ -33,21 +34,19 @@ const ConnectionSettingsModal = ({
     setCredentials(connection?.credentials);
     setVariableEntries(Object.entries(connection?.variables || {}));
     setName(connection?.name);
-  }, [connection]);
+  }, [connection, isOpen]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setLoading(true);
-    setTimeout(() => {
-      // TODO: Validate fields and update connection in db
-      setLoading(false);
-      onSubmit({
-        ...connection,
-        credentials,
-        variables: Object.fromEntries(variableEntries),
-        name,
-      });
-      onClose();
-    }, 1000);
+    const updatedConnection = await connectionsService.updateConnection(
+      connection.id,
+      name,
+      credentials,
+      Object.fromEntries(variableEntries),
+    );
+    onSubmit(updatedConnection);
+    setLoading(false);
+    onClose();
   };
 
   return (
@@ -76,7 +75,7 @@ const ConnectionSettingsModal = ({
                     size={"lg"}
                     className={"w-full"}
                     placeholder={"Main URL"}
-                    value={credentials?.url?.split("://")[1]}
+                    value={credentials?.main_url?.split("://")[1]}
                     startContent={
                       <div className="pointer-events-none flex items-center">
                         <span className="text-default-400 text-small">
@@ -87,7 +86,7 @@ const ConnectionSettingsModal = ({
                     onChange={(e) =>
                       setCredentials({
                         ...credentials,
-                        url: `https://${e.target.value}`,
+                        main_url: `https://${e.target.value}`,
                       })
                     }
                   />

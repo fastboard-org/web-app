@@ -12,10 +12,12 @@ const ConnectionTypeButton = ({
   type,
   onClick,
   selected,
+  isDisabled = false,
 }: {
   type: ConnectionType;
   onClick: () => void;
   selected: boolean;
+  isDisabled?: boolean;
 }) => {
   const selectedClassName = selected
     ? "bg-primary bg-opacity-30"
@@ -31,6 +33,7 @@ const ConnectionTypeButton = ({
         isIconOnly
         className={"w-[120px] h-[100px] " + selectedClassName}
         onClick={onClick}
+        isDisabled={isDisabled}
       >
         <ConnectionIcon type={type} size={50} className="text-primary" />
       </Button>
