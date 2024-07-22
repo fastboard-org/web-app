@@ -78,7 +78,12 @@ export default function FastboardTable({
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState
   );
-  const { executeQuery } = useExecuteQuery();
+  const {
+    execute,
+    isSuccess: isExecuteQuerySucces,
+    isError: isExecuteQueryError,
+    error: executeQueryError,
+  } = useExecuteQuery();
   const finalColumns = getFinalColumns(columns, actions);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedRowAction, setSelectedRowAction] = useState<{
@@ -138,7 +143,18 @@ export default function FastboardTable({
         description: dataError?.message,
       });
     }
-  }, [isDataError]);
+    if (isExecuteQueryError) {
+      toast.error("Failed executing action", {
+        description: executeQueryError?.message,
+      });
+    }
+  }, [isDataError, isExecuteQueryError]);
+
+  useEffect(() => {
+    if (isExecuteQuerySucces) {
+      toast.success("Action executed successfully");
+    }
+  }, [isExecuteQuerySucces]);
 
   if (error) {
     return (
@@ -196,11 +212,10 @@ export default function FastboardTable({
         onClose={() => {
           setDeleteModalOpen(false);
         }}
-        onConfirm={() => {
+        onConfirm={async () => {
           console.log(selectedRowAction);
-          toast("Action executed successfully");
-          if (selectedRowAction) {
-            executeQuery(selectedRowAction.action.query);
+          if (selectedRowAction && selectedRowAction.action.query) {
+            execute(selectedRowAction.action.query);
           }
         }}
       />

@@ -4,7 +4,7 @@ import ComponentsDrawer from "@/components/editor/ComponentsDrawer";
 import EditorCanvas from "@/components/editor/EditorCanvas";
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/shared/Toaster";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useSetRecoilState } from "recoil";

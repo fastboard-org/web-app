@@ -25,6 +25,7 @@ const QueryEditor = ({
             id: `${queries.length + 1} new`,
             name: "New Query",
             connection_id: connection?.id || "",
+            connection_type: ConnectionType.REST,
             metadata: {
               method: "GET",
             },

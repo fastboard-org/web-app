@@ -7,7 +7,7 @@ export async function executeQuery(
 ) {
   try {
     if (!query) {
-      return;
+      return null;
     }
     const response = await axiosInstance.post(
       `/adapter/${query.connection_id}/execute/${query.id}`,

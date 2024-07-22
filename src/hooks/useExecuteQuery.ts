@@ -28,7 +28,6 @@ const useExecuteQuery = (invalidateQueries?: QueryKey[]) => {
     isError,
     error,
   } = useMutation({
-    mutationKey: ["executeQuery"],
     mutationFn: (query: Query | null) => executeQuery(query),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -38,7 +37,7 @@ const useExecuteQuery = (invalidateQueries?: QueryKey[]) => {
   });
 
   return {
-    executeQuery,
+    execute,
     data,
     isSuccess,
     isPending,
