@@ -13,6 +13,7 @@ export interface TableColumnProperties {
 export interface TableActionProperty {
   key: string;
   label: string;
+  type: "view" | "edit" | "delete";
   query: Query | null;
   parameters: { name: string; value: string }[];
 }

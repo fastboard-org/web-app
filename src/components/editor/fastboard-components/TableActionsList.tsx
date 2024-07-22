@@ -18,22 +18,20 @@ export default function TableActionsList({
   onChange?: (actions: TableActionProperty[]) => void;
 }) {
   const [actions, setActions] = useState(actionsProperties);
-  const [lastIndex, setLastIndex] = useState(0);
-  const [hasDeleteAction, setHasDeleteAction] = useState(false);
 
   useEffect(() => {
     setActions(actionsProperties);
   }, [actionsProperties]);
 
-  function addAction(name: string) {
+  function addAction(name: string, type: "view" | "edit" | "delete") {
     const newAction: TableActionProperty = {
-      key: `new-${lastIndex}`,
+      key: `${type}-action`,
       label: name,
+      type,
       query: null,
       parameters: [],
     };
 
-    setLastIndex(lastIndex + 1);
     setActions((previous) => [...previous, newAction]);
     if (onChange) {
       onChange([...actions, newAction]);
@@ -41,21 +39,30 @@ export default function TableActionsList({
   }
 
   function removeAction(key: string, index: number) {
-    if (index === actions.length - 1) {
-      if (actions.length === 1) {
-        setLastIndex(0);
-      } else {
-        const lastAction = actions[index - 1];
-        setLastIndex(parseInt(lastAction.key.split("-")[1]) + 1);
-      }
-    }
-
     const newActions = actions.filter((action) => action.key !== key);
     setActions(newActions);
     if (onChange) {
       onChange(newActions);
     }
   }
+
+  const getDisabledKeys = () => {
+    const hasViewAction = actions.some((action) => action.type === "view");
+    const hasDeleteAction = actions.some((action) => action.type === "delete");
+    const hasEditAction = actions.some((action) => action.type === "edit");
+
+    const disabledKeys = [];
+    if (hasViewAction) {
+      disabledKeys.push("view-action");
+    }
+    if (hasDeleteAction) {
+      disabledKeys.push("delete-action");
+    }
+    if (hasEditAction) {
+      disabledKeys.push("edit-action");
+    }
+    return disabledKeys;
+  };
 
   return (
     <div className="flex flex-col items-start">
@@ -66,7 +73,7 @@ export default function TableActionsList({
               Add Action
             </Button>
           </DropdownTrigger>
-          <DropdownMenu disabledKeys={["view-action", "edit-action"]}>
+          <DropdownMenu disabledKeys={getDisabledKeys()}>
             <DropdownItem key="view-action" startContent={<Eye size={15} />}>
               View Action
             </DropdownItem>
@@ -77,8 +84,7 @@ export default function TableActionsList({
             <DropdownItem
               key="delete-action"
               onPress={() => {
-                addAction("New Delete Action");
-                setHasDeleteAction(true);
+                addAction("New Delete Action", "delete");
               }}
               startContent={<Trash size={15} />}
             >
@@ -88,25 +94,33 @@ export default function TableActionsList({
         </Dropdown>
       </div>
 
-      {hasDeleteAction && <div> </div>}
       <ul className="w-[95%] rounded-lg p-2">
-        {actions.map((action, index) => (
-          <EditableDeleteAction
-            action={action}
-            onChange={(newAction) => {
-              const newActions = actions.map((a) =>
-                a.key === action.key ? newAction : a
+        {actions.map((action, index) => {
+          switch (action.type) {
+            case "delete": {
+              return (
+                <EditableDeleteAction
+                  action={action}
+                  onChange={(newAction) => {
+                    const newActions = actions.map((a) =>
+                      a.key === action.key ? newAction : a
+                    );
+                    setActions(newActions);
+                    if (onChange) {
+                      onChange(newActions);
+                    }
+                  }}
+                  onDelete={() => {
+                    removeAction(action.key, index);
+                  }}
+                />
               );
-              setActions(newActions);
-              if (onChange) {
-                onChange(newActions);
-              }
-            }}
-            onDelete={() => {
-              removeAction(action.key, index);
-            }}
-          />
-        ))}
+            }
+            default: {
+              return <></>;
+            }
+          }
+        })}
       </ul>
     </div>
   );

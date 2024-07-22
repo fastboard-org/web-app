@@ -71,7 +71,6 @@ export function EditableDeleteAction({
               <QuerySelection
                 selectedQueryId={actionData.query?.id || ""}
                 onQuerySelect={(query) => {
-                  console.log(query);
                   setActionData({
                     ...actionData,
                     query: query,
@@ -84,29 +83,33 @@ export function EditableDeleteAction({
                   });
                 }}
               />
-              <div className="flex justify-between">
-                <h1 className="text-small">Parameters</h1>
-                <Tooltip
-                  content={
+              {actionData.parameters.length > 0 && (
+                <div className="flex justify-between">
+                  <h1 className="text-small">Parameters</h1>
+                  <Tooltip
+                    content={
+                      <div>
+                        Use{" "}
+                        <Code className={"text-xs"}>
+                          {"{{row.columnName}}"}
+                        </Code>{" "}
+                        syntax to access row values.
+                      </div>
+                    }
+                    className={"p-3 w-[275px] -translate-x-[35px] text-xs"}
+                    placement={"bottom"}
+                    offset={10}
+                    closeDelay={0}
+                  >
                     <div>
-                      Use{" "}
-                      <Code className={"text-xs"}>{"{{row.columnName}}"}</Code>{" "}
-                      syntax to access row values.
+                      <RiQuestionLine
+                        className={"text-foreground-500"}
+                        size={15}
+                      />
                     </div>
-                  }
-                  className={"p-3 w-[275px] -translate-x-[35px] text-xs"}
-                  placement={"bottom"}
-                  offset={10}
-                  closeDelay={0}
-                >
-                  <div>
-                    <RiQuestionLine
-                      className={"text-foreground-500"}
-                      size={15}
-                    />
-                  </div>
-                </Tooltip>
-              </div>
+                  </Tooltip>
+                </div>
+              )}
               <div className="flex flex-col gap-2 px-2 w-full">
                 {actionData.parameters.map((parameter, index) => (
                   <Input
