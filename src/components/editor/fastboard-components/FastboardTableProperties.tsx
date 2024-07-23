@@ -1,6 +1,5 @@
 import { Accordion, AccordionItem, Checkbox, Input } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { ConnectionType, HTTP_METHOD } from "@/types/connections";
 import ReorderableColumns from "./ReorderableColumns";
 import TableActionsList from "./TableActionsList";
 import { FastboardTableProperties } from "@/types/editor/table-types";

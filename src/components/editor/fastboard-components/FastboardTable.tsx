@@ -99,7 +99,6 @@ export default function FastboardTable({
   } | null>(null);
 
   useEffect(() => {
-    console.log(keys);
     setDashboardMetadata((previous) =>
       updateComponentProperties(
         layoutIndex,

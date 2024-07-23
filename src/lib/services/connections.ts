@@ -42,7 +42,6 @@ const createConnection = async (
 
 const getConnection = async (id: string) => {
   const response = await axiosInstance.get(`/connections/${id}`);
-  console.log(response.data);
   return mapConnection(response.data);
 };
 
