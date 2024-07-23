@@ -19,11 +19,6 @@ export interface TableActionProperty {
 }
 
 export class FastboardTableProperties {
-  query: { id: string; url: string; field: string | null } = {
-    id: "1",
-    url: "https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0",
-    field: "results",
-  };
   sourceQuery: Query | null = null;
   rowsPerPage: number = 10;
   emptyMessage: string = "No rows to display.";

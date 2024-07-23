@@ -118,6 +118,12 @@ export default function FastboardTable({
       )
     );
     setPropertiesState((previous) => {
+      if (
+        previous.layoutIndex !== layoutIndex ||
+        previous.container !== container
+      ) {
+        return previous;
+      }
       return {
         ...previous,
         properties: {
