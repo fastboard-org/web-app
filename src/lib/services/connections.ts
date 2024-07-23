@@ -16,6 +16,7 @@ const mapQuery = (query: any): Query => {
     id: query._id,
     name: query.name,
     connection_id: query.connection_id,
+    connection_type: query.connection_type,
     metadata: query.metadata,
   };
 };
@@ -28,7 +29,7 @@ const getConnections = async () => {
 const createConnection = async (
   name: string,
   type: ConnectionType,
-  credentials: any,
+  credentials: any
 ) => {
   const response = await axiosInstance.post("/connections", {
     name,
@@ -49,7 +50,7 @@ const updateConnection = async (
   id: string,
   name: string,
   credentials: any,
-  variables: any,
+  variables: any
 ) => {
   const response = await axiosInstance.patch(`/connections/${id}`, {
     name,
@@ -65,7 +66,7 @@ const deleteConnection = async (id: string) => {
 
 const getQueriesByConnectionId = async (connectionId: string) => {
   const response = await axiosInstance.get(
-    `/queries/me?connection_id=${connectionId}`,
+    `/queries/me?connection_id=${connectionId}`
   );
   return response.data.map(mapQuery);
 };
@@ -73,7 +74,7 @@ const getQueriesByConnectionId = async (connectionId: string) => {
 const createQuery = async (
   name: string,
   connection_id: string,
-  metadata: any,
+  metadata: any
 ) => {
   const response = await axiosInstance.post("/queries", {
     name,
