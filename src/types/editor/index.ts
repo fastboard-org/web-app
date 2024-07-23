@@ -13,11 +13,11 @@ export interface Layout {
 }
 
 export interface FullLayout extends Layout {
-  component1?: FastboardComponent;
+  component1: FastboardComponent | null;
 }
 export interface RowLayout extends Layout {
-  component1?: FastboardComponent;
-  component2?: FastboardComponent;
+  component1: FastboardComponent | null;
+  component2: FastboardComponent | null;
 }
 
 export enum ComponentType {

@@ -15,13 +15,13 @@ export default function RowLayout({
       <Container
         layoutIndex={index}
         containerIndex="component1"
-        component={properties?.component1}
+        component={properties.component1}
         mode={mode}
       />
       <Container
         layoutIndex={index}
         containerIndex="component2"
-        component={properties?.component2}
+        component={properties.component2}
         mode={mode}
       />
     </div>
