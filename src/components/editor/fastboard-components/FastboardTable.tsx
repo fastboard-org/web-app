@@ -55,7 +55,6 @@ export default function FastboardTable({
   properties: FastboardTableProperties;
 }) {
   const {
-    query,
     sourceQuery,
     emptyMessage,
     columns,
@@ -70,10 +69,14 @@ export default function FastboardTable({
     page,
     setPage,
     pages,
-    loading: dataLoading,
+    isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
-  } = useData(sourceQuery, rowsPerPage);
+  } = useData(
+    `${layoutIndex}-${container}-${ComponentType.Table}`,
+    sourceQuery,
+    rowsPerPage
+  );
   const [dashboardMetadata, setDashboardMetadata] = useRecoilState(
     dashboardMetadataState
   );
@@ -94,6 +97,7 @@ export default function FastboardTable({
   } | null>(null);
 
   useEffect(() => {
+    console.log(keys);
     setDashboardMetadata((previous) =>
       updateComponentProperties(
         layoutIndex,
@@ -154,7 +158,7 @@ export default function FastboardTable({
     );
   }
 
-  if (finalColumns.length === 0) {
+  if (!dataFetching && finalColumns.length === 0) {
     return (
       <Card className="flex flex-col w-full h-full p-5 justify-center items-center">
         {" "}
@@ -191,9 +195,41 @@ export default function FastboardTable({
     return getKeyValue(item, columnKey);
   };
 
+  function fillParameters(
+    parameters: { name: string; value: string }[],
+    item: any
+  ) {
+    //TODO: fix this in backend
+    if (!parameters) {
+      return {};
+    }
+
+    const filledParams = parameters.map((parameter) => {
+      const regex = /^{{row\.(\w+)}}$/;
+      const match = parameter.value.match(regex);
+      if (!match) {
+        return parameter;
+      }
+
+      //Get column key from column label
+      const columnKey =
+        columns.find((column) => column.column.label === match[1])?.column
+          .key ?? "";
+
+      const value = getKeyValue(item, columnKey);
+      return {
+        ...parameter,
+        value,
+      };
+    });
+    return filledParams.reduce((acc, parameter) => {
+      return { ...acc, [parameter.name]: parameter.value };
+    }, {});
+  }
+
   return (
     <CustomSkeleton
-      isLoaded={!dataLoading}
+      isLoaded={!dataFetching}
       onlyRenderOnLoad
       className="w-full h-full"
     >
@@ -203,9 +239,16 @@ export default function FastboardTable({
           setDeleteModalOpen(false);
         }}
         onConfirm={async () => {
-          console.log(selectedRowAction);
           if (selectedRowAction && selectedRowAction.action.query) {
-            execute(selectedRowAction.action.query);
+            execute({
+              query: selectedRowAction.action.query,
+              parameters: fillParameters(
+                selectedRowAction.action.parameters,
+                selectedRowAction.item
+              ),
+            });
+          } else {
+            toast.warning("No query found for this action");
           }
         }}
       />
@@ -240,7 +283,7 @@ export default function FastboardTable({
           )}
         </TableHeader>
         <TableBody
-          isLoading={dataLoading}
+          isLoading={dataFetching}
           loadingContent={<Spinner label="Loading..." />}
           emptyContent={emptyMessage}
         >

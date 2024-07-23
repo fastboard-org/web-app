@@ -28,12 +28,14 @@ const useExecuteQuery = (invalidateQueries?: QueryKey[]) => {
     isError,
     error,
   } = useMutation({
-    mutationFn: (query: Query | null) => executeQuery(query),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: invalidateQueries,
-      });
-    },
+    mutationFn: ({
+      query,
+      parameters,
+    }: {
+      query: Query | null;
+      parameters: Record<string, any>;
+    }) => executeQuery(query, parameters),
+    onSuccess: () => {},
   });
 
   return {

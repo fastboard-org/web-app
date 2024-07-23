@@ -3,14 +3,13 @@ import { Query } from "@/types/connections";
 import { executeQuery } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
 
-const useData = (query: Query | null, rowsPerPage: number) => {
-  const {
-    data,
-    isPending: loading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["get_data", query?.id],
+const useData = (
+  componentId: string,
+  query: Query | null,
+  rowsPerPage: number
+) => {
+  const { data, isLoading, isFetching, isError, error } = useQuery({
+    queryKey: ["get_data", componentId, query?.id],
     queryFn: () => fetchData(query),
     refetchOnWindowFocus: false,
   });
@@ -68,7 +67,8 @@ const useData = (query: Query | null, rowsPerPage: number) => {
     page,
     setPage,
     pages,
-    loading,
+    isLoading,
+    isFetching,
     isError,
     error,
   };
