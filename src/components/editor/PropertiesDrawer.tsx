@@ -9,10 +9,8 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import {
-  getComponent,
-  getPropertiesComponent,
-} from "./fastboard-components/utils";
+import { getPropertiesComponent } from "./fastboard-components/utils";
+import { updateComponentProperties } from "@/lib/editor.utils";
 
 export default function PropertiesDrawer() {
   const isOpen = useRecoilValue(isPropertiesDrawerOpen);
@@ -44,20 +42,15 @@ export default function PropertiesDrawer() {
               ...prev,
               properties: properties,
             }));
-            setDashboardMetadata((prev) => ({
-              layouts: prev.layouts.map((layout, index) => {
-                if (index === propertiesDrawerComponent.layoutIndex) {
-                  return {
-                    ...layout,
-                    [propertiesDrawerComponent.container]: {
-                      ...layout.component1,
-                      properties: properties,
-                    },
-                  };
-                }
-                return layout;
-              }),
-            }));
+            setDashboardMetadata((prev) =>
+              updateComponentProperties(
+                propertiesDrawerComponent.layoutIndex,
+                propertiesDrawerComponent.container,
+                propertiesDrawerComponent.type,
+                properties,
+                prev
+              )
+            );
           }
         )}
     </motion.div>

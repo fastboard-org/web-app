@@ -11,18 +11,27 @@ import ConnectionList from "@/components/connections/view/ConnectionList";
 import { Connection } from "@/types/connections";
 import { useState } from "react";
 import CreateConnectionModal from "@/components/connections/create/CreateConnectionModal";
+import useConnections from "@/hooks/useConnections";
+import QuestionModal from "@/components/shared/QuestionModal";
+import { connectionsService } from "@/lib/services/connections";
 
 const ViewConnections = ({
-  connections,
-  loading,
   onConnectionClick,
 }: {
-  connections: Connection[];
-  loading: boolean;
   onConnectionClick: (connection: Connection) => void;
 }) => {
+  const { connections, loading, operations } = useConnections();
+
   const [search, setSearch] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [connectionToDelete, setConnectionToDelete] =
+    useState<Connection | null>(null);
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure();
 
   const handleSearch = (e: { target: { value: string } }) => {
     setSearch(e.target.value);
@@ -30,6 +39,13 @@ const ViewConnections = ({
 
   const handleConnectionClick = (connection: Connection) => {
     onConnectionClick(connection);
+  };
+
+  const handleDelete = async (connection: Connection) => {
+    await connectionsService.deleteConnection(connection.id);
+    operations.deleteConnection(connection.id);
+    setConnectionToDelete(null);
+    onDeleteClose();
   };
 
   return (
@@ -70,9 +86,33 @@ const ViewConnections = ({
           connections={connections}
           search={search}
           onConnectionClick={handleConnectionClick}
+          onConnectionAction={(connection, action) => {
+            if (action === "edit") {
+              handleConnectionClick(connection);
+            } else {
+              setConnectionToDelete(connection);
+              onDeleteOpen();
+            }
+          }}
         />
       </CustomSkeleton>
-      <CreateConnectionModal isOpen={isOpen} onClose={onClose} />
+      <CreateConnectionModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onSuccess={operations.addConnection}
+      />
+      <QuestionModal
+        titleText={"Delete Connection"}
+        questionText={"Are you sure you want to delete this connection?"}
+        isOpen={isDeleteOpen}
+        size={"lg"}
+        onClose={onDeleteClose}
+        onConfirm={async () => {
+          if (connectionToDelete) {
+            await handleDelete(connectionToDelete);
+          }
+        }}
+      />
     </>
   );
 };

@@ -14,7 +14,7 @@ export default function FullLayout({
     <Container
       layoutIndex={index}
       containerIndex="component1"
-      component={properties?.component1}
+      component={properties.component1}
       mode={mode}
     />
   );

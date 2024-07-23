@@ -22,7 +22,7 @@ const RestQueriesSelectionList = ({
 
   return (
     <div
-      className={`w-[${isClosed ? "1%" : "18%"}] max-w-[250px] h-full flex items-center flex-col`}
+      className={`h-full flex items-center flex-col w-[${isClosed ? "1%" : "250px"}]`}
     >
       <div
         className={`w-full flex items-center justify-between pl-1 ${
@@ -82,7 +82,7 @@ const RestQueriesSelectionList = ({
             aria-label="Queries List"
             disallowEmptySelection
             selectionMode="single"
-            selectedKeys={[selectedQuery.id]}
+            selectedKeys={[selectedQuery?.id]}
             classNames={{
               base:
                 "overflow-y-auto w-full max-h-[90%] " +
@@ -106,12 +106,12 @@ const RestQueriesSelectionList = ({
               >
                 <span
                   className={`text-${methodColor(
-                    query.metadata.method as HTTP_METHOD,
+                    query?.metadata?.method as HTTP_METHOD,
                   )} inline-block w-[60px]`}
                 >
-                  {query.metadata.method}
+                  {query?.metadata?.method}
                 </span>{" "}
-                {query.name}
+                {query?.name}
               </ListboxItem>
             ))}
           </Listbox>

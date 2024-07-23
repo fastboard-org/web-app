@@ -6,11 +6,15 @@ const ItemCard = ({
   icon,
   className,
   onClick,
+  onEditClick,
+  onDeleteClick,
 }: {
   name: string;
   icon?: React.ReactNode;
   className?: string;
   onClick?: () => void;
+  onEditClick?: () => void;
+  onDeleteClick?: () => void;
 }) => {
   return (
     <Card
@@ -30,7 +34,7 @@ const ItemCard = ({
         </h3>
       </CardHeader>
       <CardBody className={"flex-row-reverse justify-between items-end p-3"}>
-        <CardActions />
+        <CardActions onEditClick={onEditClick} onDeleteClick={onDeleteClick} />
       </CardBody>
     </Card>
   );

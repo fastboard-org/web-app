@@ -10,7 +10,7 @@ import { Connection, Query } from "@/types/connections";
 import QueryEditor from "@/components/connections/queries/QueryEditor";
 import useQueries from "@/hooks/useQueries";
 
-export default function Connections() {
+export default function ConnectionPage() {
   const { id } = useParams();
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();

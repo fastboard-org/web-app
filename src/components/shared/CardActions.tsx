@@ -4,9 +4,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@nextui-org/react";
-import { Copy, Edit, More, Trash } from "iconsax-react";
+import { Edit, More, Trash } from "iconsax-react";
 
-const CardActions = () => {
+const CardActions = ({
+  onEditClick,
+  onDeleteClick,
+}: {
+  onEditClick?: () => void;
+  onDeleteClick?: () => void;
+}) => {
   return (
     <Popover placement={"right"}>
       <PopoverTrigger>
@@ -20,6 +26,7 @@ const CardActions = () => {
             }
             fullWidth
             endContent={<Edit className={"text-foreground-400"} />}
+            onClick={onEditClick}
           >
             Edit
           </Button>
@@ -28,17 +35,8 @@ const CardActions = () => {
               "bg-transparent text-left justify-between gap-5 hover:bg-opacity-10 hover:bg-foreground"
             }
             fullWidth
-            endContent={<Copy className={"text-foreground-400"} />}
-          >
-            Duplicate
-          </Button>
-
-          <Button
-            className={
-              "bg-transparent text-left justify-between gap-5 hover:bg-opacity-10 hover:bg-foreground"
-            }
-            fullWidth
             endContent={<Trash className={"text-danger"} />}
+            onClick={onDeleteClick}
           >
             Delete
           </Button>

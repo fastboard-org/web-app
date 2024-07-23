@@ -12,9 +12,11 @@ const connectionTexts = {
 const ConnectionCard = ({
   connection,
   onClick,
+  onAction,
 }: {
   connection: Connection;
   onClick: (connection: Connection) => void;
+  onAction: (action: "edit" | "delete") => void;
 }) => {
   return (
     <Card
@@ -43,7 +45,10 @@ const ConnectionCard = ({
         </div>
       </CardHeader>
       <CardBody className={"flex-row-reverse justify-between items-end p-3"}>
-        <CardActions />
+        <CardActions
+          onDeleteClick={() => onAction("delete")}
+          onEditClick={() => onAction("edit")}
+        />
       </CardBody>
     </Card>
   );
