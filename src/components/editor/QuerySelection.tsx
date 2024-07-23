@@ -1,8 +1,8 @@
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import ConnectionIcon from "../shared/ConnectionIcon";
 import { Query } from "@/types/connections";
-import useQueries from "@/hooks/useQueries";
 import CustomSkeleton from "../shared/CustomSkeleton";
+import useMyQueries from "@/hooks/useMyQueries";
 
 export default function QuerySelection({
   selectedQueryId,
@@ -11,7 +11,7 @@ export default function QuerySelection({
   selectedQueryId: string;
   onQuerySelect: (query: Query) => void;
 }) {
-  const { queries, loading, isError, error } = useQueries("");
+  const { queries, loading, isError, error } = useMyQueries("");
 
   if (isError) {
     return <div>Error: {error?.message}</div>;

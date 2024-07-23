@@ -2,7 +2,7 @@ import { Query } from "@/types/connections";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "@/lib/axios";
 
-const useQueries = (connectionId: string) => {
+const useMyQueries = (connectionId: string) => {
   const {
     isPending: loading,
     isError,
@@ -49,4 +49,4 @@ const useQueries = (connectionId: string) => {
   };
 };
 
-export default useQueries;
+export default useMyQueries;
