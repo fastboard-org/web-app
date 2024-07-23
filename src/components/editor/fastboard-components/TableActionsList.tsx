@@ -76,10 +76,10 @@ export default function TableActionsList({
           </DropdownTrigger>
           <DropdownMenu disabledKeys={getDisabledKeys()}>
             <DropdownItem key="view-action" startContent={<Eye size={15} />}>
-              View Action
+              View
             </DropdownItem>
             <DropdownItem key="edit-action" startContent={<Edit size={15} />}>
-              Edit Action
+              Edit
             </DropdownItem>
 
             <DropdownItem
@@ -89,7 +89,7 @@ export default function TableActionsList({
               }}
               startContent={<Trash size={15} />}
             >
-              Delete Action
+              Delete
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
