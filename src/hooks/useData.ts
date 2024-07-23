@@ -8,8 +8,8 @@ const useData = (
   query: Query | null,
   rowsPerPage: number
 ) => {
-  const { data, isLoading, isFetching, isError, error } = useQuery({
-    queryKey: ["get_data", componentId, query?.id],
+  const { data, refetch, isLoading, isFetching, isError, error } = useQuery({
+    queryKey: ["get_data", query?.id, { componentId: componentId }],
     queryFn: () => fetchData(query),
     refetchOnWindowFocus: false,
   });
@@ -67,6 +67,7 @@ const useData = (
     page,
     setPage,
     pages,
+    refetch,
     isLoading,
     isFetching,
     isError,

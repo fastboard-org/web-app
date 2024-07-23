@@ -1,5 +1,9 @@
 import { Query } from "@/types/connections";
-import { QueryKey, useMutation } from "@tanstack/react-query";
+import {
+  InvalidateQueryFilters,
+  QueryKey,
+  useMutation,
+} from "@tanstack/react-query";
 import { axiosInstance } from "@/lib/axios";
 import { queryClient } from "@/app/providers";
 import { executeQuery } from "@/lib/services/adapter";
@@ -19,7 +23,7 @@ export const executeQueryFn = async (query: Query | null) => {
   }
 };
 
-const useExecuteQuery = (invalidateQueries?: QueryKey[]) => {
+const useExecuteQuery = (invalidateQueries?: InvalidateQueryFilters) => {
   const {
     mutate: execute,
     data,
@@ -35,7 +39,9 @@ const useExecuteQuery = (invalidateQueries?: QueryKey[]) => {
       query: Query | null;
       parameters: Record<string, any>;
     }) => executeQuery(query, parameters),
-    onSuccess: () => {},
+    onSuccess: () => {
+      queryClient.invalidateQueries(invalidateQueries);
+    },
   });
 
   return {

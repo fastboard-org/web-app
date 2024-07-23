@@ -88,7 +88,9 @@ export default function FastboardTable({
     isSuccess: isExecuteQuerySucces,
     isError: isExecuteQueryError,
     error: executeQueryError,
-  } = useExecuteQuery();
+  } = useExecuteQuery({
+    queryKey: ["get_data", sourceQuery?.id],
+  });
   const finalColumns = getFinalColumns(columns, actions);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedRowAction, setSelectedRowAction] = useState<{
