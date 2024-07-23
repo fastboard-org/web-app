@@ -2,7 +2,7 @@ import { Query } from "@/types/connections";
 import { QueryKey, useMutation } from "@tanstack/react-query";
 import { axiosInstance } from "@/lib/axios";
 import { queryClient } from "@/app/providers";
-import { executeQuery } from "@/lib/adapter.service";
+import { executeQuery } from "@/lib/services/adapter";
 
 export const executeQueryFn = async (query: Query | null) => {
   try {

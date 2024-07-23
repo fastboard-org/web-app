@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { Query } from "@/types/connections";
-import { executeQuery } from "@/lib/adapter.service";
-import { useState } from "react";
+import { executeQuery } from "@/lib/services/adapter";
+import { useMemo, useState } from "react";
 
-const useData = (query: Query | null) => {
+const useData = (query: Query | null, rowsPerPage: number) => {
   const {
+    data,
     isPending: loading,
     isError,
-    data,
     error,
   } = useQuery({
     queryKey: ["get_data", query?.id],
@@ -15,6 +15,7 @@ const useData = (query: Query | null) => {
     refetchOnWindowFocus: false,
   });
   const [keys, setKeys] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
 
   const mapItem = (item: any) => {
     Object.keys(item).forEach((key) => {
@@ -41,17 +42,32 @@ const useData = (query: Query | null) => {
         responseData = [responseData];
       }
       setKeys(Object.keys(responseData[0]));
-      responseData = responseData.map((item: any) => mapItem(item));
-      return responseData;
+      const finalData: any[] = responseData.map((item: any, index: number) => {
+        mapItem(item);
+        return { key: index, ...item };
+      });
+      return finalData;
     } catch (error) {
       console.error(error);
       throw error;
     }
   };
 
+  const items = useMemo(() => {
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    return data?.slice(start, end);
+  }, [page, data]);
+
+  const pages = data ? Math.ceil(data.length / rowsPerPage) : 0;
+
   return {
-    data,
+    data: items || [],
     keys,
+    page,
+    setPage,
+    pages,
     loading,
     isError,
     error,

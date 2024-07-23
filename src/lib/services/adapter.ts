@@ -1,5 +1,5 @@
 import { Query } from "@/types/connections";
-import { axiosInstance } from "./axios";
+import { axiosInstance } from "../axios";
 
 export async function executeQuery(
   query: Query | null,

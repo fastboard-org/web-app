@@ -1,6 +1,5 @@
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import useExecuteQuery from "@/hooks/useExecuteQuery";
-import usePaginatedData from "@/hooks/usePaginatedData";
 import {
   FastboardTableProperties,
   TableActionProperty,
@@ -30,6 +29,8 @@ import useData from "@/hooks/useData";
 import { toast } from "sonner";
 import { useRecoilState } from "recoil";
 import { dashboardMetadataState, propertiesDrawerState } from "@/atoms/editor";
+import { updateComponentProperties } from "@/lib/editor.utils";
+import { ComponentType } from "@/types/editor";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -63,15 +64,16 @@ export default function FastboardTable({
     isStriped,
     rowsPerPage,
   } = properties;
-  const { items, isLoading, error, page, setPage, pages, updateQuery } =
-    usePaginatedData(rowsPerPage);
   const {
-    data: sourceData,
+    data,
     keys,
+    page,
+    setPage,
+    pages,
     loading: dataLoading,
     isError: isDataError,
     error: dataError,
-  } = useData(sourceQuery);
+  } = useData(sourceQuery, rowsPerPage);
   const [dashboardMetadata, setDashboardMetadata] = useRecoilState(
     dashboardMetadataState
   );
@@ -92,31 +94,23 @@ export default function FastboardTable({
   } | null>(null);
 
   useEffect(() => {
-    setDashboardMetadata((previous) => {
-      return {
-        ...previous,
-        layouts: previous.layouts.map((layout, index) => {
-          if (index === layoutIndex) {
+    setDashboardMetadata((previous) =>
+      updateComponentProperties(
+        layoutIndex,
+        container,
+        ComponentType.Table,
+        {
+          ...properties,
+          columns: keys.map((key) => {
             return {
-              ...layout,
-              [container]: {
-                type: "table",
-                properties: {
-                  ...properties,
-                  columns: keys.map((key) => {
-                    return {
-                      column: { key, label: key },
-                      visible: true,
-                    };
-                  }),
-                },
-              },
+              column: { key, label: key },
+              visible: true,
             };
-          }
-          return layout;
-        }),
-      };
-    });
+          }),
+        },
+        previous
+      )
+    );
     setPropertiesState((previous) => {
       return {
         ...previous,
@@ -132,10 +126,6 @@ export default function FastboardTable({
       };
     });
   }, [keys]);
-
-  useEffect(() => {
-    updateQuery(query.url, query.field);
-  }, [query?.url, query?.field]);
 
   useEffect(() => {
     if (isDataError) {
@@ -156,7 +146,7 @@ export default function FastboardTable({
     }
   }, [isExecuteQuerySucces]);
 
-  if (error) {
+  if (isDataError) {
     return (
       <Card className="flex flex-col w-full h-[30%] p-5 justify-center items-center">
         <p className="text-xl text-danger">Failed loading data</p>
@@ -254,7 +244,7 @@ export default function FastboardTable({
           loadingContent={<Spinner label="Loading..." />}
           emptyContent={emptyMessage}
         >
-          {items.map((item) => (
+          {data.map((item) => (
             <TableRow key={item.key}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey as string)}</TableCell>
