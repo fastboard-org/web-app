@@ -19,7 +19,7 @@ const RestResponse = ({
   return response ? (
     <>
       <p className={"text-sm absolute right-5 bottom-5 text-foreground-500"}>
-        Status: {response.status}
+        Status: {response.status_code}
       </p>
       <JsonView
         data={responseData}
