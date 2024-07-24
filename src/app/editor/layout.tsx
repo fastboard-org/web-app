@@ -1,6 +1,5 @@
-import HomeNavbarLayout from "@/components/layout/HomeNavbarLayout";
-import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 import SessionVerifier from "@/components/session/SessionVerifier";
+import { Toaster } from "@/components/shared/Toaster";
 
 export default function EditorLayout({
   children,
@@ -9,6 +8,7 @@ export default function EditorLayout({
 }>) {
   return (
     <SessionVerifier>
+      <Toaster position="bottom-right" richColors />
       <main>{children}</main>
     </SessionVerifier>
   );

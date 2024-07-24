@@ -81,9 +81,6 @@ export default function FastboardTable({
     sourceQuery,
     rowsPerPage
   );
-  const [dashboardMetadata, setDashboardMetadata] = useRecoilState(
-    dashboardMetadataState
-  );
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState
   );
@@ -121,23 +118,6 @@ export default function FastboardTable({
         previous.metadata
       ),
     }));
-    setDashboardMetadata((previous) =>
-      updateComponentProperties(
-        layoutIndex,
-        container,
-        ComponentType.Table,
-        {
-          ...properties,
-          columns: keys.map((key) => {
-            return {
-              column: { key, label: key },
-              visible: true,
-            };
-          }),
-        },
-        previous
-      )
-    );
     setPropertiesState((previous) => {
       if (
         previous.layoutIndex !== layoutIndex ||

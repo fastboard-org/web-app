@@ -1,9 +1,5 @@
 "use client";
-import {
-  dashboardMetadataState,
-  isPropertiesDrawerOpen,
-  propertiesDrawerState,
-} from "@/atoms/editor";
+import { isPropertiesDrawerOpen, propertiesDrawerState } from "@/atoms/editor";
 import { Divider, Spacer } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
@@ -16,11 +12,10 @@ import useDashboard from "@/hooks/useDashboard";
 
 export default function PropertiesDrawer() {
   const { id } = useParams();
-  const { dashboard, updateDashboard } = useDashboard(id as string);
+  const { updateDashboard } = useDashboard(id as string);
   const isOpen = useRecoilValue(isPropertiesDrawerOpen);
   const propertiesDrawerComponent = useRecoilValue(propertiesDrawerState);
   const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
-  const setDashboardMetadata = useSetRecoilState(dashboardMetadataState);
 
   return (
     <motion.div
@@ -46,18 +41,6 @@ export default function PropertiesDrawer() {
               ...prev,
               properties: properties,
             }));
-
-            setDashboardMetadata((prev) =>
-              updateComponentProperties(
-                propertiesDrawerComponent.layoutIndex,
-                propertiesDrawerComponent.container,
-                propertiesDrawerComponent.type,
-                properties,
-                prev
-              )
-            );
-
-            if (!dashboard?.metadata) return;
             updateDashboard((prev) => ({
               ...prev,
               metadata: updateComponentProperties(

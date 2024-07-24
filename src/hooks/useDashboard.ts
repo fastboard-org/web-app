@@ -18,13 +18,15 @@ const useDashboard = (id: string) => {
   const queryClient = useQueryClient();
 
   const updateDashboard = (updater: (previous: Dashboard) => Dashboard) => {
+    let updatedDashboard: Dashboard | undefined;
+
     queryClient.setQueryData(
       ["dashboards", id],
       (prevData: Dashboard | undefined) => {
         if (!prevData) {
           return prevData;
         }
-        const updatedDashboard = updater(prevData);
+        updatedDashboard = updater(prevData);
         return {
           ...prevData,
           ...updatedDashboard,
@@ -32,13 +34,12 @@ const useDashboard = (id: string) => {
       }
     );
 
-    if (!dashboard) return;
-    console.log("Dashboard updated", dashboard);
+    if (!updatedDashboard) return;
     dashboardService.updateDashboard(
-      dashboard.id,
-      dashboard.name,
-      dashboard.folder_id,
-      dashboard.metadata
+      updatedDashboard.id,
+      updatedDashboard.name,
+      updatedDashboard.folder_id,
+      updatedDashboard.metadata
     );
   };
 
