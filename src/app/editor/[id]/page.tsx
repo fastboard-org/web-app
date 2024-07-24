@@ -13,15 +13,12 @@ import { useParams, useRouter } from "next/navigation";
 export default function Editor() {
   const { id } = useParams();
   const router = useRouter();
-  const { dashboard, isError, error, updateDashboard } = useDashboard(
-    id as string
-  );
+  const { isError, error, updateDashboard } = useDashboard(id as string);
 
   function updateDashboardMetadata(event: DragEndEvent) {
     const { over, active } = event;
     if (!over) return;
     if (!active) return;
-    if (!dashboard) return;
 
     const layoutIndex: number = over.data.current?.layoutIndex;
     const container: string = over.data.current?.container;
