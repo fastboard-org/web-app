@@ -22,45 +22,6 @@ import { convertToHeaders, convertToObject } from "@/lib/rest-queries";
 import QuestionModal from "@/components/shared/QuestionModal";
 import { adapterService } from "@/lib/services/adapter";
 
-const fillParams = (
-  params: QueryParameter[],
-  body: string,
-  headers: RestHeader[],
-  path: string,
-) => {
-  //TODO: this will be done by the backend instead
-  const filledPath =
-    params?.reduce((path, param) => {
-      return path?.replace(`{{${param.name}}}`, param.preview);
-    }, path) ?? path;
-
-  const filledHeaders = headers
-    ?.map((header: RestHeader) => {
-      return {
-        key: params?.reduce((key, param) => {
-          return key.replace(`{{${param.name}}}`, param.preview);
-        }, header.key),
-        value: params?.reduce((value, param) => {
-          return value.replace(`{{${param.name}}}`, param.preview);
-        }, header.value),
-      };
-    })
-    .filter((header: RestHeader) => header.key && header.value);
-
-  const queryBody = body;
-
-  const filledBody =
-    params?.reduce((body, param) => {
-      return body.replace(`{{${param.name}}}`, param.preview);
-    }, queryBody) ?? queryBody;
-
-  return {
-    filledPath,
-    filledHeaders,
-    filledBody,
-  };
-};
-
 const RestQueryEditor = ({
   connection,
   query,
@@ -127,11 +88,9 @@ const RestQueryEditor = ({
         parameters,
       );
     } catch (e) {
-      //TODO: show error message to user
+      //TODO: toast error message to user
       console.error(e);
     }
-
-    console.log("RESPONSE", response);
 
     setResponse(response);
     setResponseData(response?.body);
