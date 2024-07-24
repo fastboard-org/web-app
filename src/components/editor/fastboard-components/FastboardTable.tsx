@@ -77,6 +77,7 @@ export default function FastboardTable({
     sourceQuery,
     rowsPerPage
   );
+  const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [dashboardMetadata, setDashboardMetadata] = useRecoilState(
     dashboardMetadataState
   );
@@ -99,6 +100,13 @@ export default function FastboardTable({
   } | null>(null);
 
   useEffect(() => {
+    setShouldUpdateColumns(true);
+  }, [sourceQuery]);
+
+  useEffect(() => {
+    if (!shouldUpdateColumns) {
+      return;
+    }
     setDashboardMetadata((previous) =>
       updateComponentProperties(
         layoutIndex,
@@ -136,6 +144,7 @@ export default function FastboardTable({
         },
       };
     });
+    setShouldUpdateColumns(false);
   }, [keys]);
 
   useEffect(() => {

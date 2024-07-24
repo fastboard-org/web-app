@@ -95,7 +95,7 @@ export default function TableActionsList({
         </Dropdown>
       </div>
 
-      <ul className="w-[95%] rounded-lg p-2">
+      <ul className="w-full rounded-lg pt-2">
         {actions.map((action, index) => {
           switch (action.type) {
             case "delete": {
