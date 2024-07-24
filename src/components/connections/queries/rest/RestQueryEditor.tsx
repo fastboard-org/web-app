@@ -20,6 +20,7 @@ import RestBodyEditor from "@/components/connections/queries/rest/RestBodyEditor
 import { connectionsService } from "@/lib/services/connections";
 import { convertToHeaders, convertToObject } from "@/lib/rest-queries";
 import QuestionModal from "@/components/shared/QuestionModal";
+import { adapterService } from "@/lib/services/adapter";
 
 const fillParams = (
   params: QueryParameter[],
@@ -107,45 +108,33 @@ const RestQueryEditor = ({
 
   const handleSend = async () => {
     setResponseLoading(true);
-    const { filledPath, filledHeaders, filledBody } = fillParams(
-      [
-        ...(query.metadata.parameters ?? []),
-        {
-          name: "token",
-          preview: previewToken,
-        },
-      ],
-      body,
-      headers,
-      path,
-    );
-
     let response;
     try {
-      response = await fetch(connection?.credentials?.main_url + filledPath, {
-        method: query.metadata.method,
-        headers: filledHeaders?.reduce(
-          (headers: any, header: { key: any; value: any }) => {
-            return { ...headers, [header.key]: header.value };
+      const parameters =
+        query?.metadata?.parameters?.reduce(
+          (acc: any, param: QueryParameter) => {
+            return { ...acc, [param.name]: param.preview };
           },
           {},
-        ),
-        body: query.metadata.method !== "GET" ? filledBody : undefined,
-      });
+        ) ?? {};
+
+      response = await adapterService.previewQuery(
+        connection.id,
+        query.metadata.method,
+        path,
+        convertToObject(headers),
+        JSON.parse(body),
+        parameters,
+      );
     } catch (e) {
       //TODO: show error message to user
       console.error(e);
     }
 
+    console.log("RESPONSE", response);
+
     setResponse(response);
-
-    try {
-      setResponseData(await response?.json());
-    } catch (e) {
-      console.error(e);
-      setResponseData({});
-    }
-
+    setResponseData(response?.body);
     setSelectedTab("response");
     setResponseLoading(false);
   };
