@@ -5,25 +5,43 @@ import EditorCanvas from "@/components/editor/EditorCanvas";
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
 import { Toaster } from "@/components/shared/Toaster";
+import useDashboard from "@/hooks/useDashboard";
 import { addComponent } from "@/lib/editor.utils";
 import { ComponentType } from "@/types/editor";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
+import { useParams, useRouter } from "next/navigation";
 import { useSetRecoilState } from "recoil";
 
 export default function Editor() {
+  const { id } = useParams();
+  const router = useRouter();
+  const { dashboard, isError, error, updateDashboard } = useDashboard(
+    id as string
+  );
   const setDashboardMetadata = useSetRecoilState(dashboardMetadataState);
 
   function updateDashboardMetadata(event: DragEndEvent) {
     const { over, active } = event;
     if (!over) return;
     if (!active) return;
+    if (!dashboard) return;
 
     const layoutIndex: number = over.data.current?.layoutIndex;
     const container: string = over.data.current?.container;
     const componentType: ComponentType = active.data.current?.type;
     const defaultProperties: Object = active.data.current?.defaultProperties;
 
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: addComponent(
+        layoutIndex,
+        container,
+        componentType,
+        defaultProperties,
+        prev.metadata
+      ),
+    }));
     setDashboardMetadata((prev) =>
       addComponent(
         layoutIndex,
@@ -33,6 +51,11 @@ export default function Editor() {
         prev
       )
     );
+  }
+
+  if (isError) {
+    //TODO: This could be a not found page and link to home
+    router.push("/home/dashboards");
   }
 
   return (

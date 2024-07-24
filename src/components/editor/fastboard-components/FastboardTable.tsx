@@ -31,6 +31,8 @@ import { useRecoilState } from "recoil";
 import { dashboardMetadataState, propertiesDrawerState } from "@/atoms/editor";
 import { updateComponentProperties } from "@/lib/editor.utils";
 import { ComponentType } from "@/types/editor";
+import { useParams } from "next/navigation";
+import useDashboard from "@/hooks/useDashboard";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -54,6 +56,8 @@ export default function FastboardTable({
   container: string;
   properties: FastboardTableProperties;
 }) {
+  const { id } = useParams();
+  const { updateDashboard } = useDashboard(id as string);
   const {
     sourceQuery,
     emptyMessage,
@@ -99,6 +103,24 @@ export default function FastboardTable({
   } | null>(null);
 
   useEffect(() => {
+    updateDashboard((previous) => ({
+      ...previous,
+      metadata: updateComponentProperties(
+        layoutIndex,
+        container,
+        ComponentType.Table,
+        {
+          ...properties,
+          columns: keys.map((key) => {
+            return {
+              column: { key, label: key },
+              visible: true,
+            };
+          }),
+        },
+        previous.metadata
+      ),
+    }));
     setDashboardMetadata((previous) =>
       updateComponentProperties(
         layoutIndex,

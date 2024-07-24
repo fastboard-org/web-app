@@ -1,6 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { dashboardService } from "@/lib/services/dashboards";
+import { DashboardMetadata } from "@/types/editor";
 import { Dashboard } from "@/types/dashboards";
-import { axiosInstance } from "@/lib/axios";
 
 const useDashboard = (id: string) => {
   const {
@@ -10,18 +11,35 @@ const useDashboard = (id: string) => {
     error,
   } = useQuery({
     queryKey: ["dashboards", id],
-    queryFn: () => fetchDashboardById(id),
+    queryFn: () => dashboardService.getDashboard(id),
     refetchOnWindowFocus: false,
   });
 
-  const fetchDashboardById = async (id: string) => {
-    try {
-      const response = await axiosInstance.get<Dashboard>(`/dashboards/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+  const queryClient = useQueryClient();
+
+  const updateDashboard = (updater: (previous: Dashboard) => Dashboard) => {
+    queryClient.setQueryData(
+      ["dashboards", id],
+      (prevData: Dashboard | undefined) => {
+        if (!prevData) {
+          return prevData;
+        }
+        const updatedDashboard = updater(prevData);
+        return {
+          ...prevData,
+          ...updatedDashboard,
+        };
+      }
+    );
+
+    if (!dashboard) return;
+    console.log("Dashboard updated", dashboard);
+    dashboardService.updateDashboard(
+      dashboard.id,
+      dashboard.name,
+      dashboard.folder_id,
+      dashboard.metadata
+    );
   };
 
   return {
@@ -29,6 +47,7 @@ const useDashboard = (id: string) => {
     loading,
     isError,
     error,
+    updateDashboard,
   };
 };
 

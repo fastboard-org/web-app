@@ -11,8 +11,12 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getPropertiesComponent } from "./fastboard-components/utils";
 import { updateComponentProperties } from "@/lib/editor.utils";
+import { useParams } from "next/navigation";
+import useDashboard from "@/hooks/useDashboard";
 
 export default function PropertiesDrawer() {
+  const { id } = useParams();
+  const { dashboard, updateDashboard } = useDashboard(id as string);
   const isOpen = useRecoilValue(isPropertiesDrawerOpen);
   const propertiesDrawerComponent = useRecoilValue(propertiesDrawerState);
   const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
@@ -42,6 +46,7 @@ export default function PropertiesDrawer() {
               ...prev,
               properties: properties,
             }));
+
             setDashboardMetadata((prev) =>
               updateComponentProperties(
                 propertiesDrawerComponent.layoutIndex,
@@ -51,6 +56,18 @@ export default function PropertiesDrawer() {
                 prev
               )
             );
+
+            if (!dashboard?.metadata) return;
+            updateDashboard((prev) => ({
+              ...prev,
+              metadata: updateComponentProperties(
+                propertiesDrawerComponent.layoutIndex,
+                propertiesDrawerComponent.container,
+                propertiesDrawerComponent.type,
+                properties,
+                prev.metadata
+              ),
+            }));
           }
         )}
     </motion.div>
