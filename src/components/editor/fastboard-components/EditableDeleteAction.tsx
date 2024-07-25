@@ -43,15 +43,14 @@ export function EditableDeleteAction({
         variant="light"
         onPress={onOpen}
         endContent={
-          <Button
-            isIconOnly
-            variant="light"
-            onPress={() => {
+          <div
+            className="flex w-10 h-full items-center justify-center hover:bg-content3 rounded-full"
+            onClick={() => {
               onDelete(action.key);
             }}
           >
             <IoIosClose size={20} className="text-foreground-600" />
-          </Button>
+          </div>
         }
       >
         {action.label}
