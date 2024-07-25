@@ -295,10 +295,7 @@ export default function FastboardTable({
       >
         <TableHeader columns={finalColumns}>
           {(column) => (
-            <TableColumn
-              key={column.key}
-              align={column.key === "actions" ? "center" : "start"}
-            >
+            <TableColumn className="text-center" key={column.key}>
               {column.label.toUpperCase()}
             </TableColumn>
           )}
@@ -309,7 +306,7 @@ export default function FastboardTable({
           emptyContent={emptyMessage}
         >
           {data.map((item) => (
-            <TableRow key={item.key}>
+            <TableRow key={item.key} className="text-center">
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey as string)}</TableCell>
               )}
