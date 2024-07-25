@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { connectionsService } from "@/lib/services/connections";
 
-const useMyQueries = (connectionId: string) => {
+const useMyQueries = () => {
   const {
     isPending: loading,
     isError,

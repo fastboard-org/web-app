@@ -72,7 +72,8 @@ const getQueriesByConnectionId = async (connectionId: string) => {
 
 const getMyQueries = async () => {
   const response = await axiosInstance.get(`/queries/me`);
-  return response.data.map(mapQuery);
+  const data: any[] = response.data;
+  return data.map(mapQuery);
 };
 
 const createQuery = async (
