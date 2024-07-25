@@ -3,12 +3,12 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/app/providers";
 
-const poppins = Poppins({
+export const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Fastboard",
   description: "Create awesome dashboards with Fastboard",
 };

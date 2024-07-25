@@ -37,7 +37,7 @@ export default function Editor() {
 
   return (
     <div className="flex flex-col h-screen w-full bg-foreground-100 dark:bg-content1">
-      <Toaster position="bottom-right" richColors />
+      <Toaster position="bottom-right" />
 
       <EditorNavbar />
 

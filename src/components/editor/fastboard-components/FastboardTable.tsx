@@ -86,7 +86,7 @@ export default function FastboardTable({
   );
   const {
     execute,
-    isSuccess: isExecuteQuerySucces,
+    isSuccess: isExecuteQuerySuccess,
     isError: isExecuteQueryError,
     error: executeQueryError,
   } = useExecuteQuery({
@@ -161,10 +161,10 @@ export default function FastboardTable({
   }, [isDataError, isExecuteQueryError]);
 
   useEffect(() => {
-    if (isExecuteQuerySucces) {
+    if (isExecuteQuerySuccess) {
       toast.success("Action executed successfully");
     }
-  }, [isExecuteQuerySucces]);
+  }, [isExecuteQuerySuccess]);
 
   if (isDataError) {
     return (
@@ -229,8 +229,10 @@ export default function FastboardTable({
 
       //Get column key from column label
       const columnKey =
-        columns.find((column) => column.column.label === match[1])?.column
-          .key ?? "";
+        columns.find(
+          (column) =>
+            column.column.label.toLowerCase() === match[1].toLowerCase()
+        )?.column.key ?? "";
 
       const value = getKeyValue(item, columnKey);
       return {
@@ -293,7 +295,10 @@ export default function FastboardTable({
       >
         <TableHeader columns={finalColumns}>
           {(column) => (
-            <TableColumn key={column.key}>
+            <TableColumn
+              key={column.key}
+              align={column.key === "actions" ? "center" : "start"}
+            >
               {column.label.toUpperCase()}
             </TableColumn>
           )}

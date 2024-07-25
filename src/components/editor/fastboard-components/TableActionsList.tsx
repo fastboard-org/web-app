@@ -101,6 +101,7 @@ export default function TableActionsList({
             case "delete": {
               return (
                 <EditableDeleteAction
+                  key={action.key}
                   action={action}
                   onChange={(newAction) => {
                     const newActions = actions.map((a) =>

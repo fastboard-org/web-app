@@ -60,6 +60,12 @@ export function EditableDeleteAction({
         <ModalContent>
           <ModalHeader>
             <EditableTitle
+              titleClassName={
+                "max-w-[350px] flex items-center hover:text-foreground-400 truncate"
+              }
+              inputClassName={
+                "border-none max-w-[350px] bg-transparent outline-none text-foreground-300 placeholder-foreground-300"
+              }
               value={actionData.label}
               onChange={(newLabel) => {
                 setActionData({ ...actionData, label: newLabel });

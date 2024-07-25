@@ -14,7 +14,7 @@ import RowLayout from "../layouts/RowLayout";
 
 export function getDraggableComponent(id: ComponentType) {
   const components = {
-    [ComponentType.Table]: <FastboardTableDraggable />,
+    [ComponentType.Table]: <FastboardTableDraggable key={"TableDraggable"} />,
     [ComponentType.Image]: null,
   };
 
@@ -89,6 +89,7 @@ export function getLayout(
     case LayoutType.Full:
       return (
         <FullLayout
+          key={`FullLayout-${index}`}
           index={index}
           properties={layout as FullLayoutInterface}
           mode={mode}
@@ -97,6 +98,7 @@ export function getLayout(
     case LayoutType.Row:
       return (
         <RowLayout
+          key={`RowLayout-${index}`}
           index={index}
           properties={layout as RowLayoutInterface}
           mode={mode}
