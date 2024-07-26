@@ -5,7 +5,10 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
 import { ComponentType } from "@/types/editor";
-import { getComponent } from "./fastboard-components/utils";
+import {
+  getComponent,
+  getDraggableComponent,
+} from "./fastboard-components/utils";
 
 export default function ComponentsDrawer() {
   const isOpen = useRecoilValue(isComponentsDrawerOpen);
@@ -23,7 +26,7 @@ export default function ComponentsDrawer() {
       <Divider />
       <div className="flex flex-col gap-5 mt-5">
         {Object.values(ComponentType).map((componentType) =>
-          getComponent(componentType, "draggable")
+          getDraggableComponent(componentType)
         )}
       </div>
     </motion.div>

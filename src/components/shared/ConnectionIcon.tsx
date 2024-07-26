@@ -8,20 +8,19 @@ export default function ConnectionIcon({
   size,
   className,
 }: {
-  type: ConnectionType;
+  type: ConnectionType | null;
   size: number;
   variant?: string;
   className?: string;
 }) {
-  const connectionIcons = {
-    [ConnectionType.MONGO]: <SiMongodb size={size} className={className} />,
-    [ConnectionType.SQL]: (
-      <BiLogoPostgresql size={size} className={className} />
-    ),
-    [ConnectionType.REST]: (
-      <Hierarchy3 size={size} className={className} variant={"Bold"} />
-    ),
-  };
-
-  return connectionIcons[type];
+  switch (type) {
+    case ConnectionType.MONGO:
+      return <SiMongodb size={size} className={className} />;
+    case ConnectionType.SQL:
+      return <BiLogoPostgresql size={size} className={className} />;
+    case ConnectionType.REST:
+      return <Hierarchy3 size={size} className={className} variant={"Bold"} />;
+    default:
+      return null;
+  }
 }

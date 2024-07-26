@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import { getComponent } from "./fastboard-components/utils";
+import { getPropertiesComponent } from "./fastboard-components/utils";
 import { updateComponentProperties } from "@/lib/editor.utils";
 
 export default function PropertiesDrawer() {
@@ -34,9 +34,8 @@ export default function PropertiesDrawer() {
       <Spacer y={4} />
       {isOpen &&
         propertiesDrawerComponent.type &&
-        getComponent(
+        getPropertiesComponent(
           propertiesDrawerComponent.type,
-          "properties",
           propertiesDrawerComponent.properties,
           (properties) => {
             setPropertiesDrawerState((prev) => ({

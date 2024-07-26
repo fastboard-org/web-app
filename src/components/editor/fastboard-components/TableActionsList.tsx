@@ -1,76 +1,44 @@
-import { Button } from "@nextui-org/react";
-import { Add } from "iconsax-react";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { IoIosClose } from "react-icons/io";
-
-function TableAction({
-  action,
-  onDelete,
-}: {
-  action: { key: string; label: string };
-  onDelete: (key: string) => void;
-}) {
-  return (
-    <li
-      key={action.key}
-      className="flex flex-row justify-between items-center w-full"
-    >
-      <Button
-        className="w-full justify-between "
-        variant="light"
-        endContent={
-          <Button
-            isIconOnly
-            variant="light"
-            onPress={() => {
-              onDelete(action.key);
-            }}
-          >
-            <IoIosClose size={20} className="text-foreground-600" />
-          </Button>
-        }
-      >
-        {action.label}
-      </Button>
-    </li>
-  );
-}
+import { TableActionProperty } from "@/types/editor/table-types";
+import { Add, Edit, Eye, Trash } from "iconsax-react";
+import { EditableDeleteAction } from "./EditableDeleteAction";
 
 export default function TableActionsList({
   actionsProperties,
   onChange,
 }: {
-  actionsProperties: { key: string; label: string }[];
-  onChange?: (actions: { key: string; label: string }[]) => void;
+  actionsProperties: TableActionProperty[];
+  onChange?: (actions: TableActionProperty[]) => void;
 }) {
   const [actions, setActions] = useState(actionsProperties);
-  const [lastIndex, setLastIndex] = useState(0);
 
   useEffect(() => {
     setActions(actionsProperties);
   }, [actionsProperties]);
 
-  function addAction() {
-    const key = `new-${lastIndex}`;
-    const label = `New Action ${lastIndex}`;
+  function addAction(name: string, type: "view" | "edit" | "delete") {
+    const newAction: TableActionProperty = {
+      key: `${type}-action`,
+      label: name,
+      type,
+      query: null,
+      parameters: [],
+    };
 
-    setLastIndex(lastIndex + 1);
-    setActions((previous) => [...previous, { key, label }]);
+    setActions((previous) => [...previous, newAction]);
     if (onChange) {
-      onChange([...actions, { key, label }]);
+      onChange([...actions, newAction]);
     }
   }
 
   function removeAction(key: string, index: number) {
-    if (index === actions.length - 1) {
-      if (actions.length === 1) {
-        setLastIndex(0);
-      } else {
-        const lastAction = actions[index - 1];
-        setLastIndex(parseInt(lastAction.key.split("-")[1]) + 1);
-      }
-    }
-
     const newActions = actions.filter((action) => action.key !== key);
     setActions(newActions);
     if (onChange) {
@@ -78,28 +46,83 @@ export default function TableActionsList({
     }
   }
 
+  const getDisabledKeys = () => {
+    const hasViewAction = actions.some((action) => action.type === "view");
+    const hasDeleteAction = actions.some((action) => action.type === "delete");
+    const hasEditAction = actions.some((action) => action.type === "edit");
+
+    const disabledKeys = [];
+    //TODO: delete this true conditions when implementing the logic for the actions
+    if (true) {
+      disabledKeys.push("view-action");
+    }
+    if (hasDeleteAction) {
+      disabledKeys.push("delete-action");
+    }
+    if (true) {
+      disabledKeys.push("edit-action");
+    }
+    return disabledKeys;
+  };
+
   return (
-    <div>
+    <div className="flex flex-col items-start">
       <div className="flex justify-end w-full">
-        <Button
-          isIconOnly
-          variant="light"
-          onClick={() => {
-            addAction();
-          }}
-        >
-          <Add />
-        </Button>
+        <Dropdown placement={"bottom"}>
+          <DropdownTrigger>
+            <Button startContent={<Add size={20} />} variant={"flat"}>
+              Add Action
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu disabledKeys={getDisabledKeys()}>
+            <DropdownItem key="view-action" startContent={<Eye size={15} />}>
+              View
+            </DropdownItem>
+            <DropdownItem key="edit-action" startContent={<Edit size={15} />}>
+              Edit
+            </DropdownItem>
+
+            <DropdownItem
+              key="delete-action"
+              onPress={() => {
+                addAction("New Delete Action", "delete");
+              }}
+              startContent={<Trash size={15} />}
+            >
+              Delete
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
       </div>
-      <ul className=" bg-content2 rounded-lg p-2">
-        {actions.map((action, index) => (
-          <TableAction
-            action={action}
-            onDelete={() => {
-              removeAction(action.key, index);
-            }}
-          />
-        ))}
+
+      <ul className="w-full rounded-lg pt-2">
+        {actions.map((action, index) => {
+          switch (action.type) {
+            case "delete": {
+              return (
+                <EditableDeleteAction
+                  key={action.key}
+                  action={action}
+                  onChange={(newAction) => {
+                    const newActions = actions.map((a) =>
+                      a.key === action.key ? newAction : a
+                    );
+                    setActions(newActions);
+                    if (onChange) {
+                      onChange(newActions);
+                    }
+                  }}
+                  onDelete={() => {
+                    removeAction(action.key, index);
+                  }}
+                />
+              );
+            }
+            default: {
+              return <></>;
+            }
+          }
+        })}
       </ul>
     </div>
   );
