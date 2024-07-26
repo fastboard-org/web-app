@@ -11,7 +11,7 @@ export default function QuerySelection({
   selectedQueryId: string;
   onQuerySelect: (query: Query) => void;
 }) {
-  const { queries, loading, isError, error } = useMyQueries("");
+  const { queries, loading, isError, error } = useMyQueries();
 
   if (isError) {
     return <div>Error: {error?.message}</div>;

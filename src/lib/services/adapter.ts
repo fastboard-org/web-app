@@ -15,8 +15,8 @@ export async function executeQuery(
         parameters: parameters ?? {},
       }
     );
-    if (response.data.status_code !== 200) {
-      throw new Error(response.data.body);
+    if (response.data?.status_code !== 200) {
+      throw new Error(response.data?.body);
     }
     return response.data;
   } catch (error) {

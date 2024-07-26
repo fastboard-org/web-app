@@ -70,6 +70,12 @@ const getQueriesByConnectionId = async (connectionId: string) => {
   return response.data.map(mapQuery);
 };
 
+const getMyQueries = async () => {
+  const response = await axiosInstance.get(`/queries/me`);
+  const data: any[] = response.data;
+  return data.map(mapQuery);
+};
+
 const createQuery = async (
   name: string,
   connection_id: string,
@@ -102,6 +108,7 @@ export const connectionsService = {
   updateConnection,
   deleteConnection,
   getQueriesByConnectionId,
+  getMyQueries,
   createQuery,
   updateQuery,
   deleteQuery,

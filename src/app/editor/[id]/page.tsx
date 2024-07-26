@@ -4,6 +4,7 @@ import EditorCanvas from "@/components/editor/EditorCanvas";
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
 import useDashboard from "@/hooks/useDashboard";
+import { Toaster } from "@/components/shared/Toaster";
 import { addComponent } from "@/lib/editor.utils";
 import { ComponentType } from "@/types/editor";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
@@ -44,6 +45,8 @@ export default function Editor() {
 
   return (
     <div className="flex flex-col h-screen w-full bg-foreground-100 dark:bg-content1">
+      <Toaster position="bottom-right" />
+
       <EditorNavbar />
 
       <div className="relative h-full w-full flex overflow-hidden ">

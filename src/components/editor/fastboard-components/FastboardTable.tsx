@@ -81,12 +81,13 @@ export default function FastboardTable({
     sourceQuery,
     rowsPerPage
   );
+  const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState
   );
   const {
     execute,
-    isSuccess: isExecuteQuerySucces,
+    isSuccess: isExecuteQuerySuccess,
     isError: isExecuteQueryError,
     error: executeQueryError,
   } = useExecuteQuery({
@@ -100,6 +101,14 @@ export default function FastboardTable({
   } | null>(null);
 
   useEffect(() => {
+    setShouldUpdateColumns(true);
+  }, [sourceQuery]);
+
+  useEffect(() => {
+    if (!shouldUpdateColumns) {
+      return;
+    }
+
     updateDashboard((previous) => ({
       ...previous,
       metadata: updateComponentProperties(
@@ -138,6 +147,7 @@ export default function FastboardTable({
         },
       };
     });
+    setShouldUpdateColumns(false);
   }, [keys]);
 
   useEffect(() => {
@@ -154,10 +164,10 @@ export default function FastboardTable({
   }, [isDataError, isExecuteQueryError]);
 
   useEffect(() => {
-    if (isExecuteQuerySucces) {
+    if (isExecuteQuerySuccess) {
       toast.success("Action executed successfully");
     }
-  }, [isExecuteQuerySucces]);
+  }, [isExecuteQuerySuccess]);
 
   if (isDataError) {
     return (
@@ -222,8 +232,10 @@ export default function FastboardTable({
 
       //Get column key from column label
       const columnKey =
-        columns.find((column) => column.column.label === match[1])?.column
-          .key ?? "";
+        columns.find(
+          (column) =>
+            column.column.label.toLowerCase() === match[1].toLowerCase()
+        )?.column.key ?? "";
 
       const value = getKeyValue(item, columnKey);
       return {
@@ -286,7 +298,7 @@ export default function FastboardTable({
       >
         <TableHeader columns={finalColumns}>
           {(column) => (
-            <TableColumn key={column.key}>
+            <TableColumn className="text-center" key={column.key}>
               {column.label.toUpperCase()}
             </TableColumn>
           )}
@@ -297,7 +309,7 @@ export default function FastboardTable({
           emptyContent={emptyMessage}
         >
           {data.map((item) => (
-            <TableRow key={item.key}>
+            <TableRow key={item.key} className="text-center">
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey as string)}</TableCell>
               )}

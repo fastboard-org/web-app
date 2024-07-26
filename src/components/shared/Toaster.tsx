@@ -1,5 +1,6 @@
 "use client";
 
+import { poppins } from "@/fonts";
 import { useTheme } from "next-themes";
 import { Toaster as Sonner } from "sonner";
 
@@ -11,16 +12,14 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       theme={theme as ToasterProps["theme"]}
-      className="toaster group"
+      className={`${poppins.className}`}
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-          description: "group-[.toast]:text-muted-foreground",
-          actionButton:
-            "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
-          cancelButton:
-            "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+            "group toast group-[.toaster]:border-border group-[.toaster]:shadow-lg",
+          success: "bg-success-100 text-success-600",
+          warning: "bg-warning-100 text-warning-600",
+          error: "bg-danger-100 text-danger-600",
         },
       }}
       {...props}
