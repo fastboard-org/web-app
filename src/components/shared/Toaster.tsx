@@ -1,6 +1,6 @@
 "use client";
 
-import { poppins } from "@/app/layout";
+import { poppins } from "@/fonts";
 import { useTheme } from "next-themes";
 import { Toaster as Sonner } from "sonner";
 
