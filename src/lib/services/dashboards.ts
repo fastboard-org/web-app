@@ -1,4 +1,3 @@
-import { metadata } from "@/app/layout";
 import { axiosInstance } from "@/lib/axios";
 import { Dashboard, Folder } from "@/types/dashboards";
 import { DashboardMetadata } from "@/types/editor";
