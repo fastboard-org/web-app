@@ -20,10 +20,10 @@ const useData = (
     Object.keys(item).forEach((key) => {
       if (Array.isArray(item[key])) {
         item[key] = "array";
-      } else {
-        typeof item[key] === "object"
-          ? (item[key] = "object")
-          : (item[key] = item[key]);
+      } else if (typeof item[key] === "object") {
+        item[key] = "object";
+      } else if (typeof item[key] === "boolean") {
+        item[key] = item[key] ? "true" : "false";
       }
     });
   };

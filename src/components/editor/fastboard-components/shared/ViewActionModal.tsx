@@ -22,9 +22,12 @@ export default function ViewActionModal({
   function mapfield(item: any): any {
     if (Array.isArray(item)) {
       return "array";
-    } else {
-      return typeof item === "object" ? "object" : item;
+    } else if (typeof item === "object") {
+      return "object";
+    } else if (typeof item === "boolean") {
+      return item ? "true" : "false";
     }
+    return item;
   }
 
   function renderData(data: any) {
