@@ -32,10 +32,17 @@ const useData = (
     try {
       const response = await executeQuery(query);
       let responseData = response?.body;
+
       if (!responseData) {
         setKeys([]);
         return [];
       }
+
+      if (Array.isArray(responseData) && responseData.length === 0) {
+        setKeys([]);
+        return [];
+      }
+
       //This is a temporary fix to handle different data types
       if (typeof responseData === "object" && !Array.isArray(responseData)) {
         responseData = [responseData];

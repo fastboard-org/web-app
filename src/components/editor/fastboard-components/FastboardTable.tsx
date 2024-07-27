@@ -41,9 +41,13 @@ function getFinalColumns(
   columns: TableColumnProperties[],
   actions: { key: string; label: string }[]
 ) {
+  if (columns.length === 0) {
+    return [{ key: "empty-data", label: "" }];
+  }
   const finalColumns = columns
     .filter((column) => column.visible)
     .map((column) => column.column);
+
   if (actions.length > 0) {
     finalColumns.push({ key: "actions", label: "Actions" });
   }
