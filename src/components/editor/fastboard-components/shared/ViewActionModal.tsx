@@ -1,4 +1,5 @@
 import {
+  Link,
   Modal,
   ModalBody,
   ModalContent,
@@ -7,6 +8,7 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
+import React from "react";
 
 export default function ViewActionModal({
   isOpen,
@@ -19,14 +21,30 @@ export default function ViewActionModal({
   data: any;
   onClose: () => void;
 }) {
-  function mapfield(item: any): any {
+  function mapfield(item: any): React.ReactElement {
     if (Array.isArray(item)) {
-      return "array";
+      return <p>[...]</p>;
     } else if (typeof item === "object") {
-      return "object";
+      return <p>{"{...}"}</p>;
     } else if (typeof item === "boolean") {
-      return item ? "true" : "false";
+      return (
+        <p className={item ? "text-primary" : "text-danger"}>
+          {item ? "true" : "false"}
+        </p>
+      );
+    } else if (typeof item === "number") {
+      return <p className="text-success-700">{item}</p>;
     }
+
+    //check if item is an url
+    if (item.match(/^https?:\/\/.*\.(?:png|jpg|jpeg|gif)$/)) {
+      return (
+        <Link href={item} isExternal showAnchorIcon>
+          {item}
+        </Link>
+      );
+    }
+
     return item;
   }
 
@@ -37,7 +55,7 @@ export default function ViewActionModal({
       return (
         <div key={key} className={"flex flex-row justify-between"}>
           <p className="font-medium">{key}</p>
-          <p>{mapfield(data[key])}</p>
+          {mapfield(data[key])}
         </div>
       );
     });
