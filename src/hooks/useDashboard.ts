@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { dashboardService } from "@/lib/services/dashboards";
-import { DashboardMetadata } from "@/types/editor";
 import { Dashboard } from "@/types/dashboards";
 
 const useDashboard = (id: string) => {
@@ -35,6 +34,8 @@ const useDashboard = (id: string) => {
     );
 
     if (!updatedDashboard) return;
+    if (process.env.NEXT_PUBLIC_DEVELOPMENT_MODE === "true") return;
+
     dashboardService.updateDashboard(
       updatedDashboard.id,
       updatedDashboard.name,

@@ -16,11 +16,13 @@ export async function executeQuery(
       }
     );
     if (response.data?.status_code !== 200) {
-      throw new Error(response.data?.body);
+      const error = response.data?.body?.error;
+      throw new Error(
+        `Error ${response.data.status_code}: ${error?.description ?? ""}`
+      );
     }
     return response.data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 }

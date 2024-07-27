@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { TableActionProperty } from "@/types/editor/table-types";
 import { Add, Edit, Eye, Trash } from "iconsax-react";
 import { EditableDeleteAction } from "./EditableDeleteAction";
+import { EditableViewAction } from "./EditableViewAction";
 
 export default function TableActionsList({
   actionsProperties,
@@ -53,7 +54,7 @@ export default function TableActionsList({
 
     const disabledKeys = [];
     //TODO: delete this true conditions when implementing the logic for the actions
-    if (true) {
+    if (hasViewAction) {
       disabledKeys.push("view-action");
     }
     if (hasDeleteAction) {
@@ -75,7 +76,13 @@ export default function TableActionsList({
             </Button>
           </DropdownTrigger>
           <DropdownMenu disabledKeys={getDisabledKeys()}>
-            <DropdownItem key="view-action" startContent={<Eye size={15} />}>
+            <DropdownItem
+              key="view-action"
+              onPress={() => {
+                addAction("New View Action", "view");
+              }}
+              startContent={<Eye size={15} />}
+            >
               View
             </DropdownItem>
             <DropdownItem key="edit-action" startContent={<Edit size={15} />}>
@@ -98,6 +105,26 @@ export default function TableActionsList({
       <ul className="w-full rounded-lg pt-2">
         {actions.map((action, index) => {
           switch (action.type) {
+            case "view": {
+              return (
+                <EditableViewAction
+                  key={action.key}
+                  action={action}
+                  onChange={(newAction) => {
+                    const newActions = actions.map((a) =>
+                      a.key === action.key ? newAction : a
+                    );
+                    setActions(newActions);
+                    if (onChange) {
+                      onChange(newActions);
+                    }
+                  }}
+                  onDelete={() => {
+                    removeAction(action.key, index);
+                  }}
+                />
+              );
+            }
             case "delete": {
               return (
                 <EditableDeleteAction
