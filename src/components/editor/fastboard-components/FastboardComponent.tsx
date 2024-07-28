@@ -1,6 +1,7 @@
 import {
   isComponentsDrawerOpen,
   isPropertiesDrawerOpen,
+  isSettingsDrawerOpen,
   propertiesDrawerState,
 } from "@/atoms/editor";
 import { ComponentType } from "@/types/editor";
@@ -34,6 +35,7 @@ const FastboardComponent = ({
   const { updateDashboard } = useDashboard(id as string);
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
+  const setIsSettingsDrawerOpen = useSetRecoilState(isSettingsDrawerOpen);
   const propertiesDrawerOpen = useRecoilValue(isPropertiesDrawerOpen);
   const propertiesDrawerStateValue = useRecoilValue(propertiesDrawerState);
   const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
@@ -42,6 +44,7 @@ const FastboardComponent = ({
   function onClickComponent(e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     setIsComponentsDrawerOpen(false);
+    setIsSettingsDrawerOpen(false);
     setIsPropertiesDrawerOpen(true);
     setPropertiesDrawerState({
       layoutIndex: layoutIndex,

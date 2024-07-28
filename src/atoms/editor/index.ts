@@ -13,6 +13,10 @@ export const isPropertiesDrawerOpen = atom({
   key: "isPropertiesDrawerOpen",
   default: false,
 });
+export const isSettingsDrawerOpen = atom({
+  key: "isSettingsDrawerOpen",
+  default: false,
+});
 
 export const propertiesDrawerState = atom<PropertiesDrawerState>({
   key: "propertiesDrawerState",
