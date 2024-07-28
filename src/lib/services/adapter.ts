@@ -1,4 +1,4 @@
-import { HTTP_METHOD } from "@/types/connections";
+import { HTTP_METHOD, Query } from "@/types/connections";
 import { axiosInstance } from "@/lib/axios";
 
 const previewQuery = async (
@@ -23,6 +23,31 @@ const previewQuery = async (
   return response.data;
 };
 
+async function executeQuery(
+  query: Query | null,
+  parameters?: Record<string, any>,
+) {
+  try {
+    if (!query) {
+      return null;
+    }
+    const response = await axiosInstance.post(
+      `/adapter/${query.connection_id}/execute/${query.id}`,
+      {
+        parameters: parameters ?? {},
+      },
+    );
+    if (response.data?.status_code !== 200) {
+      throw new Error(response.data?.body);
+    }
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 export const adapterService = {
   previewQuery,
+  executeQuery,
 };

@@ -70,7 +70,13 @@ const FastboardComponent = ({
     return isHovered;
   }
 
-  const component = getComponent(type, mode, properties);
+  const component = getComponent(
+    layoutIndex,
+    containerIndex,
+    type,
+    mode,
+    properties
+  );
   if (!component) return null;
 
   if (mode === "view") {

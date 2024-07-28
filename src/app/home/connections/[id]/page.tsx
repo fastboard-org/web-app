@@ -45,7 +45,7 @@ export default function ConnectionPage() {
       >
         <QueryEditor
           connection={connection}
-          queries={queries}
+          queries={queries ?? []}
           onQueryUpdate={updateQuery}
         />
       </CustomSkeleton>

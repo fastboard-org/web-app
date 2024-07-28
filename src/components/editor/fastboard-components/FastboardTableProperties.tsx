@@ -1,18 +1,9 @@
-import {
-  Accordion,
-  AccordionItem,
-  Autocomplete,
-  AutocompleteItem,
-  Checkbox,
-  Input,
-} from "@nextui-org/react";
-import { Hierarchy3 } from "iconsax-react";
+import { Accordion, AccordionItem, Checkbox, Input } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { ConnectionType, HTTP_METHOD } from "@/types/connections";
 import ReorderableColumns from "./ReorderableColumns";
 import TableActionsList from "./TableActionsList";
-import ConnectionIcon from "@/components/shared/ConnectionIcon";
 import { FastboardTableProperties } from "@/types/editor/table-types";
+import QuerySelection from "../QuerySelection";
 
 const FastboardTablePropertiesComponent = ({
   properties,
@@ -21,81 +12,13 @@ const FastboardTablePropertiesComponent = ({
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
-  const { query, emptyMessage, columns, actions, isStriped } = properties;
+  const { sourceQuery, emptyMessage, columns, actions, hideHeader, isStriped } =
+    properties;
   const [columnsProperties, setColumnsProperties] = useState(columns);
-  const [hideHeader, setHideHeader] = useState(properties.hideHeader);
 
   useEffect(() => {
     setColumnsProperties(columns);
   }, [columns]);
-
-  const mockQueries = [
-    {
-      id: "1",
-      name: "Pokemons",
-      connection: {
-        id: "1",
-        name: "PokeApi",
-        type: ConnectionType.REST,
-        credentials: {
-          url: "https://pokeapi.co/api/v2",
-        },
-        variables: {
-          posts_endpoint: "posts",
-        },
-      },
-      metadata: {
-        method: HTTP_METHOD.GET,
-        path: "/pokemon?limit=100000&offset=0",
-        field: "results",
-        columns: [
-          { key: "name", label: "Name" },
-          { key: "url", label: "URL" },
-        ],
-      },
-    },
-    {
-      id: "2",
-      name: "Pokemon by id",
-      connection: {
-        id: "1",
-        name: "PokeApi",
-        type: ConnectionType.REST,
-        credentials: {
-          url: "https://pokeapi.co/api/v2",
-        },
-        variables: {
-          posts_endpoint: "posts",
-        },
-      },
-      metadata: {
-        method: HTTP_METHOD.GET,
-        path: "/pokemon/1",
-        field: null,
-        columns: [
-          { key: "abilities", label: "Abilities" },
-          { key: "base_experience", label: "Base Experience" },
-          { key: "height", label: "Height" },
-        ],
-      },
-    },
-    {
-      id: "3",
-      name: "Custom data",
-      connection: {
-        id: "1",
-        name: "PokeApi",
-        type: ConnectionType.SQL,
-        credentials: {
-          url: "https://pokeapi.co/api/v2",
-        },
-        variables: {
-          posts_endpoint: "posts",
-        },
-      },
-      metadata: {},
-    },
-  ];
 
   return (
     <Accordion
@@ -113,62 +36,15 @@ const FastboardTablePropertiesComponent = ({
         }}
       >
         <div className="flex flex-col gap-5  overflow-x-hidden">
-          <Autocomplete
-            aria-label="Query data selector"
-            allowsCustomValue
-            defaultItems={mockQueries}
-            disabledKeys={mockQueries
-              .filter((q) => q.connection.type !== ConnectionType.REST)
-              .map((q) => q.id)}
-            defaultSelectedKey={mockQueries[0].id}
-            selectedKey={mockQueries.find((q) => q.id === query.id)?.id}
-            label="Query"
-            labelPlacement="outside"
-            placeholder="Select query"
-            startContent={<Hierarchy3 className={"text-primary"} />}
-            onSelectionChange={(key) => {
-              const query = mockQueries.find((q) => q.id === key);
-              if (!query) return;
-              if (!query.metadata.columns) return;
-
-              setColumnsProperties(
-                query.metadata.columns.map((c) => ({
-                  column: c,
-                  visible: true,
-                }))
-              );
-
+          <QuerySelection
+            selectedQueryId={sourceQuery?.id || ""}
+            onQuerySelect={(sourceQuery) => {
               onValueChange({
                 ...properties,
-                columns: query.metadata.columns.map((c) => ({
-                  column: c,
-                  visible: true,
-                })),
-                //This will change in future, //TODO: only send query id
-                query: {
-                  id: query.id,
-                  url: `${query.connection.credentials.url}/${query.metadata.path}`,
-                  field: query.metadata.field,
-                },
+                sourceQuery: sourceQuery,
               });
             }}
-          >
-            {(query) => (
-              <AutocompleteItem
-                key={query.id}
-                startContent={
-                  <ConnectionIcon
-                    type={query.connection.type}
-                    size={20}
-                    className={"text-primary"}
-                  />
-                }
-              >
-                {query.name}
-              </AutocompleteItem>
-            )}
-          </Autocomplete>
-
+          />
           <ReorderableColumns
             columnsProperties={columnsProperties}
             onChange={(newOrder) => {
@@ -178,7 +54,6 @@ const FastboardTablePropertiesComponent = ({
               });
             }}
           />
-
           <Input
             label="Empty message"
             labelPlacement="outside"
@@ -223,7 +98,6 @@ const FastboardTablePropertiesComponent = ({
           <Checkbox
             isSelected={hideHeader}
             onValueChange={(isSelected) => {
-              setHideHeader(isSelected);
               onValueChange({
                 ...properties,
                 hideHeader: isSelected,
