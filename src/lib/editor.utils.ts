@@ -1,10 +1,5 @@
 import { ComponentType, DashboardMetadata } from "@/types/editor";
-import {
-  FullLayout,
-  Layout,
-  LayoutType,
-  RowLayout,
-} from "@/types/editor/layout-types";
+import { Layout, LayoutType } from "@/types/editor/layout-types";
 
 export function addComponent(
   layoutIndex: number,
@@ -92,7 +87,7 @@ export function changeLayout(
   };
 }
 
-export function convertLayout(from: Layout, to_type: LayoutType): Layout {
+function convertLayout(from: Layout, to_type: LayoutType): Layout {
   let to = Layout.of(to_type);
 
   Object.keys(to).forEach((key) => {
