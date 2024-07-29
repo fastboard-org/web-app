@@ -1,12 +1,16 @@
-import { isPropertiesDrawerOpen, isSettingsDrawerOpen } from "@/atoms/editor";
-import { LayoutType } from "@/types/editor";
+import { isSettingsDrawerOpen } from "@/atoms/editor";
 import { Divider } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
 import LayoutSelection from "./LayoutSelection";
+import { useParams } from "next/navigation";
+import useDashboard from "@/hooks/useDashboard";
+import { changeLayout } from "@/lib/editor.utils";
 
 export default function SettingsDrawer() {
+  const { id } = useParams();
+  const { dashboard, updateDashboard } = useDashboard(id as string);
   const isOpen = useRecoilValue(isSettingsDrawerOpen);
 
   return (
@@ -21,7 +25,15 @@ export default function SettingsDrawer() {
       <h3 className={"text-xl font-medium p-2 mb-2"}>Settings</h3>
       <Divider />
       <div className="flex flex-col gap-5 mt-5">
-        <LayoutSelection />
+        <LayoutSelection
+          selectedLayout={dashboard?.metadata?.layouts[0].type ?? null}
+          onLayoutSelect={(layoutType) => {
+            updateDashboard((previous) => ({
+              ...previous,
+              metadata: changeLayout(0, layoutType, previous.metadata),
+            }));
+          }}
+        />
       </div>
     </motion.div>
   );

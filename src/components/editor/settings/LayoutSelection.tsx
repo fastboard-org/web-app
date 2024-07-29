@@ -1,8 +1,14 @@
 import LayoutIcon from "@/components/shared/LayoutIcon";
-import { LayoutType } from "@/types/editor";
+import { LayoutType } from "@/types/editor/layout-types";
 import { Select, SelectItem } from "@nextui-org/react";
 
-export default function LayoutSelection() {
+export default function LayoutSelection({
+  selectedLayout,
+  onLayoutSelect,
+}: {
+  selectedLayout: LayoutType | null;
+  onLayoutSelect: (layoutType: LayoutType) => void;
+}) {
   const layouts = Object.values(LayoutType).map((layout) => ({
     key: layout,
     label: layout,
@@ -17,6 +23,10 @@ export default function LayoutSelection() {
         <LayoutIcon type={LayoutType.Full} size={24} className="mr-2" />
       }
       items={layouts}
+      selectedKeys={selectedLayout ? [selectedLayout] : []}
+      onChange={(e) => {
+        onLayoutSelect(e.target.value as LayoutType);
+      }}
     >
       {(layout) => (
         <SelectItem

@@ -1,5 +1,5 @@
+import { LayoutType } from "@/types/editor/layout-types";
 import { RowHorizontal, RowVertical } from "iconsax-react";
-import { LayoutType } from "@/types/editor";
 
 export default function LayoutIcon({
   type,
