@@ -4,6 +4,9 @@ import {
   LayoutType,
   FullLayout as FullLayoutInterface,
   RowLayout as RowLayoutInterface,
+  ColumnLayout as ColumnLayoutInterface,
+  RightSplitLayout as RightSplitLayoutInterface,
+  BottomSplitLayout as BottomSplitLayoutInterface,
 } from "@/types/editor";
 import FastboardTableDraggable from "./FastboardTableDraggable";
 import FastboardTable from "./FastboardTable";
@@ -11,6 +14,9 @@ import { FastboardTableProperties } from "@/types/editor/table-types";
 import FastboardTablePropertiesComponent from "./FastboardTableProperties";
 import FullLayout from "../layouts/FullLayout";
 import RowLayout from "../layouts/RowLayout";
+import ColumnLayout from "../layouts/ColumnLayout";
+import RightSplitLayout from "../layouts/RightSplitLayout";
+import BottomSplitLayout from "../layouts/BottomSplitLayout";
 
 export function getDraggableComponent(id: ComponentType) {
   const components = {
@@ -101,6 +107,33 @@ export function getLayout(
           key={`RowLayout-${index}`}
           index={index}
           properties={layout as RowLayoutInterface}
+          mode={mode}
+        />
+      );
+    case LayoutType.Column:
+      return (
+        <ColumnLayout
+          key={`ColumnLayout-${index}`}
+          index={index}
+          properties={layout as ColumnLayoutInterface}
+          mode={mode}
+        />
+      );
+    case LayoutType.RightSplit:
+      return (
+        <RightSplitLayout
+          key={`RightSplitLayout-${index}`}
+          index={index}
+          properties={layout as RightSplitLayoutInterface}
+          mode={mode}
+        />
+      );
+    case LayoutType.BottomSplit:
+      return (
+        <BottomSplitLayout
+          key={`BottomSplitLayout-${index}`}
+          index={index}
+          properties={layout as BottomSplitLayoutInterface}
           mode={mode}
         />
       );
