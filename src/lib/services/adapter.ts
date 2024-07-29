@@ -1,9 +1,31 @@
-import { Query } from "@/types/connections";
-import { axiosInstance } from "../axios";
+import { HTTP_METHOD, Query } from "@/types/connections";
+import { axiosInstance } from "@/lib/axios";
 
-export async function executeQuery(
+const previewQuery = async (
+  connectionId: string,
+  method: HTTP_METHOD,
+  path: string,
+  headers: any,
+  body: any,
+  parameters: any,
+) => {
+  const response = await axiosInstance.post(
+    `/adapter/${connectionId}/preview`,
+    {
+      method,
+      path,
+      headers,
+      body,
+      parameters,
+    },
+  );
+
+  return response.data;
+};
+
+async function executeQuery(
   query: Query | null,
-  parameters?: Record<string, any>
+  parameters?: Record<string, any>,
 ) {
   try {
     if (!query) {
@@ -13,7 +35,7 @@ export async function executeQuery(
       `/adapter/${query.connection_id}/execute/${query.id}`,
       {
         parameters: parameters ?? {},
-      }
+      },
     );
     if (response.data?.status_code !== 200) {
       throw new Error(response.data?.body);
@@ -24,3 +46,8 @@ export async function executeQuery(
     throw error;
   }
 }
+
+export const adapterService = {
+  previewQuery,
+  executeQuery,
+};
