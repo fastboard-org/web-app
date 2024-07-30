@@ -6,6 +6,9 @@ export default interface PublishOption {
 export enum LayoutType {
   Full = "full",
   Row = "row",
+  Column = "column",
+  RightSplit = "right-split",
+  BottomSplit = "bottom-split",
 }
 
 export interface Layout {
@@ -19,6 +22,20 @@ export interface RowLayout extends Layout {
   component1: FastboardComponent | null;
   component2: FastboardComponent | null;
 }
+export interface ColumnLayout extends Layout {
+  component1: FastboardComponent | null;
+  component2: FastboardComponent | null;
+}
+export interface RightSplitLayout extends Layout {
+  component1: FastboardComponent | null;
+  component2: FastboardComponent | null;
+  component3: FastboardComponent | null;
+}
+export interface BottomSplitLayout extends Layout {
+  component1: FastboardComponent | null;
+  component2: FastboardComponent | null;
+  component3: FastboardComponent | null;
+}
 
 export enum ComponentType {
   Table = "table",
@@ -31,7 +48,7 @@ export interface FastboardComponent {
 }
 
 export interface DashboardMetadata {
-  layouts: Array<FullLayout | RowLayout>;
+  layouts: Array<FullLayout | RowLayout | ColumnLayout | RightSplitLayout | BottomSplitLayout>;
 }
 
 export interface PropertiesDrawerState {
