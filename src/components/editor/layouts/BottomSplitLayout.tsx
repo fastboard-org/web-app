@@ -19,18 +19,22 @@ export default function BottomSplitLayout({
             mode={mode}
         />
         <div className="flex flex-row -space-x-12 h-full">
-            <Container
-            layoutIndex={index}
-            containerIndex="component2"
-            component={properties.component2}
-            mode={mode}
-            />
-            <Container
-            layoutIndex={index}
-            containerIndex="component3"
-            component={properties.component3}
-            mode={mode}
-            />
+            <div className="w-1/2">
+              <Container
+              layoutIndex={index}
+              containerIndex="component2"
+              component={properties.component2}
+              mode={mode}
+              />
+            </div>
+            <div className="w-1/2">
+              <Container
+              layoutIndex={index}
+              containerIndex="component3"
+              component={properties.component3}
+              mode={mode}
+              />
+            </div>
         </div>
         </div>
     );
