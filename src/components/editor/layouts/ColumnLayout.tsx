@@ -28,7 +28,6 @@ export default function ColumnLayout({
           mode={mode}
         />
       </div>
-
     </div>
   );
 }
