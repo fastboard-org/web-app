@@ -36,6 +36,7 @@ import useDashboard from "@/hooks/useDashboard";
 import ViewActionModal from "./shared/ViewActionModal";
 import { InvalidateQueryFilters } from "@tanstack/react-query";
 import { Edit, Eye, Trash } from "iconsax-react";
+import scrollbarStyles from "@/styles/scrollbar.module.css";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -325,9 +326,10 @@ export default function FastboardTable({
 
       <Table
         aria-label="Fastboard table component"
-        isHeaderSticky
+        className="grow-0 h-full "
         classNames={{
           thead: "-z-10",
+          wrapper: `${scrollbarStyles.scrollbar}`,
         }}
         hideHeader={hideHeader}
         isStriped={isStriped}
