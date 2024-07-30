@@ -11,7 +11,7 @@ export default function RightSplitLayout({
   mode?: "editable" | "view";
 }) {
     return (
-        <div className="flex flex-row -space-x-12 h-full w-full">
+        <div className="flex flex-row h-full w-full">
             <div className="w-1/2">
                 <Container
                     layoutIndex={index}
