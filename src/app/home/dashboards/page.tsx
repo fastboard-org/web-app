@@ -10,8 +10,10 @@ import Search from "@/components/shared/Search";
 import { useRouter } from "next/navigation";
 import DashboardModal from "@/components/dashboards/DashboardModal";
 import QuestionModal from "@/components/shared/QuestionModal";
-import { dashboardService } from "@/lib/services/dashboards";
 import FolderModal from "@/components/dashboards/FolderModal";
+import { useDeleteDashboard } from "@/hooks/dashboards/useDeleteDashboard";
+import { toast } from "sonner";
+import { useDeleteFolder } from "@/hooks/dashboards/useDeleteFolder";
 
 export default function Dashboards() {
   const { dashboards, folders, loading, operations } = useDashboards();
@@ -51,6 +53,27 @@ export default function Dashboards() {
     onOpen: onDeleteFolderModalOpen,
     onClose: onDeleteFolderModalClose,
   } = useDisclosure();
+
+  const { deleteDashboard, loading: deleteDashboardLoading } =
+    useDeleteDashboard({
+      onSuccess: () => {
+        operations.deleteDashboard(dashboardToDelete as Dashboard);
+        setDashboardToDelete(null);
+      },
+      onError: () => {
+        toast.error("Error deleting dashboard, try again later.");
+      },
+    });
+
+  const { deleteFolder, loading: deleteFolderLoading } = useDeleteFolder({
+    onSuccess: () => {
+      operations.deleteFolder(folderToDelete as Folder);
+      setFolderToDelete(null);
+    },
+    onError: () => {
+      toast.error("Error deleting folder, try again later.");
+    },
+  });
 
   const router = useRouter();
 
@@ -108,19 +131,19 @@ export default function Dashboards() {
     onFolderModalOpen();
   };
 
-  const handleDeleteDashboard = async () => {
+  const handleDeleteDashboard = () => {
     if (dashboardToDelete) {
-      await dashboardService.deleteDashboard(dashboardToDelete.id);
-      operations.deleteDashboard(dashboardToDelete);
-      setDashboardToDelete(null);
+      deleteDashboard({
+        id: dashboardToDelete.id,
+      });
     }
   };
 
-  const handleDeleteFolder = async () => {
+  const handleDeleteFolder = () => {
     if (folderToDelete) {
-      await dashboardService.deleteFolder(folderToDelete.id);
-      operations.deleteFolder(folderToDelete);
-      setFolderToDelete(null);
+      deleteFolder({
+        id: folderToDelete.id,
+      });
     }
   };
 
@@ -206,14 +229,16 @@ export default function Dashboards() {
       <QuestionModal
         titleText={"Delete Dashboard"}
         questionText={"Are you sure you want to delete this dashboard?"}
-        isOpen={deleteDashboardModalOpen}
+        isOpen={deleteDashboardModalOpen || deleteDashboardLoading}
+        isLoading={deleteDashboardLoading}
         onClose={onDeleteDashboardModalClose}
         onConfirm={handleDeleteDashboard}
       />
       <QuestionModal
         titleText={"Delete Folder"}
         questionText={"Are you sure you want to delete this folder?"}
-        isOpen={deleteFolderModalOpen}
+        isOpen={deleteFolderModalOpen || deleteFolderLoading}
+        isLoading={deleteFolderLoading}
         onClose={onDeleteFolderModalClose}
         onConfirm={handleDeleteFolder}
       />
