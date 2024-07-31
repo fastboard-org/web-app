@@ -8,6 +8,7 @@ export default interface PublishOption {
 export enum ComponentType {
   Table = "table",
   Image = "image",
+  Form = "form",
 }
 
 export interface FastboardComponent {

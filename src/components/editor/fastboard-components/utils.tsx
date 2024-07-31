@@ -19,10 +19,15 @@ import ColumnLayout from "../layouts/ColumnLayout";
 import RightSplitLayout from "../layouts/RightSplitLayout";
 import BottomSplitLayout from "../layouts/BottomSplitLayout";
 import { ComponentType } from "@/types/editor";
+import FastboardFormDraggable from "./form/FastboardFormDraggable";
+import FastboardForm from "./form/FastboardForm";
+import { FormProperties } from "@/types/editor/form";
+import FastboardFormProperties from "./form/FastboardFormProperties";
 
 export function getDraggableComponent(id: ComponentType) {
   const components = {
     [ComponentType.Table]: <FastboardTableDraggable key={"TableDraggable"} />,
+    [ComponentType.Form]: <FastboardFormDraggable key={"FormDraggable"} />,
     [ComponentType.Image]: null,
   };
 
@@ -57,6 +62,10 @@ export function getComponent(
         />
       ),
     },
+    [ComponentType.Form]: {
+      editable: <FastboardForm properties={properties as FormProperties} />,
+      view: <FastboardForm properties={properties as FormProperties} />,
+    },
     [ComponentType.Image]: {
       editable: null,
       view: null,
@@ -81,6 +90,9 @@ export function getPropertiesComponent(
           }
         }}
       />
+    ),
+    [ComponentType.Form]: (
+      <FastboardFormProperties properties={properties as FormProperties} />
     ),
     [ComponentType.Image]: null,
   };
