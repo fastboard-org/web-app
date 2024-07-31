@@ -111,7 +111,13 @@ export default function FastboardTable({
   } | null>(null);
 
   useEffect(() => {
-    setShouldUpdateColumns(true);
+    if (!sourceQuery) {
+      return;
+    }
+
+    if (columns.length === 0) {
+      setShouldUpdateColumns(true);
+    }
   }, [sourceQuery]);
 
   useEffect(() => {
