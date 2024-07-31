@@ -11,8 +11,18 @@ export default function LayoutSelection({
 }) {
   const layouts = Object.values(LayoutType).map((layout) => ({
     key: layout,
-    label: layout,
+    label: formatString(layout),
   }));
+
+  function formatString(input: string): string {
+    let result = input.replace(/-/g, " ");
+
+    if (result.length > 0) {
+      result = result.charAt(0).toUpperCase() + result.slice(1);
+    }
+
+    return result;
+  }
 
   return (
     <Select
@@ -20,7 +30,12 @@ export default function LayoutSelection({
       labelPlacement="outside"
       placeholder="Select layout"
       startContent={
-        <LayoutIcon type={selectedLayout} size={24} className="mr-2" />
+        <LayoutIcon
+          type={selectedLayout}
+          size={24}
+          className="mr-2 text-default-400 text-opacity-75"
+          variant="Bold"
+        />
       }
       items={layouts}
       selectedKeys={selectedLayout ? [selectedLayout] : []}
@@ -40,11 +55,12 @@ export default function LayoutSelection({
             <LayoutIcon
               type={layout.key as LayoutType}
               size={24}
-              className="mr-2"
+              className="mr-2 text-default-400 text-opacity-75"
+              variant="Bold"
             />
           }
         >
-          {layout.label.toUpperCase()}
+          {layout.label}
         </SelectItem>
       )}
     </Select>
