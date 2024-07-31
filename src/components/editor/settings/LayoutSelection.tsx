@@ -20,12 +20,16 @@ export default function LayoutSelection({
       labelPlacement="outside"
       placeholder="Select layout"
       startContent={
-        <LayoutIcon type={LayoutType.Full} size={24} className="mr-2" />
+        <LayoutIcon type={selectedLayout} size={24} className="mr-2" />
       }
       items={layouts}
       selectedKeys={selectedLayout ? [selectedLayout] : []}
       onChange={(e) => {
-        onLayoutSelect(e.target.value as LayoutType);
+        if (!e.target.value) {
+          return;
+        }
+        const layout = e.target.value as LayoutType;
+        onLayoutSelect(layout);
       }}
     >
       {(layout) => (
