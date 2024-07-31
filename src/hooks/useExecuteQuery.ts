@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { axiosInstance } from "@/lib/axios";
 import { queryClient } from "@/app/providers";
-import { executeQuery } from "@/lib/services/adapter";
+import { adapterService } from "@/lib/services/adapter";
 import { useState } from "react";
 
 export const executeQueryFn = async (query: Query | null) => {
@@ -46,7 +46,7 @@ const useExecuteQuery = () => {
       invalidateQueries?: InvalidateQueryFilters;
     }) => {
       setInvalidateQueries(invalidateQueries);
-      return executeQuery(query, parameters);
+      return adapterService.executeQuery(query, parameters);
     },
     onSuccess: () => {
       if (!invalidateQueries) return;

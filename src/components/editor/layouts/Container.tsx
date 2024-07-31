@@ -26,7 +26,7 @@ export default function Container({
   return (
     <div
       ref={setNodeRef}
-      className={`h-full w-full p-10 ${className}`}
+      className={`h-full w-full ${className}`}
       style={{
         backgroundColor: isOver ? "rgba(135,207,232,0.1)" : "transparent",
       }}

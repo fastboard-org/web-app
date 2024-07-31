@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { Query } from "@/types/connections";
-import { executeQuery } from "@/lib/services/adapter";
+import { adapterService } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
 
 const useData = (
   componentId: string,
   query: Query | null,
-  rowsPerPage: number
+  rowsPerPage: number,
 ) => {
   const { data, refetch, isLoading, isFetching, isError, error } = useQuery({
     queryKey: ["get_data", query?.id, { componentId: componentId }],
@@ -30,7 +30,7 @@ const useData = (
 
   const fetchData = async (query: Query | null) => {
     try {
-      const response = await executeQuery(query);
+      const response = await adapterService.executeQuery(query);
       let responseData = response?.body;
 
       if (!responseData) {

@@ -17,12 +17,14 @@ export default function RowLayout({
         containerIndex="component1"
         component={properties.component1}
         mode={mode}
+        className="px-5 pt-5 pb-2 h-1/2"
       />
       <Container
         layoutIndex={index}
         containerIndex="component2"
         component={properties.component2}
         mode={mode}
+        className="px-5 pt-1 pb-5 h-1/2"
       />
     </div>
   );

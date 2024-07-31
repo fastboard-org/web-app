@@ -34,12 +34,7 @@ const QueryParametersDrawer = ({
       });
       lastParamRef.current.focus();
     }
-  }, [
-    queryParameters,
-    queryParameters.length,
-    lastParamRef,
-    lastParamRef.current,
-  ]);
+  }, [queryParameters.length, lastParamRef, lastParamRef.current]);
 
   const canAddParameter = () => {
     return (
