@@ -42,6 +42,7 @@ const FastboardTablePropertiesComponent = ({
               onValueChange({
                 ...properties,
                 sourceQuery: sourceQuery,
+                columns: [],
               });
             }}
           />

@@ -7,11 +7,14 @@ import { motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getLayout } from "./fastboard-components/utils";
+import useDashboard from "@/hooks/useDashboard";
+import { useParams } from "next/navigation";
 
 export default function EditorCanvas() {
+  const { id } = useParams();
+  const { dashboard } = useDashboard(id as string);
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
   const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
-  const dashboardMetadata = useRecoilValue(dashboardMetadataState);
 
   return (
     <motion.div
@@ -27,7 +30,7 @@ export default function EditorCanvas() {
         scrollbarStyles.scrollbar
       }
     >
-      {dashboardMetadata.layouts.map((layout, index) =>
+      {dashboard?.metadata?.layouts.map((layout, index) =>
         getLayout(layout, index, "editable")
       )}
     </motion.div>

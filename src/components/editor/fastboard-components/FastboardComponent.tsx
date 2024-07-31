@@ -1,5 +1,4 @@
 import {
-  dashboardMetadataState,
   isComponentsDrawerOpen,
   isPropertiesDrawerOpen,
   propertiesDrawerState,
@@ -11,6 +10,8 @@ import { getComponent } from "./utils";
 import { Button } from "@nextui-org/react";
 import { Trash } from "iconsax-react";
 import { deleteComponent } from "@/lib/editor.utils";
+import { useParams } from "next/navigation";
+import useDashboard from "@/hooks/useDashboard";
 
 const FastboardComponent = ({
   onClick,
@@ -29,12 +30,13 @@ const FastboardComponent = ({
   containerIndex: string;
   mode?: "editable" | "view";
 }) => {
+  const { id } = useParams();
+  const { updateDashboard } = useDashboard(id as string);
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
   const propertiesDrawerOpen = useRecoilValue(isPropertiesDrawerOpen);
   const propertiesDrawerStateValue = useRecoilValue(propertiesDrawerState);
   const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
-  const setDashboardMetadataState = useSetRecoilState(dashboardMetadataState);
   const [isHovered, setIsHovered] = useState(false);
 
   function onClickComponent(e: React.MouseEvent<HTMLDivElement>) {
@@ -54,9 +56,10 @@ const FastboardComponent = ({
 
   function onDeleteComponent() {
     setIsPropertiesDrawerOpen(false);
-    setDashboardMetadataState((previous) => {
-      return deleteComponent(layoutIndex, containerIndex, previous);
-    });
+    updateDashboard((previous) => ({
+      ...previous,
+      metadata: deleteComponent(layoutIndex, containerIndex, previous.metadata),
+    }));
   }
 
   function isSelected() {

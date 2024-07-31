@@ -1,18 +1,20 @@
 "use client";
-import { dashboardMetadataState } from "@/atoms/editor";
 import ComponentsDrawer from "@/components/editor/ComponentsDrawer";
 import EditorCanvas from "@/components/editor/EditorCanvas";
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
+import useDashboard from "@/hooks/useDashboard";
 import { Toaster } from "@/components/shared/Toaster";
 import { addComponent } from "@/lib/editor.utils";
 import { ComponentType } from "@/types/editor";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { useSetRecoilState } from "recoil";
+import { useParams, useRouter } from "next/navigation";
 
 export default function Editor() {
-  const setDashboardMetadata = useSetRecoilState(dashboardMetadataState);
+  const { id } = useParams();
+  const router = useRouter();
+  const { isError, error, updateDashboard } = useDashboard(id as string);
 
   function updateDashboardMetadata(event: DragEndEvent) {
     const { over, active } = event;
@@ -24,15 +26,21 @@ export default function Editor() {
     const componentType: ComponentType = active.data.current?.type;
     const defaultProperties: Object = active.data.current?.defaultProperties;
 
-    setDashboardMetadata((prev) =>
-      addComponent(
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: addComponent(
         layoutIndex,
         container,
         componentType,
         defaultProperties,
-        prev
-      )
-    );
+        prev.metadata
+      ),
+    }));
+  }
+
+  if (isError) {
+    //TODO: This could be a not found page and link to home
+    router.push("/home/dashboards");
   }
 
   return (
