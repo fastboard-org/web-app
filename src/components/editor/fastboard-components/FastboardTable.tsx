@@ -1,5 +1,5 @@
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
-import useExecuteQuery from "@/hooks/useExecuteQuery";
+import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import {
   FastboardTableProperties,
   TableActionProperty,
@@ -35,7 +35,7 @@ import scrollbarStyles from "@/styles/scrollbar.module.css";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
-  actions: { key: string; label: string }[]
+  actions: { key: string; label: string }[],
 ) {
   const finalColumns = columns
     .filter((column) => column.visible)
@@ -76,14 +76,14 @@ export default function FastboardTable({
   } = useData(
     `${layoutIndex}-${container}-${ComponentType.Table}`,
     sourceQuery,
-    rowsPerPage
+    rowsPerPage,
   );
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [dashboardMetadata, setDashboardMetadata] = useRecoilState(
-    dashboardMetadataState
+    dashboardMetadataState,
   );
   const [propertiesState, setPropertiesState] = useRecoilState(
-    propertiesDrawerState
+    propertiesDrawerState,
   );
   const {
     execute,
@@ -122,8 +122,8 @@ export default function FastboardTable({
             };
           }),
         },
-        previous
-      )
+        previous,
+      ),
     );
     setPropertiesState((previous) => {
       if (
@@ -214,7 +214,7 @@ export default function FastboardTable({
 
   function fillParameters(
     parameters: { name: string; value: string }[],
-    item: any
+    item: any,
   ) {
     //TODO: fix this in backend
     if (!parameters) {
@@ -232,7 +232,7 @@ export default function FastboardTable({
       const columnKey =
         columns.find(
           (column) =>
-            column.column.label.toLowerCase() === match[1].toLowerCase()
+            column.column.label.toLowerCase() === match[1].toLowerCase(),
         )?.column.key ?? "";
 
       const value = getKeyValue(item, columnKey);
@@ -263,7 +263,7 @@ export default function FastboardTable({
               query: selectedRowAction.action.query,
               parameters: fillParameters(
                 selectedRowAction.action.parameters,
-                selectedRowAction.item
+                selectedRowAction.item,
               ),
             });
           } else {

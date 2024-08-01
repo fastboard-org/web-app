@@ -2,7 +2,7 @@ import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import ConnectionIcon from "../shared/ConnectionIcon";
 import { Query } from "@/types/connections";
 import CustomSkeleton from "../shared/CustomSkeleton";
-import useMyQueries from "@/hooks/useMyQueries";
+import useMyQueries from "@/hooks/connections/useMyQueries";
 
 export default function QuerySelection({
   selectedQueryId,

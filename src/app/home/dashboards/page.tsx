@@ -2,7 +2,7 @@
 import { BreadcrumbItem, Breadcrumbs, useDisclosure } from "@nextui-org/react";
 import AddDashboardButton from "@/components/dashboards/AddDashboardButton";
 import ResourceList from "@/components/dashboards/ResourceList";
-import useDashboards from "@/hooks/useDashboards";
+import useDashboards from "@/hooks/dashboards/useDashboards";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import { SetStateAction, useState } from "react";
 import { Dashboard, Folder } from "@/types/dashboards";

@@ -11,7 +11,7 @@ import ConnectionList from "@/components/connections/view/ConnectionList";
 import { Connection } from "@/types/connections";
 import { useState } from "react";
 import CreateConnectionModal from "@/components/connections/create/CreateConnectionModal";
-import useConnections from "@/hooks/useConnections";
+import useConnections from "@/hooks/connections/useConnections";
 import QuestionModal from "@/components/shared/QuestionModal";
 import { useDeleteConnection } from "@/hooks/connections/useDeleteConnection";
 import { toast } from "sonner";
