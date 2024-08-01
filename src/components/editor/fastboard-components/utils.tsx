@@ -92,7 +92,14 @@ export function getPropertiesComponent(
       />
     ),
     [ComponentType.Form]: (
-      <FastboardFormProperties properties={properties as FormProperties} />
+      <FastboardFormProperties
+        properties={properties as FormProperties}
+        onValueChange={(properties) => {
+          if (onValueChange) {
+            onValueChange(properties);
+          }
+        }}
+      />
     ),
     [ComponentType.Image]: null,
   };

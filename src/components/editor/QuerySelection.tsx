@@ -29,8 +29,8 @@ export default function QuerySelection({
         aria-label="Query selector"
         defaultItems={queries}
         disabledKeys={[]}
-        defaultSelectedKey={selectedQuery?.id}
-        selectedKey={selectedQuery?.id}
+        defaultSelectedKey={selectedQuery?.id || ""}
+        selectedKey={selectedQuery?.id || ""}
         label="Query"
         labelPlacement="outside"
         placeholder="Select query"
