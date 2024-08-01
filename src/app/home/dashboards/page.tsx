@@ -19,13 +19,13 @@ export default function Dashboards() {
   const { dashboards, folders, loading, operations } = useDashboards();
   const [search, setSearch] = useState("");
   const [folderSelectedIndex, setFolderSelectedIndex] = useState<number | null>(
-    null,
+    null
   );
   const [dashboardToEdit, setDashboardToEdit] = useState<Dashboard | null>(
-    null,
+    null
   );
   const [dashboardToDelete, setDashboardToDelete] = useState<Dashboard | null>(
-    null,
+    null
   );
   const [folderToEdit, setFolderToEdit] = useState<Folder | null>(null);
   const [folderToDelete, setFolderToDelete] = useState<Folder | null>(null);
@@ -86,9 +86,7 @@ export default function Dashboards() {
   };
 
   const handleDashboardClick = (dashboard: Dashboard) => {
-    //TODO redirect to editor
-    //TODO this line is only for "presentacion de medio termino"
-    router.push("/editor");
+    router.push(`/editor/${dashboard.id}`);
   };
 
   const handleBack = () => {
@@ -97,7 +95,7 @@ export default function Dashboards() {
 
   const handleDashboardActionClick = (
     dashboard: Dashboard,
-    action: "edit" | "delete",
+    action: "edit" | "delete"
   ) => {
     if (action === "edit") {
       setDashboardToEdit(dashboard);
@@ -110,7 +108,7 @@ export default function Dashboards() {
 
   const handleFolderActionClick = (
     folder: Folder,
-    action: "edit" | "delete",
+    action: "edit" | "delete"
   ) => {
     if (action === "edit") {
       setFolderToEdit(folder);
@@ -187,7 +185,7 @@ export default function Dashboards() {
               (dashboard: Dashboard) => ({
                 ...dashboard,
                 folder_id: undefined,
-              }),
+              })
             )}
             folders={[]}
             search={search}

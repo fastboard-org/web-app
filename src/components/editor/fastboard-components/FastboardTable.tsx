@@ -31,6 +31,8 @@ import { useRecoilState } from "recoil";
 import { dashboardMetadataState, propertiesDrawerState } from "@/atoms/editor";
 import { updateComponentProperties } from "@/lib/editor.utils";
 import { ComponentType } from "@/types/editor";
+import { useParams } from "next/navigation";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 
 function getFinalColumns(
@@ -55,6 +57,8 @@ export default function FastboardTable({
   container: string;
   properties: FastboardTableProperties;
 }) {
+  const { id } = useParams();
+  const { updateDashboard } = useDashboard(id as string);
   const {
     sourceQuery,
     emptyMessage,
@@ -79,9 +83,6 @@ export default function FastboardTable({
     rowsPerPage,
   );
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
-  const [dashboardMetadata, setDashboardMetadata] = useRecoilState(
-    dashboardMetadataState,
-  );
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState,
   );
@@ -101,15 +102,23 @@ export default function FastboardTable({
   } | null>(null);
 
   useEffect(() => {
-    setShouldUpdateColumns(true);
+    if (!sourceQuery) {
+      return;
+    }
+
+    if (columns.length === 0) {
+      setShouldUpdateColumns(true);
+    }
   }, [sourceQuery]);
 
   useEffect(() => {
     if (!shouldUpdateColumns) {
       return;
     }
-    setDashboardMetadata((previous) =>
-      updateComponentProperties(
+
+    updateDashboard((previous) => ({
+      ...previous,
+      metadata: updateComponentProperties(
         layoutIndex,
         container,
         ComponentType.Table,
@@ -122,9 +131,9 @@ export default function FastboardTable({
             };
           }),
         },
-        previous,
+        previous.metadata,
       ),
-    );
+    }));
     setPropertiesState((previous) => {
       if (
         previous.layoutIndex !== layoutIndex ||

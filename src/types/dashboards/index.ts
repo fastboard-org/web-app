@@ -5,7 +5,7 @@ export interface Dashboard {
   id: string;
   name: string;
   folder_id?: string;
-  metadata?: DashboardMetadata;
+  metadata: DashboardMetadata;
 }
 
 export interface Folder {

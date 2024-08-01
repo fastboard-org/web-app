@@ -1,9 +1,5 @@
 "use client";
-import {
-  dashboardMetadataState,
-  isPropertiesDrawerOpen,
-  propertiesDrawerState,
-} from "@/atoms/editor";
+import { isPropertiesDrawerOpen, propertiesDrawerState } from "@/atoms/editor";
 import { Divider, Spacer } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
@@ -11,12 +7,15 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getPropertiesComponent } from "./fastboard-components/utils";
 import { updateComponentProperties } from "@/lib/editor.utils";
+import { useParams } from "next/navigation";
+import useDashboard from "@/hooks/useDashboard";
 
 export default function PropertiesDrawer() {
+  const { id } = useParams();
+  const { updateDashboard } = useDashboard(id as string);
   const isOpen = useRecoilValue(isPropertiesDrawerOpen);
   const propertiesDrawerComponent = useRecoilValue(propertiesDrawerState);
   const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
-  const setDashboardMetadata = useSetRecoilState(dashboardMetadataState);
 
   return (
     <motion.div
@@ -42,15 +41,16 @@ export default function PropertiesDrawer() {
               ...prev,
               properties: properties,
             }));
-            setDashboardMetadata((prev) =>
-              updateComponentProperties(
+            updateDashboard((prev) => ({
+              ...prev,
+              metadata: updateComponentProperties(
                 propertiesDrawerComponent.layoutIndex,
                 propertiesDrawerComponent.container,
                 propertiesDrawerComponent.type,
                 properties,
-                prev
-              )
-            );
+                prev.metadata
+              ),
+            }));
           }
         )}
     </motion.div>
