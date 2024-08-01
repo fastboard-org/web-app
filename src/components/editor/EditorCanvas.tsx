@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getLayout } from "./fastboard-components/utils";
-import useDashboard from "@/hooks/useDashboard";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 import { useParams } from "next/navigation";
 
 export default function EditorCanvas() {
@@ -31,7 +31,7 @@ export default function EditorCanvas() {
       }
     >
       {dashboard?.metadata?.layouts.map((layout, index) =>
-        getLayout(layout, index, "editable")
+        getLayout(layout, index, "editable"),
       )}
     </motion.div>
   );

@@ -3,7 +3,7 @@ import ComponentsDrawer from "@/components/editor/ComponentsDrawer";
 import EditorCanvas from "@/components/editor/EditorCanvas";
 import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
-import useDashboard from "@/hooks/useDashboard";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 import { Toaster } from "@/components/shared/Toaster";
 import { addComponent } from "@/lib/editor.utils";
 import { ComponentType } from "@/types/editor";
@@ -33,7 +33,7 @@ export default function Editor() {
         container,
         componentType,
         defaultProperties,
-        prev.metadata
+        prev.metadata,
       ),
     }));
   }
