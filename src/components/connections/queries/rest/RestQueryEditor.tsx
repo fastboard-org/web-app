@@ -17,12 +17,14 @@ import AuthModal from "@/components/connections/queries/rest/AuthModal";
 import { useRecoilValue } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
 import RestBodyEditor from "@/components/connections/queries/rest/RestBodyEditor";
-import { connectionsService } from "@/lib/services/connections";
 import { convertToHeaders, convertToObject } from "@/lib/rest-queries";
 import QuestionModal from "@/components/shared/QuestionModal";
-import { adapterService } from "@/lib/services/adapter";
 import { toast } from "sonner";
 import { Toaster } from "@/components/shared/Toaster";
+import { useCreateQuery } from "@/hooks/connections/useCreateQuery";
+import { useUpdateQuery } from "@/hooks/connections/useUpdateQuery";
+import { useDeleteQuery } from "@/hooks/connections/useDeleteQuery";
+import { usePreviewQuery } from "@/hooks/adapter/usePreviewQuery";
 
 const RestQueryEditor = ({
   connection,
@@ -35,9 +37,6 @@ const RestQueryEditor = ({
 }) => {
   const [response, setResponse] = useState<any>(null);
   const [responseData, setResponseData] = useState<any>(null);
-  const [responseLoading, setResponseLoading] = useState<boolean>(false);
-  const [saveLoading, setSaveLoading] = useState(false);
-  const [deleteLoading, setDeleteLoading] = useState(false);
   const [selectedTab, setSelectedTab] = useState<string>("headers");
   const [previewToken, setPreviewToken] = useState<string>("");
 
@@ -57,6 +56,48 @@ const RestQueryEditor = ({
     onClose: onCloseDeleteModal,
   } = useDisclosure();
 
+  const { createQuery, loading: createQueryLoading } = useCreateQuery({
+    onSuccess: (query: Query) => {
+      onChange(query);
+    },
+    onError: (error: any) => {
+      console.error("Error creating query", error);
+      toast.error("Error creating query, try again later.");
+    },
+  });
+
+  const { updateQuery, loading: updateQueryLoading } = useUpdateQuery({
+    onSuccess: (query: Query) => {
+      onChange(query);
+    },
+    onError: (error: any) => {
+      console.error("Error updating query", error);
+      toast.error("Error updating query, try again later.");
+    },
+  });
+
+  const { deleteQuery, loading: deleteQueryLoading } = useDeleteQuery({
+    onSuccess: (data: any) => {
+      onChange(null);
+    },
+    onError: (error: any) => {
+      console.error("Error deleting query", error);
+      toast.error("Error deleting query, try again later");
+    },
+  });
+
+  const { previewQuery, loading: previewQueryLoading } = usePreviewQuery({
+    onSuccess: (response: any) => {
+      setResponse(response);
+      setResponseData(response?.body);
+      setSelectedTab("response");
+    },
+    onError: (error: any) => {
+      console.error("Error previewing query", error);
+      toast.error("Failed to send request.");
+    },
+  });
+
   const isMethodListClosed = useRecoilValue(isMethodListClosedState);
 
   const queryExists = !query?.id?.includes(" new");
@@ -69,35 +110,20 @@ const RestQueryEditor = ({
     setHeaders(convertToHeaders(query?.metadata?.headers));
   }, [query.id]);
 
-  const handleSend = async () => {
-    setResponseLoading(true);
-    let response;
-    try {
-      const parameters =
-        query?.metadata?.parameters?.reduce(
-          (acc: any, param: QueryParameter) => {
-            return { ...acc, [param.name]: param.preview };
-          },
-          {},
-        ) ?? {};
+  const handleSend = () => {
+    const parameters =
+      query?.metadata?.parameters?.reduce((acc: any, param: QueryParameter) => {
+        return { ...acc, [param.name]: param.preview };
+      }, {}) ?? {};
 
-      response = await adapterService.previewQuery(
-        connection.id,
-        query.metadata.method,
-        path,
-        convertToObject(headers),
-        JSON.parse(body),
-        parameters,
-      );
-    } catch (e) {
-      console.error(e);
-      toast.error("Failed to send request.");
-    }
-
-    setResponse(response);
-    setResponseData(response?.body);
-    setSelectedTab("response");
-    setResponseLoading(false);
+    previewQuery({
+      connectionId: connection.id,
+      method: query.metadata.method,
+      path,
+      headers: convertToObject(headers),
+      body: JSON.parse(body),
+      parameters,
+    });
   };
 
   const hasValidBody = () => {
@@ -110,45 +136,39 @@ const RestQueryEditor = ({
     }
   };
 
-  const handleSave = async () => {
-    setSaveLoading(true);
+  const handleSave = () => {
     const shouldCreate = !queryExists;
     const headersObject = convertToObject(headers);
+
     if (shouldCreate) {
-      const newQuery = await connectionsService.createQuery(
-        query.name,
-        connection.id,
-        {
+      createQuery({
+        name: query.name,
+        connectionId: connection.id,
+        metadata: {
           ...query.metadata,
           path,
           headers: headersObject,
           body: JSON.parse(body),
         },
-      );
-      onChange(newQuery);
+      });
     } else {
-      const updatedQuery = await connectionsService.updateQuery(
-        query.id,
-        query.name,
-        {
+      updateQuery({
+        id: query.id,
+        name: query.name,
+        metadata: {
           ...query.metadata,
           path,
           headers: headersObject,
           body: JSON.parse(body),
         },
-      );
-      onChange(updatedQuery);
+      });
     }
-    setSaveLoading(false);
   };
 
-  const handleDelete = async () => {
-    setDeleteLoading(true);
-
-    await connectionsService.deleteQuery(query.id);
-    onChange(null);
-
-    setDeleteLoading(false);
+  const handleDelete = () => {
+    deleteQuery({
+      id: query.id,
+    });
   };
 
   return (
@@ -175,7 +195,7 @@ const RestQueryEditor = ({
                   variant={"flat"}
                   color={"danger"}
                   size={"sm"}
-                  isLoading={deleteLoading}
+                  isLoading={deleteQueryLoading}
                   onClick={onOpenDeleteModal}
                 >
                   Delete
@@ -183,7 +203,7 @@ const RestQueryEditor = ({
               )}
               <Button
                 size={"sm"}
-                isLoading={saveLoading}
+                isLoading={updateQueryLoading || createQueryLoading}
                 onClick={handleSave}
                 variant={"flat"}
                 isDisabled={!hasValidBody()}
@@ -200,7 +220,7 @@ const RestQueryEditor = ({
             }
             onPathChange={(path: string) => setPath(path)}
             onSendClick={handleSend}
-            loading={responseLoading}
+            loading={previewQueryLoading}
             disabled={!hasValidBody()}
           />
           <Card className={"w-full h-full p-4"}>
@@ -268,7 +288,8 @@ const RestQueryEditor = ({
         <QuestionModal
           titleText={"Delete Query"}
           questionText={"Are you sure you want to delete this query?"}
-          isOpen={isDeleteModalOpen}
+          isOpen={isDeleteModalOpen || deleteQueryLoading}
+          isLoading={deleteQueryLoading}
           onClose={onCloseDeleteModal}
           onConfirm={handleDelete}
         />
