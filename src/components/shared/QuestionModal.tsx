@@ -16,6 +16,7 @@ const QuestionModal = ({
   onClose,
   onConfirm,
   size = "md",
+  isLoading = false,
 }: {
   titleText?: string;
   questionText: string;
@@ -24,6 +25,7 @@ const QuestionModal = ({
   onClose: () => void;
   onConfirm: () => void;
   size?: "sm" | "md" | "lg" | "xl" | "2xl";
+  isLoading?: boolean;
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +51,7 @@ const QuestionModal = ({
               setLoading(false);
               onClose();
             }}
-            isLoading={loading}
+            isLoading={loading || isLoading}
           >
             Confirm
           </Button>

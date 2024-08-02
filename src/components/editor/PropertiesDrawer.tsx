@@ -8,7 +8,7 @@ import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getPropertiesComponent } from "./fastboard-components/utils";
 import { updateComponentProperties } from "@/lib/editor.utils";
 import { useParams } from "next/navigation";
-import useDashboard from "@/hooks/useDashboard";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 
 export default function PropertiesDrawer() {
   const { id } = useParams();
@@ -48,10 +48,10 @@ export default function PropertiesDrawer() {
                 propertiesDrawerComponent.container,
                 propertiesDrawerComponent.type,
                 properties,
-                prev.metadata
+                prev.metadata,
               ),
             }));
-          }
+          },
         )}
     </motion.div>
   );

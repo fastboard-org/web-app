@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { dashboardService } from "@/lib/services/dashboards";
-import { DashboardMetadata } from "@/types/editor";
 import { Dashboard } from "@/types/dashboards";
 
 const useDashboard = (id: string) => {
@@ -31,7 +30,7 @@ const useDashboard = (id: string) => {
           ...prevData,
           ...updatedDashboard,
         };
-      }
+      },
     );
 
     if (!updatedDashboard) return;
@@ -39,7 +38,7 @@ const useDashboard = (id: string) => {
       updatedDashboard.id,
       updatedDashboard.name,
       updatedDashboard.folder_id,
-      updatedDashboard.metadata
+      updatedDashboard.metadata,
     );
   };
 
