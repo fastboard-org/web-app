@@ -34,7 +34,6 @@ const useDashboard = (id: string) => {
     );
 
     if (!updatedDashboard) return;
-    if (process.env.NEXT_PUBLIC_DEVELOPMENT_MODE === "true") return;
 
     dashboardService.updateDashboard(
       updatedDashboard.id,
