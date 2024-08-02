@@ -1,14 +1,14 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
-import useConnection from "@/hooks/useConnection";
+import useConnection from "@/hooks/connections/useConnection";
 import { useEffect } from "react";
 import ConnectionTitle from "@/components/connections/edit/ConnectionTitle";
 import ConnectionSettingsModal from "@/components/connections/edit/ConnectionSettingsModal";
 import { useDisclosure } from "@nextui-org/react";
 import { Connection, Query } from "@/types/connections";
 import QueryEditor from "@/components/connections/queries/QueryEditor";
-import useQueries from "@/hooks/useQueries";
+import useQueries from "@/hooks/connections/useQueries";
 
 export default function ConnectionPage() {
   const { id } = useParams();

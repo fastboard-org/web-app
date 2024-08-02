@@ -1,5 +1,5 @@
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
-import useExecuteQuery from "@/hooks/useExecuteQuery";
+import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import {
   FastboardTableProperties,
   TableActionProperty,
@@ -32,10 +32,10 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import { updateComponentProperties } from "@/lib/editor.utils";
 import { ComponentType } from "@/types/editor";
 import { useParams } from "next/navigation";
-import useDashboard from "@/hooks/useDashboard";
 import ViewActionModal from "./shared/ViewActionModal";
 import { InvalidateQueryFilters } from "@tanstack/react-query";
 import { Edit, Eye, Trash } from "iconsax-react";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 
 function getFinalColumns(

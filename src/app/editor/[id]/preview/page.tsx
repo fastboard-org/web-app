@@ -1,6 +1,6 @@
 "use client";
 import { getLayout } from "@/components/editor/fastboard-components/utils";
-import useDashboard from "@/hooks/useDashboard";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 import { Spinner } from "@nextui-org/react";
 import { useParams } from "next/navigation";
 
@@ -27,7 +27,7 @@ export default function Preview() {
   return (
     <div className="flex justify-center items-center h-screen w-full bg-background">
       {dashboard?.metadata?.layouts?.map((layout, index) =>
-        getLayout(layout, index, "view")
+        getLayout(layout, index, "view"),
       )}
     </div>
   );

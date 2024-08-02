@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Logo from "@/components/layout/shared/Logo";
 import FastboardAvatar from "../shared/FastboardAvatar";
 import SignOutTest from "../auth/SignOutTest";
+import { Toaster } from "@/components/shared/Toaster";
 
 const NavButton = ({
   children,
@@ -83,6 +84,9 @@ const HomeNavbarLayout = ({
         <div className={"flex justify-center items-center h-[5%]"}></div>
       </nav>
       <main className={"w-[calc(100vw-120px)] ml-[120px]"}>{children}</main>
+      <div className={"absolute"}>
+        <Toaster richColors />
+      </div>
     </div>
   );
 };

@@ -63,6 +63,9 @@ export function getComponent(
     },
   };
 
+  if (!components[id]) {
+    return null;
+  }
   return components[id][type];
 }
 
