@@ -34,6 +34,7 @@ const useDashboard = (id: string) => {
     );
 
     if (!updatedDashboard) return;
+
     dashboardService.updateDashboard(
       updatedDashboard.id,
       updatedDashboard.name,

@@ -28,20 +28,27 @@ import DeleteActionModal from "./shared/DeleteActionModal";
 import useData from "@/hooks/useData";
 import { toast } from "sonner";
 import { useRecoilState } from "recoil";
-import { dashboardMetadataState, propertiesDrawerState } from "@/atoms/editor";
+import { propertiesDrawerState } from "@/atoms/editor";
 import { updateComponentProperties } from "@/lib/editor.utils";
 import { ComponentType } from "@/types/editor";
 import { useParams } from "next/navigation";
+import ViewActionModal from "./shared/ViewActionModal";
+import { InvalidateQueryFilters } from "@tanstack/react-query";
+import { Edit, Eye, Trash } from "iconsax-react";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
-  actions: { key: string; label: string }[],
+  actions: { key: string; label: string }[]
 ) {
+  if (columns.length === 0) {
+    return [{ key: "empty-data", label: "" }];
+  }
   const finalColumns = columns
     .filter((column) => column.visible)
     .map((column) => column.column);
+
   if (actions.length > 0) {
     finalColumns.push({ key: "actions", label: "Actions" });
   }
@@ -80,21 +87,23 @@ export default function FastboardTable({
   } = useData(
     `${layoutIndex}-${container}-${ComponentType.Table}`,
     sourceQuery,
-    rowsPerPage,
+    rowsPerPage
   );
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [propertiesState, setPropertiesState] = useRecoilState(
-    propertiesDrawerState,
+    propertiesDrawerState
   );
   const {
     execute,
+    reset,
+    data: executeData,
+    isPending: actionLoading,
     isSuccess: isExecuteQuerySuccess,
     isError: isExecuteQueryError,
     error: executeQueryError,
-  } = useExecuteQuery({
-    queryKey: ["get_data", sourceQuery?.id],
-  });
+  } = useExecuteQuery();
   const finalColumns = getFinalColumns(columns, actions);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedRowAction, setSelectedRowAction] = useState<{
     action: TableActionProperty;
@@ -131,7 +140,7 @@ export default function FastboardTable({
             };
           }),
         },
-        previous.metadata,
+        previous.metadata
       ),
     }));
     setPropertiesState((previous) => {
@@ -167,6 +176,7 @@ export default function FastboardTable({
       toast.error("Failed executing action", {
         description: executeQueryError?.message,
       });
+      setViewModalOpen(false);
     }
   }, [isDataError, isExecuteQueryError]);
 
@@ -178,7 +188,7 @@ export default function FastboardTable({
 
   if (isDataError) {
     return (
-      <Card className="flex flex-col w-full h-[30%] p-5 justify-center items-center">
+      <Card className="flex flex-col w-full h-full p-5 justify-center items-center">
         <p className="text-xl text-danger">Failed loading data</p>
       </Card>
     );
@@ -187,10 +197,34 @@ export default function FastboardTable({
   if (!dataFetching && finalColumns.length === 0) {
     return (
       <Card className="flex flex-col w-full h-full p-5 justify-center items-center">
-        {" "}
         <p className="text-xl text-danger">No columns selected</p>
       </Card>
     );
+  }
+
+  function executeAction(
+    selectedRowAction: {
+      action: TableActionProperty;
+      item: any;
+    } | null,
+    invalidateQueries?: InvalidateQueryFilters
+  ) {
+    if (!selectedRowAction) {
+      return;
+    }
+    if (!selectedRowAction.action.query) {
+      toast.warning("No query found for this action");
+      return;
+    }
+    reset();
+    execute({
+      query: selectedRowAction.action.query,
+      parameters: fillParameters(
+        selectedRowAction.action.parameters,
+        selectedRowAction.item
+      ),
+      invalidateQueries,
+    });
   }
 
   const renderCell = (item: any, columnKey: string) => {
@@ -206,9 +240,19 @@ export default function FastboardTable({
             {actions.map((action) => (
               <DropdownItem
                 key={action.key}
+                startContent={
+                  (action.type === "view" && <Eye size={15} />) ||
+                  (action.type === "edit" && <Edit size={15} />) ||
+                  (action.type === "delete" && <Trash size={15} />)
+                }
                 onPress={() => {
                   setSelectedRowAction({ action, item });
-                  setDeleteModalOpen(true);
+                  if (action.type === "view") {
+                    executeAction({ action, item });
+                    setViewModalOpen(action.query ? true : false);
+                  } else if (action.type === "delete") {
+                    setDeleteModalOpen(true);
+                  }
                 }}
               >
                 {action.label}
@@ -223,7 +267,7 @@ export default function FastboardTable({
 
   function fillParameters(
     parameters: { name: string; value: string }[],
-    item: any,
+    item: any
   ) {
     //TODO: fix this in backend
     if (!parameters) {
@@ -241,7 +285,7 @@ export default function FastboardTable({
       const columnKey =
         columns.find(
           (column) =>
-            column.column.label.toLowerCase() === match[1].toLowerCase(),
+            column.column.label.toLowerCase() === match[1].toLowerCase()
         )?.column.key ?? "";
 
       const value = getKeyValue(item, columnKey);
@@ -261,25 +305,30 @@ export default function FastboardTable({
       onlyRenderOnLoad
       className="w-full h-full"
     >
-      <DeleteActionModal
-        isOpen={deleteModalOpen}
-        onClose={() => {
-          setDeleteModalOpen(false);
-        }}
-        onConfirm={async () => {
-          if (selectedRowAction && selectedRowAction.action.query) {
-            execute({
-              query: selectedRowAction.action.query,
-              parameters: fillParameters(
-                selectedRowAction.action.parameters,
-                selectedRowAction.item,
-              ),
+      {selectedRowAction && (
+        <ViewActionModal
+          isOpen={viewModalOpen}
+          isLoading={actionLoading}
+          data={executeData?.body}
+          onClose={() => {
+            setViewModalOpen(false);
+          }}
+        />
+      )}
+
+      {selectedRowAction && (
+        <DeleteActionModal
+          isOpen={deleteModalOpen}
+          onClose={() => {
+            setDeleteModalOpen(false);
+          }}
+          onConfirm={async () => {
+            executeAction(selectedRowAction, {
+              queryKey: ["get_data", sourceQuery?.id],
             });
-          } else {
-            toast.warning("No query found for this action");
-          }
-        }}
-      />
+          }}
+        />
+      )}
 
       <Table
         aria-label="Fastboard table component"

@@ -20,10 +20,10 @@ const useData = (
     Object.keys(item).forEach((key) => {
       if (Array.isArray(item[key])) {
         item[key] = "array";
-      } else {
-        typeof item[key] === "object"
-          ? (item[key] = "object")
-          : (item[key] = item[key]);
+      } else if (typeof item[key] === "object") {
+        item[key] = "object";
+      } else if (typeof item[key] === "boolean") {
+        item[key] = item[key] ? "true" : "false";
       }
     });
   };
@@ -32,10 +32,17 @@ const useData = (
     try {
       const response = await adapterService.executeQuery(query);
       let responseData = response?.body;
+
       if (!responseData) {
         setKeys([]);
         return [];
       }
+
+      if (Array.isArray(responseData) && responseData.length === 0) {
+        setKeys([]);
+        return [];
+      }
+
       //This is a temporary fix to handle different data types
       if (typeof responseData === "object" && !Array.isArray(responseData)) {
         responseData = [responseData];

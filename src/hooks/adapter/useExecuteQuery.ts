@@ -7,6 +7,7 @@ import {
 import { axiosInstance } from "@/lib/axios";
 import { queryClient } from "@/app/providers";
 import { adapterService } from "@/lib/services/adapter";
+import { useState } from "react";
 
 export const executeQueryFn = async (query: Query | null) => {
   try {
@@ -23,9 +24,12 @@ export const executeQueryFn = async (query: Query | null) => {
   }
 };
 
-const useExecuteQuery = (invalidateQueries?: InvalidateQueryFilters) => {
+const useExecuteQuery = () => {
+  const [invalidateQueries, setInvalidateQueries] =
+    useState<InvalidateQueryFilters>();
   const {
     mutate: execute,
+    reset,
     data,
     isPending,
     isSuccess,
@@ -35,17 +39,24 @@ const useExecuteQuery = (invalidateQueries?: InvalidateQueryFilters) => {
     mutationFn: ({
       query,
       parameters,
+      invalidateQueries,
     }: {
       query: Query | null;
       parameters: Record<string, any>;
-    }) => adapterService.executeQuery(query, parameters),
+      invalidateQueries?: InvalidateQueryFilters;
+    }) => {
+      setInvalidateQueries(invalidateQueries);
+      return adapterService.executeQuery(query, parameters);
+    },
     onSuccess: () => {
+      if (!invalidateQueries) return;
       queryClient.invalidateQueries(invalidateQueries);
     },
   });
 
   return {
     execute,
+    reset,
     data,
     isSuccess,
     isPending,
