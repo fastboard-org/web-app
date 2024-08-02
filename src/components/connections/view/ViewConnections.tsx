@@ -11,9 +11,10 @@ import ConnectionList from "@/components/connections/view/ConnectionList";
 import { Connection } from "@/types/connections";
 import { useState } from "react";
 import CreateConnectionModal from "@/components/connections/create/CreateConnectionModal";
-import useConnections from "@/hooks/useConnections";
+import useConnections from "@/hooks/connections/useConnections";
 import QuestionModal from "@/components/shared/QuestionModal";
-import { connectionsService } from "@/lib/services/connections";
+import { useDeleteConnection } from "@/hooks/connections/useDeleteConnection";
+import { toast } from "sonner";
 
 const ViewConnections = ({
   onConnectionClick,
@@ -27,11 +28,25 @@ const ViewConnections = ({
 
   const [connectionToDelete, setConnectionToDelete] =
     useState<Connection | null>(null);
+
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure();
+
+  const { deleteConnection, loading: deleteConnectionLoading } =
+    useDeleteConnection({
+      onSuccess: (data: any) => {
+        operations.deleteConnection(connectionToDelete?.id!);
+        setConnectionToDelete(null);
+        onDeleteClose();
+      },
+      onError: (error: any) => {
+        console.error("Error deleting connection", error);
+        toast.error("Error deleting connection, try again later.");
+      },
+    });
 
   const handleSearch = (e: { target: { value: string } }) => {
     setSearch(e.target.value);
@@ -41,11 +56,8 @@ const ViewConnections = ({
     onConnectionClick(connection);
   };
 
-  const handleDelete = async (connection: Connection) => {
-    await connectionsService.deleteConnection(connection.id);
-    operations.deleteConnection(connection.id);
-    setConnectionToDelete(null);
-    onDeleteClose();
+  const handleDelete = (connection: Connection) => {
+    deleteConnection({ id: connection.id });
   };
 
   return (
@@ -104,12 +116,13 @@ const ViewConnections = ({
       <QuestionModal
         titleText={"Delete Connection"}
         questionText={"Are you sure you want to delete this connection?"}
-        isOpen={isDeleteOpen}
+        isOpen={isDeleteOpen || deleteConnectionLoading}
+        isLoading={deleteConnectionLoading}
         size={"lg"}
         onClose={onDeleteClose}
-        onConfirm={async () => {
+        onConfirm={() => {
           if (connectionToDelete) {
-            await handleDelete(connectionToDelete);
+            handleDelete(connectionToDelete);
           }
         }}
       />

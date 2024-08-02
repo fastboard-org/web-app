@@ -30,7 +30,7 @@ const useDashboard = (id: string) => {
           ...prevData,
           ...updatedDashboard,
         };
-      }
+      },
     );
 
     if (!updatedDashboard) return;
@@ -39,7 +39,7 @@ const useDashboard = (id: string) => {
       updatedDashboard.id,
       updatedDashboard.name,
       updatedDashboard.folder_id,
-      updatedDashboard.metadata
+      updatedDashboard.metadata,
     );
   };
 

@@ -11,7 +11,7 @@ import { Button } from "@nextui-org/react";
 import { Trash } from "iconsax-react";
 import { deleteComponent } from "@/lib/editor.utils";
 import { useParams } from "next/navigation";
-import useDashboard from "@/hooks/useDashboard";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 
 const FastboardComponent = ({
   onClick,
@@ -78,7 +78,7 @@ const FastboardComponent = ({
     containerIndex,
     type,
     mode,
-    properties
+    properties,
   );
   if (!component) return null;
 

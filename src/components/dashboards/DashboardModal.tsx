@@ -11,7 +11,9 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { dashboardService } from "@/lib/services/dashboards";
+import { useCreateDashboard } from "@/hooks/dashboards/useCreateDashboard";
+import { toast } from "sonner";
+import { useUpdateDashboard } from "@/hooks/dashboards/useUpdateDashboard";
 
 const DashboardModal = ({
   isOpen,
@@ -30,7 +32,28 @@ const DashboardModal = ({
   const [folderId, setFolderId] = useState<string | null>(
     dashboard?.folder_id || null,
   );
-  const [loading, setLoading] = useState(false);
+
+  const { createDashboard, loading: createLoading } = useCreateDashboard({
+    onSuccess: (dashboard: Dashboard) => {
+      onSuccess(dashboard);
+      onClose();
+    },
+    onError: (error: any) => {
+      console.error(error);
+      toast.error("Error creating dashboard, try again later.");
+    },
+  });
+
+  const { updateDashboard, loading: updateLoading } = useUpdateDashboard({
+    onSuccess: (dashboard: Dashboard) => {
+      onSuccess(dashboard);
+      onClose();
+    },
+    onError: (error: any) => {
+      console.error(error);
+      toast.error("Error updating dashboard, try again later.");
+    },
+  });
 
   useEffect(() => {
     if (dashboard) {
@@ -42,44 +65,23 @@ const DashboardModal = ({
     }
   }, [dashboard, isOpen]);
 
-  const handleCreate = async () => {
-    try {
-      setLoading(true);
-      const newDashboard = await dashboardService.createDashboard(
-        name,
-        folderId || null,
-      );
-      onSuccess(newDashboard);
-      onClose();
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
-    }
+  const handleCreate = () => {
+    createDashboard({ name, folderId });
   };
 
-  const handleUpdate = async () => {
-    try {
-      setLoading(true);
-      const updatedDashboard = await dashboardService.updateDashboard(
-        dashboard?.id as string,
-        name,
-        folderId || null,
-      );
-      onSuccess(updatedDashboard);
-      onClose();
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.error(error);
-    }
+  const handleUpdate = () => {
+    updateDashboard({
+      id: dashboard?.id as string,
+      name,
+      folderId: folderId || null,
+    });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (dashboard) {
-      await handleUpdate();
+      handleUpdate();
     } else {
-      await handleCreate();
+      handleCreate();
     }
   };
 
@@ -138,7 +140,7 @@ const DashboardModal = ({
             color="primary"
             onPress={handleSubmit}
             isDisabled={!name}
-            isLoading={loading}
+            isLoading={createLoading || updateLoading}
           >
             {dashboard ? "Update" : "Create"}
           </Button>

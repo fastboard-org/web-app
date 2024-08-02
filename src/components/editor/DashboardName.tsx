@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Input } from "@nextui-org/react";
-import useDashboard from "@/hooks/useDashboard";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 import { useParams } from "next/navigation";
 
 export default function DashboardName() {
