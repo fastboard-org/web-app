@@ -10,7 +10,8 @@ import {
 import { Connection, ConnectionType } from "@/types/connections";
 import ConnectionTypeButton from "@/components/connections/create/ConnectionTypeButton";
 import { useState } from "react";
-import { connectionsService } from "@/lib/services/connections";
+import { useCreateConnection } from "@/hooks/connections/useCreateConnection";
+import { toast } from "sonner";
 
 const CreateConnectionModal = ({
   isOpen,
@@ -26,7 +27,18 @@ const CreateConnectionModal = ({
   );
   const [connectionName, setConnectionName] = useState("");
   const [mainUrl, setMainUrl] = useState("https://");
-  const [loading, setLoading] = useState(false);
+
+  const { createConnection, loading } = useCreateConnection({
+    onSuccess: (connection: Connection) => {
+      onSuccess(connection);
+      onClose();
+      refreshStates();
+    },
+    onError: (error: any) => {
+      console.error("Error creating connection", error);
+      toast.error("Error creating connection, try again later.");
+    },
+  });
 
   const refreshStates = () => {
     setConnectionType(null);
@@ -34,23 +46,12 @@ const CreateConnectionModal = ({
     setMainUrl("https://");
   };
 
-  const handleCreateConnection = async () => {
-    setLoading(true);
-
-    try {
-      const connection = await connectionsService.createConnection(
-        connectionName,
-        connectionType!,
-        { main_url: mainUrl },
-      );
-
-      onSuccess(connection);
-      onClose();
-      refreshStates();
-    } catch (error) {
-      console.error("Error creating connection", error);
-    }
-    setLoading(false);
+  const handleCreateConnection = () => {
+    createConnection({
+      name: connectionName,
+      type: connectionType!,
+      credentials: { main_url: mainUrl },
+    });
   };
 
   return (

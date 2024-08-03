@@ -9,9 +9,10 @@ const useDashboard = (id: string) => {
     data: dashboard,
     error,
   } = useQuery({
-    queryKey: ["dashboards", id],
+    queryKey: ["dashboard", id],
     queryFn: () => dashboardService.getDashboard(id),
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const queryClient = useQueryClient();
@@ -20,21 +21,17 @@ const useDashboard = (id: string) => {
     let updatedDashboard: Dashboard | undefined;
 
     queryClient.setQueryData(
-      ["dashboards", id],
+      ["dashboard", id],
       (prevData: Dashboard | undefined) => {
         if (!prevData) {
           return prevData;
         }
         updatedDashboard = updater(prevData);
-        return {
-          ...prevData,
-          ...updatedDashboard,
-        };
+        return updatedDashboard;
       }
     );
 
     if (!updatedDashboard) return;
-    if (process.env.NEXT_PUBLIC_DEVELOPMENT_MODE === "true") return;
 
     dashboardService.updateDashboard(
       updatedDashboard.id,

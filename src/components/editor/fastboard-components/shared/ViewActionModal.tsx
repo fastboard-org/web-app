@@ -1,14 +1,58 @@
 import {
+  Button,
   Link,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Spinner,
 } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import React from "react";
+import {
+  collapseAllNested,
+  JsonView,
+  darkStyles,
+  defaultStyles,
+} from "react-json-view-lite";
+import "react-json-view-lite/dist/index.css";
+import { useTheme } from "next-themes";
+
+function ObjectFieldView({ data }: { data: any }) {
+  const { theme } = useTheme();
+
+  if (!data) {
+    return <p className="text-primary-700">null</p>;
+  }
+
+  const icon = Array.isArray(data) ? "[...]" : "{...}";
+
+  return (
+    <Popover placement="right">
+      <PopoverTrigger>
+        <Button isIconOnly variant="light" className="">
+          {icon}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <JsonView
+          data={data}
+          shouldExpandNode={collapseAllNested}
+          style={{
+            ...(theme === "dark" ? darkStyles : defaultStyles),
+            container:
+              "h-40 bg-transparent overflow-y-auto text-md " +
+              scrollbarStyles.scrollbar,
+          }}
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 export default function ViewActionModal({
   isOpen,
@@ -22,10 +66,8 @@ export default function ViewActionModal({
   onClose: () => void;
 }) {
   function mapfield(item: any): React.ReactElement {
-    if (Array.isArray(item)) {
-      return <p>[...]</p>;
-    } else if (typeof item === "object") {
-      return <p>{"{...}"}</p>;
+    if (Array.isArray(item) || typeof item === "object") {
+      return <ObjectFieldView data={item} />;
     } else if (typeof item === "boolean") {
       return (
         <p className={item ? "text-primary" : "text-danger"}>

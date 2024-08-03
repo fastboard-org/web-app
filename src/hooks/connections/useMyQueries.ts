@@ -11,6 +11,7 @@ const useMyQueries = () => {
     queryKey: ["queries"],
     queryFn: () => connectionsService.getMyQueries(),
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   return {

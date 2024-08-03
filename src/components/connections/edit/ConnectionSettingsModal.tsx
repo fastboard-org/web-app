@@ -10,7 +10,8 @@ import {
   ModalHeader,
 } from "@nextui-org/react";
 import ConnectionVariablesTable from "@/components/connections/edit/ConnectionVariablesTable";
-import { connectionsService } from "@/lib/services/connections";
+import { useUpdateConnection } from "@/hooks/connections/useUpdateConnection";
+import { toast } from "sonner";
 
 const ConnectionSettingsModal = ({
   isOpen,
@@ -28,7 +29,17 @@ const ConnectionSettingsModal = ({
     Object.entries(connection?.variables || {}),
   );
   const [name, setName] = useState<string>(connection?.name || "");
-  const [loading, setLoading] = useState(false);
+
+  const { updateConnection, loading } = useUpdateConnection({
+    onSuccess: (connection: Connection) => {
+      onSubmit(connection);
+      onClose();
+    },
+    onError: (error: any) => {
+      console.error("Error updating connection", error);
+      toast.error("Error updating connection, try again later.");
+    },
+  });
 
   useEffect(() => {
     setCredentials(connection?.credentials);
@@ -36,17 +47,13 @@ const ConnectionSettingsModal = ({
     setName(connection?.name);
   }, [connection, isOpen]);
 
-  const handleSave = async () => {
-    setLoading(true);
-    const updatedConnection = await connectionsService.updateConnection(
-      connection.id,
+  const handleSave = () => {
+    updateConnection({
+      id: connection.id,
       name,
       credentials,
-      Object.fromEntries(variableEntries),
-    );
-    onSubmit(updatedConnection);
-    setLoading(false);
-    onClose();
+      variables: Object.fromEntries(variableEntries),
+    });
   };
 
   return (
