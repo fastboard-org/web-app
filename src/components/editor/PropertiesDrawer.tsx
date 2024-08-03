@@ -32,27 +32,22 @@ export default function PropertiesDrawer() {
       <Divider />
       <Spacer y={4} />
       {isOpen &&
-        propertiesDrawerComponent.type &&
-        getPropertiesComponent(
-          propertiesDrawerComponent.type,
-          propertiesDrawerComponent.properties,
-          (properties) => {
-            setPropertiesDrawerState((prev) => ({
-              ...prev,
-              properties: properties,
-            }));
-            updateDashboard((prev) => ({
-              ...prev,
-              metadata: updateComponentProperties(
-                propertiesDrawerComponent.layoutIndex,
-                propertiesDrawerComponent.container,
-                propertiesDrawerComponent.type,
-                properties,
-                prev.metadata
-              ),
-            }));
-          }
-        )}
+        getPropertiesComponent(propertiesDrawerComponent, (properties) => {
+          setPropertiesDrawerState((prev) => ({
+            ...prev,
+            properties: properties,
+          }));
+          updateDashboard((prev) => ({
+            ...prev,
+            metadata: updateComponentProperties(
+              propertiesDrawerComponent.layoutIndex,
+              propertiesDrawerComponent.container,
+              propertiesDrawerComponent.type,
+              properties,
+              prev.metadata
+            ),
+          }));
+        })}
     </motion.div>
   );
 }

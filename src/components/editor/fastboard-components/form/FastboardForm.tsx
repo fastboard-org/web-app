@@ -87,10 +87,6 @@ export default function FastboardForm({
               ? {
                   ...register(textInput.formDataKey, {
                     required: "This field is required",
-                    pattern: {
-                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: "Please enter a valid email address",
-                    },
                   }),
                 }
               : {})}

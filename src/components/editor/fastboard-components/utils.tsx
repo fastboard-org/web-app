@@ -18,7 +18,7 @@ import {
 import ColumnLayout from "../layouts/ColumnLayout";
 import RightSplitLayout from "../layouts/RightSplitLayout";
 import BottomSplitLayout from "../layouts/BottomSplitLayout";
-import { ComponentType } from "@/types/editor";
+import { ComponentType, PropertiesDrawerState } from "@/types/editor";
 import FastboardFormDraggable from "./form/FastboardFormDraggable";
 import FastboardForm from "./form/FastboardForm";
 import { FormProperties } from "@/types/editor/form";
@@ -76,10 +76,11 @@ export function getComponent(
 }
 
 export function getPropertiesComponent(
-  id: ComponentType,
-  properties?: Record<string, any>,
+  state: PropertiesDrawerState,
   onValueChange?: (properties: Record<string, any>) => void
 ) {
+  const { type, container, properties } = state;
+
   const components = {
     [ComponentType.Table]: (
       <FastboardTablePropertiesComponent
@@ -93,6 +94,7 @@ export function getPropertiesComponent(
     ),
     [ComponentType.Form]: (
       <FastboardFormProperties
+        container={container}
         properties={properties as FormProperties}
         onValueChange={(properties) => {
           if (onValueChange) {
@@ -104,7 +106,10 @@ export function getPropertiesComponent(
     [ComponentType.Image]: null,
   };
 
-  return components[id];
+  if (!type) {
+    return null;
+  }
+  return components[type];
 }
 
 export function getLayout(

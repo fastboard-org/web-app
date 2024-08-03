@@ -22,9 +22,11 @@ import FormCheckboxProperties from "./FormCheckboxProperties";
 import FormNumberInputProperties from "./FormNumberInputProperties";
 
 export default function FastboardFormProperties({
+  container,
   properties,
   onValueChange,
 }: {
+  container: string;
   properties: FormProperties;
   onValueChange: (properties: FormProperties) => void;
 }) {
@@ -34,8 +36,9 @@ export default function FastboardFormProperties({
   );
 
   useEffect(() => {
-    //setInputSelectedIndex(null);
-  }, [properties]);
+    //The container changes, reset the selected input
+    setInputSelectedIndex(null);
+  }, [container]);
 
   return (
     <div>
@@ -132,7 +135,7 @@ export default function FastboardFormProperties({
       )}
 
       {inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex].type === InputType.TextInput && (
+        inputs[inputSelectedIndex]?.type === InputType.TextInput && (
           <FormTextInputProperties
             properties={inputs[inputSelectedIndex] as TextInputProperties}
             query={query}
@@ -147,7 +150,7 @@ export default function FastboardFormProperties({
           />
         )}
       {inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex].type === InputType.Checkbox && (
+        inputs[inputSelectedIndex]?.type === InputType.Checkbox && (
           <FormCheckboxProperties
             properties={inputs[inputSelectedIndex] as CheckboxProperties}
             query={query}
@@ -162,7 +165,7 @@ export default function FastboardFormProperties({
           />
         )}
       {inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex].type === InputType.NumberInput && (
+        inputs[inputSelectedIndex]?.type === InputType.NumberInput && (
           <FormNumberInputProperties
             properties={inputs[inputSelectedIndex] as NumberInputProperties}
             query={query}
