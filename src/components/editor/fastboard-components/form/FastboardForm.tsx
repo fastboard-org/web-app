@@ -24,7 +24,7 @@ import {
 } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { useForm } from "react-hook-form";
-import useExecuteQuery from "@/hooks/useExecuteQuery";
+import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import { useEffect } from "react";
 import { toast } from "sonner";
 

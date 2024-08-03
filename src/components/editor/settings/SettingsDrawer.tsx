@@ -5,7 +5,7 @@ import React from "react";
 import { useRecoilValue } from "recoil";
 import LayoutSelection from "./LayoutSelection";
 import { useParams } from "next/navigation";
-import useDashboard from "@/hooks/useDashboard";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 import { changeLayout } from "@/lib/editor.utils";
 
 export default function SettingsDrawer() {
