@@ -97,6 +97,7 @@ export default function FastboardForm({
             label={textInput.label}
             labelPlacement="outside"
             placeholder={textInput.placeHolder}
+            isClearable
             errorMessage={errors[textInput.formDataKey]?.message as string}
             isInvalid={!!errors[textInput.formDataKey]}
           />
@@ -109,11 +110,18 @@ export default function FastboardForm({
             aria-label="Number input"
             type="number"
             isRequired={numberInput.required}
-            {...register(numberInput.formDataKey, {
-              required: "This field is required",
-            })}
+            {...(numberInput.formDataKey !== ""
+              ? {
+                  ...register(numberInput.formDataKey, {
+                    required: "This field is required",
+                    valueAsNumber: true,
+                  }),
+                }
+              : {})}
             label={numberInput.label}
             labelPlacement="outside"
+            placeholder={numberInput.placeHolder}
+            isClearable
             errorMessage={errors[numberInput.formDataKey]?.message as string}
             isInvalid={!!errors[numberInput.formDataKey]}
           />

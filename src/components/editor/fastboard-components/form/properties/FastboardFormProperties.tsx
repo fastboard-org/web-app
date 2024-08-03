@@ -2,6 +2,7 @@ import {
   CheckboxProperties,
   FormProperties,
   InputType,
+  NumberInputProperties,
   TextInputProperties,
 } from "@/types/editor/form";
 import {
@@ -16,6 +17,7 @@ import { useEffect, useState } from "react";
 import FormInputsList from "./FormInputsList";
 import FormTextInputProperties from "./FormTextInputProperties";
 import FormCheckboxProperties from "./FormCheckboxProperties";
+import FormNumberInputProperties from "./FormNumberInputProperties";
 
 export default function FastboardFormProperties({
   properties,
@@ -107,6 +109,21 @@ export default function FastboardFormProperties({
         inputs[inputSelectedIndex].type === InputType.Checkbox && (
           <FormCheckboxProperties
             properties={inputs[inputSelectedIndex] as CheckboxProperties}
+            query={query}
+            onValueChange={(inputProperties) => {
+              const newInputs = [...inputs];
+              newInputs[inputSelectedIndex] = inputProperties;
+              onValueChange({
+                ...properties,
+                inputs: newInputs,
+              });
+            }}
+          />
+        )}
+      {inputSelectedIndex !== null &&
+        inputs[inputSelectedIndex].type === InputType.NumberInput && (
+          <FormNumberInputProperties
+            properties={inputs[inputSelectedIndex] as NumberInputProperties}
             query={query}
             onValueChange={(inputProperties) => {
               const newInputs = [...inputs];

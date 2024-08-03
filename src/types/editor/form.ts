@@ -3,7 +3,6 @@ import { Query } from "../connections";
 export enum InputType {
   TextInput = "text-input",
   NumberInput = "number-input",
-  DateInput = "date-input",
   Select = "select",
   Checkbox = "checkbox",
   DatePicker = "date-picker",
@@ -20,7 +19,9 @@ export interface TextInputProperties extends BaseInputProperties {
   placeHolder: string;
 }
 
-export interface NumberInputProperties extends BaseInputProperties {}
+export interface NumberInputProperties extends BaseInputProperties {
+  placeHolder: string;
+}
 
 export interface SelectProperties extends BaseInputProperties {
   options: string[];
@@ -53,6 +54,7 @@ export class DefaultInputProperties {
           required: true,
           type: InputType.NumberInput,
           label: "Number input",
+          placeHolder: "Enter number",
         };
       case InputType.Select:
         return {

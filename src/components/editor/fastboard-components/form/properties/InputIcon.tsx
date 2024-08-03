@@ -1,5 +1,5 @@
 import { InputType } from "@/types/editor/form";
-import { Calendar, IconProps, Text } from "iconsax-react";
+import { Calendar, Hashtag, IconProps, Text } from "iconsax-react";
 import { IoCheckbox, IoList } from "react-icons/io5";
 
 export default function InputIcon({
@@ -16,6 +16,8 @@ export default function InputIcon({
   switch (type) {
     case InputType.TextInput:
       return <Text size={size} className={className} />;
+    case InputType.NumberInput:
+      return <Hashtag size={size + 2} className={className} />;
     case InputType.Select:
       return <IoList size={size + 5} className={className} />;
     case InputType.Checkbox:
