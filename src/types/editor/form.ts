@@ -86,8 +86,10 @@ export class DefaultInputProperties {
 
 export class FormProperties {
   title: string = "Form title";
-  inputs: InputProperties[] = [];
   query: Query | null = null;
+  submitButtonLabel: string = "Submit";
+
+  inputs: InputProperties[] = [];
 
   static default(): FormProperties {
     return new FormProperties();

@@ -33,7 +33,7 @@ export default function FastboardForm({
 }: {
   properties: FormProperties;
 }) {
-  const { title, inputs, query } = properties;
+  const { title, inputs, query, submitButtonLabel } = properties;
   const {
     register,
     handleSubmit,
@@ -177,7 +177,7 @@ export default function FastboardForm({
         <Spacer y={1} />
         <CardFooter className="flex justify-end">
           <Button type="submit" color="primary" isLoading={isLoading}>
-            Submit
+            {submitButtonLabel}
           </Button>
         </CardFooter>
       </Card>

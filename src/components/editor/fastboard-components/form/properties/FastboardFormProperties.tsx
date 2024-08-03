@@ -6,6 +6,8 @@ import {
   TextInputProperties,
 } from "@/types/editor/form";
 import {
+  Accordion,
+  AccordionItem,
   BreadcrumbItem,
   Breadcrumbs,
   Button,
@@ -26,7 +28,7 @@ export default function FastboardFormProperties({
   properties: FormProperties;
   onValueChange: (properties: FormProperties) => void;
 }) {
-  const { title, query, inputs } = properties;
+  const { title, query, submitButtonLabel, inputs } = properties;
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
     null
   );
@@ -53,41 +55,80 @@ export default function FastboardFormProperties({
       <Spacer y={4} />
 
       {inputSelectedIndex === null && (
-        <div>
-          <Input
-            label="Title"
-            labelPlacement="outside"
-            placeholder="Form title"
-            value={title}
-            onValueChange={(value) => {
-              onValueChange({
-                ...properties,
-                title: value,
-              });
+        <Accordion
+          selectionMode="multiple"
+          isCompact
+          fullWidth
+          defaultExpandedKeys={["basic", "inputs", "style"]}
+        >
+          <AccordionItem
+            key="basic"
+            title="Basic"
+            className="pb-2"
+            classNames={{
+              title: "font-medium",
             }}
-          />
-          <QuerySelection
-            selectedQueryId={query?.id || ""}
-            onQuerySelect={(query) => {
-              onValueChange({
-                ...properties,
-                query: query,
-              });
+          >
+            <div>
+              <Input
+                label="Title"
+                labelPlacement="outside"
+                placeholder="Form title"
+                value={title}
+                onValueChange={(value) => {
+                  onValueChange({
+                    ...properties,
+                    title: value,
+                  });
+                }}
+              />
+              <Spacer y={2} />
+              <QuerySelection
+                selectedQueryId={query?.id || ""}
+                onQuerySelect={(query) => {
+                  onValueChange({
+                    ...properties,
+                    query: query,
+                  });
+                }}
+              />
+              <Spacer y={2} />
+              <Input
+                label="Submit button label"
+                labelPlacement="outside"
+                value={submitButtonLabel}
+                onValueChange={(value) => {
+                  onValueChange({
+                    ...properties,
+                    submitButtonLabel: value,
+                  });
+                }}
+              />
+              <Spacer y={2} />
+            </div>
+          </AccordionItem>
+          <AccordionItem
+            key="inputs"
+            className="pb-2"
+            title="Inputs"
+            classNames={{
+              title: "font-medium",
             }}
-          />
-          <FormInputsList
-            inputs={inputs}
-            onSelectInput={(inputProperties) => {
-              setInputSelectedIndex(inputs.indexOf(inputProperties));
-            }}
-            onChange={(newInputs) => {
-              onValueChange({
-                ...properties,
-                inputs: newInputs,
-              });
-            }}
-          />
-        </div>
+          >
+            <FormInputsList
+              inputs={inputs}
+              onSelectInput={(inputProperties) => {
+                setInputSelectedIndex(inputs.indexOf(inputProperties));
+              }}
+              onChange={(newInputs) => {
+                onValueChange({
+                  ...properties,
+                  inputs: newInputs,
+                });
+              }}
+            />
+          </AccordionItem>
+        </Accordion>
       )}
 
       {inputSelectedIndex !== null &&
