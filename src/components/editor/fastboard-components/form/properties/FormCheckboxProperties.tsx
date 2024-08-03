@@ -1,11 +1,15 @@
 import { CheckboxProperties } from "@/types/editor/form";
 import { Input, Spacer } from "@nextui-org/react";
+import FormDataKeySelection from "./FormDataKeySelection";
+import { Query } from "@/types/connections";
 
-export default function FastboardCheckboxProperties({
+export default function FormCheckboxProperties({
   properties,
+  query,
   onValueChange,
 }: {
   properties: CheckboxProperties;
+  query: Query | null;
   onValueChange: (properties: CheckboxProperties) => void;
 }) {
   const { label, formDataKey } = properties;
@@ -26,16 +30,13 @@ export default function FastboardCheckboxProperties({
         }}
       />
       <Spacer y={2} />
-      <Input
-        aria-label="Checkbox formKey property"
-        label="FormData key"
-        labelPlacement="outside"
-        placeholder="FormData key"
-        value={formDataKey || ""}
-        onValueChange={(value) => {
+      <FormDataKeySelection
+        selectedKey={formDataKey}
+        query={query}
+        onSelectionChange={(formDataKey) => {
           onValueChange({
             ...properties,
-            formDataKey: value,
+            formDataKey: formDataKey,
           });
         }}
       />

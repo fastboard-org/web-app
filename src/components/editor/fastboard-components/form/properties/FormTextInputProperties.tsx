@@ -1,11 +1,15 @@
+import { Query } from "@/types/connections";
 import { TextInputProperties } from "@/types/editor/form";
-import { Checkbox, Input, Spacer } from "@nextui-org/react";
+import { Checkbox, Input, Select, SelectItem, Spacer } from "@nextui-org/react";
+import FormDataKeySelection from "./FormDataKeySelection";
 
-export default function FastboardTextInputProperties({
+export default function FormTextInputProperties({
   properties,
+  query,
   onValueChange,
 }: {
   properties: TextInputProperties;
+  query: Query | null;
   onValueChange: (properties: TextInputProperties) => void;
 }) {
   const { label, placeHolder, required, formDataKey } = properties;
@@ -41,7 +45,7 @@ export default function FastboardTextInputProperties({
       />
       <Spacer y={2} />
       <Checkbox
-        checked={required}
+        isSelected={required}
         onValueChange={(value) => {
           onValueChange({
             ...properties,
@@ -52,16 +56,13 @@ export default function FastboardTextInputProperties({
         Required
       </Checkbox>
       <Spacer y={2} />
-      <Input
-        aria-label="Text input formKey property"
-        label="FormData key"
-        labelPlacement="outside"
-        placeholder="FormData key"
-        value={formDataKey || ""}
-        onValueChange={(value) => {
+      <FormDataKeySelection
+        selectedKey={formDataKey}
+        query={query}
+        onSelectionChange={(formDataKey) => {
           onValueChange({
             ...properties,
-            formDataKey: value,
+            formDataKey: formDataKey,
           });
         }}
       />

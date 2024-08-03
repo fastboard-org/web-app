@@ -11,11 +11,11 @@ import {
   Input,
   Spacer,
 } from "@nextui-org/react";
-import QuerySelection from "../../QuerySelection";
+import QuerySelection from "../../../QuerySelection";
 import { useEffect, useState } from "react";
-import FastboardTextInputProperties from "./properties/FastboardTextInputProperties";
-import FormInputsList from "./properties/FormInputsList";
-import FastboardCheckboxProperties from "./properties/FastboardCheckboxProperties";
+import FormInputsList from "./FormInputsList";
+import FormTextInputProperties from "./FormTextInputProperties";
+import FormCheckboxProperties from "./FormCheckboxProperties";
 
 export default function FastboardFormProperties({
   properties,
@@ -89,11 +89,10 @@ export default function FastboardFormProperties({
       )}
 
       {inputSelectedIndex !== null &&
-        properties.inputs[inputSelectedIndex].type === InputType.TextInput && (
-          <FastboardTextInputProperties
-            properties={
-              properties.inputs[inputSelectedIndex] as TextInputProperties
-            }
+        inputs[inputSelectedIndex].type === InputType.TextInput && (
+          <FormTextInputProperties
+            properties={inputs[inputSelectedIndex] as TextInputProperties}
+            query={query}
             onValueChange={(inputProperties) => {
               const newInputs = [...inputs];
               newInputs[inputSelectedIndex] = inputProperties;
@@ -105,11 +104,10 @@ export default function FastboardFormProperties({
           />
         )}
       {inputSelectedIndex !== null &&
-        properties.inputs[inputSelectedIndex].type === InputType.Checkbox && (
-          <FastboardCheckboxProperties
-            properties={
-              properties.inputs[inputSelectedIndex] as CheckboxProperties
-            }
+        inputs[inputSelectedIndex].type === InputType.Checkbox && (
+          <FormCheckboxProperties
+            properties={inputs[inputSelectedIndex] as CheckboxProperties}
+            query={query}
             onValueChange={(inputProperties) => {
               const newInputs = [...inputs];
               newInputs[inputSelectedIndex] = inputProperties;

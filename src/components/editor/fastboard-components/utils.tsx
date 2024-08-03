@@ -22,7 +22,7 @@ import { ComponentType } from "@/types/editor";
 import FastboardFormDraggable from "./form/FastboardFormDraggable";
 import FastboardForm from "./form/FastboardForm";
 import { FormProperties } from "@/types/editor/form";
-import FastboardFormProperties from "./form/FastboardFormProperties";
+import FastboardFormProperties from "./form/properties/FastboardFormProperties";
 
 export function getDraggableComponent(id: ComponentType) {
   const components = {

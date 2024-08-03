@@ -39,6 +39,7 @@ export default function FastboardForm({
     handleSubmit,
     setError,
     formState: { errors },
+    reset,
   } = useForm();
   const {
     execute,
@@ -70,6 +71,7 @@ export default function FastboardForm({
       query: query,
       parameters: formData,
     });
+    reset();
   };
 
   function renderInput(index: number, input: InputProperties) {
