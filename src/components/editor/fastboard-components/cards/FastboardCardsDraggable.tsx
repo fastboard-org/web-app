@@ -23,14 +23,31 @@ export default function FastboardCardsDraggable() {
         }}
         dragSnapToOrigin
       >
-        {/*
-        Vamos a querer tener como objeto draggeable tres card con un header 
-        que tenga un texto que diga header, un divider entre el header y el body, y un bod
-        y que tenga un texto que diga body 
-        hacemos un div con w-full, y dentro de este div ponemos 3 cards horizontales
-        */}
         <div className="flex flex-row w-full justify-between">
           <CustomCard
+            cardsPerRow={2}
+            data={{
+              header: "Header",
+              footer: "Footer",
+              body: [
+                { key: "key1", value: "value1" },
+                { key: "key2", value: "value2" },
+              ],
+            }}
+          />
+          <CustomCard
+            cardsPerRow={2}
+            data={{
+              header: "Header",
+              footer: "Footer",
+              body: [
+                { key: "key1", value: "value1" },
+                { key: "key2", value: "value2" },
+              ],
+            }}
+          />
+          <CustomCard
+            cardsPerRow={2}
             data={{
               header: "Header",
               footer: "Footer",
