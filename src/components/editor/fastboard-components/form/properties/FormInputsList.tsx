@@ -32,7 +32,7 @@ export default function FormInputsList({
               Add Input
             </Button>
           </DropdownTrigger>
-          <DropdownMenu>
+          <DropdownMenu disabledKeys={[InputType.Select, InputType.DatePicker]}>
             {Object.values(InputType).map((type) => (
               <DropdownItem
                 key={type}
