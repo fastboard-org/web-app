@@ -1,4 +1,4 @@
-import { RowLayout as RowLayoutInterface } from "@/types/editor";
+import { RowLayout as RowLayoutInterface } from "@/types/editor/layout-types";
 import Container from "./Container";
 
 export default function RowLayout({

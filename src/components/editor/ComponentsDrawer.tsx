@@ -5,10 +5,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
 import { ComponentType } from "@/types/editor";
-import {
-  getComponent,
-  getDraggableComponent,
-} from "./fastboard-components/utils";
+import { getDraggableComponent } from "./fastboard-components/utils";
 
 export default function ComponentsDrawer() {
   const isOpen = useRecoilValue(isComponentsDrawerOpen);

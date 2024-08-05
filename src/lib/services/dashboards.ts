@@ -1,5 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import { Dashboard, Folder } from "@/types/dashboards";
+import { DashboardMetadata } from "@/types/editor";
+import { LayoutType } from "@/types/editor/layout-types";
 
 const mapDashboard = (data: any): Dashboard => {
   return {
@@ -20,6 +22,11 @@ const mapFolder = (data: any): Folder => {
   };
 };
 
+const getDashboard = async (id: string) => {
+  const response = await axiosInstance.get(`/dashboards/${id}`);
+  return mapDashboard(response.data);
+};
+
 const getDashboards = async () => {
   const response = await axiosInstance.get("/dashboards/me");
   return response.data.map(mapDashboard);
@@ -29,7 +36,7 @@ const createDashboard = async (name: string, folderId?: string | null) => {
   const response = await axiosInstance.post("/dashboards", {
     name,
     folder_id: folderId,
-    metadata: {},
+    metadata: { layouts: [{ type: LayoutType.Full, component1: null }] },
   });
   return mapDashboard(response.data);
 };
@@ -38,10 +45,12 @@ const updateDashboard = async (
   id: string,
   name: string,
   folderId?: string | null,
+  metadata?: DashboardMetadata
 ) => {
   const response = await axiosInstance.patch(`/dashboards/${id}`, {
     name,
     folder_id: folderId,
+    metadata: metadata ?? {},
   });
   return mapDashboard(response.data);
 };
@@ -70,6 +79,7 @@ const deleteFolder = async (id: string) => {
 };
 
 export const dashboardService = {
+  getDashboard,
   getDashboards,
   createDashboard,
   updateDashboard,

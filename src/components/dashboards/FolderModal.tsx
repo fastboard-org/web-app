@@ -9,7 +9,9 @@ import {
 } from "@nextui-org/react";
 import { Folder } from "@/types/dashboards";
 import { useEffect, useState } from "react";
-import { dashboardService } from "@/lib/services/dashboards";
+import { useCreateFolder } from "@/hooks/dashboards/useCreateFolder";
+import { toast } from "sonner";
+import { useUpdateFolder } from "@/hooks/dashboards/useUpdateFolder";
 
 const FolderModal = ({
   isOpen,
@@ -23,7 +25,28 @@ const FolderModal = ({
   folder?: Folder | null;
 }) => {
   const [name, setName] = useState(folder?.name || "");
-  const [loading, setLoading] = useState(false);
+
+  const { createFolder, loading: createLoading } = useCreateFolder({
+    onSuccess: (folder: Folder) => {
+      onSuccess(folder);
+      onClose();
+    },
+    onError: (error: any) => {
+      console.error(error);
+      toast.error("Error creating folder, try again later.");
+    },
+  });
+
+  const { updateFolder, loading: updateLoading } = useUpdateFolder({
+    onSuccess: (folder: Folder) => {
+      onSuccess(folder);
+      onClose();
+    },
+    onError: (error: any) => {
+      console.error(error);
+      toast.error("Error updating folder, try again later.");
+    },
+  });
 
   useEffect(() => {
     if (folder) {
@@ -33,28 +56,25 @@ const FolderModal = ({
     }
   }, [folder, isOpen]);
 
-  const handleUpdate = async () => {
-    const updatedFolder = await dashboardService.updateFolder(
-      folder?.id as string,
+  const handleUpdate = () => {
+    updateFolder({
+      id: folder?.id as string,
       name,
-    );
-    onSuccess(updatedFolder);
+    });
   };
 
-  const handleCreate = async () => {
-    const newFolder = await dashboardService.createFolder(name);
-    onSuccess(newFolder);
+  const handleCreate = () => {
+    createFolder({
+      name,
+    });
   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
+  const handleSubmit = () => {
     if (folder) {
-      await handleUpdate();
+      handleUpdate();
     } else {
-      await handleCreate();
+      handleCreate();
     }
-    onClose();
-    setLoading(false);
   };
 
   return (
@@ -87,7 +107,7 @@ const FolderModal = ({
             color="primary"
             onPress={handleSubmit}
             isDisabled={!name}
-            isLoading={loading}
+            isLoading={createLoading || updateLoading}
           >
             {folder ? "Update" : "Create"}
           </Button>
