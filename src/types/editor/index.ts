@@ -40,6 +40,7 @@ export interface BottomSplitLayout extends Layout {
 export enum ComponentType {
   Table = "table",
   Image = "image",
+  Cards = "cards",
 }
 
 export interface FastboardComponent {
@@ -48,7 +49,9 @@ export interface FastboardComponent {
 }
 
 export interface DashboardMetadata {
-  layouts: Array<FullLayout | RowLayout | ColumnLayout | RightSplitLayout | BottomSplitLayout>;
+  layouts: Array<
+    FullLayout | RowLayout | ColumnLayout | RightSplitLayout | BottomSplitLayout
+  >;
 }
 
 export interface PropertiesDrawerState {
