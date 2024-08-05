@@ -12,7 +12,6 @@ export class FastboardCardsProperties {
   header: string = "Header";
   footer: string = "Footer";
   body: BodyFieldProperties[] = [];
-  // fields: { key: string; label: string }[] = [];
 
   static default(): FastboardCardsProperties {
     return new FastboardCardsProperties();
