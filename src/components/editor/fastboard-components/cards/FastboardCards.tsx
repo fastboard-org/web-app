@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardBody, Spacer } from "@nextui-org/react";
+import { Card, CardHeader, CardBody, Spacer, user } from "@nextui-org/react";
 import { FastboardCardsProperties } from "@/types/editor/cards-types";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import CustomCard from "./CustomCard";
@@ -7,10 +7,12 @@ import useData from "@/hooks/useData";
 import { ComponentType } from "@/types/editor";
 import { toast } from "sonner";
 import { useRecoilState } from "recoil";
-import { dashboardMetadataState, propertiesDrawerState } from "@/atoms/editor";
+import { propertiesDrawerState } from "@/atoms/editor";
 import { updateComponentProperties } from "@/lib/editor.utils";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 
 import scrollbarStyles from "@/styles/scrollbar.module.css";
+import { useParams } from "next/navigation";
 
 export default function FastboardCards({
   layoutIndex,
@@ -21,6 +23,9 @@ export default function FastboardCards({
   container: string;
   properties: FastboardCardsProperties;
 }) {
+  const { id } = useParams();
+  const { updateDashboard } = useDashboard(id as string);
+
   const { sourceQuery, emptyMessage, header, footer, body } = properties;
   const {
     data,
@@ -31,13 +36,10 @@ export default function FastboardCards({
   } = useData(
     `${layoutIndex}-${container}-${ComponentType.Cards}`,
     sourceQuery,
-    10
+    Number.MAX_VALUE
   );
 
   const [shouldUpdateCards, setShouldUpdateCards] = useState(false);
-  const [dashboardMetadata, setDashboardMetadata] = useRecoilState(
-    dashboardMetadataState
-  );
 
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState
@@ -51,8 +53,9 @@ export default function FastboardCards({
     if (!shouldUpdateCards) {
       return;
     }
-    setDashboardMetadata((previous) =>
-      updateComponentProperties(
+    updateDashboard((previous) => ({
+      ...previous,
+      metadata: updateComponentProperties(
         layoutIndex,
         container,
         ComponentType.Cards,
@@ -66,9 +69,9 @@ export default function FastboardCards({
             };
           }),
         },
-        previous
-      )
-    );
+        previous.metadata
+      ),
+    }));
     setPropertiesState((previous) => {
       if (
         previous.layoutIndex !== layoutIndex ||
@@ -117,21 +120,16 @@ export default function FastboardCards({
       </Card>
     );
   }
-  // function that receives and item and returns a dict with
-  // item["first_name"] as header, item["birth_date"] as footer
-  // and mail: item["email"], gender: item["gender"] as body
+
   function mapItem(item: any) {
-    console.log("PROPERTIES", properties);
     return {
       header: item[properties.header],
       footer: item[properties.footer],
-      // iterate over body and if the item has visible true, add it to the body
-      // properties.body es un array de objetos con key, label y visible
       body: properties.body
         .filter((field) => field.visible)
         .map((field) => {
           return {
-            key: field.key,
+            key: field.label,
             value: item[field.key],
           };
         }),
@@ -142,19 +140,13 @@ export default function FastboardCards({
     <CustomSkeleton
       isLoaded={!dataFetching}
       onlyRenderOnLoad
-      // className="overflow-auto w-full h-full border-4 border-red-500"
-      className={`w-full h-max min-h-full border-4 border-red-500 ${scrollbarStyles.scrollbar}`}
+      className={`w-full h-full ${scrollbarStyles.scrollbar}`}
     >
       <div
-        className={`flex flex-wrap grow-0 h-fit min-h-full w-full border-4 border-yellow-500`}
+        className={`flex flex-wrap justify-between gap-2 overflow-auto h-full w-full ${scrollbarStyles.scrollbar}`}
       >
-        {/* <div className="grid grid-cols-4 gap-4 grow-0"> */}
         {data.map((item: any, index: number) => (
-          <CustomCard
-            key={index}
-            data={mapItem(item)}
-            // className="w-1/4 h-1/2"
-          />
+          <CustomCard key={index} cardsPerRow={4} data={mapItem(item)} />
         ))}
       </div>
     </CustomSkeleton>
