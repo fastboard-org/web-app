@@ -1,4 +1,4 @@
-import { BottomSplitLayout as BottomSplitLayoutInterface } from "@/types/editor";
+import { BottomSplitLayout as BottomSplitLayoutInterface } from "@/types/editor/layout-types";
 import Container from "./Container";
 
 export default function BottomSplitLayout({

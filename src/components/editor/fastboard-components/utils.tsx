@@ -1,22 +1,24 @@
 import {
-  ComponentType,
-  Layout,
-  LayoutType,
-  FullLayout as FullLayoutInterface,
-  RowLayout as RowLayoutInterface,
   ColumnLayout as ColumnLayoutInterface,
   RightSplitLayout as RightSplitLayoutInterface,
   BottomSplitLayout as BottomSplitLayoutInterface,
-} from "@/types/editor";
+} from "@/types/editor/layout-types";
 import FastboardTableDraggable from "./FastboardTableDraggable";
 import FastboardTable from "./FastboardTable";
 import { FastboardTableProperties } from "@/types/editor/table-types";
 import FastboardTablePropertiesComponent from "./FastboardTableProperties";
 import FullLayout from "../layouts/FullLayout";
 import RowLayout from "../layouts/RowLayout";
+import {
+  FullLayout as FullLayoutInterface,
+  RowLayout as RowLayoutInterface,
+  Layout,
+  LayoutType,
+} from "@/types/editor/layout-types";
 import ColumnLayout from "../layouts/ColumnLayout";
 import RightSplitLayout from "../layouts/RightSplitLayout";
 import BottomSplitLayout from "../layouts/BottomSplitLayout";
+import { ComponentType } from "@/types/editor";
 
 export function getDraggableComponent(id: ComponentType) {
   const components = {

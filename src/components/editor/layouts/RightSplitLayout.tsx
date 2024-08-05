@@ -1,4 +1,4 @@
-import { RightSplitLayout as RightSplitLayoutInterface } from "@/types/editor";
+import { RightSplitLayout as RightSplitLayoutInterface } from "@/types/editor/layout-types";
 import Container from "./Container";
 
 export default function RightSplitLayout({
@@ -18,7 +18,7 @@ export default function RightSplitLayout({
           containerIndex="component1"
           component={properties.component1}
           mode={mode}
-          className="p-5"
+          className="h-full p-5"
         />
       </div>
       <div className="flex flex-col w-1/2 h-full">

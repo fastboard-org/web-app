@@ -1,7 +1,7 @@
 import {
-  dashboardMetadataState,
   isComponentsDrawerOpen,
   isPropertiesDrawerOpen,
+  isSettingsDrawerOpen,
 } from "@/atoms/editor";
 import { motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
@@ -15,11 +15,17 @@ export default function EditorCanvas() {
   const { dashboard } = useDashboard(id as string);
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
   const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
+  const isSettingsOpen = useRecoilValue(isSettingsDrawerOpen);
 
   return (
     <motion.div
       animate={{
-        x: isComponentsOpen ? "15%" : isPropertiesOpen ? "-15%" : 0,
+        x:
+          isComponentsOpen || isSettingsOpen
+            ? "15%"
+            : isPropertiesOpen
+            ? "-15%"
+            : 0,
       }}
       transition={{
         ease: "easeInOut",

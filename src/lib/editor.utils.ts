@@ -1,4 +1,5 @@
 import { ComponentType, DashboardMetadata } from "@/types/editor";
+import { Layout, LayoutType } from "@/types/editor/layout-types";
 
 export function addComponent(
   layoutIndex: number,
@@ -68,4 +69,32 @@ export function updateComponentProperties(
       return layout;
     }),
   };
+}
+
+export function changeLayout(
+  layoutIndex: number,
+  to_type: LayoutType,
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  return {
+    ...dashboardMetadata,
+    layouts: dashboardMetadata.layouts.map((layout, index) => {
+      if (index === layoutIndex) {
+        return convertLayout(layout, to_type);
+      }
+      return layout;
+    }),
+  };
+}
+
+function convertLayout(from: Layout, to_type: LayoutType): Layout {
+  let to = Layout.of(to_type);
+
+  Object.keys(to).forEach((key) => {
+    if (key !== "type") {
+      // @ts-ignore
+      to[key] = from[key] || null;
+    }
+  });
+  return to;
 }

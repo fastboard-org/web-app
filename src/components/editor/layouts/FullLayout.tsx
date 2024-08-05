@@ -1,4 +1,4 @@
-import { FullLayout as FullLayoutInterface } from "@/types/editor";
+import { FullLayout as FullLayoutInterface } from "@/types/editor/layout-types";
 import Container from "./Container";
 
 export default function FullLayout({
@@ -16,6 +16,7 @@ export default function FullLayout({
       containerIndex="component1"
       component={properties.component1}
       mode={mode}
+      className="h-full w-full p-5"
     />
   );
 }
