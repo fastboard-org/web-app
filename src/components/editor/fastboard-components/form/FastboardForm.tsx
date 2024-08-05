@@ -27,13 +27,15 @@ import { useForm } from "react-hook-form";
 import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import FormTextInput from "./FormTextInput";
+import useGetQuery from "@/hooks/connections/useGetQuery";
 
 export default function FastboardForm({
   properties,
 }: {
   properties: FormProperties;
 }) {
-  const { title, inputs, query, submitButtonLabel } = properties;
+  const { title, inputs, submitQueryId, submitButtonLabel } = properties;
   const {
     register,
     handleSubmit,
@@ -41,6 +43,7 @@ export default function FastboardForm({
     formState: { errors },
     reset,
   } = useForm();
+  const { query: submitQuery } = useGetQuery(submitQueryId || "");
   const {
     execute,
     isPending: isLoading,
@@ -50,7 +53,11 @@ export default function FastboardForm({
   } = useExecuteQuery();
 
   useEffect(() => {
-    if (isSuccess && query) {
+    reset();
+  }, [submitQueryId]);
+
+  useEffect(() => {
+    if (isSuccess && submitQueryId) {
       toast.success("Submit successfully");
     }
 
@@ -62,13 +69,12 @@ export default function FastboardForm({
   }, [isError, isSuccess]);
 
   const onSubmit = async (formData: any) => {
-    if (!query) {
+    if (!submitQueryId) {
       toast.warning("Query is not defined");
       return;
     }
-    console.log("formData", formData);
     execute({
-      query: query,
+      query: submitQuery,
       parameters: formData,
     });
     reset();
@@ -79,23 +85,11 @@ export default function FastboardForm({
       case InputType.TextInput:
         const textInput = input as TextInputProperties;
         return (
-          <Input
+          <FormTextInput
             key={index}
-            aria-label="Text input"
-            isRequired={textInput.required}
-            {...(textInput.formDataKey !== ""
-              ? {
-                  ...register(textInput.formDataKey, {
-                    required: "This field is required",
-                  }),
-                }
-              : {})}
-            label={textInput.label}
-            labelPlacement="outside"
-            placeholder={textInput.placeHolder}
-            isClearable
-            errorMessage={errors[textInput.formDataKey]?.message as string}
-            isInvalid={!!errors[textInput.formDataKey]}
+            properties={textInput}
+            register={register}
+            errors={errors}
           />
         );
       case InputType.NumberInput:
@@ -167,7 +161,7 @@ export default function FastboardForm({
       <Card className="grow-0 h-full">
         <CardHeader>{title}</CardHeader>
         <Divider />
-        <CardBody className={"" + scrollbarStyles.scrollbar}>
+        <CardBody className={"space-y-8 " + scrollbarStyles.scrollbar}>
           {inputs.map((input, index) => renderInput(index, input))}
         </CardBody>
         <Spacer y={1} />

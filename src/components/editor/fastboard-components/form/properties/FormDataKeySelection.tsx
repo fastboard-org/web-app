@@ -1,15 +1,16 @@
-import { Query } from "@/types/connections";
+import useGetQuery from "@/hooks/connections/useGetQuery";
 import { Select, SelectItem } from "@nextui-org/react";
 
 export default function FormDataKeySelection({
   selectedKey,
-  query,
+  queryId,
   onSelectionChange,
 }: {
   selectedKey: string;
-  query: Query | null;
+  queryId: string | null;
   onSelectionChange: (formDataKey: string) => void;
 }) {
+  const { query } = useGetQuery(queryId || "");
   const parameters: () => { key: string; label: string }[] = () => {
     return (
       query?.metadata.parameters?.map(

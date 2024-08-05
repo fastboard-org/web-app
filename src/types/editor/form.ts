@@ -86,7 +86,7 @@ export class DefaultInputProperties {
 
 export class FormProperties {
   title: string = "Form title";
-  query: Query | null = null;
+  submitQueryId: string | null = null;
   submitButtonLabel: string = "Submit";
 
   inputs: InputProperties[] = [];

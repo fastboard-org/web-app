@@ -5,11 +5,11 @@ import FormDataKeySelection from "./FormDataKeySelection";
 
 export default function FormTextInputProperties({
   properties,
-  query,
+  queryId,
   onValueChange,
 }: {
   properties: TextInputProperties;
-  query: Query | null;
+  queryId: string | null;
   onValueChange: (properties: TextInputProperties) => void;
 }) {
   const { label, placeHolder, required, formDataKey } = properties;
@@ -58,7 +58,7 @@ export default function FormTextInputProperties({
       <Spacer y={2} />
       <FormDataKeySelection
         selectedKey={formDataKey}
-        query={query}
+        queryId={queryId}
         onSelectionChange={(formDataKey) => {
           onValueChange({
             ...properties,

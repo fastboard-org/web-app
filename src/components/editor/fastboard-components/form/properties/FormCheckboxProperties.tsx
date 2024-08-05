@@ -5,11 +5,11 @@ import { Query } from "@/types/connections";
 
 export default function FormCheckboxProperties({
   properties,
-  query,
+  queryId,
   onValueChange,
 }: {
   properties: CheckboxProperties;
-  query: Query | null;
+  queryId: string | null;
   onValueChange: (properties: CheckboxProperties) => void;
 }) {
   const { label, formDataKey } = properties;
@@ -32,7 +32,7 @@ export default function FormCheckboxProperties({
       <Spacer y={2} />
       <FormDataKeySelection
         selectedKey={formDataKey}
-        query={query}
+        queryId={queryId}
         onSelectionChange={(formDataKey) => {
           onValueChange({
             ...properties,

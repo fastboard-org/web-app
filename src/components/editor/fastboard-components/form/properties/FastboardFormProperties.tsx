@@ -30,7 +30,7 @@ export default function FastboardFormProperties({
   properties: FormProperties;
   onValueChange: (properties: FormProperties) => void;
 }) {
-  const { title, query, submitButtonLabel, inputs } = properties;
+  const { title, submitQueryId, submitButtonLabel, inputs } = properties;
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
     null
   );
@@ -72,7 +72,7 @@ export default function FastboardFormProperties({
               title: "font-medium",
             }}
           >
-            <div>
+            <div className="overflow-x-hidden">
               <Input
                 label="Title"
                 labelPlacement="outside"
@@ -87,11 +87,17 @@ export default function FastboardFormProperties({
               />
               <Spacer y={2} />
               <QuerySelection
-                selectedQueryId={query?.id || ""}
+                selectedQueryId={submitQueryId || ""}
                 onQuerySelect={(query) => {
+                  //Replace formdatakey fiel from inputs to empty string
+                  const newInputs = inputs.map((input) => ({
+                    ...input,
+                    formDataKey: "",
+                  }));
                   onValueChange({
                     ...properties,
-                    query: query,
+                    submitQueryId: query.id,
+                    inputs: newInputs,
                   });
                 }}
               />
@@ -138,7 +144,7 @@ export default function FastboardFormProperties({
         inputs[inputSelectedIndex]?.type === InputType.TextInput && (
           <FormTextInputProperties
             properties={inputs[inputSelectedIndex] as TextInputProperties}
-            query={query}
+            queryId={submitQueryId}
             onValueChange={(inputProperties) => {
               const newInputs = [...inputs];
               newInputs[inputSelectedIndex] = inputProperties;
@@ -153,7 +159,7 @@ export default function FastboardFormProperties({
         inputs[inputSelectedIndex]?.type === InputType.Checkbox && (
           <FormCheckboxProperties
             properties={inputs[inputSelectedIndex] as CheckboxProperties}
-            query={query}
+            queryId={submitQueryId}
             onValueChange={(inputProperties) => {
               const newInputs = [...inputs];
               newInputs[inputSelectedIndex] = inputProperties;
@@ -168,7 +174,7 @@ export default function FastboardFormProperties({
         inputs[inputSelectedIndex]?.type === InputType.NumberInput && (
           <FormNumberInputProperties
             properties={inputs[inputSelectedIndex] as NumberInputProperties}
-            query={query}
+            queryId={submitQueryId}
             onValueChange={(inputProperties) => {
               const newInputs = [...inputs];
               newInputs[inputSelectedIndex] = inputProperties;

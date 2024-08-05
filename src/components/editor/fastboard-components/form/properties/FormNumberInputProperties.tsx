@@ -5,11 +5,11 @@ import { Checkbox, Input, Spacer } from "@nextui-org/react";
 
 export default function FormNumberInputProperties({
   properties,
-  query,
+  queryId,
   onValueChange,
 }: {
   properties: NumberInputProperties;
-  query: Query | null;
+  queryId: string | null;
   onValueChange: (properties: NumberInputProperties) => void;
 }) {
   const { label, placeHolder, required, formDataKey } = properties;
@@ -58,7 +58,7 @@ export default function FormNumberInputProperties({
       <Spacer y={2} />
       <FormDataKeySelection
         selectedKey={formDataKey}
-        query={query}
+        queryId={queryId}
         onSelectionChange={(formDataKey) => {
           onValueChange({
             ...properties,
