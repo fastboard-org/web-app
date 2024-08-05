@@ -7,7 +7,7 @@ import {
   Dropdown,
   Input,
 } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { FastboardCardsProperties } from "@/types/editor/cards-types";
 import QuerySelection from "../../QuerySelection";
 import ReorderableFields from "./ReorderableFields";
@@ -20,21 +20,13 @@ const FastboardCardsPropertiesComponent = ({
   onValueChange: (properties: FastboardCardsProperties) => void;
 }) => {
   const { sourceQuery, emptyMessage, header, footer, body } = properties;
-  const [headerFields, setHeaderFields] = useState(header);
-  const [footerFields, setFooterFields] = useState(footer);
+  const [headerField, setHeaderField] = useState(header);
+  const [footerField, setFooterField] = useState(footer);
   const [bodyFields, setBodyFields] = useState(body);
-  // const [cardFields, setCardFields] = useState(fields);
-
-  // useEffect(() => {
-  //   setCardFields(fields);
-  //   console.log("Che, cambio cardFields", cardFields);
-  // }, [fields]);
 
   useEffect(() => {
     setBodyFields(body);
   }, [body]);
-
-  // console.log("cardFields", cardFields);
 
   return (
     <Accordion
@@ -68,17 +60,17 @@ const FastboardCardsPropertiesComponent = ({
             aria-label="Header selector"
             defaultItems={bodyFields}
             disabledKeys={[]}
-            defaultSelectedKey={"BUG"}
-            selectedKey={"BUG"}
+            defaultSelectedKey={"bug"}
+            selectedKey={"bug"}
             label="Header"
             labelPlacement="outside"
             placeholder="Select header"
             onSelectionChange={(key) => {
-              const header = bodyFields.find((field) => field.key === key);
-              if (header) {
+              const newHeader = bodyFields.find((field) => field.key === key);
+              if (newHeader) {
                 onValueChange({
                   ...properties,
-                  header: header.key,
+                  header: newHeader.key,
                 });
               }
             }}
@@ -96,17 +88,17 @@ const FastboardCardsPropertiesComponent = ({
             aria-label="Footer selector"
             defaultItems={bodyFields}
             disabledKeys={[]}
-            defaultSelectedKey={"BUG"}
-            selectedKey={"BUG"}
+            defaultSelectedKey={"bug"}
+            selectedKey={"bug"}
             label="Footer"
             labelPlacement="outside"
             placeholder="Select footer"
             onSelectionChange={(key) => {
-              const footer = bodyFields.find((field) => field.key === key);
-              if (footer) {
+              const newFooter = bodyFields.find((field) => field.key === key);
+              if (newFooter) {
                 onValueChange({
                   ...properties,
-                  footer: footer.key,
+                  footer: newFooter.key,
                 });
               }
             }}
