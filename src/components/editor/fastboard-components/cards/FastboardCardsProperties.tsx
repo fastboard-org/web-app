@@ -6,8 +6,9 @@ import {
   Checkbox,
   Dropdown,
   Input,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
-import { use, useEffect, useState } from "react";
 import { FastboardCardsProperties } from "@/types/editor/cards-types";
 import QuerySelection from "../../QuerySelection";
 import ReorderableFields from "./ReorderableFields";
@@ -20,13 +21,6 @@ const FastboardCardsPropertiesComponent = ({
   onValueChange: (properties: FastboardCardsProperties) => void;
 }) => {
   const { sourceQuery, emptyMessage, header, footer, body } = properties;
-  const [headerField, setHeaderField] = useState(header);
-  const [footerField, setFooterField] = useState(footer);
-  const [bodyFields, setBodyFields] = useState(body);
-
-  useEffect(() => {
-    setBodyFields(body);
-  }, [body]);
 
   return (
     <Accordion
@@ -50,23 +44,27 @@ const FastboardCardsPropertiesComponent = ({
               onValueChange({
                 ...properties,
                 sourceQuery: sourceQuery,
+                header: null,
+                footer: "",
+                body: [],
               });
             }}
           />
         </div>
         {/*drop menu to select wich column is the header  */}
         <div className="flex flex-col gap-5  overflow-x-hidden">
-          <Autocomplete
+          <Select
             aria-label="Header selector"
-            defaultItems={bodyFields}
+            items={body}
             disabledKeys={[]}
-            defaultSelectedKey={"bug"}
-            selectedKey={"bug"}
+            selectedKeys={[header || ""]}
             label="Header"
             labelPlacement="outside"
             placeholder="Select header"
-            onSelectionChange={(key) => {
-              const newHeader = bodyFields.find((field) => field.key === key);
+            onChange={(e) => {
+              const newHeader = body.find(
+                (field) => field.key === e.target.value
+              );
               if (newHeader) {
                 onValueChange({
                   ...properties,
@@ -76,25 +74,23 @@ const FastboardCardsPropertiesComponent = ({
             }}
             errorMessage="Something went wrong, header not found"
           >
-            {(field) => (
-              <AutocompleteItem key={field.key}>{field.label}</AutocompleteItem>
-            )}
-          </Autocomplete>
+            {(field) => <SelectItem key={field.key}>{field.label}</SelectItem>}
+          </Select>
         </div>
 
         {/*drop menu to select wich column is the footer  */}
         <div className="flex flex-col gap-5  overflow-x-hidden">
           <Autocomplete
             aria-label="Footer selector"
-            defaultItems={bodyFields}
+            defaultItems={body}
             disabledKeys={[]}
             defaultSelectedKey={"bug"}
-            selectedKey={"bug"}
+            selectedKey={footer}
             label="Footer"
             labelPlacement="outside"
             placeholder="Select footer"
             onSelectionChange={(key) => {
-              const newFooter = bodyFields.find((field) => field.key === key);
+              const newFooter = body.find((field) => field.key === key);
               if (newFooter) {
                 onValueChange({
                   ...properties,
@@ -113,7 +109,7 @@ const FastboardCardsPropertiesComponent = ({
         {/*drop menu to select wich columns are the body  */}
         <div className="flex flex-col gap-5  overflow-x-hidden">
           <ReorderableFields
-            fieldsProperties={bodyFields}
+            fieldsProperties={body}
             onChange={(newOrder) => {
               onValueChange({
                 ...properties,

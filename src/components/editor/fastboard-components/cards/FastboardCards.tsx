@@ -46,7 +46,13 @@ export default function FastboardCards({
   );
 
   useEffect(() => {
-    setShouldUpdateCards(true);
+    if (!sourceQuery) {
+      return;
+    }
+
+    if (body.length === 0) {
+      setShouldUpdateCards(true);
+    }
   }, [sourceQuery]);
 
   useEffect(() => {
@@ -123,7 +129,7 @@ export default function FastboardCards({
 
   function mapItem(item: any) {
     return {
-      header: item[properties.header],
+      header: header ? item[header] : "Header",
       footer: item[properties.footer],
       body: properties.body
         .filter((field) => field.visible)
