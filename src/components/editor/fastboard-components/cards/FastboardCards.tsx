@@ -26,7 +26,8 @@ export default function FastboardCards({
   const { id } = useParams();
   const { updateDashboard } = useDashboard(id as string);
 
-  const { sourceQuery, emptyMessage, header, footer, body } = properties;
+  const { sourceQuery, emptyMessage, header, footer, body, cardsPerRow } =
+    properties;
   const {
     data,
     keys,
@@ -128,17 +129,24 @@ export default function FastboardCards({
   }
 
   function mapItem(item: any) {
+    const finalBody = body
+      .filter((field) => field.visible)
+      .map((field) => {
+        return {
+          key: field.label,
+          value: item[field.key],
+        };
+      });
     return {
       header: header ? item[header] : "Header",
-      footer: item[properties.footer],
-      body: properties.body
-        .filter((field) => field.visible)
-        .map((field) => {
-          return {
-            key: field.label,
-            value: item[field.key],
-          };
-        }),
+      footer: footer ? item[footer] : "Footer",
+      body:
+        finalBody.length !== 0
+          ? finalBody
+          : [
+              { key: "key1", value: "value1" },
+              { key: "key2", value: "value2" },
+            ],
     };
   }
 
@@ -149,10 +157,15 @@ export default function FastboardCards({
       className={`w-full h-full ${scrollbarStyles.scrollbar}`}
     >
       <div
-        className={`flex flex-wrap justify-between gap-2 overflow-auto h-full w-full ${scrollbarStyles.scrollbar}`}
+        className={`flex flex-wrap justify-between pr-2 overflow-auto h-full w-full ${scrollbarStyles.scrollbar}`}
       >
         {data.map((item: any, index: number) => (
-          <CustomCard key={index} cardsPerRow={4} data={mapItem(item)} />
+          <CustomCard
+            key={index}
+            cardsPerRow={cardsPerRow || 3}
+            data={mapItem(item)}
+            height="320px"
+          />
         ))}
       </div>
     </CustomSkeleton>
