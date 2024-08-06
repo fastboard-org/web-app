@@ -4,6 +4,7 @@ import ReorderableColumns from "./ReorderableColumns";
 import TableActionsList from "./TableActionsList";
 import { FastboardTableProperties } from "@/types/editor/table-types";
 import QuerySelection from "../QuerySelection";
+import TableAddOnsList from "./table/properties/TableAddOnsList";
 
 const FastboardTablePropertiesComponent = ({
   properties,
@@ -25,7 +26,7 @@ const FastboardTablePropertiesComponent = ({
       selectionMode="multiple"
       isCompact
       fullWidth
-      defaultExpandedKeys={["basic", "actions", "style"]}
+      defaultExpandedKeys={["basic", "actions", "add-ons", "style"]}
     >
       <AccordionItem
         key="basic"
@@ -83,6 +84,22 @@ const FastboardTablePropertiesComponent = ({
             onValueChange({
               ...properties,
               actions: newActions,
+            });
+          }}
+        />
+      </AccordionItem>
+      <AccordionItem
+        key="add-ons"
+        className="pb-2"
+        title="Add ons"
+        classNames={{ title: "font-medium" }}
+      >
+        <TableAddOnsList
+          tableProperties={properties}
+          onValueChange={(addOns) => {
+            onValueChange({
+              ...properties,
+              addOns,
             });
           }}
         />

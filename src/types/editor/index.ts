@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { Layout } from "./layout-types";
 
 export default interface PublishOption {
@@ -16,8 +17,25 @@ export interface FastboardComponent {
   properties: Record<string, any>;
 }
 
+export interface ModalFrame {
+  id: string;
+  body: FastboardComponent;
+}
+
 export interface DashboardMetadata {
+  modals: ModalFrame[];
   layouts: Array<Layout>;
+}
+
+export interface Context {
+  type: "modal" | "header" | "sidebar" | "layout";
+  modalContext?: {
+    modalId: string;
+  };
+  layoutContext?: {
+    layoutIndex: number;
+    containerIndex: string;
+  };
 }
 
 export interface PropertiesDrawerState {
@@ -25,4 +43,10 @@ export interface PropertiesDrawerState {
   container: string;
   type: ComponentType | null;
   properties: Record<string, any>;
+  context?: Context;
+}
+
+export interface EditorModalState {
+  isOpen: boolean;
+  modalId: string | null;
 }
