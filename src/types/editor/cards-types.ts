@@ -12,6 +12,7 @@ export class FastboardCardsProperties {
   header: string | null = null;
   footer: string = "Footer";
   body: BodyFieldProperties[] = [];
+  cardsPerRow: number = 3;
 
   static default(): FastboardCardsProperties {
     return new FastboardCardsProperties();
