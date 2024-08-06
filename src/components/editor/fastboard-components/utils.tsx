@@ -76,7 +76,13 @@ export function getComponent(
           properties={properties as FastboardCardsProperties}
         />
       ),
-      view: null,
+      view: (
+        <FastboardCards
+          layoutIndex={layoutIndex}
+          container={container}
+          properties={properties as FastboardCardsProperties}
+        />
+      ),
     },
   };
 
