@@ -12,6 +12,7 @@ const CustomCard = ({
   data,
   cardsPerRow,
   className,
+  height,
 }: {
   data: {
     header: string;
@@ -20,22 +21,27 @@ const CustomCard = ({
   };
   cardsPerRow: number;
   className?: string;
+  height?: string;
 }) => {
   const headerText = data.header;
   const footerText = data.footer;
   const bodyData = data.body;
-  const cardWidth = Math.floor(100 / (cardsPerRow + 1));
-  const customClassName = `flex px-2 py-2 h-80 w-[${cardWidth}%] 
-  )}%]`;
+  const cardWidth = Math.floor(100 / cardsPerRow);
+
   return (
-    <div className={customClassName}>
+    <div
+      className={`flex px-2 py-2`}
+      style={{ width: `${cardWidth - 1}%`, height: height }}
+    >
       <Card
         aria-label="Fastboard cards draggable"
         // isFooterBlurred
         className="grow-0 h-full w-full max-h-full"
       >
-        <CardHeader className="shrink h-1/5 w-full flex justify-center items-center text-medium">
-          {headerText}
+        <CardHeader className="h-1/5 w-full flex justify-center items-center">
+          <p className="text-medium text-ellipsis overflow-hidden whitespace-nowrap">
+            {headerText}
+          </p>
         </CardHeader>
         <Divider />
         <CardBody
