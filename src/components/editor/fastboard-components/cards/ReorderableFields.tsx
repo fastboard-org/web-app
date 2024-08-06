@@ -131,11 +131,9 @@ export default function ReorderableFields({
     setFields(fieldsProperties);
   }, [fieldsProperties]);
 
-  console.log("En el reorderable fields", fields);
-
   return (
     <div>
-      <h1 className="text-sm">Fields</h1>
+      <h1 className="text-sm">Body</h1>
       <Spacer y={2} />
       <div
         className={"flex w-full justify-center items-center overflow-hidden"}
