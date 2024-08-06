@@ -8,6 +8,7 @@ import {
   Input,
   Select,
   SelectItem,
+  Slider,
 } from "@nextui-org/react";
 import { FastboardCardsProperties } from "@/types/editor/cards-types";
 import QuerySelection from "../../QuerySelection";
@@ -20,7 +21,8 @@ const FastboardCardsPropertiesComponent = ({
   properties: FastboardCardsProperties;
   onValueChange: (properties: FastboardCardsProperties) => void;
 }) => {
-  const { sourceQuery, emptyMessage, header, footer, body } = properties;
+  const { sourceQuery, emptyMessage, header, footer, body, cardsPerRow } =
+    properties;
 
   return (
     <Accordion
@@ -52,7 +54,9 @@ const FastboardCardsPropertiesComponent = ({
           />
         </div>
         {/*drop menu to select wich column is the header  */}
-        <div className="flex flex-col gap-5  overflow-x-hidden">
+        {/*Esto tenia un overflow-x-hidden cuando era un Autocomplete que lo saque porque agregaba un scrollbar.
+        Advertencia por si eso rompio algo*/}
+        <div className="flex flex-col gap-5">
           <Select
             aria-label="Header selector"
             items={body}
@@ -79,18 +83,19 @@ const FastboardCardsPropertiesComponent = ({
         </div>
 
         {/*drop menu to select wich column is the footer  */}
-        <div className="flex flex-col gap-5  overflow-x-hidden">
-          <Autocomplete
+        <div className="flex flex-col gap-5">
+          <Select
             aria-label="Footer selector"
-            defaultItems={body}
+            items={body}
             disabledKeys={[]}
-            defaultSelectedKey={"bug"}
-            selectedKey={footer}
+            selectedKeys={[footer || ""]}
             label="Footer"
             labelPlacement="outside"
             placeholder="Select footer"
-            onSelectionChange={(key) => {
-              const newFooter = body.find((field) => field.key === key);
+            onChange={(e) => {
+              const newFooter = body.find(
+                (field) => field.key === e.target.value
+              );
               if (newFooter) {
                 onValueChange({
                   ...properties,
@@ -103,7 +108,7 @@ const FastboardCardsPropertiesComponent = ({
             {(field) => (
               <AutocompleteItem key={field.key}>{field.label}</AutocompleteItem>
             )}
-          </Autocomplete>
+          </Select>
         </div>
 
         {/*drop menu to select wich columns are the body  */}
@@ -114,6 +119,26 @@ const FastboardCardsPropertiesComponent = ({
               onValueChange({
                 ...properties,
                 body: newOrder,
+              });
+            }}
+          />
+        </div>
+
+        {/*slider to select how many cards per row */}
+        <div className="flex flex-col gap-5">
+          <Slider
+            label="Cards per row"
+            // formatOptions={{ style: "currency" }}
+            step={1}
+            minValue={1}
+            maxValue={7}
+            defaultValue={3}
+            value={cardsPerRow}
+            onChange={(e) => {
+              const selectedValue = e as number;
+              onValueChange({
+                ...properties,
+                cardsPerRow: selectedValue,
               });
             }}
           />
