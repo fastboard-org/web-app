@@ -29,7 +29,7 @@ const FastboardCardsPropertiesComponent = ({
       selectionMode="multiple"
       isCompact
       fullWidth
-      defaultExpandedKeys={["basic"]}
+      defaultExpandedKeys={["basic", "fields", "style"]}
     >
       <AccordionItem
         key="basic"
@@ -53,6 +53,16 @@ const FastboardCardsPropertiesComponent = ({
             }}
           />
         </div>
+      </AccordionItem>
+
+      <AccordionItem
+        key="fields"
+        title="Fields"
+        className="pb-2"
+        classNames={{
+          title: "font-medium",
+        }}
+      >
         {/*drop menu to select wich column is the header  */}
         {/*Esto tenia un overflow-x-hidden cuando era un Autocomplete que lo saque porque agregaba un scrollbar.
         Advertencia por si eso rompio algo*/}
@@ -123,12 +133,20 @@ const FastboardCardsPropertiesComponent = ({
             }}
           />
         </div>
+      </AccordionItem>
 
+      <AccordionItem
+        key="style"
+        title="Style"
+        className="pb-2"
+        classNames={{
+          title: "font-medium",
+        }}
+      >
         {/*slider to select how many cards per row */}
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 overflow-hidden">
           <Slider
             label="Cards per row"
-            // formatOptions={{ style: "currency" }}
             step={1}
             minValue={1}
             maxValue={7}
