@@ -19,11 +19,18 @@ import ColumnLayout from "../layouts/ColumnLayout";
 import RightSplitLayout from "../layouts/RightSplitLayout";
 import BottomSplitLayout from "../layouts/BottomSplitLayout";
 import { ComponentType } from "@/types/editor";
+import FastboardGroupChartDraggable from "@/components/editor/fastboard-components/group-chart/FastboardGroupChartDraggable";
+import FastboardGroupChart from "@/components/editor/fastboard-components/group-chart/FastboardGroupChart";
+import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
+import FastboardGroupChartPropertiesComponent from "@/components/editor/fastboard-components/group-chart/properties/FastboardGroupChartProperties";
 
 export function getDraggableComponent(id: ComponentType) {
   const components = {
     [ComponentType.Table]: <FastboardTableDraggable key={"TableDraggable"} />,
     [ComponentType.Image]: null,
+    [ComponentType.GroupChart]: (
+      <FastboardGroupChartDraggable key={"GroupChartDraggable"} />
+    ),
   };
 
   return components[id];
@@ -34,7 +41,7 @@ export function getComponent(
   container: string,
   id: ComponentType,
   type: "editable" | "view",
-  properties?: Record<string, any>
+  properties?: Record<string, any>,
 ) {
   if (!id) {
     return null;
@@ -61,6 +68,22 @@ export function getComponent(
       editable: null,
       view: null,
     },
+    [ComponentType.GroupChart]: {
+      editable: (
+        <FastboardGroupChart
+          layoutIndex={layoutIndex}
+          container={container}
+          properties={properties as FastboardGroupChartProperties}
+        />
+      ),
+      view: (
+        <FastboardGroupChart
+          layoutIndex={layoutIndex}
+          container={container}
+          properties={properties as FastboardGroupChartProperties}
+        />
+      ),
+    },
   };
 
   if (!components[id]) {
@@ -72,7 +95,7 @@ export function getComponent(
 export function getPropertiesComponent(
   id: ComponentType,
   properties?: Record<string, any>,
-  onValueChange?: (properties: Record<string, any>) => void
+  onValueChange?: (properties: Record<string, any>) => void,
 ) {
   const components = {
     [ComponentType.Table]: (
@@ -86,6 +109,16 @@ export function getPropertiesComponent(
       />
     ),
     [ComponentType.Image]: null,
+    [ComponentType.GroupChart]: (
+      <FastboardGroupChartPropertiesComponent
+        properties={properties as FastboardGroupChartProperties}
+        onValueChange={(properties) => {
+          if (onValueChange) {
+            onValueChange(properties);
+          }
+        }}
+      />
+    ),
   };
 
   return components[id];
@@ -94,7 +127,7 @@ export function getPropertiesComponent(
 export function getLayout(
   layout: Layout,
   index: number,
-  mode: "editable" | "view"
+  mode: "editable" | "view",
 ) {
   switch (layout.type) {
     case LayoutType.Full:
