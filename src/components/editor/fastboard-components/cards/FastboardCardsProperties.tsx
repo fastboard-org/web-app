@@ -63,9 +63,6 @@ const FastboardCardsPropertiesComponent = ({
           title: "font-medium",
         }}
       >
-        {/*drop menu to select wich column is the header  */}
-        {/*Esto tenia un overflow-x-hidden cuando era un Autocomplete que lo saque porque agregaba un scrollbar.
-        Advertencia por si eso rompio algo*/}
         <div className="flex flex-col gap-5">
           <Select
             aria-label="Header selector"
@@ -92,7 +89,6 @@ const FastboardCardsPropertiesComponent = ({
           </Select>
         </div>
 
-        {/*drop menu to select wich column is the footer  */}
         <div className="flex flex-col gap-5">
           <Select
             aria-label="Footer selector"
@@ -121,7 +117,6 @@ const FastboardCardsPropertiesComponent = ({
           </Select>
         </div>
 
-        {/*drop menu to select wich columns are the body  */}
         <div className="flex flex-col gap-5  overflow-x-hidden">
           <ReorderableFields
             fieldsProperties={body}
@@ -143,7 +138,6 @@ const FastboardCardsPropertiesComponent = ({
           title: "font-medium",
         }}
       >
-        {/*slider to select how many cards per row */}
         <div className="flex flex-col gap-5 overflow-hidden">
           <Slider
             label="Cards per row"
