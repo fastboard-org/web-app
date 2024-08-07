@@ -34,8 +34,7 @@ const CustomCard = ({
       style={{ width: `${cardWidth - 1}%`, height: height }}
     >
       <Card
-        aria-label="Fastboard cards draggable"
-        // isFooterBlurred
+        aria-label="Fastboard card component"
         className="grow-0 h-full w-full max-h-full"
       >
         <CardHeader className="h-1/5 w-full flex justify-center items-center">
@@ -45,7 +44,6 @@ const CustomCard = ({
         </CardHeader>
         <Divider />
         <CardBody
-          aria-label="Fastboard cards draggable body"
           className={`shrink h-4/6 text-small ${scrollbarStyles.scrollbar}`}
         >
           <div className="flex flex-col">
