@@ -29,8 +29,7 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import FormTextInput from "./FormTextInput";
 import useGetQuery from "@/hooks/connections/useGetQuery";
-import { useSetRecoilState } from "recoil";
-import { editorModalState } from "@/atoms/editor";
+import useModalFrame from "@/hooks/editor/useModalFrame";
 
 export default function FastboardForm({
   properties,
@@ -42,39 +41,27 @@ export default function FastboardForm({
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
     reset,
   } = useForm();
-  const setEditorModalState = useSetRecoilState(editorModalState);
   const { query: submitQuery } = useGetQuery(submitQueryId || "");
-  const {
-    execute,
-    isPending: isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useExecuteQuery({
+  const { closeModal } = useModalFrame();
+  const { execute, isPending: isLoading } = useExecuteQuery({
     onSuccess: () => {
       toast.success("Submit successfully");
-      setEditorModalState({
-        isOpen: false,
-        modalId: null,
+      closeModal();
+    },
+    onError: (error) => {
+      toast.error("Failed submitting", {
+        description: error?.message,
       });
+      closeModal();
     },
   });
 
   useEffect(() => {
     reset();
   }, [submitQueryId]);
-
-  useEffect(() => {
-    if (isError) {
-      toast.error("Failed submitting", {
-        description: error?.message,
-      });
-    }
-  }, [isError, isSuccess]);
 
   const onSubmit = async (formData: any) => {
     if (!submitQueryId) {

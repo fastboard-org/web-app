@@ -91,6 +91,30 @@ export function updateComponentProperties(
     );
   }
 
+  //If the component is a table, then we need to update the modal frame that is associated with it
+  if (componentType === ComponentType.Table) {
+    const layout = dashboardMetadata.layouts[layoutIndex];
+    // @ts-ignore
+    const tableProperties = layout[containerIndex]?.properties;
+    if (tableProperties?.addOns?.addRowForm) {
+      const modalId = tableProperties.addOns.addRowForm.modalId;
+      const modalFrame = getModalFrame(modalId, dashboardMetadata);
+      if (modalFrame) {
+        dashboardMetadata = updateModalFrame(
+          tableProperties.addOns.addRowForm.modalId,
+          {
+            type: modalFrame.body.type,
+            properties: {
+              ...modalFrame.body.properties,
+              invalidateQueryId: tableProperties.sourceQuery?.id || "",
+            },
+          },
+          dashboardMetadata
+        );
+      }
+    }
+  }
+
   return {
     ...dashboardMetadata,
     layouts: dashboardMetadata.layouts.map((layout, index) => {

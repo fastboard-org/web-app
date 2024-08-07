@@ -26,8 +26,10 @@ export const executeQueryFn = async (query: Query | null) => {
 
 const useExecuteQuery = ({
   onSuccess,
+  onError,
 }: {
   onSuccess?: (response: any) => void;
+  onError?: (error: any) => void;
 }) => {
   const [invalidateQueries, setInvalidateQueries] =
     useState<InvalidateQueryFilters>();
@@ -59,6 +61,7 @@ const useExecuteQuery = ({
         onSuccess(data);
       }
     },
+    onError,
   });
 
   return {

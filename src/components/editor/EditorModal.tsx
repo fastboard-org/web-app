@@ -1,15 +1,12 @@
 import { Modal, ModalBody, ModalContent } from "@nextui-org/react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import {
-  editorCanvasRefState,
-  editorModalState,
-  isPropertiesDrawerOpen,
-} from "@/atoms/editor";
+import { useRecoilValue } from "recoil";
+import { editorCanvasRefState, editorModalState } from "@/atoms/editor";
 import { useParams } from "next/navigation";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { getModalFrame } from "@/lib/editor.utils";
 import FastboardComponent from "./fastboard-components/FastboardComponent";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
+import useModalFrame from "@/hooks/editor/useModalFrame";
 
 export default function EditorModal({
   mode = "editable",
@@ -20,8 +17,7 @@ export default function EditorModal({
   const { dashboard } = useDashboard(id as string);
   const editorCanvasRef = useRecoilValue(editorCanvasRefState);
   const { isOpen, modalId } = useRecoilValue(editorModalState);
-  const setEditorModalState = useSetRecoilState(editorModalState);
-  const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
+  const { closeModal } = useModalFrame();
 
   if (!dashboard || !modalId) {
     return null;
@@ -36,12 +32,8 @@ export default function EditorModal({
           isOpen={isOpen}
           onOpenChange={(isOpen) => {
             if (!isOpen) {
-              setIsPropertiesDrawerOpen(false);
+              closeModal();
             }
-            setEditorModalState({
-              isOpen: isOpen,
-              modalId: null,
-            });
           }}
           portalContainer={editorCanvasRef || document.body}
           isDismissable={false}
