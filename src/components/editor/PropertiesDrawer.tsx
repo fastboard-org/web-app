@@ -48,10 +48,10 @@ export default function PropertiesDrawer() {
                 propertiesDrawerComponent.container,
                 propertiesDrawerComponent.type,
                 properties,
-                prev.metadata,
+                prev.metadata
               ),
             }));
-          },
+          }
         )}
     </motion.div>
   );
