@@ -21,15 +21,25 @@ import { v4 as uuidv4 } from "uuid";
 
 export default function TableAddOnsList({
   tableProperties,
+  onSelectAddOn,
   onValueChange,
 }: {
   tableProperties: FastboardTableProperties;
+  onSelectAddOn?: (key: string) => void;
   onValueChange: (value: TableAddOnsProperties) => void;
 }) {
   const { id } = useParams();
   const { updateDashboard } = useDashboard(id as string);
   const { sourceQuery, addOns } = tableProperties;
   const { addRowForm } = addOns;
+
+  function getDisabledKeys() {
+    const disabledKeys = [];
+    if (addRowForm) {
+      disabledKeys.push("add-row-form");
+    }
+    return disabledKeys;
+  }
 
   return (
     <div className="flex flex-col items-start">
@@ -40,7 +50,7 @@ export default function TableAddOnsList({
               Add
             </Button>
           </DropdownTrigger>
-          <DropdownMenu disabledKeys={[]}>
+          <DropdownMenu disabledKeys={getDisabledKeys()}>
             <DropdownItem
               key={"add-row-form"}
               onPress={() => {
@@ -85,6 +95,7 @@ export default function TableAddOnsList({
                   <p>Add row form</p>
                 </div>
               }
+              onPress={() => onSelectAddOn?.("add-row-form")}
             >
               <div className="w-full"></div>
             </Button>

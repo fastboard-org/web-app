@@ -66,7 +66,12 @@ const FastboardComponent = ({
     setIsPropertiesDrawerOpen(false);
     updateDashboard((previous) => ({
       ...previous,
-      metadata: deleteComponent(layoutIndex, containerIndex, previous.metadata),
+      metadata: deleteComponent(
+        type,
+        layoutIndex,
+        containerIndex,
+        previous.metadata
+      ),
     }));
   }
 

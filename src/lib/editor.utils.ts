@@ -32,10 +32,24 @@ export function addComponent(
 }
 
 export function deleteComponent(
+  type: ComponentType,
   layoutIndex: number,
   containerIndex: string,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
+  //If the component is a table, then we need to remove the modal frame that is associated with it
+  if (type === ComponentType.Table) {
+    const layout = dashboardMetadata.layouts[layoutIndex];
+    // @ts-ignore
+    const tableProperties = layout[containerIndex]?.properties;
+    if (tableProperties?.addOns?.addRowForm) {
+      dashboardMetadata = removeModalFrame(
+        tableProperties.addOns.addRowForm.modalId,
+        dashboardMetadata
+      );
+    }
+  }
+
   return {
     ...dashboardMetadata,
     layouts: dashboardMetadata.layouts.map((layout, index) => {

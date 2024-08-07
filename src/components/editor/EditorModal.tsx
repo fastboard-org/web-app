@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { getModalFrame } from "@/lib/editor.utils";
 import FastboardComponent from "./fastboard-components/FastboardComponent";
+import scrollbarStyles from "@/styles/scrollbar.module.css";
 
 export default function EditorModal({
   mode = "editable",
@@ -29,42 +30,50 @@ export default function EditorModal({
   const modalFrame = getModalFrame(modalId, dashboard.metadata);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onOpenChange={(isOpen) => {
-        if (!isOpen) {
-          setIsPropertiesDrawerOpen(false);
-        }
-        setEditorModalState({
-          isOpen: isOpen,
-          modalId: null,
-        });
-      }}
-      portalContainer={editorCanvasRef || document.body}
-      isDismissable={false}
-      className=""
-    >
-      <ModalContent>
-        <ModalBody>
-          {modalFrame && modalFrame.body && (
-            <FastboardComponent
-              name={modalFrame.body.type}
-              type={modalFrame.body.type}
-              layoutIndex={0}
-              containerIndex={"container1"}
-              properties={modalFrame.body.properties}
-              context={{
-                type: "modal",
-                modalContext: {
-                  modalId: modalFrame.id,
-                },
-              }}
-              mode={mode}
-              canDelete={false}
-            />
-          )}
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+    <>
+      {modalFrame && modalFrame?.body && (
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              setIsPropertiesDrawerOpen(false);
+            }
+            setEditorModalState({
+              isOpen: isOpen,
+              modalId: null,
+            });
+          }}
+          portalContainer={editorCanvasRef || document.body}
+          isDismissable={false}
+          scrollBehavior="inside"
+          className="p-4"
+          classNames={{
+            backdrop: "h-full w-full",
+            body: `${scrollbarStyles.scrollbar}`,
+            wrapper: `h-full w-full ${scrollbarStyles.scrollbar}`,
+          }}
+        >
+          <ModalContent>
+            <ModalBody>
+              <FastboardComponent
+                name={modalFrame.body.type}
+                type={modalFrame.body.type}
+                layoutIndex={0}
+                containerIndex={"container1"}
+                properties={modalFrame.body.properties}
+                context={{
+                  type: "modal",
+                  modalContext: {
+                    modalId: modalFrame.id,
+                  },
+                }}
+                mode={mode}
+                canDelete={false}
+              />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      )}
+    </>
   );
 }
