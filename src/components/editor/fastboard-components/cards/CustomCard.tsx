@@ -23,9 +23,7 @@ const CustomCard = ({
   className?: string;
   height?: string;
 }) => {
-  const headerText = data.header;
-  const footerText = data.footer;
-  const bodyData = data.body;
+  const { header: headerText, footer: footerText, body: bodyData } = data;
   const cardWidth = Math.floor(100 / cardsPerRow);
 
   return (
