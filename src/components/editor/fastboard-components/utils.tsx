@@ -7,6 +7,12 @@ import FastboardTableDraggable from "./FastboardTableDraggable";
 import FastboardTable from "./FastboardTable";
 import { FastboardTableProperties } from "@/types/editor/table-types";
 import FastboardTablePropertiesComponent from "./FastboardTableProperties";
+
+import FastboardCardsDraggable from "./cards/FastboardCardsDraggable";
+import FastboardCards from "./cards/FastboardCards";
+import { FastboardCardsProperties } from "@/types/editor/cards-types";
+import FastboardCardsPropertiesComponent from "./cards/FastboardCardsProperties";
+
 import FullLayout from "../layouts/FullLayout";
 import RowLayout from "../layouts/RowLayout";
 import {
@@ -29,6 +35,7 @@ export function getDraggableComponent(id: ComponentType) {
     [ComponentType.Table]: <FastboardTableDraggable key={"TableDraggable"} />,
     [ComponentType.Form]: <FastboardFormDraggable key={"FormDraggable"} />,
     [ComponentType.Image]: null,
+    [ComponentType.Cards]: <FastboardCardsDraggable key={"CardsDraggable"} />,
   };
 
   return components[id];
@@ -70,6 +77,22 @@ export function getComponent(
       editable: null,
       view: null,
     },
+    [ComponentType.Cards]: {
+      editable: (
+        <FastboardCards
+          layoutIndex={layoutIndex}
+          container={container}
+          properties={properties as FastboardCardsProperties}
+        />
+      ),
+      view: (
+        <FastboardCards
+          layoutIndex={layoutIndex}
+          container={container}
+          properties={properties as FastboardCardsProperties}
+        />
+      ),
+    },
   };
 
   if (!components[id]) {
@@ -107,6 +130,16 @@ export function getPropertiesComponent(
       />
     ),
     [ComponentType.Image]: null,
+    [ComponentType.Cards]: (
+      <FastboardCardsPropertiesComponent
+        properties={properties as FastboardCardsProperties}
+        onValueChange={(properties) => {
+          if (onValueChange) {
+            onValueChange(properties);
+          }
+        }}
+      />
+    ),
   };
 
   if (!type) {
