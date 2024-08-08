@@ -76,6 +76,11 @@ const getMyQueries = async () => {
   return data.map(mapQuery);
 };
 
+const getQuery = async (id: string) => {
+  const response = await axiosInstance.get(`/queries/${id}`);
+  return mapQuery(response.data);
+};
+
 const createQuery = async (
   name: string,
   connection_id: string,
@@ -109,6 +114,7 @@ export const connectionsService = {
   deleteConnection,
   getQueriesByConnectionId,
   getMyQueries,
+  getQuery,
   createQuery,
   updateQuery,
   deleteQuery,

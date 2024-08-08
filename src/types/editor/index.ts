@@ -9,6 +9,7 @@ export enum ComponentType {
   Table = "table",
   Image = "image",
   GroupChart = "group-chart",
+  Form = "form",
   Cards = "cards",
 }
 
