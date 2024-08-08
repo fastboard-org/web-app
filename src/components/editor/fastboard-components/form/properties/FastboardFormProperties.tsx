@@ -125,18 +125,25 @@ export default function FastboardFormProperties({
               title: "font-medium",
             }}
           >
-            <FormInputsList
-              inputs={inputs}
-              onSelectInput={(inputProperties) => {
-                setInputSelectedIndex(inputs.indexOf(inputProperties));
-              }}
-              onChange={(newInputs) => {
-                onValueChange({
-                  ...properties,
-                  inputs: newInputs,
-                });
-              }}
-            />
+            {!submitQueryId && (
+              <div className="flex justify-center text-sm">
+                Select a query to enable inputs
+              </div>
+            )}
+            {submitQueryId && (
+              <FormInputsList
+                inputs={inputs}
+                onSelectInput={(inputProperties) => {
+                  setInputSelectedIndex(inputs.indexOf(inputProperties));
+                }}
+                onChange={(newInputs) => {
+                  onValueChange({
+                    ...properties,
+                    inputs: newInputs,
+                  });
+                }}
+              />
+            )}
           </AccordionItem>
         </Accordion>
       )}
