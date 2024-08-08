@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import { Dashboard, Folder } from "@/types/dashboards";
 import { DashboardMetadata } from "@/types/editor";
-import { LayoutType } from "@/types/editor/layout-types";
+import { Layout, LayoutType } from "@/types/editor/layout-types";
 
 const mapDashboard = (data: any): Dashboard => {
   return {
@@ -33,10 +33,14 @@ const getDashboards = async () => {
 };
 
 const createDashboard = async (name: string, folderId?: string | null) => {
+  const metadata: DashboardMetadata = {
+    modals: [],
+    layouts: [Layout.of(LayoutType.Full)],
+  };
   const response = await axiosInstance.post("/dashboards", {
     name,
     folder_id: folderId,
-    metadata: { layouts: [{ type: LayoutType.Full, component1: null }] },
+    metadata: metadata,
   });
   return mapDashboard(response.data);
 };
