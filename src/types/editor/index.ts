@@ -10,6 +10,7 @@ export enum ComponentType {
   Table = "table",
   Image = "image",
   Form = "form",
+  Cards = "cards",
 }
 
 export interface FastboardComponent {

@@ -114,7 +114,7 @@ const FastboardComponent = ({
       {isSelected() && canDelete && (
         <Button
           isIconOnly
-          className="absolute bottom-2 left-2 z-10 text-danger"
+          className="absolute bottom-2 left-2 z-20 text-danger"
           variant="light"
           onPress={onDeleteComponent}
         >

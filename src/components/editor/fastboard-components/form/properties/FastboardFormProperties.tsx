@@ -34,6 +34,7 @@ export default function FastboardFormProperties({
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
     null
   );
+  const disabledKeys = inputs.map((input) => input.formDataKey);
 
   useEffect(() => {
     //The container changes, reset the selected input
@@ -63,6 +64,7 @@ export default function FastboardFormProperties({
           isCompact
           fullWidth
           defaultExpandedKeys={["basic", "inputs", "style"]}
+          className="p-0"
         >
           <AccordionItem
             key="basic"
@@ -124,18 +126,25 @@ export default function FastboardFormProperties({
               title: "font-medium",
             }}
           >
-            <FormInputsList
-              inputs={inputs}
-              onSelectInput={(inputProperties) => {
-                setInputSelectedIndex(inputs.indexOf(inputProperties));
-              }}
-              onChange={(newInputs) => {
-                onValueChange({
-                  ...properties,
-                  inputs: newInputs,
-                });
-              }}
-            />
+            {!submitQueryId && (
+              <div className="flex justify-center text-sm">
+                Select a query to enable inputs
+              </div>
+            )}
+            {submitQueryId && (
+              <FormInputsList
+                inputs={inputs}
+                onSelectInput={(inputProperties) => {
+                  setInputSelectedIndex(inputs.indexOf(inputProperties));
+                }}
+                onChange={(newInputs) => {
+                  onValueChange({
+                    ...properties,
+                    inputs: newInputs,
+                  });
+                }}
+              />
+            )}
           </AccordionItem>
         </Accordion>
       )}
@@ -153,6 +162,7 @@ export default function FastboardFormProperties({
                 inputs: newInputs,
               });
             }}
+            disabledKeys={disabledKeys}
           />
         )}
       {inputSelectedIndex !== null &&
@@ -168,6 +178,7 @@ export default function FastboardFormProperties({
                 inputs: newInputs,
               });
             }}
+            disabledKeys={disabledKeys}
           />
         )}
       {inputSelectedIndex !== null &&
@@ -183,6 +194,7 @@ export default function FastboardFormProperties({
                 inputs: newInputs,
               });
             }}
+            disabledKeys={disabledKeys}
           />
         )}
     </div>

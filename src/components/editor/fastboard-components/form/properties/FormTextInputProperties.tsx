@@ -7,10 +7,12 @@ export default function FormTextInputProperties({
   properties,
   queryId,
   onValueChange,
+  disabledKeys = [],
 }: {
   properties: TextInputProperties;
   queryId: string | null;
   onValueChange: (properties: TextInputProperties) => void;
+  disabledKeys?: string[];
 }) {
   const { label, placeHolder, required, formDataKey } = properties;
 
@@ -58,6 +60,7 @@ export default function FormTextInputProperties({
       <Spacer y={2} />
       <FormDataKeySelection
         selectedKey={formDataKey}
+        disabledKeys={disabledKeys}
         queryId={queryId}
         onSelectionChange={(formDataKey) => {
           onValueChange({

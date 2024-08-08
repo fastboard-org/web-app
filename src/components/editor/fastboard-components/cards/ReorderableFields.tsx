@@ -1,26 +1,27 @@
 import EditableTitle from "@/components/shared/EditableTitle";
+import { BodyFieldProperties } from "@/types/editor/cards-types";
 import { TableColumnProperties } from "@/types/editor/table-types";
 import { Button, Checkbox, Spacer } from "@nextui-org/react";
 import { Reorder, useDragControls } from "framer-motion";
 import { useEffect, useState } from "react";
 import ReorderIcon from "@/components/shared/icons/ReorderIcon";
 
-function ReorderableColumn({
-  column,
+function ReorderableField({
+  field,
   onChange,
 }: {
-  column: TableColumnProperties;
-  onChange?: (newColumnValue: TableColumnProperties) => void;
+  field: BodyFieldProperties;
+  onChange: (newField: BodyFieldProperties) => void;
 }) {
   const dragControls = useDragControls();
 
   return (
     <Reorder.Item
-      key={column.column.key}
-      id={column.column.key}
+      key={field.key}
+      id={field.key}
       dragListener={false}
       dragControls={dragControls}
-      value={column}
+      value={field}
       className="p-2 mb-2 rounded-md border-2 border-content2"
     >
       <div className="flex flex-row columns-center justify-between">
@@ -31,26 +32,23 @@ function ReorderableColumn({
           inputClassName={
             "border-none max-w-[150px] bg-transparent outline-none text-foreground-300 placeholder-foreground-300"
           }
-          value={column.column.label}
+          value={field.label}
           onChange={(value) => {
             if (onChange) {
               onChange({
-                ...column,
-                column: {
-                  ...column.column,
-                  label: value,
-                },
+                ...field,
+                label: value,
               });
             }
           }}
         />
         <div className="flex flex-row items-center justify-center">
           <Checkbox
-            isSelected={column.visible}
+            isSelected={field.visible}
             onValueChange={(value) => {
               if (onChange) {
                 onChange({
-                  ...column,
+                  ...field,
                   visible: value,
                 });
               }
@@ -65,22 +63,22 @@ function ReorderableColumn({
   );
 }
 
-export default function ReorderableColumns({
-  columnsProperties,
+export default function ReorderableFields({
+  fieldsProperties,
   onChange,
 }: {
-  columnsProperties: TableColumnProperties[];
-  onChange?: (columns: TableColumnProperties[]) => void;
+  fieldsProperties: BodyFieldProperties[];
+  onChange?: (fields: BodyFieldProperties[]) => void;
 }) {
-  const [columns, setColumns] = useState(columnsProperties);
+  const [fields, setFields] = useState(fieldsProperties);
 
   useEffect(() => {
-    setColumns(columnsProperties);
-  }, [columnsProperties]);
+    setFields(fieldsProperties);
+  }, [fieldsProperties]);
 
   return (
     <div>
-      <h1 className="text-sm">Columns</h1>
+      <h1 className="text-sm">Body</h1>
       <Spacer y={2} />
       <div
         className={"flex w-full justify-center items-center overflow-hidden"}
@@ -89,25 +87,25 @@ export default function ReorderableColumns({
           className="w-full"
           axis="y"
           layoutScroll
-          values={columns}
+          values={fields}
           onReorder={(newOrder) => {
-            setColumns(newOrder);
+            setFields(newOrder);
             if (onChange) {
               onChange(newOrder);
             }
           }}
         >
-          {columns.map((column) => (
-            <ReorderableColumn
-              key={column.column.key}
-              column={column}
+          {fields.map((field) => (
+            <ReorderableField
+              key={field.key}
+              field={field}
               onChange={(value) => {
-                const newColumns = columns.map((c) =>
-                  c.column.key === value.column.key ? value : c
+                const newFields = fields.map((f) =>
+                  f.key === field.key ? value : f
                 );
-                setColumns(newColumns);
+                setFields(newFields);
                 if (onChange) {
-                  onChange(newColumns);
+                  onChange(newFields);
                 }
               }}
             />
