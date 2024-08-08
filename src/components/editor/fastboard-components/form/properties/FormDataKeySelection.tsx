@@ -6,10 +6,12 @@ export default function FormDataKeySelection({
   selectedKey,
   queryId,
   onSelectionChange,
+  disabledKeys = [],
 }: {
   selectedKey: string;
   queryId: string | null;
   onSelectionChange: (formDataKey: string) => void;
+  disabledKeys?: string[];
 }) {
   const { query, loading } = useGetQuery(queryId || "");
   const parameters: () => { key: string; label: string }[] = () => {
@@ -31,6 +33,7 @@ export default function FormDataKeySelection({
         labelPlacement="outside"
         items={parameters()}
         selectedKeys={[selectedKey]}
+        disabledKeys={disabledKeys}
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
           onSelectionChange(e.target.value);
         }}

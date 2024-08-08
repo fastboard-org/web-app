@@ -7,10 +7,12 @@ export default function FormCheckboxProperties({
   properties,
   queryId,
   onValueChange,
+  disabledKeys = [],
 }: {
   properties: CheckboxProperties;
   queryId: string | null;
   onValueChange: (properties: CheckboxProperties) => void;
+  disabledKeys?: string[];
 }) {
   const { label, formDataKey } = properties;
 
@@ -32,6 +34,7 @@ export default function FormCheckboxProperties({
       <Spacer y={2} />
       <FormDataKeySelection
         selectedKey={formDataKey}
+        disabledKeys={disabledKeys}
         queryId={queryId}
         onSelectionChange={(formDataKey) => {
           onValueChange({

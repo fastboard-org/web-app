@@ -34,6 +34,7 @@ export default function FastboardFormProperties({
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
     null
   );
+  const disabledKeys = inputs.map((input) => input.formDataKey);
 
   useEffect(() => {
     //The container changes, reset the selected input
@@ -153,6 +154,7 @@ export default function FastboardFormProperties({
                 inputs: newInputs,
               });
             }}
+            disabledKeys={disabledKeys}
           />
         )}
       {inputSelectedIndex !== null &&
@@ -168,6 +170,7 @@ export default function FastboardFormProperties({
                 inputs: newInputs,
               });
             }}
+            disabledKeys={disabledKeys}
           />
         )}
       {inputSelectedIndex !== null &&
@@ -183,6 +186,7 @@ export default function FastboardFormProperties({
                 inputs: newInputs,
               });
             }}
+            disabledKeys={disabledKeys}
           />
         )}
     </div>
