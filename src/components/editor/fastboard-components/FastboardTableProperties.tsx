@@ -16,9 +16,11 @@ import TableAddOnsList from "./table/properties/TableAddOnsList";
 import TableAddRowProperties from "./table/properties/TableAddRowProperties";
 
 const FastboardTablePropertiesComponent = ({
+  container,
   properties,
   onValueChange,
 }: {
+  container: string;
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
@@ -37,6 +39,11 @@ const FastboardTablePropertiesComponent = ({
   useEffect(() => {
     setColumnsProperties(columns);
   }, [columns]);
+
+  useEffect(() => {
+    // Reset add-on selection when the container changes
+    setAddOnSelected(null);
+  }, [container]);
 
   return (
     <div>

@@ -110,6 +110,7 @@ export function getPropertiesComponent(
   const components = {
     [ComponentType.Table]: (
       <FastboardTablePropertiesComponent
+        container={container}
         properties={properties as FastboardTableProperties}
         onValueChange={(properties) => {
           if (onValueChange) {
