@@ -14,7 +14,7 @@ export default function FastboardCardsDraggable() {
       dragSnapToOrigin
       name={"Cards"}
     >
-      <DraggableImage name={"card"} alt={"Card"} />
+      <DraggableImage name={"cards"} alt={"Cards"} />
     </Draggable>
   );
 }
