@@ -28,8 +28,6 @@ export default function EditorModal({
     return null;
   }
 
-  console.log("modalFrame", component);
-
   return (
     <>
       {modalFrame && (

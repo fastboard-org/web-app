@@ -7,11 +7,13 @@ const Draggable = ({
   id,
   data,
   dragSnapToOrigin,
+  name,
 }: {
   children: ReactNode;
   id: string;
   data?: Object;
   dragSnapToOrigin?: boolean;
+  name?: string;
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: id,
@@ -24,18 +26,21 @@ const Draggable = ({
     : undefined;
 
   return (
-    <motion.div
-      drag
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-      dragSnapToOrigin={dragSnapToOrigin}
-      className={"cursor-grab"}
-      whileDrag={{ scale: 1.1, zIndex: 1000, cursor: "grabbing" }}
-    >
-      {children}
-    </motion.div>
+    <div className="flex flex-col justify-center w-[46%] gap-2">
+      <motion.div
+        drag
+        ref={setNodeRef}
+        style={style}
+        {...listeners}
+        {...attributes}
+        dragSnapToOrigin={dragSnapToOrigin}
+        className={"cursor-grab"}
+        whileDrag={{ scale: 1.1, zIndex: 1000, cursor: "grabbing" }}
+      >
+        {children}
+      </motion.div>
+      <h4 className={"text-md pb-2 text-center"}>{name}</h4>
+    </div>
   );
 };
 

@@ -21,8 +21,8 @@ export default function AddRowForm({
   return (
     <div className="flex justify-end">
       <Button
+        color="primary"
         onPress={() => {
-          console.log("modal", modalId);
           setEditorModalState({
             isOpen: true,
             modalId: modalId,
