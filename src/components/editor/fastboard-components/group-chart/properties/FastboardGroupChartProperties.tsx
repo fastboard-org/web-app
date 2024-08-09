@@ -1,5 +1,5 @@
 import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
-import { Accordion, AccordionItem, Input } from "@nextui-org/react";
+import {Accordion, AccordionItem, Checkbox, Input} from "@nextui-org/react";
 import QuerySelection from "@/components/editor/QuerySelection";
 import GroupKeySelect from "@/components/editor/fastboard-components/group-chart/properties/GroupKeySelect";
 
@@ -10,7 +10,7 @@ const FastboardGroupChartPropertiesComponent = ({
   properties: FastboardGroupChartProperties;
   onValueChange: (properties: FastboardGroupChartProperties) => void;
 }) => {
-  const { sourceQuery, keys, groupBy, emptyMessage, title, subtitle } =
+  const { sourceQuery, keys, groupBy, emptyMessage, title, subtitle, minimizedLabels } =
     properties;
 
   return (
@@ -18,7 +18,7 @@ const FastboardGroupChartPropertiesComponent = ({
       selectionMode="multiple"
       isCompact
       fullWidth
-      defaultExpandedKeys={["basic", "texts"]}
+      defaultExpandedKeys={["basic", "texts", "style"]}
     >
       <AccordionItem
         key="basic"
@@ -101,6 +101,23 @@ const FastboardGroupChartPropertiesComponent = ({
             }}
           />
         </div>
+      </AccordionItem>
+      <AccordionItem
+          key="style"
+          title="Style"
+          className="pb-2"
+      >
+        <Checkbox
+            defaultSelected={minimizedLabels}
+            onChange={(e) => {
+              onValueChange({
+                ...properties,
+                minimizedLabels: e.target.checked,
+              });
+            }}
+        >
+            Minimized labels
+        </Checkbox>
       </AccordionItem>
     </Accordion>
   );

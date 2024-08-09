@@ -7,6 +7,7 @@ export class FastboardGroupChartProperties {
   keys: string[] = [];
   groupBy: string = "";
   emptyMessage: string = "No data to display.";
+  minimizedLabels: boolean = false;
 
   static default(): FastboardGroupChartProperties {
     return new FastboardGroupChartProperties();

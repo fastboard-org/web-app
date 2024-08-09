@@ -34,7 +34,7 @@ const FastboardGroupChart = ({
   container: string;
   properties: FastboardGroupChartProperties;
 }) => {
-  const { sourceQuery, title, subtitle, groupBy, emptyMessage } = properties;
+  const { sourceQuery, title, subtitle, groupBy, emptyMessage, minimizedLabels } = properties;
   const setProperties = useSetRecoilState(propertiesDrawerState);
 
   const {
@@ -104,11 +104,12 @@ const FastboardGroupChart = ({
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
+                tickFormatter={minimizedLabels ? (value) => value.slice(0, 5) + "..." : undefined}
               />
 
               <ChartTooltip
                 cursor={false}
-                content={<ChartTooltipContent hideLabel />}
+                content={<ChartTooltipContent />}
               />
               <Bar dataKey="count" fill="var(--color-desktop)" radius={8} />
             </BarChart>
@@ -118,7 +119,7 @@ const FastboardGroupChart = ({
         {!dataFetching && data.length === 0 && (
           <div
             className={
-              "absolute self-center top-0 bottom-0 text-3xl text-center"
+              "absolute self-center top-0 bottom-0 text-2xl text-center"
             }
           >
             <p>{emptyMessage}</p>
@@ -128,7 +129,7 @@ const FastboardGroupChart = ({
           </div>
         )}
         {!dataFetching && data.length > 0 && !groupBy && (
-          <p className={"absolute self-center top-0 bottom-0 text-3xl"}>
+          <p className={"absolute self-center top-0 bottom-0 text-2xl"}>
             Please select a group key
           </p>
         )}
