@@ -2,11 +2,9 @@
 import { useState } from "react";
 import { Input } from "@nextui-org/react";
 import useDashboard from "@/hooks/dashboards/useDashboard";
-import { useParams } from "next/navigation";
 
 export default function DashboardName() {
-  const { id } = useParams();
-  const { dashboard, updateDashboard } = useDashboard(id as string);
+  const { dashboard, updateDashboard } = useDashboard();
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(dashboard?.name);

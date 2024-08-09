@@ -4,13 +4,11 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
 import LayoutSelection from "./LayoutSelection";
-import { useParams } from "next/navigation";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { changeLayout } from "@/lib/editor.utils";
 
 export default function SettingsDrawer() {
-  const { id } = useParams();
-  const { dashboard, updateDashboard } = useDashboard(id as string);
+  const { dashboard, updateDashboard } = useDashboard();
   const isOpen = useRecoilValue(isSettingsDrawerOpen);
 
   return (
