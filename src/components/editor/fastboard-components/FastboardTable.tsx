@@ -37,6 +37,7 @@ import { InvalidateQueryFilters } from "@tanstack/react-query";
 import { Edit, Eye, Trash } from "iconsax-react";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
+import AddRowForm from "./table/AddRowForm";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -71,6 +72,7 @@ export default function FastboardTable({
     emptyMessage,
     columns,
     actions,
+    addOns: { addRowForm },
     hideHeader,
     isStriped,
     rowsPerPage,
@@ -101,7 +103,7 @@ export default function FastboardTable({
     isSuccess: isExecuteQuerySuccess,
     isError: isExecuteQueryError,
     error: executeQueryError,
-  } = useExecuteQuery();
+  } = useExecuteQuery({});
   const finalColumns = getFinalColumns(columns, actions);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -323,9 +325,7 @@ export default function FastboardTable({
             setDeleteModalOpen(false);
           }}
           onConfirm={async () => {
-            executeAction(selectedRowAction, {
-              queryKey: ["get_data", sourceQuery?.id],
-            });
+            executeAction(selectedRowAction);
           }}
         />
       )}
@@ -339,6 +339,8 @@ export default function FastboardTable({
         }}
         hideHeader={hideHeader}
         isStriped={isStriped}
+        topContent={addRowForm && <AddRowForm properties={addRowForm} />}
+        topContentPlacement="outside"
         bottomContent={
           <div className="flex w-full justify-center">
             <Pagination

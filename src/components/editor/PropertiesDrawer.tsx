@@ -36,6 +36,7 @@ export default function PropertiesDrawer() {
           setPropertiesDrawerState((prev) => ({
             ...prev,
             properties: properties,
+            context: propertiesDrawerComponent.context,
           }));
           updateDashboard((prev) => ({
             ...prev,
@@ -44,7 +45,8 @@ export default function PropertiesDrawer() {
               propertiesDrawerComponent.container,
               propertiesDrawerComponent.type,
               properties,
-              prev.metadata
+              prev.metadata,
+              propertiesDrawerComponent.context
             ),
           }));
         })}

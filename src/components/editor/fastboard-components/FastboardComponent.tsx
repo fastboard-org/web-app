@@ -4,7 +4,7 @@ import {
   isSettingsDrawerOpen,
   propertiesDrawerState,
 } from "@/atoms/editor";
-import { ComponentType } from "@/types/editor";
+import { ComponentType, Context } from "@/types/editor";
 import React, { useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { getComponent } from "./utils";
@@ -21,7 +21,9 @@ const FastboardComponent = ({
   properties,
   layoutIndex,
   containerIndex,
+  context,
   mode = "editable",
+  canDelete = true,
 }: {
   onClick?: () => void;
   name: string;
@@ -29,7 +31,9 @@ const FastboardComponent = ({
   properties: Record<string, any>;
   layoutIndex: number;
   containerIndex: string;
+  context?: Context;
   mode?: "editable" | "view";
+  canDelete?: boolean;
 }) => {
   const { id } = useParams();
   const { updateDashboard } = useDashboard(id as string);
@@ -51,6 +55,7 @@ const FastboardComponent = ({
       container: containerIndex,
       type: type,
       properties: properties,
+      context: context,
     });
     if (onClick) {
       onClick();
@@ -61,7 +66,12 @@ const FastboardComponent = ({
     setIsPropertiesDrawerOpen(false);
     updateDashboard((previous) => ({
       ...previous,
-      metadata: deleteComponent(layoutIndex, containerIndex, previous.metadata),
+      metadata: deleteComponent(
+        type,
+        layoutIndex,
+        containerIndex,
+        previous.metadata
+      ),
     }));
   }
 
@@ -101,7 +111,7 @@ const FastboardComponent = ({
       {isSelected() && (
         <p className="absolute right-4 bottom-2 text-primary z-10">{name}</p>
       )}
-      {isSelected() && (
+      {isSelected() && canDelete && (
         <Button
           isIconOnly
           className="absolute bottom-2 left-2 z-20 text-danger"

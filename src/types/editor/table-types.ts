@@ -1,4 +1,5 @@
 import { Query } from "../connections";
+import { FormProperties } from "./form";
 
 export interface Column {
   key: string;
@@ -18,15 +19,24 @@ export interface TableActionProperty {
   parameters: { name: string; value: string }[];
 }
 
+export interface AddRowFormProperties {
+  buttonLabel: string;
+  modalId: string;
+}
+
+export interface TableAddOnsProperties {
+  addRowForm: AddRowFormProperties | null;
+}
+
 export class FastboardTableProperties {
   sourceQuery: Query | null = null;
   rowsPerPage: number = 10;
   emptyMessage: string = "No rows to display.";
-  columns: TableColumnProperties[] = [
-    { column: { key: "name", label: "Name" }, visible: true },
-    { column: { key: "url", label: "URL" }, visible: true },
-  ];
+  columns: TableColumnProperties[] = [];
   actions: TableActionProperty[] = [];
+  addOns: TableAddOnsProperties = {
+    addRowForm: null,
+  };
   hideHeader: boolean = false;
   isStriped: boolean = false;
 

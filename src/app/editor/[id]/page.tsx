@@ -11,6 +11,7 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useParams, useRouter } from "next/navigation";
 import SettingsDrawer from "@/components/editor/settings/SettingsDrawer";
+import EditorModal from "@/components/editor/EditorModal";
 
 export default function Editor() {
   const { id } = useParams();
@@ -34,7 +35,7 @@ export default function Editor() {
         container,
         componentType,
         defaultProperties,
-        prev.metadata,
+        prev.metadata
       ),
     }));
   }
@@ -58,7 +59,8 @@ export default function Editor() {
           <ComponentsDrawer />
           <SettingsDrawer />
           <div className="flex justify-center items-center h-full w-full p-6">
-            <EditorCanvas />
+            <EditorCanvas key={"EditorCanvas"} />
+            <EditorModal />
           </div>
         </DndContext>
         <PropertiesDrawer />

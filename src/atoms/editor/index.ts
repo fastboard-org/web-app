@@ -1,5 +1,10 @@
-import { PropertiesDrawerState } from "@/types/editor";
+import { EditorModalState, PropertiesDrawerState } from "@/types/editor";
 import { atom } from "recoil";
+
+export const editorCanvasRefState = atom<HTMLDivElement | null>({
+  key: "editorCanvasRefState",
+  default: null,
+});
 
 export const isComponentsDrawerOpen = atom({
   key: "isComponentsDrawerOpen",
@@ -21,5 +26,13 @@ export const propertiesDrawerState = atom<PropertiesDrawerState>({
     container: "component1",
     type: null,
     properties: {},
+  },
+});
+
+export const editorModalState = atom<EditorModalState>({
+  key: "editorModalState",
+  default: {
+    isOpen: false,
+    modalId: null,
   },
 });
