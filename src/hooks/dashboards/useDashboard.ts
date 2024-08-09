@@ -68,6 +68,31 @@ const useDashboard = () => {
     }));
   };
 
+  const createModalFrame = (body: {
+    type: ComponentType;
+    properties: Object;
+  }): string | null => {
+    if (!dashboard) return null;
+
+    const [newMetadata, modalId] = editorUtils.createModalFrame(
+      body,
+      dashboard.metadata
+    );
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: newMetadata,
+    }));
+    return modalId;
+  };
+
+  const deleteModalFrame = (modalId: string) => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.removeModalFrame(modalId, prev.metadata),
+    }));
+  };
+
   const updateDashboard = (updater: (previous: Dashboard) => Dashboard) => {
     let updatedDashboard: Dashboard | undefined;
 
@@ -101,6 +126,8 @@ const useDashboard = () => {
     updateComponentProperties,
     addComponentToLayout,
     deleteComponentFromLayout,
+    createModalFrame,
+    deleteModalFrame,
     updateDashboard,
   };
 };

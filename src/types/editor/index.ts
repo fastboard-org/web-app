@@ -24,7 +24,7 @@ export interface FastboardComponent {
 
 export interface ModalFrame {
   id: string;
-  body: FastboardComponent;
+  body: ComponentId;
 }
 
 export interface DashboardMetadata {
@@ -45,8 +45,6 @@ export interface Context {
 }
 
 export interface PropertiesDrawerState {
-  layoutIndex: number;
-  container: string;
   selectedComponentId: ComponentId | null;
   type: ComponentType | null;
   properties: Record<string, any>;

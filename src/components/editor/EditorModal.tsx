@@ -1,7 +1,6 @@
 import { Modal, ModalBody, ModalContent } from "@nextui-org/react";
 import { useRecoilValue } from "recoil";
 import { editorCanvasRefState, editorModalState } from "@/atoms/editor";
-import { useParams } from "next/navigation";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { getModalFrame } from "@/lib/editor.utils";
 import FastboardComponent from "./fastboard-components/FastboardComponent";
@@ -13,8 +12,7 @@ export default function EditorModal({
 }: {
   mode?: "editable" | "view";
 }) {
-  const { id } = useParams();
-  const { dashboard } = useDashboard(id as string);
+  const { dashboard, getComponent } = useDashboard();
   const editorCanvasRef = useRecoilValue(editorCanvasRefState);
   const { isOpen, modalId } = useRecoilValue(editorModalState);
   const { closeModal } = useModalFrame();
@@ -24,10 +22,17 @@ export default function EditorModal({
   }
 
   const modalFrame = getModalFrame(modalId, dashboard.metadata);
+  const component = modalFrame?.body ? getComponent(modalFrame.body) : null;
+
+  if (!component) {
+    return null;
+  }
+
+  console.log("modalFrame", component);
 
   return (
     <>
-      {modalFrame && modalFrame?.body && (
+      {modalFrame && (
         <Modal
           isOpen={isOpen}
           onOpenChange={(isOpen) => {
@@ -48,11 +53,10 @@ export default function EditorModal({
           <ModalContent>
             <ModalBody>
               <FastboardComponent
-                name={modalFrame.body.type}
-                type={modalFrame.body.type}
-                layoutIndex={0}
-                containerIndex={"container1"}
-                properties={modalFrame.body.properties}
+                id={component.id}
+                name={component.type}
+                type={component.type}
+                properties={component.properties}
                 context={{
                   type: "modal",
                   modalContext: {

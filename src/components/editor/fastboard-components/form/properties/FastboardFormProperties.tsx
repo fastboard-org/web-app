@@ -20,26 +20,27 @@ import FormInputsList from "./FormInputsList";
 import FormTextInputProperties from "./FormTextInputProperties";
 import FormCheckboxProperties from "./FormCheckboxProperties";
 import FormNumberInputProperties from "./FormNumberInputProperties";
+import { useRecoilValue } from "recoil";
+import { propertiesDrawerState } from "@/atoms/editor";
 
 export default function FastboardFormProperties({
-  container,
   properties,
   onValueChange,
 }: {
-  container: string;
   properties: FormProperties;
   onValueChange: (properties: FormProperties) => void;
 }) {
   const { title, submitQueryId, submitButtonLabel, inputs } = properties;
+  const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
     null
   );
   const disabledKeys = inputs.map((input) => input.formDataKey);
 
   useEffect(() => {
-    //The container changes, reset the selected input
+    //The selected component has changed, reset the input selected index
     setInputSelectedIndex(null);
-  }, [container]);
+  }, [selectedComponentId]);
 
   return (
     <div>

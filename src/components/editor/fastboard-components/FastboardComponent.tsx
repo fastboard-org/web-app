@@ -42,17 +42,12 @@ const FastboardComponent = ({
   );
   const [isHovered, setIsHovered] = useState(false);
 
-  if (!context.layoutContext) return null;
-  const { layoutIndex, containerIndex } = context.layoutContext;
-
   function onClickComponent(e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     setIsComponentsDrawerOpen(false);
     setIsSettingsDrawerOpen(false);
     setIsPropertiesDrawerOpen(true);
     setPropertiesDrawerState({
-      layoutIndex: layoutIndex,
-      container: containerIndex,
       selectedComponentId: id,
       type: type,
       properties: properties,
@@ -64,6 +59,8 @@ const FastboardComponent = ({
   }
 
   function onDeleteComponent() {
+    if (!context.layoutContext) return null;
+    const { layoutIndex, containerIndex } = context.layoutContext;
     setIsPropertiesDrawerOpen(false);
     deleteComponentFromLayout(layoutIndex, containerIndex);
   }
@@ -78,14 +75,7 @@ const FastboardComponent = ({
     return isHovered;
   }
 
-  const component = getComponent(
-    layoutIndex,
-    containerIndex,
-    type,
-    id,
-    mode,
-    properties
-  );
+  const component = getComponent(type, id, mode, properties);
   if (!component) return null;
 
   if (mode === "view") {

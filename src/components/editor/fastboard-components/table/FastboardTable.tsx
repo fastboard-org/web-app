@@ -29,7 +29,6 @@ import useData from "@/hooks/useData";
 import { toast } from "sonner";
 import { useRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
-import { updateComponentProperties } from "@/lib/editor.utils";
 import { ComponentId, ComponentType } from "@/types/editor";
 import ViewActionModal from "../shared/ViewActionModal";
 import { InvalidateQueryFilters } from "@tanstack/react-query";

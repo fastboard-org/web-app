@@ -22,13 +22,10 @@ export default function AddRowForm({
     <div className="flex justify-end">
       <Button
         onPress={() => {
-          const modal = getModalFrame(modalId, dashboard.metadata);
-          if (!modal) {
-            return;
-          }
+          console.log("modal", modalId);
           setEditorModalState({
             isOpen: true,
-            modalId: modal.id,
+            modalId: modalId,
           });
         }}
       >

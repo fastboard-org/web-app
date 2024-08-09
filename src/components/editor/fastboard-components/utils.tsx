@@ -53,8 +53,6 @@ export function getDraggableComponent(id: ComponentType) {
 }
 
 export function getComponent(
-  layoutIndex: number,
-  container: string,
   id: ComponentType,
   componentId: ComponentId,
   type: "editable" | "view",
@@ -128,12 +126,11 @@ export function getPropertiesComponent(
   state: PropertiesDrawerState,
   onValueChange?: (properties: Record<string, any>) => void
 ) {
-  const { type, container, properties } = state;
+  const { type, properties } = state;
 
   const components = {
     [ComponentType.Table]: (
       <FastboardTablePropertiesComponent
-        container={container}
         properties={properties as FastboardTableProperties}
         onValueChange={(properties) => {
           if (onValueChange) {
@@ -144,7 +141,6 @@ export function getPropertiesComponent(
     ),
     [ComponentType.Form]: (
       <FastboardFormProperties
-        container={container}
         properties={properties as FormProperties}
         onValueChange={(properties) => {
           if (onValueChange) {

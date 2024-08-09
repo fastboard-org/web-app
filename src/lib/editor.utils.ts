@@ -7,6 +7,7 @@ import {
   ModalFrame,
 } from "@/types/editor";
 import { Layout, LayoutType } from "@/types/editor/layout-types";
+import { v4 as uuidv4 } from "uuid";
 
 export function getComponent(
   id: ComponentId,
@@ -40,6 +41,13 @@ export function deleteComponent(
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
   //TODO: If the component is a table, then we need to remove the modal frame that is associated with it
+  const component = dashboardMetadata.components[id];
+  if (component.type === ComponentType.Table) {
+    const modalId = component.properties?.addOns?.addRowForm?.modalId;
+    if (modalId) {
+      dashboardMetadata = removeModalFrame(modalId, dashboardMetadata);
+    }
+  }
   delete dashboardMetadata.components[id];
   return dashboardMetadata;
 }
@@ -72,6 +80,18 @@ export function addComponentToLayout(
   defaultProperties: Object,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
+  // If there is already a component in the container, delete it
+  const curretnComponentId: ComponentId | null =
+    // @ts-ignore
+    dashboardMetadata.layouts[layoutIndex][containerIndex];
+  if (curretnComponentId) {
+    dashboardMetadata = deleteComponentFromLayout(
+      layoutIndex,
+      containerIndex,
+      dashboardMetadata
+    );
+  }
+
   const [newMetadata, componentId] = createComponent(
     type,
     defaultProperties,
@@ -118,118 +138,6 @@ export function deleteComponentFromLayout(
   };
 }
 
-export const editorUtils = {
-  getComponent,
-  createComponent,
-  deleteComponent,
-  updateComponent,
-  addComponentToLayout,
-  deleteComponentFromLayout,
-};
-
-export function addComponent(
-  layoutIndex: number,
-  containerIndex: string,
-  componentType: ComponentType,
-  defaultProperties: Record<string, any>,
-  dashboardMetadata: DashboardMetadata
-): DashboardMetadata {
-  return {
-    ...dashboardMetadata,
-    layouts: dashboardMetadata.layouts.map((layout, index) => {
-      if (index === layoutIndex) {
-        return {
-          ...layout,
-          [containerIndex]: {
-            type: componentType,
-            properties: defaultProperties,
-          },
-        };
-      }
-      return layout;
-    }),
-  };
-}
-
-/*
-export function deleteComponent(
-  type: ComponentType,
-  layoutIndex: number,
-  containerIndex: string,
-  dashboardMetadata: DashboardMetadata
-): DashboardMetadata {
-  //If the component is a table, then we need to remove the modal frame that is associated with it
-  if (type === ComponentType.Table) {
-    const layout = dashboardMetadata.layouts[layoutIndex];
-    // @ts-ignore
-    const tableProperties = layout[containerIndex]?.properties;
-    if (tableProperties?.addOns?.addRowForm) {
-      dashboardMetadata = removeModalFrame(
-        tableProperties.addOns.addRowForm.modalId,
-        dashboardMetadata
-      );
-    }
-  }
-
-  return {
-    ...dashboardMetadata,
-    layouts: dashboardMetadata.layouts.map((layout, index) => {
-      if (index === layoutIndex) {
-        return {
-          ...layout,
-          [containerIndex]: null,
-        };
-      }
-      return layout;
-    }),
-  };
-}*/
-
-export function updateComponentProperties(
-  layoutIndex: number,
-  containerIndex: string,
-  componentType: ComponentType | null,
-  properties: Record<string, any>,
-  dashboardMetadata: DashboardMetadata,
-  context?: Context
-): DashboardMetadata {
-  if (!componentType) {
-    return dashboardMetadata;
-  }
-
-  if (context?.type === "modal") {
-    if (!context.modalContext) {
-      return dashboardMetadata;
-    }
-
-    return updateModalFrame(
-      context.modalContext?.modalId,
-      {
-        id: "",
-        type: componentType,
-        properties: properties,
-      },
-      dashboardMetadata
-    );
-  }
-
-  return {
-    ...dashboardMetadata,
-    layouts: dashboardMetadata.layouts.map((layout, index) => {
-      if (index === layoutIndex) {
-        return {
-          ...layout,
-          [containerIndex]: {
-            type: componentType,
-            properties: properties,
-          },
-        };
-      }
-      return layout;
-    }),
-  };
-}
-
 export function changeLayout(
   layoutIndex: number,
   to_type: LayoutType,
@@ -258,49 +166,47 @@ function convertLayout(from: Layout, to_type: LayoutType): Layout {
   return to;
 }
 
-export function addModalFrame(
-  modalId: string,
-  body: FastboardComponent,
+export function createModalFrame(
+  body: {
+    type: ComponentType;
+    properties: Object;
+  },
   dashboardMetadata: DashboardMetadata
-): DashboardMetadata {
-  return {
-    ...dashboardMetadata,
+): [DashboardMetadata, string] {
+  const [newMetadata, componentId] = createComponent(
+    body.type,
+    body.properties,
+    dashboardMetadata
+  );
+
+  const modalId = uuidv4();
+  dashboardMetadata = {
+    ...newMetadata,
     modals: [
-      ...dashboardMetadata.modals,
+      ...newMetadata.modals,
       {
         id: modalId,
-        body,
+        body: componentId,
       },
     ],
   };
+  return [dashboardMetadata, modalId];
 }
 
-export function removeModalFrame(
+function removeModalFrame(
   modalId: string,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
-  return {
-    ...dashboardMetadata,
-    modals: dashboardMetadata.modals.filter((modal) => modal.id !== modalId),
-  };
-}
+  const modalFrame = getModalFrame(modalId, dashboardMetadata);
+  if (!modalFrame) {
+    return dashboardMetadata;
+  }
 
-export function updateModalFrame(
-  modalId: string,
-  body: FastboardComponent,
-  dashboardMetadata: DashboardMetadata
-): DashboardMetadata {
+  const newMetadata = deleteComponent(modalFrame.body, dashboardMetadata);
+
   return {
-    ...dashboardMetadata,
-    modals: dashboardMetadata.modals.map((modal) => {
-      if (modal.id === modalId) {
-        return {
-          ...modal,
-          body,
-        };
-      }
-      return modal;
-    }),
+    ...newMetadata,
+    modals: newMetadata.modals.filter((modal) => modal.id !== modalId),
   };
 }
 
@@ -311,3 +217,15 @@ export function getModalFrame(
   const modal = dashboardMetadata.modals.find((modal) => modal.id === modalId);
   return modal || null;
 }
+
+export const editorUtils = {
+  getComponent,
+  createComponent,
+  deleteComponent,
+  updateComponent,
+  addComponentToLayout,
+  deleteComponentFromLayout,
+  changeLayout,
+  createModalFrame,
+  removeModalFrame,
+};

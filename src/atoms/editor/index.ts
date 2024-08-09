@@ -22,8 +22,6 @@ export const isSettingsDrawerOpen = atom({
 export const propertiesDrawerState = atom<PropertiesDrawerState>({
   key: "propertiesDrawerState",
   default: {
-    layoutIndex: 0,
-    container: "component1",
     selectedComponentId: null,
     type: null,
     properties: {},
