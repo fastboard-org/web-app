@@ -29,44 +29,39 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 import FormTextInput from "./FormTextInput";
 import useGetQuery from "@/hooks/connections/useGetQuery";
+import useModalFrame from "@/hooks/editor/useModalFrame";
 
 export default function FastboardForm({
   properties,
 }: {
   properties: FormProperties;
 }) {
-  const { title, inputs, submitQueryId, submitButtonLabel } = properties;
+  const { title, inputs, submitQueryId, submitButtonLabel, showShadow } =
+    properties;
   const {
     register,
     handleSubmit,
-    setError,
     formState: { errors },
     reset,
   } = useForm();
   const { query: submitQuery } = useGetQuery(submitQueryId || "");
-  const {
-    execute,
-    isPending: isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useExecuteQuery();
+  const { closeModal } = useModalFrame();
+  const { execute, isPending: isLoading } = useExecuteQuery({
+    onSuccess: () => {
+      toast.success("Submit successfully");
+      closeModal();
+    },
+    onError: (error) => {
+      toast.error("Failed submitting", {
+        description: error?.message,
+      });
+      closeModal();
+    },
+  });
 
   useEffect(() => {
     reset();
   }, [submitQueryId]);
-
-  useEffect(() => {
-    if (isSuccess && submitQueryId) {
-      toast.success("Submit successfully");
-    }
-
-    if (isError) {
-      toast.error("Failed submitting", {
-        description: error?.message,
-      });
-    }
-  }, [isError, isSuccess]);
 
   const onSubmit = async (formData: any) => {
     if (!submitQueryId) {
@@ -158,7 +153,7 @@ export default function FastboardForm({
 
   return (
     <form className="h-full" onSubmit={handleSubmit(onSubmit)}>
-      <Card className="grow-0 h-full">
+      <Card className={`grow-0 h-full ${!showShadow ? "shadow-none" : ""}`}>
         <CardHeader>{title}</CardHeader>
         <Divider />
         <CardBody className={"space-y-8 " + scrollbarStyles.scrollbar}>
