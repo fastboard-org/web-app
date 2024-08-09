@@ -36,8 +36,7 @@ export default function FastboardForm({
 }: {
   properties: FormProperties;
 }) {
-  const { title, inputs, submitQueryId, invalidateQueryId, submitButtonLabel } =
-    properties;
+  const { title, inputs, submitQueryId, submitButtonLabel } = properties;
   const {
     register,
     handleSubmit,
@@ -71,9 +70,6 @@ export default function FastboardForm({
     execute({
       query: submitQuery,
       parameters: formData,
-      invalidateQueries: {
-        queryKey: ["get_data", invalidateQueryId],
-      },
     });
     reset();
   };

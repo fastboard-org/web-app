@@ -30,7 +30,7 @@ export default function TableAddOnsList({
 }) {
   const { id } = useParams();
   const { updateDashboard } = useDashboard(id as string);
-  const { sourceQuery, addOns } = tableProperties;
+  const { addOns } = tableProperties;
   const { addRowForm } = addOns;
 
   function getDisabledKeys() {
@@ -61,10 +61,7 @@ export default function TableAddOnsList({
                     modalId,
                     {
                       type: ComponentType.Form,
-                      properties: {
-                        ...new FormProperties(),
-                        invalidateQueryId: sourceQuery?.id || "",
-                      },
+                      properties: FormProperties.default(),
                     },
                     previous.metadata
                   ),

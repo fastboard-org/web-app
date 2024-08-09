@@ -325,9 +325,7 @@ export default function FastboardTable({
             setDeleteModalOpen(false);
           }}
           onConfirm={async () => {
-            executeAction(selectedRowAction, {
-              queryKey: ["get_data", sourceQuery?.id],
-            });
+            executeAction(selectedRowAction);
           }}
         />
       )}

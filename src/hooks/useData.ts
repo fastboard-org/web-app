@@ -6,10 +6,14 @@ import { useMemo, useState } from "react";
 const useData = (
   componentId: string,
   query: Query | null,
-  rowsPerPage: number,
+  rowsPerPage: number
 ) => {
   const { data, refetch, isLoading, isFetching, isError, error } = useQuery({
-    queryKey: ["get_data", query?.id, { componentId: componentId }],
+    queryKey: [
+      "get_data",
+      query?.connection_id,
+      { queryId: query?.id, componentId },
+    ],
     queryFn: () => fetchData(query),
     refetchOnWindowFocus: false,
   });
