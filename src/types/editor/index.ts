@@ -47,6 +47,7 @@ export interface Context {
 export interface PropertiesDrawerState {
   layoutIndex: number;
   container: string;
+  selectedComponentId: ComponentId | null;
   type: ComponentType | null;
   properties: Record<string, any>;
   context?: Context;

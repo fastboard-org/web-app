@@ -28,7 +28,11 @@ import FastboardGroupChartDraggable from "@/components/editor/fastboard-componen
 import FastboardGroupChart from "@/components/editor/fastboard-components/group-chart/FastboardGroupChart";
 import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
 import FastboardGroupChartPropertiesComponent from "@/components/editor/fastboard-components/group-chart/properties/FastboardGroupChartProperties";
-import { ComponentType, PropertiesDrawerState } from "@/types/editor";
+import {
+  ComponentId,
+  ComponentType,
+  PropertiesDrawerState,
+} from "@/types/editor";
 import FastboardFormDraggable from "./form/FastboardFormDraggable";
 import FastboardForm from "./form/FastboardForm";
 import { FormProperties } from "@/types/editor/form";
@@ -52,8 +56,9 @@ export function getComponent(
   layoutIndex: number,
   container: string,
   id: ComponentType,
+  componentId: ComponentId,
   type: "editable" | "view",
-  properties?: Record<string, any>,
+  properties?: Record<string, any>
 ) {
   if (!id) {
     return null;
@@ -63,15 +68,13 @@ export function getComponent(
     [ComponentType.Table]: {
       editable: (
         <FastboardTable
-          layoutIndex={layoutIndex}
-          container={container}
+          id={componentId}
           properties={properties as FastboardTableProperties}
         />
       ),
       view: (
         <FastboardTable
-          layoutIndex={layoutIndex}
-          container={container}
+          id={componentId}
           properties={properties as FastboardTableProperties}
         />
       ),
@@ -88,15 +91,13 @@ export function getComponent(
     [ComponentType.Cards]: {
       editable: (
         <FastboardCards
-          layoutIndex={layoutIndex}
-          container={container}
+          id={componentId}
           properties={properties as FastboardCardsProperties}
         />
       ),
       view: (
         <FastboardCards
-          layoutIndex={layoutIndex}
-          container={container}
+          id={componentId}
           properties={properties as FastboardCardsProperties}
         />
       ),
@@ -104,15 +105,13 @@ export function getComponent(
     [ComponentType.GroupChart]: {
       editable: (
         <FastboardGroupChart
-          layoutIndex={layoutIndex}
-          container={container}
+          id={componentId}
           properties={properties as FastboardGroupChartProperties}
         />
       ),
       view: (
         <FastboardGroupChart
-          layoutIndex={layoutIndex}
-          container={container}
+          id={componentId}
           properties={properties as FastboardGroupChartProperties}
         />
       ),
@@ -127,7 +126,7 @@ export function getComponent(
 
 export function getPropertiesComponent(
   state: PropertiesDrawerState,
-  onValueChange?: (properties: Record<string, any>) => void,
+  onValueChange?: (properties: Record<string, any>) => void
 ) {
   const { type, container, properties } = state;
 
@@ -186,7 +185,7 @@ export function getPropertiesComponent(
 export function getLayout(
   layout: Layout,
   index: number,
-  mode: "editable" | "view",
+  mode: "editable" | "view"
 ) {
   switch (layout.type) {
     case LayoutType.Full:

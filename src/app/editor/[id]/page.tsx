@@ -5,18 +5,16 @@ import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { Toaster } from "@/components/shared/Toaster";
-import { addComponent } from "@/lib/editor.utils";
 import { ComponentType } from "@/types/editor";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import SettingsDrawer from "@/components/editor/settings/SettingsDrawer";
 import EditorModal from "@/components/editor/EditorModal";
 
 export default function Editor() {
-  const { id } = useParams();
   const router = useRouter();
-  const { isError, error, updateDashboard } = useDashboard(id as string);
+  const { isError, addComponentToLayout } = useDashboard();
 
   function updateDashboardMetadata(event: DragEndEvent) {
     const { over, active } = event;
@@ -28,16 +26,12 @@ export default function Editor() {
     const componentType: ComponentType = active.data.current?.type;
     const defaultProperties: Object = active.data.current?.defaultProperties;
 
-    updateDashboard((prev) => ({
-      ...prev,
-      metadata: addComponent(
-        layoutIndex,
-        container,
-        componentType,
-        defaultProperties,
-        prev.metadata
-      ),
-    }));
+    addComponentToLayout(
+      layoutIndex,
+      container,
+      componentType,
+      defaultProperties
+    );
   }
 
   if (isError) {

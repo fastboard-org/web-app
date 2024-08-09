@@ -3,19 +3,17 @@ import { isPropertiesDrawerOpen, propertiesDrawerState } from "@/atoms/editor";
 import { Divider, Spacer } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getPropertiesComponent } from "./fastboard-components/utils";
-import { updateComponentProperties } from "@/lib/editor.utils";
-import { useParams } from "next/navigation";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 
 export default function PropertiesDrawer() {
-  const { id } = useParams();
-  const { updateDashboard } = useDashboard(id as string);
+  const { updateComponentProperties } = useDashboard();
   const isOpen = useRecoilValue(isPropertiesDrawerOpen);
-  const propertiesDrawerComponent = useRecoilValue(propertiesDrawerState);
-  const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
+  const [propertiesDrawerComponent, setPropertiesDrawerState] = useRecoilState(
+    propertiesDrawerState
+  );
 
   return (
     <motion.div
@@ -33,22 +31,17 @@ export default function PropertiesDrawer() {
       <Spacer y={4} />
       {isOpen &&
         getPropertiesComponent(propertiesDrawerComponent, (properties) => {
+          if (!propertiesDrawerComponent.selectedComponentId) return;
+
           setPropertiesDrawerState((prev) => ({
             ...prev,
             properties: properties,
             context: propertiesDrawerComponent.context,
           }));
-          updateDashboard((prev) => ({
-            ...prev,
-            metadata: updateComponentProperties(
-              propertiesDrawerComponent.layoutIndex,
-              propertiesDrawerComponent.container,
-              propertiesDrawerComponent.type,
-              properties,
-              prev.metadata,
-              propertiesDrawerComponent.context
-            ),
-          }));
+          updateComponentProperties(
+            propertiesDrawerComponent.selectedComponentId,
+            properties
+          );
         })}
     </motion.div>
   );

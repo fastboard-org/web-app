@@ -14,12 +14,14 @@ import { useEffect, useRef } from "react";
 
 export default function EditorCanvas() {
   const { id } = useParams();
-  const { dashboard } = useDashboard(id as string);
+  const { dashboard } = useDashboard();
   const editorCanvasRef = useRef<HTMLDivElement>(null);
   const setEditorCanvasRef = useSetRecoilState(editorCanvasRefState);
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
   const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
   const isSettingsOpen = useRecoilValue(isSettingsDrawerOpen);
+
+  console.log("dashboard", dashboard?.metadata.components);
 
   useEffect(() => {
     setEditorCanvasRef(editorCanvasRef.current);

@@ -30,8 +30,7 @@ import { toast } from "sonner";
 import { useRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { updateComponentProperties } from "@/lib/editor.utils";
-import { ComponentType } from "@/types/editor";
-import { useParams } from "next/navigation";
+import { ComponentId, ComponentType } from "@/types/editor";
 import ViewActionModal from "./shared/ViewActionModal";
 import { InvalidateQueryFilters } from "@tanstack/react-query";
 import { Edit, Eye, Trash } from "iconsax-react";
@@ -57,16 +56,13 @@ function getFinalColumns(
 }
 
 export default function FastboardTable({
-  layoutIndex,
-  container,
+  id,
   properties,
 }: {
-  layoutIndex: number;
-  container: string;
+  id: ComponentId;
   properties: FastboardTableProperties;
 }) {
-  const { id } = useParams();
-  const { updateDashboard } = useDashboard(id as string);
+  const { updateComponentProperties } = useDashboard();
   const {
     sourceQuery,
     emptyMessage,
@@ -86,11 +82,7 @@ export default function FastboardTable({
     isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
-  } = useData(
-    `${layoutIndex}-${container}-${ComponentType.Table}`,
-    sourceQuery,
-    rowsPerPage
-  );
+  } = useData(`${ComponentType.Table}-${id}`, sourceQuery, rowsPerPage);
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState
@@ -127,29 +119,17 @@ export default function FastboardTable({
       return;
     }
 
-    updateDashboard((previous) => ({
-      ...previous,
-      metadata: updateComponentProperties(
-        layoutIndex,
-        container,
-        ComponentType.Table,
-        {
-          ...properties,
-          columns: keys.map((key) => {
-            return {
-              column: { key, label: key },
-              visible: true,
-            };
-          }),
-        },
-        previous.metadata
-      ),
-    }));
+    updateComponentProperties(id, {
+      ...properties,
+      columns: keys.map((key) => {
+        return {
+          column: { key, label: key },
+          visible: true,
+        };
+      }),
+    });
     setPropertiesState((previous) => {
-      if (
-        previous.layoutIndex !== layoutIndex ||
-        previous.container !== container
-      ) {
+      if (previous.selectedComponentId !== id) {
         return previous;
       }
       return {

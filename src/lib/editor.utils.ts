@@ -21,12 +21,48 @@ export function createComponent(
   dashboardMetadata: DashboardMetadata
 ): [DashboardMetadata, ComponentId] {
   const id = Math.random().toString(36).substring(7);
-  dashboardMetadata.components[id] = {
-    id: id,
-    type: type,
-    properties: defaultProperties,
+  dashboardMetadata = {
+    ...dashboardMetadata,
+    components: {
+      ...dashboardMetadata.components,
+      [id]: {
+        id: id,
+        type: type,
+        properties: defaultProperties,
+      },
+    },
   };
   return [dashboardMetadata, id];
+}
+
+export function deleteComponent(
+  id: ComponentId,
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  //TODO: If the component is a table, then we need to remove the modal frame that is associated with it
+  delete dashboardMetadata.components[id];
+  return dashboardMetadata;
+}
+
+export function updateComponent(
+  id: ComponentId,
+  properties: Object,
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  const component = dashboardMetadata.components[id];
+  if (!component) {
+    return dashboardMetadata;
+  }
+  return {
+    ...dashboardMetadata,
+    components: {
+      ...dashboardMetadata.components,
+      [id]: {
+        ...component,
+        properties: properties,
+      },
+    },
+  };
 }
 
 export function addComponentToLayout(
@@ -55,10 +91,40 @@ export function addComponentToLayout(
   };
 }
 
+export function deleteComponentFromLayout(
+  layoutIndex: number,
+  containerIndex: string,
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  const layout = dashboardMetadata.layouts[layoutIndex];
+  // @ts-ignore
+  const componentId: ComponentId = layout[containerIndex];
+  if (!componentId) {
+    return dashboardMetadata;
+  }
+
+  const newMetadata = deleteComponent(componentId, dashboardMetadata);
+  return {
+    ...newMetadata,
+    layouts: newMetadata.layouts.map((layout, index) => {
+      if (index === layoutIndex) {
+        return {
+          ...layout,
+          [containerIndex]: null,
+        };
+      }
+      return layout;
+    }),
+  };
+}
+
 export const editorUtils = {
   getComponent,
   createComponent,
+  deleteComponent,
+  updateComponent,
   addComponentToLayout,
+  deleteComponentFromLayout,
 };
 
 export function addComponent(
@@ -85,6 +151,7 @@ export function addComponent(
   };
 }
 
+/*
 export function deleteComponent(
   type: ComponentType,
   layoutIndex: number,
@@ -116,7 +183,7 @@ export function deleteComponent(
       return layout;
     }),
   };
-}
+}*/
 
 export function updateComponentProperties(
   layoutIndex: number,

@@ -34,6 +34,7 @@ const getDashboards = async () => {
 
 const createDashboard = async (name: string, folderId?: string | null) => {
   const metadata: DashboardMetadata = {
+    components: {},
     modals: [],
     layouts: [Layout.of(LayoutType.Full)],
   };

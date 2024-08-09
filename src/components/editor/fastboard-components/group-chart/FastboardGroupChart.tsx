@@ -4,15 +4,14 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
 import useData from "@/hooks/useData";
-import { ComponentType } from "@/types/editor";
-import { useEffect, useState } from "react";
+import { ComponentId, ComponentType } from "@/types/editor";
+import { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
-import EditableTitle from "@/components/shared/EditableTitle";
 
 const groupData = (data: any[], groupBy: string) => {
   return data.reduce((acc, item) => {
@@ -26,15 +25,24 @@ const groupData = (data: any[], groupBy: string) => {
 };
 
 const FastboardGroupChart = ({
+  id,
   layoutIndex,
   container,
   properties,
 }: {
-  layoutIndex: number;
-  container: string;
+  id: ComponentId;
+  layoutIndex?: number;
+  container?: string;
   properties: FastboardGroupChartProperties;
 }) => {
-  const { sourceQuery, title, subtitle, groupBy, emptyMessage, minimizedLabels } = properties;
+  const {
+    sourceQuery,
+    title,
+    subtitle,
+    groupBy,
+    emptyMessage,
+    minimizedLabels,
+  } = properties;
   const setProperties = useSetRecoilState(propertiesDrawerState);
 
   const {
@@ -43,9 +51,9 @@ const FastboardGroupChart = ({
     isFetching: dataFetching,
     isError: isDataError,
   } = useData(
-    `${layoutIndex}-${container}-${ComponentType.GroupChart}`,
+    `${ComponentType.GroupChart}-${id}`,
     sourceQuery,
-    Number.MAX_VALUE,
+    Number.MAX_VALUE
   );
 
   useEffect(() => {
@@ -104,13 +112,14 @@ const FastboardGroupChart = ({
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                tickFormatter={minimizedLabels ? (value) => value.slice(0, 5) + "..." : undefined}
+                tickFormatter={
+                  minimizedLabels
+                    ? (value) => value.slice(0, 5) + "..."
+                    : undefined
+                }
               />
 
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent />}
-              />
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
               <Bar dataKey="count" fill="var(--color-desktop)" radius={8} />
             </BarChart>
           </ChartContainer>
