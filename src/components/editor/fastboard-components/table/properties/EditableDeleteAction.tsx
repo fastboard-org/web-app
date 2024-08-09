@@ -12,10 +12,10 @@ import {
 } from "@nextui-org/react";
 import { IoIosClose } from "react-icons/io";
 import { RiQuestionLine } from "react-icons/ri";
-import QuerySelection from "../QuerySelection";
 import EditableTitle from "@/components/shared/EditableTitle";
 import { TableActionProperty } from "@/types/editor/table-types";
 import { useEffect, useState } from "react";
+import QuerySelection from "@/components/editor/QuerySelection";
 
 export function EditableDeleteAction({
   action,

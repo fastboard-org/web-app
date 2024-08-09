@@ -1,10 +1,7 @@
 import { AddRowFormProperties } from "@/types/editor/table-types";
 import { Button } from "@nextui-org/react";
-import FastboardComponent from "../FastboardComponent";
-import { ComponentType } from "@/types/editor";
 import { useSetRecoilState } from "recoil";
 import { editorModalState } from "@/atoms/editor";
-import { useParams } from "next/navigation";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { getModalFrame } from "@/lib/editor.utils";
 
@@ -13,8 +10,7 @@ export default function AddRowForm({
 }: {
   properties: AddRowFormProperties;
 }) {
-  const { id } = useParams();
-  const { dashboard } = useDashboard(id as string);
+  const { dashboard } = useDashboard();
   const { buttonLabel, modalId } = properties;
   const setEditorModalState = useSetRecoilState(editorModalState);
 

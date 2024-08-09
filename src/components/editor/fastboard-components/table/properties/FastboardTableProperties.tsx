@@ -8,12 +8,12 @@ import {
   Spacer,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { FastboardTableProperties } from "@/types/editor/table-types";
+import QuerySelection from "@/components/editor/QuerySelection";
 import ReorderableColumns from "./ReorderableColumns";
 import TableActionsList from "./TableActionsList";
-import { FastboardTableProperties } from "@/types/editor/table-types";
-import QuerySelection from "../QuerySelection";
-import TableAddOnsList from "./table/properties/TableAddOnsList";
-import TableAddRowProperties from "./table/properties/TableAddRowProperties";
+import TableAddOnsList from "./TableAddOnsList";
+import TableAddRowProperties from "./TableAddRowProperties";
 
 const FastboardTablePropertiesComponent = ({
   container,

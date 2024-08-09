@@ -15,7 +15,6 @@ import {
   DropdownTrigger,
 } from "@nextui-org/react";
 import { Add } from "iconsax-react";
-import { useParams } from "next/navigation";
 import { IoIosClose } from "react-icons/io";
 import { v4 as uuidv4 } from "uuid";
 
@@ -28,8 +27,7 @@ export default function TableAddOnsList({
   onSelectAddOn?: (key: string) => void;
   onValueChange: (value: TableAddOnsProperties) => void;
 }) {
-  const { id } = useParams();
-  const { updateDashboard } = useDashboard(id as string);
+  const { updateDashboard } = useDashboard();
   const { addOns } = tableProperties;
   const { addRowForm } = addOns;
 

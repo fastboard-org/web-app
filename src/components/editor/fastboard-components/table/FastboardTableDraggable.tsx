@@ -8,8 +8,8 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import { ComponentType } from "@/types/editor";
-import Draggable from "./Draggable";
 import { FastboardTableProperties } from "@/types/editor/table-types";
+import Draggable from "../Draggable";
 
 export default function FastboardTableDraggable() {
   return (

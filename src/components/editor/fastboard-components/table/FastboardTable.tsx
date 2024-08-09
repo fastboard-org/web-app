@@ -24,19 +24,19 @@ import {
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { IoIosMore } from "react-icons/io";
-import DeleteActionModal from "./shared/DeleteActionModal";
+import DeleteActionModal from "../shared/DeleteActionModal";
 import useData from "@/hooks/useData";
 import { toast } from "sonner";
 import { useRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { updateComponentProperties } from "@/lib/editor.utils";
 import { ComponentId, ComponentType } from "@/types/editor";
-import ViewActionModal from "./shared/ViewActionModal";
+import ViewActionModal from "../shared/ViewActionModal";
 import { InvalidateQueryFilters } from "@tanstack/react-query";
 import { Edit, Eye, Trash } from "iconsax-react";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import AddRowForm from "./table/AddRowForm";
+import AddRowForm from "./AddRowForm";
 
 function getFinalColumns(
   columns: TableColumnProperties[],

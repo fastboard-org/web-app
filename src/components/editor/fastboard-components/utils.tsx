@@ -3,10 +3,8 @@ import {
   RightSplitLayout as RightSplitLayoutInterface,
   BottomSplitLayout as BottomSplitLayoutInterface,
 } from "@/types/editor/layout-types";
-import FastboardTableDraggable from "./FastboardTableDraggable";
-import FastboardTable from "./FastboardTable";
+import FastboardTable from "./table/FastboardTable";
 import { FastboardTableProperties } from "@/types/editor/table-types";
-import FastboardTablePropertiesComponent from "./FastboardTableProperties";
 
 import FastboardCardsDraggable from "./cards/FastboardCardsDraggable";
 import FastboardCards from "./cards/FastboardCards";
@@ -37,6 +35,8 @@ import FastboardFormDraggable from "./form/FastboardFormDraggable";
 import FastboardForm from "./form/FastboardForm";
 import { FormProperties } from "@/types/editor/form";
 import FastboardFormProperties from "./form/properties/FastboardFormProperties";
+import FastboardTableDraggable from "./table/FastboardTableDraggable";
+import FastboardTablePropertiesComponent from "./table/properties/FastboardTableProperties";
 
 export function getDraggableComponent(id: ComponentType) {
   const components = {
