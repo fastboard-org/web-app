@@ -25,6 +25,7 @@ export default function AddRowForm({
   return (
     <div className="flex justify-end">
       <Button
+        color="primary"
         onPress={() => {
           const modal = getModalFrame(modalId, dashboard.metadata);
           if (!modal) {
