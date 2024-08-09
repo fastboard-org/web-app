@@ -1,6 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { dashboardService } from "@/lib/services/dashboards";
 import { Dashboard } from "@/types/dashboards";
+import { editorUtils } from "@/lib/editor.utils";
+import { ComponentType } from "@/types/editor";
 
 const useDashboard = (id: string) => {
   const {
@@ -16,6 +18,25 @@ const useDashboard = (id: string) => {
   });
 
   const queryClient = useQueryClient();
+
+  const addComponentToLayout = (
+    layoutIndex: number,
+    containerIndex: string,
+    type: ComponentType,
+    defaultProperties: Object
+  ) => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.addComponentToLayout(
+        layoutIndex,
+        containerIndex,
+        type,
+        defaultProperties,
+        prev.metadata
+      ),
+    }));
+  };
 
   const updateDashboard = (updater: (previous: Dashboard) => Dashboard) => {
     let updatedDashboard: Dashboard | undefined;
@@ -46,6 +67,7 @@ const useDashboard = (id: string) => {
     loading,
     isError,
     error,
+    addComponentToLayout,
     updateDashboard,
   };
 };

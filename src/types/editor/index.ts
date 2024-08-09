@@ -12,12 +12,16 @@ export enum ComponentType {
   Cards = "cards",
 }
 
+export type ComponentId = string;
+
 export interface FastboardComponent {
+  id: ComponentId;
   type: ComponentType;
   properties: Record<string, any>;
 }
 
 export interface DashboardMetadata {
+  components: Record<ComponentId, FastboardComponent>;
   layouts: Array<Layout>;
 }
 

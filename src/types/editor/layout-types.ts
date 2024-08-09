@@ -1,4 +1,4 @@
-import { FastboardComponent } from ".";
+import { ComponentId, FastboardComponent } from ".";
 
 export enum LayoutType {
   Full = "full",
@@ -34,7 +34,7 @@ export abstract class Layout {
 }
 
 export class FullLayout extends Layout {
-  component1: FastboardComponent | null;
+  component1: ComponentId | null;
 
   constructor() {
     super(LayoutType.Full);
