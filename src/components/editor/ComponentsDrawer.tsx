@@ -21,7 +21,7 @@ export default function ComponentsDrawer() {
     >
       <h3 className={"text-xl font-medium p-2 mb-2"}>Components</h3>
       <Divider />
-      <div className="flex flex-col gap-5 mt-5">
+      <div className="flex flex-wrap justify-between mt-5 gap-y-3">
         {Object.values(ComponentType).map((componentType) =>
           getDraggableComponent(componentType)
         )}
