@@ -38,7 +38,7 @@ export default function EditorModal({
           portalContainer={editorCanvasRef || document.body}
           isDismissable={false}
           scrollBehavior="inside"
-          className="p-4"
+          className="p-2"
           classNames={{
             backdrop: "h-full w-full",
             body: `${scrollbarStyles.scrollbar}`,

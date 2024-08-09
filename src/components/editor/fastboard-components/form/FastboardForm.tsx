@@ -36,7 +36,8 @@ export default function FastboardForm({
 }: {
   properties: FormProperties;
 }) {
-  const { title, inputs, submitQueryId, submitButtonLabel } = properties;
+  const { title, inputs, submitQueryId, submitButtonLabel, showShadow } =
+    properties;
   const {
     register,
     handleSubmit,
@@ -152,7 +153,7 @@ export default function FastboardForm({
 
   return (
     <form className="h-full" onSubmit={handleSubmit(onSubmit)}>
-      <Card className="grow-0 h-full">
+      <Card className={`grow-0 h-full ${!showShadow ? "shadow-none" : ""}`}>
         <CardHeader>{title}</CardHeader>
         <Divider />
         <CardBody className={"space-y-8 " + scrollbarStyles.scrollbar}>

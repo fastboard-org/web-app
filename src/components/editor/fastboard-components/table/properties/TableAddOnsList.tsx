@@ -61,7 +61,10 @@ export default function TableAddOnsList({
                     modalId,
                     {
                       type: ComponentType.Form,
-                      properties: FormProperties.default(),
+                      properties: {
+                        ...FormProperties.default(),
+                        showShadow: false,
+                      },
                     },
                     previous.metadata
                   ),

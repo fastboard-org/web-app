@@ -89,6 +89,7 @@ export class FormProperties {
   submitQueryId: string | null = null;
   submitButtonLabel: string = "Submit";
   inputs: InputProperties[] = [];
+  showShadow: boolean = true;
 
   static default(): FormProperties {
     return new FormProperties();
