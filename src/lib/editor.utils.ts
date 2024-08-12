@@ -40,9 +40,12 @@ export function deleteComponent(
   id: ComponentId,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
-  //TODO: If the component is a table, then we need to remove the modal frame that is associated with it
   const component = dashboardMetadata.components[id];
+  if (!component) {
+    return dashboardMetadata;
+  }
   if (component.type === ComponentType.Table) {
+    //If the component is a table, then we need to remove the modal frame that is associated with it
     const modalId = component.properties?.addOns?.addRowForm?.modalId;
     if (modalId) {
       dashboardMetadata = removeModalFrame(modalId, dashboardMetadata);
@@ -81,9 +84,9 @@ export function addComponentToLayout(
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
   // If there is already a component in the container, delete it
+  const layout = dashboardMetadata.layouts[layoutIndex];
   const curretnComponentId: ComponentId | null =
-    // @ts-ignore
-    dashboardMetadata.layouts[layoutIndex][containerIndex];
+    layout[containerIndex as keyof Layout];
   if (curretnComponentId) {
     dashboardMetadata = deleteComponentFromLayout(
       layoutIndex,
@@ -117,8 +120,7 @@ export function deleteComponentFromLayout(
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
   const layout = dashboardMetadata.layouts[layoutIndex];
-  // @ts-ignore
-  const componentId: ComponentId = layout[containerIndex];
+  const componentId: ComponentId = layout[containerIndex as keyof Layout];
   if (!componentId) {
     return dashboardMetadata;
   }
@@ -143,6 +145,19 @@ export function changeLayout(
   to_type: LayoutType,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
+  let to = Layout.of(to_type);
+  const from = dashboardMetadata.layouts[layoutIndex];
+
+  const keysFrom = Object.keys(from);
+  const keysTo = Object.keys(to);
+
+  keysFrom
+    .filter((key) => !keysTo.includes(key))
+    .forEach((key) => {
+      const componentId: ComponentId = from[key as keyof Layout];
+      dashboardMetadata = deleteComponent(componentId, dashboardMetadata);
+    });
+
   return {
     ...dashboardMetadata,
     layouts: dashboardMetadata.layouts.map((layout, index) => {
@@ -159,8 +174,7 @@ function convertLayout(from: Layout, to_type: LayoutType): Layout {
 
   Object.keys(to).forEach((key) => {
     if (key !== "type") {
-      // @ts-ignore
-      to[key] = from[key] || null;
+      to[key as keyof Layout] = from[key as keyof Layout] || null;
     }
   });
   return to;
