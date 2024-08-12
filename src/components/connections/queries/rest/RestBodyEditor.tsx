@@ -41,7 +41,7 @@ const RestBodyEditor = ({
         placeholder={"Enter request body here"}
         classNames={{
           inputWrapper: "!h-full",
-          input: scrollbarStyles.scrollbar,
+          input: "h-full " + scrollbarStyles.scrollbar,
         }}
         disableAutosize
         onKeyDown={(e) => {
