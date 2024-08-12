@@ -8,19 +8,19 @@ import {
   Spacer,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { FastboardTableProperties } from "@/types/editor/table-types";
+import QuerySelection from "@/components/editor/QuerySelection";
 import ReorderableColumns from "./ReorderableColumns";
 import TableActionsList from "./TableActionsList";
-import { FastboardTableProperties } from "@/types/editor/table-types";
-import QuerySelection from "../QuerySelection";
-import TableAddOnsList from "./table/properties/TableAddOnsList";
-import TableAddRowProperties from "./table/properties/TableAddRowProperties";
+import TableAddOnsList from "./TableAddOnsList";
+import TableAddRowProperties from "./TableAddRowProperties";
+import { useRecoilValue } from "recoil";
+import { propertiesDrawerState } from "@/atoms/editor";
 
 const FastboardTablePropertiesComponent = ({
-  container,
   properties,
   onValueChange,
 }: {
-  container: string;
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
@@ -33,6 +33,7 @@ const FastboardTablePropertiesComponent = ({
     hideHeader,
     isStriped,
   } = properties;
+  const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [columnsProperties, setColumnsProperties] = useState(columns);
   const [addOnSelected, setAddOnSelected] = useState<string | null>(null);
 
@@ -41,9 +42,9 @@ const FastboardTablePropertiesComponent = ({
   }, [columns]);
 
   useEffect(() => {
-    // Reset add-on selection when the container changes
+    // Reset add-on selection when the selected component changes
     setAddOnSelected(null);
-  }, [container]);
+  }, [selectedComponentId]);
 
   return (
     <div>

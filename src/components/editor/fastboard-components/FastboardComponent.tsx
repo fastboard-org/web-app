@@ -4,45 +4,42 @@ import {
   isSettingsDrawerOpen,
   propertiesDrawerState,
 } from "@/atoms/editor";
-import { ComponentType, Context } from "@/types/editor";
+import { ComponentId, ComponentType, Context } from "@/types/editor";
 import React, { useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { getComponent } from "./utils";
 import { Button } from "@nextui-org/react";
 import { Trash } from "iconsax-react";
-import { deleteComponent } from "@/lib/editor.utils";
-import { useParams } from "next/navigation";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 
 const FastboardComponent = ({
-  onClick,
+  id,
   name,
   type,
   properties,
-  layoutIndex,
-  containerIndex,
   context,
   mode = "editable",
   canDelete = true,
+  onClick,
 }: {
-  onClick?: () => void;
+  id: ComponentId;
   name: string;
   type: ComponentType;
   properties: Record<string, any>;
-  layoutIndex: number;
-  containerIndex: string;
-  context?: Context;
+  context: Context;
   mode?: "editable" | "view";
   canDelete?: boolean;
+  onClick?: () => void;
 }) => {
-  const { id } = useParams();
-  const { updateDashboard } = useDashboard(id as string);
+  const { deleteComponentFromLayout } = useDashboard();
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
-  const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
   const setIsSettingsDrawerOpen = useSetRecoilState(isSettingsDrawerOpen);
-  const propertiesDrawerOpen = useRecoilValue(isPropertiesDrawerOpen);
-  const propertiesDrawerStateValue = useRecoilValue(propertiesDrawerState);
-  const setPropertiesDrawerState = useSetRecoilState(propertiesDrawerState);
+  const [propertiesDrawerOpen, setIsPropertiesDrawerOpen] = useRecoilState(
+    isPropertiesDrawerOpen
+  );
+  const [propertiesDrawerStateValue, setPropertiesDrawerState] = useRecoilState(
+    propertiesDrawerState
+  );
   const [isHovered, setIsHovered] = useState(false);
 
   function onClickComponent(e: React.MouseEvent<HTMLDivElement>) {
@@ -51,8 +48,7 @@ const FastboardComponent = ({
     setIsSettingsDrawerOpen(false);
     setIsPropertiesDrawerOpen(true);
     setPropertiesDrawerState({
-      layoutIndex: layoutIndex,
-      container: containerIndex,
+      selectedComponentId: id,
       type: type,
       properties: properties,
       context: context,
@@ -63,36 +59,23 @@ const FastboardComponent = ({
   }
 
   function onDeleteComponent() {
+    if (!context.layoutContext) return null;
+    const { layoutIndex, containerIndex } = context.layoutContext;
     setIsPropertiesDrawerOpen(false);
-    updateDashboard((previous) => ({
-      ...previous,
-      metadata: deleteComponent(
-        type,
-        layoutIndex,
-        containerIndex,
-        previous.metadata
-      ),
-    }));
+    deleteComponentFromLayout(layoutIndex, containerIndex);
   }
 
   function isSelected() {
     if (
       propertiesDrawerOpen &&
-      propertiesDrawerStateValue.layoutIndex === layoutIndex &&
-      propertiesDrawerStateValue.container === containerIndex
+      propertiesDrawerStateValue.selectedComponentId === id
     )
       return true;
 
     return isHovered;
   }
 
-  const component = getComponent(
-    layoutIndex,
-    containerIndex,
-    type,
-    mode,
-    properties
-  );
+  const component = getComponent(type, id, mode, properties);
   if (!component) return null;
 
   if (mode === "view") {

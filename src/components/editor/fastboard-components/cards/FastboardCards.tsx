@@ -1,30 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardBody, Spacer, user } from "@nextui-org/react";
+import { Card } from "@nextui-org/react";
 import { FastboardCardsProperties } from "@/types/editor/cards-types";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import CustomCard from "./CustomCard";
 import useData from "@/hooks/useData";
-import { ComponentType } from "@/types/editor";
+import { ComponentId, ComponentType } from "@/types/editor";
 import { toast } from "sonner";
 import { useRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
-import { updateComponentProperties } from "@/lib/editor.utils";
 import useDashboard from "@/hooks/dashboards/useDashboard";
-
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import { useParams } from "next/navigation";
 
 export default function FastboardCards({
-  layoutIndex,
-  container,
+  id,
   properties,
 }: {
-  layoutIndex: number;
-  container: string;
+  id: ComponentId;
   properties: FastboardCardsProperties;
 }) {
-  const { id } = useParams();
-  const { updateDashboard } = useDashboard(id as string);
+  const { updateComponentProperties } = useDashboard();
 
   const { sourceQuery, emptyMessage, header, footer, body, cardsPerRow } =
     properties;
@@ -34,11 +28,7 @@ export default function FastboardCards({
     isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
-  } = useData(
-    `${layoutIndex}-${container}-${ComponentType.Cards}`,
-    sourceQuery,
-    Number.MAX_VALUE
-  );
+  } = useData(`${ComponentType.Cards}-${id}`, sourceQuery, Number.MAX_VALUE);
 
   const [shouldUpdateCards, setShouldUpdateCards] = useState(false);
 
@@ -60,30 +50,19 @@ export default function FastboardCards({
     if (!shouldUpdateCards) {
       return;
     }
-    updateDashboard((previous) => ({
-      ...previous,
-      metadata: updateComponentProperties(
-        layoutIndex,
-        container,
-        ComponentType.Cards,
-        {
-          ...properties,
-          body: keys.map((key) => {
-            return {
-              key: key,
-              label: key,
-              visible: false,
-            };
-          }),
-        },
-        previous.metadata
-      ),
-    }));
+    updateComponentProperties(id, {
+      ...properties,
+      body: keys.map((key) => {
+        return {
+          key: key,
+          label: key,
+          visible: false,
+        };
+      }),
+    });
+
     setPropertiesState((previous) => {
-      if (
-        previous.layoutIndex !== layoutIndex ||
-        previous.container !== container
-      ) {
+      if (previous.selectedComponentId !== id) {
         return previous;
       }
       return {

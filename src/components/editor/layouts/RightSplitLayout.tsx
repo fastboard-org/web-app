@@ -16,7 +16,7 @@ export default function RightSplitLayout({
         <Container
           layoutIndex={index}
           containerIndex="component1"
-          component={properties.component1}
+          componentId={properties.component1}
           mode={mode}
           className="h-full p-5"
         />
@@ -25,14 +25,14 @@ export default function RightSplitLayout({
         <Container
           layoutIndex={index}
           containerIndex="component2"
-          component={properties.component2}
+          componentId={properties.component2}
           mode={mode}
           className="pl-1 pr-5 pt-5 pb-1 h-1/2"
         />
         <Container
           layoutIndex={index}
           containerIndex="component3"
-          component={properties.component3}
+          componentId={properties.component3}
           mode={mode}
           className="pl-1 pr-5 pt-1 pb-5 h-1/2"
         />

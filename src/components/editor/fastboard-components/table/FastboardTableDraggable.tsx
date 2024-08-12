@@ -1,7 +1,7 @@
 import React from "react";
 import { ComponentType } from "@/types/editor";
-import Draggable from "./Draggable";
 import { FastboardTableProperties } from "@/types/editor/table-types";
+import Draggable from "../Draggable";
 import DraggableImage from "@/components/shared/DraggableImage";
 
 export default function FastboardTableDraggable() {

@@ -1,4 +1,4 @@
-import { FastboardComponent } from ".";
+import { ComponentId } from ".";
 
 export enum LayoutType {
   Full = "full",
@@ -34,7 +34,7 @@ export abstract class Layout {
 }
 
 export class FullLayout extends Layout {
-  component1: FastboardComponent | null;
+  component1: ComponentId | null;
 
   constructor() {
     super(LayoutType.Full);
@@ -42,8 +42,8 @@ export class FullLayout extends Layout {
   }
 }
 export class RowLayout extends Layout {
-  component1: FastboardComponent | null;
-  component2: FastboardComponent | null;
+  component1: ComponentId | null;
+  component2: ComponentId | null;
 
   constructor() {
     super(LayoutType.Row);
@@ -53,8 +53,8 @@ export class RowLayout extends Layout {
 }
 
 export class ColumnLayout extends Layout {
-  component1: FastboardComponent | null;
-  component2: FastboardComponent | null;
+  component1: ComponentId | null;
+  component2: ComponentId | null;
 
   constructor() {
     super(LayoutType.Column);
@@ -64,9 +64,9 @@ export class ColumnLayout extends Layout {
 }
 
 export class RightSplitLayout extends Layout {
-  component1: FastboardComponent | null;
-  component2: FastboardComponent | null;
-  component3: FastboardComponent | null;
+  component1: ComponentId | null;
+  component2: ComponentId | null;
+  component3: ComponentId | null;
 
   constructor() {
     super(LayoutType.RightSplit);
@@ -77,9 +77,9 @@ export class RightSplitLayout extends Layout {
 }
 
 export class BottomSplitLayout extends Layout {
-  component1: FastboardComponent | null;
-  component2: FastboardComponent | null;
-  component3: FastboardComponent | null;
+  component1: ComponentId | null;
+  component2: ComponentId | null;
+  component3: ComponentId | null;
 
   constructor() {
     super(LayoutType.BottomSplit);

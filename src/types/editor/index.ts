@@ -14,17 +14,21 @@ export enum ComponentType {
   Cards = "cards",
 }
 
+export type ComponentId = string;
+
 export interface FastboardComponent {
+  id: ComponentId;
   type: ComponentType;
   properties: Record<string, any>;
 }
 
 export interface ModalFrame {
   id: string;
-  body: FastboardComponent;
+  body: ComponentId;
 }
 
 export interface DashboardMetadata {
+  components: Record<ComponentId, FastboardComponent>;
   modals: ModalFrame[];
   layouts: Array<Layout>;
 }
@@ -41,8 +45,7 @@ export interface Context {
 }
 
 export interface PropertiesDrawerState {
-  layoutIndex: number;
-  container: string;
+  selectedComponentId: ComponentId | null;
   type: ComponentType | null;
   properties: Record<string, any>;
   context?: Context;

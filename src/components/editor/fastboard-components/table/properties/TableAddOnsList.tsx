@@ -1,5 +1,4 @@
 import useDashboard from "@/hooks/dashboards/useDashboard";
-import { addModalFrame, removeModalFrame } from "@/lib/editor.utils";
 import { ComponentType } from "@/types/editor";
 import { FormProperties } from "@/types/editor/form";
 import {
@@ -15,9 +14,7 @@ import {
   DropdownTrigger,
 } from "@nextui-org/react";
 import { Add } from "iconsax-react";
-import { useParams } from "next/navigation";
 import { IoIosClose } from "react-icons/io";
-import { v4 as uuidv4 } from "uuid";
 
 export default function TableAddOnsList({
   tableProperties,
@@ -28,8 +25,7 @@ export default function TableAddOnsList({
   onSelectAddOn?: (key: string) => void;
   onValueChange: (value: TableAddOnsProperties) => void;
 }) {
-  const { id } = useParams();
-  const { updateDashboard } = useDashboard(id as string);
+  const { createModalFrame, deleteModalFrame } = useDashboard();
   const { addOns } = tableProperties;
   const { addRowForm } = addOns;
 
@@ -54,21 +50,16 @@ export default function TableAddOnsList({
             <DropdownItem
               key={"add-row-form"}
               onPress={() => {
-                const modalId = uuidv4();
-                updateDashboard((previous) => ({
-                  ...previous,
-                  metadata: addModalFrame(
-                    modalId,
-                    {
-                      type: ComponentType.Form,
-                      properties: {
-                        ...FormProperties.default(),
-                        showShadow: false,
-                      },
-                    },
-                    previous.metadata
-                  ),
-                }));
+                const modalId = createModalFrame({
+                  type: ComponentType.Form,
+                  properties: {
+                    ...FormProperties.default(),
+                    showShadow: false,
+                  },
+                });
+                if (!modalId) {
+                  return;
+                }
                 onValueChange({
                   ...addOns,
                   addRowForm: {
@@ -103,13 +94,7 @@ export default function TableAddOnsList({
               variant="light"
               isIconOnly
               onPress={() => {
-                updateDashboard((previous) => ({
-                  ...previous,
-                  metadata: removeModalFrame(
-                    addRowForm.modalId,
-                    previous.metadata
-                  ),
-                }));
+                deleteModalFrame(addRowForm.modalId);
                 onValueChange({
                   ...addOns,
                   addRowForm: null,

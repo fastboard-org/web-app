@@ -16,7 +16,7 @@ export default function ColumnLayout({
         <Container
           layoutIndex={index}
           containerIndex="component1"
-          component={properties.component1}
+          componentId={properties.component1}
           mode={mode}
           className="h-full py-5 pl-5 pr-1"
         />
@@ -25,7 +25,7 @@ export default function ColumnLayout({
         <Container
           layoutIndex={index}
           containerIndex="component2"
-          component={properties.component2}
+          componentId={properties.component2}
           mode={mode}
           className="h-full py-5 pr-5 pl-1"
         />

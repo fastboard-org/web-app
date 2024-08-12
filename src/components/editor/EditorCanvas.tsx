@@ -9,12 +9,10 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getLayout } from "./fastboard-components/utils";
 import useDashboard from "@/hooks/dashboards/useDashboard";
-import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 
 export default function EditorCanvas() {
-  const { id } = useParams();
-  const { dashboard } = useDashboard(id as string);
+  const { dashboard } = useDashboard();
   const editorCanvasRef = useRef<HTMLDivElement>(null);
   const setEditorCanvasRef = useSetRecoilState(editorCanvasRefState);
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);

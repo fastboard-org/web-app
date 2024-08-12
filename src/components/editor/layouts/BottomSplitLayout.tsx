@@ -15,7 +15,7 @@ export default function BottomSplitLayout({
       <Container
         layoutIndex={index}
         containerIndex="component1"
-        component={properties.component1}
+        componentId={properties.component1}
         mode={mode}
         className="px-5 pt-5 pb-2 h-1/2"
       />
@@ -24,7 +24,7 @@ export default function BottomSplitLayout({
           <Container
             layoutIndex={index}
             containerIndex="component2"
-            component={properties.component2}
+            componentId={properties.component2}
             mode={mode}
             className="pl-5 pr-1 pt-1 pb-5 h-full"
           />
@@ -33,7 +33,7 @@ export default function BottomSplitLayout({
           <Container
             layoutIndex={index}
             containerIndex="component3"
-            component={properties.component3}
+            componentId={properties.component3}
             mode={mode}
             className="pr-5 pl-1 pt-1 pb-5 h-full"
           />

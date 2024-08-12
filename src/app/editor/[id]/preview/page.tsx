@@ -3,11 +3,9 @@ import EditorModal from "@/components/editor/EditorModal";
 import { getLayout } from "@/components/editor/fastboard-components/utils";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { Spinner } from "@nextui-org/react";
-import { useParams } from "next/navigation";
 
 export default function Preview() {
-  const { id } = useParams();
-  const { dashboard, loading, isError, error } = useDashboard(id as string);
+  const { dashboard, loading, isError, error } = useDashboard();
 
   if (loading) {
     return (
