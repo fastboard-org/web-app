@@ -104,7 +104,7 @@ export default function EditorModal({
                   <m.div
                     animate="enter"
                     className={
-                      "bg-background min-w-[40%] max-h-[90%] max-w-[90%] py-4 px-5 rounded-xl shadow-xl absolute overflow-auto " +
+                      "bg-background dark:bg-content1 min-w-[40%] max-h-[90%] max-w-[90%] py-4 px-5 rounded-xl shadow-xl absolute overflow-auto " +
                       scrollbarStyles.scrollbar
                     }
                     data-slot="wrapper"
@@ -112,7 +112,10 @@ export default function EditorModal({
                     initial="exit"
                     variants={scaleInOut}
                   >
-                    <div key="modal-header" className="flex justify-end pb-1">
+                    <div
+                      key="modal-header"
+                      className="flex justify-end pb-1 absolute z-50 right-2"
+                    >
                       <Button
                         onPress={closeModal}
                         variant="light"
