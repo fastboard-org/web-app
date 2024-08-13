@@ -1,3 +1,4 @@
+import { ComponentId } from ".";
 import { Query } from "../connections";
 
 export enum InputType {
@@ -13,6 +14,7 @@ interface BaseInputProperties {
   required: boolean;
   type: InputType;
   label: string;
+  defaultValueKey: string;
 }
 
 export interface TextInputProperties extends BaseInputProperties {
@@ -47,6 +49,7 @@ export class DefaultInputProperties {
           type: InputType.TextInput,
           label: "Text input",
           placeHolder: "Enter text",
+          defaultValueKey: "",
         };
       case InputType.NumberInput:
         return {
@@ -55,6 +58,7 @@ export class DefaultInputProperties {
           type: InputType.NumberInput,
           label: "Number input",
           placeHolder: "Enter number",
+          defaultValueKey: "",
         };
       case InputType.Select:
         return {
@@ -63,6 +67,7 @@ export class DefaultInputProperties {
           type: InputType.Select,
           label: "Select",
           options: [],
+          defaultValueKey: "",
         };
       case InputType.Checkbox:
         return {
@@ -71,6 +76,7 @@ export class DefaultInputProperties {
           type: InputType.Checkbox,
           label: "Checkbox",
           checked: false,
+          defaultValueKey: "",
         };
       default:
         return {
@@ -79,9 +85,15 @@ export class DefaultInputProperties {
           type: InputType.TextInput,
           label: "Text input",
           placeHolder: "Enter text",
+          defaultValueKey: "",
         };
     }
   }
+}
+
+export interface DataProvider {
+  componentId: ComponentId;
+  property: string;
 }
 
 export class FormProperties {
@@ -90,6 +102,8 @@ export class FormProperties {
   submitButtonLabel: string = "Submit";
   inputs: InputProperties[] = [];
   showShadow: boolean = true;
+  initialData: Object | null = null;
+  dataProvider: DataProvider | null = null;
 
   static default(): FormProperties {
     return new FormProperties();

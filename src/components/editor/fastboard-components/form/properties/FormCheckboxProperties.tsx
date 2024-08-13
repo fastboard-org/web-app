@@ -2,22 +2,38 @@ import { CheckboxProperties } from "@/types/editor/form";
 import { Input, Spacer } from "@nextui-org/react";
 import FormDataKeySelection from "./FormDataKeySelection";
 import { Query } from "@/types/connections";
+import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
 
 export default function FormCheckboxProperties({
   properties,
   queryId,
   onValueChange,
   disabledKeys = [],
+  initialData,
 }: {
   properties: CheckboxProperties;
   queryId: string | null;
   onValueChange: (properties: CheckboxProperties) => void;
   disabledKeys?: string[];
+  initialData?: any;
 }) {
-  const { label, formDataKey } = properties;
+  const { label, formDataKey, defaultValueKey } = properties;
 
   return (
     <div className="flex flex-col">
+      {initialData && (
+        <FormDefaultValueKeySelection
+          selectedKey={defaultValueKey}
+          initialData={initialData}
+          onSelectionChange={(key) => {
+            onValueChange({
+              ...properties,
+              defaultValueKey: key,
+            });
+          }}
+        />
+      )}
+
       <Input
         aria-label="Checkbox label property"
         label="Label"

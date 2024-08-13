@@ -27,11 +27,18 @@ const useDashboard = () => {
     return editorUtils.getComponent(id, dashboard.metadata);
   };
 
-  const updateComponentProperties = (id: ComponentId, properties: Object) => {
-    updateDashboard((prev) => ({
-      ...prev,
-      metadata: editorUtils.updateComponent(id, properties, prev.metadata),
-    }));
+  const updateComponentProperties = (
+    id: ComponentId,
+    properties: Object,
+    save: boolean = true
+  ) => {
+    updateDashboard(
+      (prev) => ({
+        ...prev,
+        metadata: editorUtils.updateComponent(id, properties, prev.metadata),
+      }),
+      save
+    );
   };
 
   const addComponentToLayout = (
@@ -98,7 +105,10 @@ const useDashboard = () => {
     }));
   };
 
-  const updateDashboard = (updater: (previous: Dashboard) => Dashboard) => {
+  const updateDashboard = (
+    updater: (previous: Dashboard) => Dashboard,
+    save: boolean = true
+  ) => {
     let updatedDashboard: Dashboard | undefined;
 
     queryClient.setQueryData(
@@ -113,6 +123,7 @@ const useDashboard = () => {
     );
 
     if (!updatedDashboard) return;
+    if (!save) return;
 
     dashboardService.updateDashboard(
       updatedDashboard.id,

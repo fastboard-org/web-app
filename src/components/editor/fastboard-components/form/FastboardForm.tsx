@@ -25,19 +25,33 @@ import {
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { useForm } from "react-hook-form";
 import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import FormTextInput from "./FormTextInput";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import useModalFrame from "@/hooks/editor/useModalFrame";
+import useDashboard from "@/hooks/dashboards/useDashboard";
+import { ComponentId } from "@/types/editor";
+import FormNumberInput from "./FormNumberInput";
+import FormCheckbox from "./FormCheckbox";
 
 export default function FastboardForm({
+  id,
   properties,
 }: {
+  id: ComponentId;
   properties: FormProperties;
 }) {
-  const { title, inputs, submitQueryId, submitButtonLabel, showShadow } =
-    properties;
+  const {
+    title,
+    inputs,
+    submitQueryId,
+    submitButtonLabel,
+    showShadow,
+    dataProvider,
+    initialData,
+  } = properties;
+  const { getComponent, updateComponentProperties } = useDashboard();
   const {
     register,
     handleSubmit,
@@ -60,6 +74,23 @@ export default function FastboardForm({
   });
 
   useEffect(() => {
+    if (!dataProvider) return;
+    const { componentId, property } = dataProvider;
+    const component = getComponent(componentId);
+    if (!component) return;
+
+    const data = component.properties[property];
+    updateComponentProperties(
+      id,
+      {
+        ...properties,
+        initialData: data,
+      },
+      false
+    );
+  }, []);
+
+  useEffect(() => {
     reset();
   }, [submitQueryId]);
 
@@ -78,37 +109,23 @@ export default function FastboardForm({
   function renderInput(index: number, input: InputProperties) {
     switch (input.type) {
       case InputType.TextInput:
-        const textInput = input as TextInputProperties;
         return (
           <FormTextInput
             key={index}
-            properties={textInput}
+            properties={input as TextInputProperties}
             register={register}
             errors={errors}
+            initialData={initialData}
           />
         );
       case InputType.NumberInput:
-        const numberInput = input as NumberInputProperties;
         return (
-          <Input
+          <FormNumberInput
             key={index}
-            aria-label="Number input"
-            type="number"
-            isRequired={numberInput.required}
-            {...(numberInput.formDataKey !== ""
-              ? {
-                  ...register(numberInput.formDataKey, {
-                    required: "This field is required",
-                    valueAsNumber: true,
-                  }),
-                }
-              : {})}
-            label={numberInput.label}
-            labelPlacement="outside"
-            placeholder={numberInput.placeHolder}
-            isClearable
-            errorMessage={errors[numberInput.formDataKey]?.message as string}
-            isInvalid={!!errors[numberInput.formDataKey]}
+            properties={input as NumberInputProperties}
+            register={register}
+            errors={errors}
+            initialData={initialData}
           />
         );
       case InputType.Select:
@@ -134,17 +151,13 @@ export default function FastboardForm({
           </Select>
         );
       case InputType.Checkbox:
-        const checkboxInput = input as CheckboxProperties;
         return (
-          <Checkbox
+          <FormCheckbox
             key={index}
-            aria-label="Checkbox input"
-            {...(checkboxInput.formDataKey !== ""
-              ? { ...register(checkboxInput.formDataKey) }
-              : {})}
-          >
-            {checkboxInput.label}
-          </Checkbox>
+            properties={input as CheckboxProperties}
+            register={register}
+            errors={errors}
+          />
         );
       default:
         return null;

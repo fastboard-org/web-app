@@ -40,6 +40,7 @@ export class FastboardTableProperties {
   };
   hideHeader: boolean = false;
   isStriped: boolean = false;
+  selectedRow: any = null;
 
   static default(): FastboardTableProperties {
     return new FastboardTableProperties();

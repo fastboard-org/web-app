@@ -10,7 +10,6 @@ import {
   AccordionItem,
   BreadcrumbItem,
   Breadcrumbs,
-  Button,
   Input,
   Spacer,
 } from "@nextui-org/react";
@@ -30,7 +29,14 @@ export default function FastboardFormProperties({
   properties: FormProperties;
   onValueChange: (properties: FormProperties) => void;
 }) {
-  const { title, submitQueryId, submitButtonLabel, inputs } = properties;
+  const {
+    title,
+    submitQueryId,
+    submitButtonLabel,
+    inputs,
+    dataProvider,
+    initialData,
+  } = properties;
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
     null
@@ -59,6 +65,11 @@ export default function FastboardFormProperties({
       </Breadcrumbs>
       <Spacer y={4} />
 
+      {inputSelectedIndex === null && dataProvider && (
+        <div className="p-2 bg-content2 rounded-lg">
+          <p className="text-sm">This form is populated with data.</p>
+        </div>
+      )}
       {inputSelectedIndex === null && (
         <Accordion
           selectionMode="multiple"
@@ -164,6 +175,7 @@ export default function FastboardFormProperties({
               });
             }}
             disabledKeys={disabledKeys}
+            initialData={initialData}
           />
         )}
       {inputSelectedIndex !== null &&
@@ -180,6 +192,7 @@ export default function FastboardFormProperties({
               });
             }}
             disabledKeys={disabledKeys}
+            initialData={initialData}
           />
         )}
       {inputSelectedIndex !== null &&
@@ -196,6 +209,7 @@ export default function FastboardFormProperties({
               });
             }}
             disabledKeys={disabledKeys}
+            initialData={initialData}
           />
         )}
     </div>

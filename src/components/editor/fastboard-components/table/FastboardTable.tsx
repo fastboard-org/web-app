@@ -236,6 +236,10 @@ export default function FastboardTable({
                   } else if (action.type === "delete") {
                     setDeleteModalOpen(true);
                   } else if (action.type === "edit") {
+                    updateComponentProperties(id, {
+                      ...properties,
+                      selectedRow: item,
+                    });
                     openModal(action.modalId ?? "");
                   }
                 }}

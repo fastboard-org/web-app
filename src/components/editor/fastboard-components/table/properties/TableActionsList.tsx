@@ -10,15 +10,17 @@ import { TableActionProperty } from "@/types/editor/table-types";
 import { Add, Edit, Eye, Trash } from "iconsax-react";
 import { EditableDeleteAction } from "./EditableDeleteAction";
 import { EditableViewAction } from "./EditableViewAction";
-import { ComponentType } from "@/types/editor";
+import { ComponentId, ComponentType } from "@/types/editor";
 import { FormProperties } from "@/types/editor/form";
 import Option from "@/components/shared/Option";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 
 export default function TableActionsList({
+  tableId,
   actionsProperties,
   onChange,
 }: {
+  tableId: ComponentId;
   actionsProperties: TableActionProperty[];
   onChange?: (actions: TableActionProperty[]) => void;
 }) {
@@ -47,7 +49,14 @@ export default function TableActionsList({
   function addEditAction() {
     const modalId = createModalFrame({
       type: ComponentType.Form,
-      properties: new FormProperties(),
+      properties: {
+        ...new FormProperties(),
+        showShadow: false,
+        dataProvider: {
+          componentId: tableId,
+          property: "selectedRow",
+        },
+      },
     });
 
     const newAction: TableActionProperty = {
