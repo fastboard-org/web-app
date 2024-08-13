@@ -71,13 +71,18 @@ const useDashboard = () => {
   const createModalFrame = (body: {
     type: ComponentType;
     properties: Object;
-  }): string | null => {
-    if (!dashboard) return null;
+  }): string => {
+    if (!dashboard) {
+      throw new Error("Dashboard not found");
+    }
 
     const [newMetadata, modalId] = editorUtils.createModalFrame(
       body,
       dashboard.metadata
     );
+    if (!modalId) {
+      throw new Error("Error creating modal frame");
+    }
     updateDashboard((prev) => ({
       ...prev,
       metadata: newMetadata,

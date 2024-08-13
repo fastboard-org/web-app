@@ -17,6 +17,7 @@ export interface TableActionProperty {
   type: "view" | "edit" | "delete";
   query: Query | null;
   parameters: { name: string; value: string }[];
+  modalId?: string;
 }
 
 export interface AddRowFormProperties {

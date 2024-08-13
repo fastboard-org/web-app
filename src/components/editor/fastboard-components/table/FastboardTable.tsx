@@ -36,6 +36,7 @@ import { Edit, Eye, Trash } from "iconsax-react";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import AddRowForm from "./AddRowForm";
+import useModalFrame from "@/hooks/editor/useModalFrame";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -96,6 +97,7 @@ export default function FastboardTable({
     error: executeQueryError,
   } = useExecuteQuery({});
   const finalColumns = getFinalColumns(columns, actions);
+  const { openModal } = useModalFrame();
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedRowAction, setSelectedRowAction] = useState<{
@@ -233,6 +235,8 @@ export default function FastboardTable({
                     setViewModalOpen(action.query ? true : false);
                   } else if (action.type === "delete") {
                     setDeleteModalOpen(true);
+                  } else if (action.type === "edit") {
+                    openModal(action.modalId ?? "");
                   }
                 }}
               >

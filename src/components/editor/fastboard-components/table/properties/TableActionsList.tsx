@@ -10,6 +10,10 @@ import { TableActionProperty } from "@/types/editor/table-types";
 import { Add, Edit, Eye, Trash } from "iconsax-react";
 import { EditableDeleteAction } from "./EditableDeleteAction";
 import { EditableViewAction } from "./EditableViewAction";
+import { ComponentType } from "@/types/editor";
+import { FormProperties } from "@/types/editor/form";
+import Option from "@/components/shared/Option";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 
 export default function TableActionsList({
   actionsProperties,
@@ -18,6 +22,7 @@ export default function TableActionsList({
   actionsProperties: TableActionProperty[];
   onChange?: (actions: TableActionProperty[]) => void;
 }) {
+  const { createModalFrame } = useDashboard();
   const [actions, setActions] = useState(actionsProperties);
 
   useEffect(() => {
@@ -31,6 +36,27 @@ export default function TableActionsList({
       type,
       query: null,
       parameters: [],
+    };
+
+    setActions((previous) => [...previous, newAction]);
+    if (onChange) {
+      onChange([...actions, newAction]);
+    }
+  }
+
+  function addEditAction() {
+    const modalId = createModalFrame({
+      type: ComponentType.Form,
+      properties: new FormProperties(),
+    });
+
+    const newAction: TableActionProperty = {
+      key: `edit-action`,
+      label: "New Edit Action",
+      type: "edit",
+      query: null,
+      parameters: [],
+      modalId,
     };
 
     setActions((previous) => [...previous, newAction]);
@@ -53,14 +79,13 @@ export default function TableActionsList({
     const hasEditAction = actions.some((action) => action.type === "edit");
 
     const disabledKeys = [];
-    //TODO: delete this true conditions when implementing the logic for the actions
     if (hasViewAction) {
       disabledKeys.push("view-action");
     }
     if (hasDeleteAction) {
       disabledKeys.push("delete-action");
     }
-    if (true) {
+    if (hasEditAction) {
       disabledKeys.push("edit-action");
     }
     return disabledKeys;
@@ -85,7 +110,11 @@ export default function TableActionsList({
             >
               View
             </DropdownItem>
-            <DropdownItem key="edit-action" startContent={<Edit size={15} />}>
+            <DropdownItem
+              key="edit-action"
+              startContent={<Edit size={15} />}
+              onPress={addEditAction}
+            >
               Edit
             </DropdownItem>
 
@@ -142,6 +171,16 @@ export default function TableActionsList({
                   onDelete={() => {
                     removeAction(action.key, index);
                   }}
+                />
+              );
+            }
+            case "edit": {
+              return (
+                <Option
+                  key={action.key}
+                  label={action.label}
+                  startIcon={<Edit size={15} />}
+                  onDelete={() => removeAction(action.key, index)}
                 />
               );
             }
