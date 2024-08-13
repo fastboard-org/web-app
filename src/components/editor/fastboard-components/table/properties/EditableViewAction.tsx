@@ -16,6 +16,8 @@ import EditableTitle from "@/components/shared/EditableTitle";
 import { TableActionProperty } from "@/types/editor/table-types";
 import { useEffect, useState } from "react";
 import QuerySelection from "@/components/editor/QuerySelection";
+import Option from "@/components/shared/Option";
+import { Edit } from "iconsax-react";
 
 export function EditableViewAction({
   action,
@@ -38,23 +40,13 @@ export function EditableViewAction({
       key={action.key}
       className="flex flex-row justify-between items-center w-full my-2"
     >
-      <Button
-        className="w-full justify-between border "
-        variant="light"
+      <Option
+        label={action.label}
+        startIcon={<Edit size={15} />}
         onPress={onOpen}
-        endContent={
-          <div
-            className="flex w-10 h-full items-center justify-center hover:bg-content3 rounded-full"
-            onClick={() => {
-              onDelete(action.key);
-            }}
-          >
-            <IoIosClose size={20} className="text-foreground-600" />
-          </div>
-        }
-      >
-        {action.label}
-      </Button>
+        onDelete={() => onDelete(action.key)}
+      />
+
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           <ModalHeader>
