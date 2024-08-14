@@ -17,7 +17,7 @@ import { TableActionProperty } from "@/types/editor/table-types";
 import { useEffect, useState } from "react";
 import QuerySelection from "@/components/editor/QuerySelection";
 import Option from "@/components/shared/Option";
-import { Edit } from "iconsax-react";
+import { Eye } from "iconsax-react";
 
 export function EditableViewAction({
   action,
@@ -42,7 +42,7 @@ export function EditableViewAction({
     >
       <Option
         label={action.label}
-        startIcon={<Edit size={15} />}
+        startIcon={<Eye size={15} />}
         onPress={onOpen}
         onDelete={() => onDelete(action.key)}
       />

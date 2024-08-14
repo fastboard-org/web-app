@@ -111,6 +111,7 @@ export default function FastboardTable({
     }
 
     if (columns.length === 0) {
+      setPage(1);
       setShouldUpdateColumns(true);
     }
   }, [sourceQuery]);

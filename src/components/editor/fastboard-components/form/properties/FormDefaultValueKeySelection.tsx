@@ -4,10 +4,12 @@ export default function FormDefaultValueKeySelection({
   selectedKey,
   initialData,
   onSelectionChange,
+  showLabel = true,
 }: {
   selectedKey: string;
   initialData?: any;
   onSelectionChange: (key: string) => void;
+  showLabel?: boolean;
 }) {
   const items = initialData
     ? Object.keys(initialData).map((key) => ({ key: key, label: key }))
@@ -17,8 +19,9 @@ export default function FormDefaultValueKeySelection({
     <Select
       items={items}
       selectedKeys={[selectedKey]}
-      label="Default value"
+      label={showLabel ? "Default value" : ""}
       labelPlacement="outside"
+      placeholder="Select a default value"
       onChange={(e) => {
         onSelectionChange(e.target.value);
       }}

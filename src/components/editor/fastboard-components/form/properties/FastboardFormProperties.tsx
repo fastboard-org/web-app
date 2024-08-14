@@ -24,6 +24,7 @@ import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
+import QueryParameters from "./QueryParameters";
 
 export default function FastboardFormProperties({
   properties,
@@ -49,9 +50,49 @@ export default function FastboardFormProperties({
   const disabledKeys = inputs.map((input) => input.formDataKey);
 
   useEffect(() => {
+    console.log("initialData changed", initialData);
+    resetDefaultValues();
+  }, [initialData]);
+
+  useEffect(() => {
     //The selected component has changed, reset the input selected index
     setInputSelectedIndex(null);
   }, [selectedComponentId]);
+
+  function resetDefaultValues() {
+    const dataKeys = Object.keys(initialData || {});
+
+    //Clear all default values from query paramters
+    const newQueryParameters = Object.keys(queryParameters).reduce(
+      (acc, key) => {
+        if (!dataKeys.includes(queryParameters[key])) {
+          return acc;
+        }
+        return {
+          ...acc,
+          [key]: queryParameters[key],
+        };
+      },
+      {}
+    );
+
+    //Clear all default values from inputs
+    const newInputs = inputs.map((input) => {
+      if (!dataKeys.includes(input.defaultValueKey)) {
+        return {
+          ...input,
+          defaultValueKey: "",
+        };
+      }
+      return input;
+    });
+
+    onValueChange({
+      ...properties,
+      queryParameters: newQueryParameters,
+      inputs: newInputs,
+    });
+  }
 
   function onInputChange(inputProperties: InputProperties) {
     if (inputSelectedIndex === null) {
@@ -87,7 +128,9 @@ export default function FastboardFormProperties({
 
       {inputSelectedIndex === null && dataProvider && (
         <div className="p-2 bg-primary rounded-lg">
-          <p className="text-sm">This form is populated with data.</p>
+          <p className="text-sm text-white">
+            This form is populated with data.
+          </p>
         </div>
       )}
       {inputSelectedIndex === null && (
@@ -154,34 +197,19 @@ export default function FastboardFormProperties({
                 submitQuery &&
                 submitQuery.metadata.parameters?.length > 0 && (
                   <div>
-                    <div className="text-sm font-semibold">Query params</div>
-                    <div className="flex flex-col gap-2 px-2 w-full">
-                      {submitQuery.metadata?.parameters?.map(
-                        (parameter: any, index: number) => {
-                          if (disabledKeys.includes(parameter.name)) {
-                            return null;
-                          }
-                          return (
-                            <div>
-                              <span className="text-sm">{parameter.name}</span>
-                              <FormDefaultValueKeySelection
-                                selectedKey={queryParameters[parameter.name]}
-                                initialData={initialData}
-                                onSelectionChange={(key) => {
-                                  onValueChange({
-                                    ...properties,
-                                    queryParameters: {
-                                      ...queryParameters,
-                                      [parameter.name]: key,
-                                    },
-                                  });
-                                }}
-                              />
-                            </div>
-                          );
-                        }
-                      )}
-                    </div>
+                    <div className="text-sm">Query parameters</div>
+                    <QueryParameters
+                      queryId={submitQueryId}
+                      queryParameters={queryParameters}
+                      initialData={initialData}
+                      disabledParameters={disabledKeys}
+                      onValueChange={(newQueryParameters) => {
+                        onValueChange({
+                          ...properties,
+                          queryParameters: newQueryParameters,
+                        });
+                      }}
+                    />
                   </div>
                 )}
               <Spacer y={2} />
