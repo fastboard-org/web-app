@@ -99,6 +99,7 @@ export interface DataProvider {
 export class FormProperties {
   title: string = "Form title";
   submitQueryId: string | null = null;
+  queryParameters: Record<string, any> = {};
   submitButtonLabel: string = "Submit";
   inputs: InputProperties[] = [];
   showShadow: boolean = true;

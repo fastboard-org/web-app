@@ -46,6 +46,7 @@ export default function FastboardForm({
     title,
     inputs,
     submitQueryId,
+    queryParameters,
     submitButtonLabel,
     showShadow,
     dataProvider,
@@ -99,9 +100,23 @@ export default function FastboardForm({
       toast.warning("Query is not defined");
       return;
     }
+
+    //Fill the query parameters with data
+    let newQueryParameters = { ...queryParameters };
+    if (initialData) {
+      Object.keys(queryParameters).map((key) => {
+        const dataKey = queryParameters[key];
+        // @ts-ignore
+        newQueryParameters[key] = initialData[dataKey];
+      });
+    }
+
     execute({
       query: submitQuery,
-      parameters: formData,
+      parameters: {
+        ...newQueryParameters,
+        ...formData,
+      },
     });
     reset();
   };
