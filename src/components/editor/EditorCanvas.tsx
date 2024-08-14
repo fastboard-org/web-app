@@ -1,23 +1,17 @@
-import {
-  editorCanvasRefState,
-  isComponentsDrawerOpen,
-  isPropertiesDrawerOpen,
-  isSettingsDrawerOpen,
-} from "@/atoms/editor";
+import { editorCanvasRefState } from "@/atoms/editor";
 import { motion } from "framer-motion";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getLayout } from "./fastboard-components/utils";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { useEffect, useRef } from "react";
+import { useCanvasTransform } from "@/hooks/editor/useCanvasTransform";
 
 export default function EditorCanvas() {
   const { dashboard } = useDashboard();
   const editorCanvasRef = useRef<HTMLDivElement>(null);
   const setEditorCanvasRef = useSetRecoilState(editorCanvasRefState);
-  const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
-  const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
-  const isSettingsOpen = useRecoilValue(isSettingsDrawerOpen);
+  const { x } = useCanvasTransform();
 
   useEffect(() => {
     setEditorCanvasRef(editorCanvasRef.current);
@@ -27,12 +21,7 @@ export default function EditorCanvas() {
     <motion.div
       ref={editorCanvasRef}
       animate={{
-        x:
-          isComponentsOpen || isSettingsOpen
-            ? "15%"
-            : isPropertiesOpen
-            ? "-15%"
-            : 0,
+        x,
       }}
       transition={{
         ease: "easeInOut",
@@ -44,7 +33,7 @@ export default function EditorCanvas() {
       }
     >
       {dashboard?.metadata?.layouts.map((layout, index) =>
-        getLayout(layout, index, "editable")
+        getLayout(layout, index, "editable"),
       )}
     </motion.div>
   );
