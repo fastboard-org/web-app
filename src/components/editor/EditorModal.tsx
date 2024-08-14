@@ -145,7 +145,6 @@ export default function EditorModal({
                 </LazyMotion>
               </m.div>
             </LazyMotion>
-            <m.div></m.div>
           </AnimatePresence>,
           editorCanvasRef || document.body
         )}
