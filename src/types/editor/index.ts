@@ -12,6 +12,7 @@ export enum ComponentType {
   GroupChart = "group-chart",
   Form = "form",
   Cards = "cards",
+  Sidebar = "sidebar",
 }
 
 export type ComponentId = string;
@@ -29,6 +30,7 @@ export interface ModalFrame {
 
 export interface DashboardMetadata {
   components: Record<ComponentId, FastboardComponent>;
+  sidebar: ComponentId | null;
   modals: ModalFrame[];
   layouts: Array<Layout>;
 }

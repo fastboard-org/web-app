@@ -7,6 +7,7 @@ import {
   ModalFrame,
 } from "@/types/editor";
 import { Layout, LayoutType } from "@/types/editor/layout-types";
+import { SidebarProperties } from "@/types/editor/sidebar-types";
 import { v4 as uuidv4 } from "uuid";
 
 export function getComponent(
@@ -232,6 +233,34 @@ export function getModalFrame(
   return modal || null;
 }
 
+function addSidebar(dashboardMetadata: DashboardMetadata): DashboardMetadata {
+  const [newMetadata, sidebarId] = createComponent(
+    ComponentType.Sidebar,
+    SidebarProperties.default(),
+    dashboardMetadata
+  );
+  return {
+    ...newMetadata,
+    sidebar: sidebarId,
+  };
+}
+
+function deleteSidebar(
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  if (!dashboardMetadata.sidebar) {
+    return dashboardMetadata;
+  }
+  const newMetadata = deleteComponent(
+    dashboardMetadata.sidebar,
+    dashboardMetadata
+  );
+  return {
+    ...newMetadata,
+    sidebar: null,
+  };
+}
+
 export const editorUtils = {
   getComponent,
   createComponent,
@@ -242,4 +271,6 @@ export const editorUtils = {
   changeLayout,
   createModalFrame,
   removeModalFrame,
+  addSidebar,
+  deleteSidebar,
 };

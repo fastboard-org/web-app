@@ -1,5 +1,5 @@
 import { isSettingsDrawerOpen } from "@/atoms/editor";
-import { Divider } from "@nextui-org/react";
+import { Checkbox, Divider, Spacer } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
@@ -8,8 +8,10 @@ import useDashboard from "@/hooks/dashboards/useDashboard";
 import { changeLayout } from "@/lib/editor.utils";
 
 export default function SettingsDrawer() {
-  const { dashboard, updateDashboard } = useDashboard();
+  const { dashboard, updateDashboard, addSidebar, deleteSidebar } =
+    useDashboard();
   const isOpen = useRecoilValue(isSettingsDrawerOpen);
+  const hasSidebar = dashboard?.metadata?.sidebar ? true : false;
 
   return (
     <motion.div
@@ -32,6 +34,18 @@ export default function SettingsDrawer() {
             }));
           }}
         />
+        <Checkbox
+          isSelected={hasSidebar}
+          onValueChange={(enabled) => {
+            if (enabled) {
+              addSidebar();
+            } else {
+              deleteSidebar();
+            }
+          }}
+        >
+          Sidebar
+        </Checkbox>
       </div>
     </motion.div>
   );

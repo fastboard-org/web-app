@@ -93,6 +93,22 @@ const useDashboard = () => {
     }));
   };
 
+  const addSidebar = () => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.addSidebar(prev.metadata),
+    }));
+  };
+
+  const deleteSidebar = () => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.deleteSidebar(prev.metadata),
+    }));
+  };
+
   const updateDashboard = (updater: (previous: Dashboard) => Dashboard) => {
     let updatedDashboard: Dashboard | undefined;
 
@@ -129,6 +145,8 @@ const useDashboard = () => {
     createModalFrame,
     deleteModalFrame,
     updateDashboard,
+    addSidebar,
+    deleteSidebar,
   };
 };
 

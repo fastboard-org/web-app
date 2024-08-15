@@ -10,14 +10,19 @@ import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getLayout } from "./fastboard-components/utils";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { useEffect, useRef } from "react";
+import FastboardComponent from "./fastboard-components/FastboardComponent";
 
 export default function EditorCanvas() {
-  const { dashboard } = useDashboard();
+  const { dashboard, getComponent } = useDashboard();
   const editorCanvasRef = useRef<HTMLDivElement>(null);
   const setEditorCanvasRef = useSetRecoilState(editorCanvasRefState);
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
   const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
   const isSettingsOpen = useRecoilValue(isSettingsDrawerOpen);
+
+  const sidebar = dashboard?.metadata?.sidebar
+    ? getComponent(dashboard.metadata.sidebar)
+    : null;
 
   useEffect(() => {
     setEditorCanvasRef(editorCanvasRef.current);
@@ -43,9 +48,27 @@ export default function EditorCanvas() {
         scrollbarStyles.scrollbar
       }
     >
-      {dashboard?.metadata?.layouts.map((layout, index) =>
-        getLayout(layout, index, "editable")
+      {sidebar && (
+        <div className="w-[20%] h-full">
+          <FastboardComponent
+            id={sidebar.id}
+            name="sidebar"
+            type={sidebar.type}
+            properties={sidebar.properties}
+            context={{
+              type: "sidebar",
+            }}
+            canDelete={false}
+            mode="editable"
+          />
+        </div>
       )}
+
+      <div className="w-full h-full">
+        {dashboard?.metadata?.layouts.map((layout, index) =>
+          getLayout(layout, index, "editable")
+        )}
+      </div>
     </motion.div>
   );
 }
