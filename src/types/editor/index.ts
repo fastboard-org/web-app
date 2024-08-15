@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { Layout } from "./layout-types";
 
 export default interface PublishOption {
@@ -27,10 +26,15 @@ export interface ModalFrame {
   body: ComponentId;
 }
 
+interface DashboardAuth {
+  enabled: boolean;
+}
+
 export interface DashboardMetadata {
   components: Record<ComponentId, FastboardComponent>;
   modals: ModalFrame[];
   layouts: Array<Layout>;
+  auth: DashboardAuth;
 }
 
 export interface Context {
