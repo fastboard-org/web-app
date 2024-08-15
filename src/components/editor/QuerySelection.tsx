@@ -7,9 +7,15 @@ import useMyQueries from "@/hooks/connections/useMyQueries";
 export default function QuerySelection({
   selectedQueryId,
   onQuerySelect,
+  label = "Query",
+  placeholder = "Select query",
+  isDisabled = false,
 }: {
   selectedQueryId: string;
   onQuerySelect: (query: Query) => void;
+  label?: string;
+  placeholder?: string;
+  isDisabled?: boolean;
 }) {
   const { queries, loading, isError, error } = useMyQueries();
 
@@ -31,9 +37,10 @@ export default function QuerySelection({
         disabledKeys={[]}
         defaultSelectedKey={selectedQuery?.id || ""}
         selectedKey={selectedQuery?.id || ""}
-        label="Query"
+        label={label}
         labelPlacement="outside"
-        placeholder="Select query"
+        placeholder={placeholder}
+        isDisabled={isDisabled}
         startContent={
           <ConnectionIcon
             type={selectedQuery?.connection_type ?? null}
