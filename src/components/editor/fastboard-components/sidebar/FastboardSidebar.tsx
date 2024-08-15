@@ -1,43 +1,46 @@
 import { SidebarProperties } from "@/types/editor/sidebar-types";
-import { Card, CardBody, Tab, Tabs } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
+import { Folder } from "iconsax-react";
 
 export default function FastboardSidebar({
   properties,
 }: {
   properties: SidebarProperties;
 }) {
+  const { menuItems } = properties;
+
   return (
-    <div className="w-full">
-      <Tabs aria-label="Options">
-        <Tab key="photos" title="Photos">
-          <Card>
-            <CardBody>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </CardBody>
-          </Card>
-        </Tab>
-        <Tab key="music" title="Music">
-          <Card>
-            <CardBody>
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur.
-            </CardBody>
-          </Card>
-        </Tab>
-        <Tab key="videos" title="Videos">
-          <Card>
-            <CardBody>
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit anim id est laborum.
-            </CardBody>
-          </Card>
-        </Tab>
-      </Tabs>
+    <div className="max-w-52 h-full bg-slate-700">
+      <div key="tabs" className="flex w-full justify-center p-5">
+        <Tabs
+          aria-label="Sidebar"
+          items={menuItems}
+          isVertical
+          color="primary"
+          className=""
+          classNames={{
+            base: "",
+            tabList: "bg-transparent",
+            tab: "justify-start",
+          }}
+        >
+          {menuItems.map((tab) => (
+            <Tab
+              key={tab.label}
+              className="h-full"
+              title={
+                <div className="flex items-center space-x-2 text-white">
+                  <Folder />
+                  <div className="flex flex-col">
+                    <span>{tab.label}</span>
+                    <span className="opacity-40">{tab.caption}</span>
+                  </div>
+                </div>
+              }
+            ></Tab>
+          ))}
+        </Tabs>
+      </div>
     </div>
   );
 }
