@@ -31,7 +31,10 @@ export default function QueryParameters({
             return null;
           }
           return (
-            <div className="flex flex-row justify-between items-center">
+            <div
+              key={`query-parameter-${index}`}
+              className="flex flex-row justify-between items-center"
+            >
               <span className="text-small">{parameter.name}</span>
               <div className="w-1/2">
                 <FormDefaultValueKeySelection

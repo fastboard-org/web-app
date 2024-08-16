@@ -21,19 +21,6 @@ export default function FormTextInputProperties({
 
   return (
     <div className="flex flex-col">
-      {initialData && (
-        <FormDefaultValueKeySelection
-          selectedKey={defaultValueKey}
-          initialData={initialData}
-          onSelectionChange={(key) => {
-            onValueChange({
-              ...properties,
-              defaultValueKey: key,
-            });
-          }}
-        />
-      )}
-
       <Input
         aria-label="Text input label property"
         label="Label"
@@ -62,18 +49,6 @@ export default function FormTextInputProperties({
         }}
       />
       <Spacer y={2} />
-      <Checkbox
-        isSelected={required}
-        onValueChange={(value) => {
-          onValueChange({
-            ...properties,
-            required: value,
-          });
-        }}
-      >
-        Required
-      </Checkbox>
-      <Spacer y={2} />
       <FormDataKeySelection
         selectedKey={formDataKey}
         disabledKeys={disabledKeys}
@@ -85,6 +60,35 @@ export default function FormTextInputProperties({
           });
         }}
       />
+      <Spacer y={2} />
+      {formDataKey !== "" && (
+        <div>
+          <Checkbox
+            isSelected={required}
+            onValueChange={(value) => {
+              onValueChange({
+                ...properties,
+                required: value,
+              });
+            }}
+          >
+            Required
+          </Checkbox>
+          <Spacer y={2} />
+          {initialData && (
+            <FormDefaultValueKeySelection
+              selectedKey={defaultValueKey}
+              initialData={initialData}
+              onSelectionChange={(key) => {
+                onValueChange({
+                  ...properties,
+                  defaultValueKey: key,
+                });
+              }}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }

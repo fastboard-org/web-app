@@ -22,18 +22,6 @@ export default function FormNumberInputProperties({
 
   return (
     <div className="flex flex-col">
-      {initialData && (
-        <FormDefaultValueKeySelection
-          selectedKey={defaultValueKey}
-          initialData={initialData}
-          onSelectionChange={(key) => {
-            onValueChange({
-              ...properties,
-              defaultValueKey: key,
-            });
-          }}
-        />
-      )}
       <Input
         aria-label="Number input label property"
         label="Label"
@@ -46,7 +34,7 @@ export default function FormNumberInputProperties({
             label: value,
           });
         }}
-      />{" "}
+      />
       <Spacer y={2} />
       <Input
         aria-label="Text input placeholder property"
@@ -62,18 +50,6 @@ export default function FormNumberInputProperties({
         }}
       />
       <Spacer y={2} />
-      <Checkbox
-        isSelected={required}
-        onValueChange={(value) => {
-          onValueChange({
-            ...properties,
-            required: value,
-          });
-        }}
-      >
-        Required
-      </Checkbox>
-      <Spacer y={2} />
       <FormDataKeySelection
         selectedKey={formDataKey}
         disabledKeys={disabledKeys}
@@ -85,6 +61,35 @@ export default function FormNumberInputProperties({
           });
         }}
       />
+      <Spacer y={2} />
+      {formDataKey !== "" && (
+        <div>
+          <Checkbox
+            isSelected={required}
+            onValueChange={(value) => {
+              onValueChange({
+                ...properties,
+                required: value,
+              });
+            }}
+          >
+            Required
+          </Checkbox>
+          <Spacer y={2} />
+          {initialData && (
+            <FormDefaultValueKeySelection
+              selectedKey={defaultValueKey}
+              initialData={initialData}
+              onSelectionChange={(key) => {
+                onValueChange({
+                  ...properties,
+                  defaultValueKey: key,
+                });
+              }}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }

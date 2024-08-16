@@ -21,11 +21,12 @@ import {
   Select,
   SelectItem,
   Spacer,
+  Spinner,
 } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { useForm } from "react-hook-form";
 import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import FormTextInput from "./FormTextInput";
 import useGetQuery from "@/hooks/connections/useGetQuery";
@@ -55,10 +56,14 @@ export default function FastboardForm({
   const { getComponent, updateComponentProperties } = useDashboard();
   const {
     register,
+    unregister,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+    setValue,
+  } = useForm({
+    shouldUnregister: true,
+  });
   const { query: submitQuery } = useGetQuery(submitQueryId || "");
   const { closeModal } = useModalFrame();
   const { execute, isPending: isLoading } = useExecuteQuery({
@@ -74,13 +79,17 @@ export default function FastboardForm({
     },
   });
 
-  useEffect(() => {
+  function getInitialData() {
     if (!dataProvider) return;
     const { componentId, property } = dataProvider;
     const component = getComponent(componentId);
     if (!component) return;
 
-    const data = component.properties[property];
+    return component.properties[property];
+  }
+
+  useEffect(() => {
+    const data = getInitialData();
     updateComponentProperties(
       id,
       {
@@ -89,6 +98,7 @@ export default function FastboardForm({
       },
       false
     );
+    reset();
   }, []);
 
   useEffect(() => {
@@ -129,6 +139,8 @@ export default function FastboardForm({
             key={index}
             properties={input as TextInputProperties}
             register={register}
+            unregister={unregister}
+            setFormValue={setValue}
             errors={errors}
             initialData={initialData}
           />
@@ -139,38 +151,23 @@ export default function FastboardForm({
             key={index}
             properties={input as NumberInputProperties}
             register={register}
+            unregister={unregister}
+            setFormValue={setValue}
             errors={errors}
             initialData={initialData}
           />
         );
       case InputType.Select:
         const selectInput = input as SelectProperties;
-        return (
-          <Select
-            key={index}
-            aria-label="Select input"
-            isRequired={selectInput.required}
-            {...register(selectInput.formDataKey, {
-              required: "This field is required",
-            })}
-            label={selectInput.label}
-            labelPlacement="outside"
-            errorMessage={errors[selectInput.formDataKey]?.message as string}
-            isInvalid={!!errors[selectInput.formDataKey]}
-          >
-            {selectInput.options.map((option) => (
-              <SelectItem key={option} value={option}>
-                {option}
-              </SelectItem>
-            ))}
-          </Select>
-        );
+        return null;
       case InputType.Checkbox:
         return (
           <FormCheckbox
             key={index}
             properties={input as CheckboxProperties}
             register={register}
+            unregister={unregister}
+            setFormValue={setValue}
             errors={errors}
           />
         );
@@ -185,7 +182,9 @@ export default function FastboardForm({
         <CardHeader>{title}</CardHeader>
         <Divider />
         <CardBody className={"space-y-8 " + scrollbarStyles.scrollbar}>
-          {inputs.map((input, index) => renderInput(index, input))}
+          {isLoading && <Spinner className="h-full" />}
+          {!isLoading &&
+            inputs.map((input, index) => renderInput(index, input))}
         </CardBody>
         <Spacer y={1} />
         <CardFooter className="flex justify-end">

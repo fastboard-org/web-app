@@ -17,6 +17,7 @@ export default function FormDefaultValueKeySelection({
 
   return (
     <Select
+      aria-label="Select default value"
       items={items}
       selectedKeys={[selectedKey]}
       label={showLabel ? "Default value" : ""}

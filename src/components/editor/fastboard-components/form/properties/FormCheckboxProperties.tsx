@@ -21,19 +21,6 @@ export default function FormCheckboxProperties({
 
   return (
     <div className="flex flex-col">
-      {initialData && (
-        <FormDefaultValueKeySelection
-          selectedKey={defaultValueKey}
-          initialData={initialData}
-          onSelectionChange={(key) => {
-            onValueChange({
-              ...properties,
-              defaultValueKey: key,
-            });
-          }}
-        />
-      )}
-
       <Input
         aria-label="Checkbox label property"
         label="Label"
@@ -59,6 +46,19 @@ export default function FormCheckboxProperties({
           });
         }}
       />
+      <Spacer y={2} />
+      {formDataKey !== "" && initialData && (
+        <FormDefaultValueKeySelection
+          selectedKey={defaultValueKey}
+          initialData={initialData}
+          onSelectionChange={(key) => {
+            onValueChange({
+              ...properties,
+              defaultValueKey: key,
+            });
+          }}
+        />
+      )}
     </div>
   );
 }

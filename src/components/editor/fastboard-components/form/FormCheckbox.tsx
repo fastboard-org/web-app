@@ -1,25 +1,48 @@
 import { CheckboxProperties } from "@/types/editor/form";
 import { Checkbox } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { UseFormRegister } from "react-hook-form";
+import {
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormUnregister,
+} from "react-hook-form";
 
 export default function FormCheckbox({
   properties,
   register,
+  unregister,
+  setFormValue,
   errors,
   initialData,
 }: {
   properties: CheckboxProperties;
   register: UseFormRegister<any>;
+  unregister: UseFormUnregister<any>;
+  setFormValue: UseFormSetValue<any>;
   errors: any;
   initialData?: any;
 }) {
   const { formDataKey, label, defaultValueKey } = properties;
+  const [formKey, setFormKey] = useState("");
   const [value, setValue] = useState(false);
 
   useEffect(() => {
-    setValue(initialData ? initialData[defaultValueKey] : false);
+    if (!formDataKey) return;
+    const data = initialData ? initialData[defaultValueKey] : "";
+    setValue(Boolean(data));
+    setFormValue(formDataKey, Boolean(data));
   }, [initialData, defaultValueKey]);
+
+  useEffect(() => {
+    if (formDataKey === "") {
+      unregister(formKey);
+      return;
+    }
+    if (formDataKey !== formKey) {
+      unregister(formKey);
+    }
+    setFormKey(formDataKey);
+  }, [formDataKey]);
 
   return (
     <Checkbox

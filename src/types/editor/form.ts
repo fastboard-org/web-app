@@ -45,7 +45,7 @@ export class DefaultInputProperties {
       case InputType.TextInput:
         return {
           formDataKey: "",
-          required: true,
+          required: false,
           type: InputType.TextInput,
           label: "Text input",
           placeHolder: "Enter text",
@@ -54,7 +54,7 @@ export class DefaultInputProperties {
       case InputType.NumberInput:
         return {
           formDataKey: "",
-          required: true,
+          required: false,
           type: InputType.NumberInput,
           label: "Number input",
           placeHolder: "Enter number",
@@ -63,7 +63,7 @@ export class DefaultInputProperties {
       case InputType.Select:
         return {
           formDataKey: "",
-          required: true,
+          required: false,
           type: InputType.Select,
           label: "Select",
           options: [],
@@ -72,7 +72,7 @@ export class DefaultInputProperties {
       case InputType.Checkbox:
         return {
           formDataKey: "",
-          required: true,
+          required: false,
           type: InputType.Checkbox,
           label: "Checkbox",
           checked: false,
@@ -81,7 +81,7 @@ export class DefaultInputProperties {
       default:
         return {
           formDataKey: "",
-          required: true,
+          required: false,
           type: InputType.TextInput,
           label: "Text input",
           placeHolder: "Enter text",
