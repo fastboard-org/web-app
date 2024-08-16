@@ -68,6 +68,22 @@ const useDashboard = () => {
     }));
   };
 
+  const addHeader = () => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.addHeader(prev.metadata),
+    }));
+  };
+
+  const switchHeaderState = () => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.switchHeaderState(prev.metadata),
+    }));
+  };
+
   const createModalFrame = (body: {
     type: ComponentType;
     properties: Object;
@@ -129,6 +145,8 @@ const useDashboard = () => {
     createModalFrame,
     deleteModalFrame,
     updateDashboard,
+    addHeader,
+    switchHeaderState,
   };
 };
 
