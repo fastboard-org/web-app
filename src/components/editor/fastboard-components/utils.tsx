@@ -38,6 +38,10 @@ import FastboardFormProperties from "./form/properties/FastboardFormProperties";
 import FastboardTableDraggable from "./table/FastboardTableDraggable";
 import FastboardTablePropertiesComponent from "./table/properties/FastboardTableProperties";
 
+import FastboardHeader from "./header/FastboardHeader";
+import FastboardHeaderPropertiesComponent from "./header/FastboardHeaderProperties";
+import { FastboardHeaderProperties } from "@/types/editor/header-types";
+
 export function getDraggableComponent(id: ComponentType) {
   const components = {
     [ComponentType.Table]: <FastboardTableDraggable key={"TableDraggable"} />,
@@ -47,6 +51,7 @@ export function getDraggableComponent(id: ComponentType) {
       <FastboardGroupChartDraggable key={"GroupChartDraggable"} />
     ),
     [ComponentType.Cards]: <FastboardCardsDraggable key={"CardsDraggable"} />,
+    [ComponentType.Header]: null,
   };
 
   return components[id];
@@ -114,6 +119,20 @@ export function getComponent(
         />
       ),
     },
+    [ComponentType.Header]: {
+      editable: (
+        <FastboardHeader
+          id={componentId}
+          properties={properties as FastboardHeaderProperties}
+        />
+      ),
+      view: (
+        <FastboardHeader
+          id={componentId}
+          properties={properties as FastboardHeaderProperties}
+        />
+      ),
+    },
   };
 
   if (!components[id]) {
@@ -163,6 +182,16 @@ export function getPropertiesComponent(
     [ComponentType.Cards]: (
       <FastboardCardsPropertiesComponent
         properties={properties as FastboardCardsProperties}
+        onValueChange={(properties) => {
+          if (onValueChange) {
+            onValueChange(properties);
+          }
+        }}
+      />
+    ),
+    [ComponentType.Header]: (
+      <FastboardHeaderPropertiesComponent
+        properties={properties as FastboardHeaderProperties}
         onValueChange={(properties) => {
           if (onValueChange) {
             onValueChange(properties);
