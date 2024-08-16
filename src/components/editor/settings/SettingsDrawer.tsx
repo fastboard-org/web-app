@@ -4,11 +4,13 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
 import LayoutSelection from "./LayoutSelection";
+import HeaderCheckbox from "./HeaderCheckbox";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { changeLayout } from "@/lib/editor.utils";
 
 export default function SettingsDrawer() {
-  const { dashboard, updateDashboard } = useDashboard();
+  const { dashboard, updateDashboard, addHeader, switchHeaderState } =
+    useDashboard();
   const isOpen = useRecoilValue(isSettingsDrawerOpen);
 
   return (
@@ -30,6 +32,17 @@ export default function SettingsDrawer() {
               ...previous,
               metadata: changeLayout(0, layoutType, previous.metadata),
             }));
+          }}
+        />
+
+        <HeaderCheckbox
+          isSelected={Boolean(dashboard?.metadata?.header?.isVisible)}
+          onValueChange={(isSelected) => {
+            if (!dashboard?.metadata?.header?.componentId) {
+              addHeader();
+            } else {
+              switchHeaderState();
+            }
           }}
         />
       </div>
