@@ -8,6 +8,7 @@ import {
 } from "@/types/editor";
 import { Layout, LayoutType } from "@/types/editor/layout-types";
 import { v4 as uuidv4 } from "uuid";
+import { FastboardHeaderProperties } from "@/types/editor/header-types";
 
 export function getComponent(
   id: ComponentId,
@@ -232,6 +233,40 @@ export function getModalFrame(
   return modal || null;
 }
 
+export function addHeader(
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  const [newMetadata, componentId] = createComponent(
+    ComponentType.Header,
+    FastboardHeaderProperties.default(),
+    dashboardMetadata
+  );
+  return {
+    ...newMetadata,
+    header: { componentId: componentId, isVisible: true },
+  };
+}
+
+export function switchHeaderState(
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  const headerId = dashboardMetadata.header.componentId;
+  if (!headerId) {
+    return dashboardMetadata;
+  }
+  const header = getComponent(headerId, dashboardMetadata);
+  if (!header) {
+    return dashboardMetadata;
+  }
+  return {
+    ...dashboardMetadata,
+    header: {
+      componentId: headerId,
+      isVisible: !dashboardMetadata.header.isVisible,
+    },
+  };
+}
+
 export const editorUtils = {
   getComponent,
   createComponent,
@@ -242,4 +277,6 @@ export const editorUtils = {
   changeLayout,
   createModalFrame,
   removeModalFrame,
+  addHeader,
+  switchHeaderState,
 };
