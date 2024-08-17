@@ -7,10 +7,7 @@ import {
   NavbarItem,
   Spacer,
 } from "@nextui-org/react";
-import {
-  FastboardHeaderPosition,
-  FastboardHeaderFontSize,
-} from "@/types/editor/header-types";
+import { FastboardHeaderPosition } from "@/types/editor/header-types";
 
 export default function FasboardHeader({
   id,
@@ -24,19 +21,21 @@ export default function FasboardHeader({
   return (
     <Navbar
       maxWidth="full"
-      className="flex flex-row h-full w-full0"
+      className="flex flex-row h-full w-full px-2"
       classNames={{
-        wrapper: "flex flex-row h-full w-full p-1",
+        wrapper: "flex flex-row h-full w-full",
       }}
       isBordered={divider}
     >
-      <NavbarContent className="flex flex-row w-full" justify={position}>
-        <NavbarItem
-          className={`flex h-full ${
-            position === FastboardHeaderPosition.Right ? "order-2" : "order-1"
-          }`}
-        >
-          {photo.url && (
+      <NavbarContent className="flex flex-row w-full py-1" justify={position}>
+        {photo.url && (
+          <NavbarItem
+            className={`flex h-full ${
+              position === FastboardHeaderPosition.Right
+                ? "order-2 pl-5"
+                : "order-1 pr-5"
+            }`}
+          >
             <Image
               src={photo.url}
               alt="Header"
@@ -45,8 +44,9 @@ export default function FasboardHeader({
               className="object-contain"
               classNames={{ wrapper: "h-full w-auto" }}
             />
-          )}
-        </NavbarItem>
+          </NavbarItem>
+        )}
+
         <NavbarItem
           className={`${
             position === FastboardHeaderPosition.Right ? "order-1" : "order-2"
