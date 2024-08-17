@@ -5,9 +5,9 @@ export enum FastboardHeaderPosition {
 }
 
 export enum FastboardHeaderFontSize {
-  Small = "small",
-  Medium = "medium",
-  Large = "x-large",
+  Small = "x-large",
+  Medium = "xx-large",
+  Large = "xxx-large",
 }
 
 export enum FastboardHeaderPhotoBorder {
