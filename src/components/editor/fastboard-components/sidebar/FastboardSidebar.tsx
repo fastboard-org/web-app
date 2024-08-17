@@ -52,7 +52,7 @@ export default function FastboardSidebar({
         >
           {menuItems.map((tab) => (
             <Tab
-              key={tab.label}
+              key={tab.key}
               className="h-full"
               title={
                 <div className="flex items-center space-x-2 text-white">

@@ -268,6 +268,48 @@ function deleteSidebar(
   };
 }
 
+function addPage(
+  dashboardMetadata: DashboardMetadata
+): [DashboardMetadata, string] {
+  const pageId = uuidv4();
+  return [
+    {
+      ...dashboardMetadata,
+      pages: {
+        ...dashboardMetadata.pages,
+        [pageId]: [Layout.of(LayoutType.Full)],
+      },
+    },
+    pageId,
+  ];
+}
+
+function deletePage(
+  pageId: string,
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  //Remove all components in the page
+  const layouts = dashboardMetadata.pages[pageId];
+  layouts.forEach((layout) => {
+    Object.keys(layout).forEach((key) => {
+      if (key === "type") {
+        return;
+      }
+      const componentId: ComponentId = layout[key as keyof Layout];
+      if (componentId) {
+        dashboardMetadata = deleteComponent(componentId, dashboardMetadata);
+      }
+    });
+  });
+
+  const newMetadata = dashboardMetadata.pages;
+  delete newMetadata[pageId];
+  return {
+    ...dashboardMetadata,
+    pages: newMetadata,
+  };
+}
+
 export const editorUtils = {
   getComponent,
   createComponent,
@@ -280,4 +322,6 @@ export const editorUtils = {
   removeModalFrame,
   addSidebar,
   deleteSidebar,
+  addPage,
+  deletePage,
 };

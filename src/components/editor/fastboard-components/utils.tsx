@@ -218,7 +218,8 @@ export function getLayout(
     case LayoutType.Row:
       return (
         <RowLayout
-          key={`RowLayout-${index}`}
+          key={`${pageIndex}-RowLayout-${index}`}
+          pageIndex={pageIndex}
           index={index}
           properties={layout as RowLayoutInterface}
           mode={mode}
@@ -227,7 +228,8 @@ export function getLayout(
     case LayoutType.Column:
       return (
         <ColumnLayout
-          key={`ColumnLayout-${index}`}
+          key={`${pageIndex}-ColumnLayout-${index}`}
+          pageIndex={pageIndex}
           index={index}
           properties={layout as ColumnLayoutInterface}
           mode={mode}
@@ -236,7 +238,8 @@ export function getLayout(
     case LayoutType.RightSplit:
       return (
         <RightSplitLayout
-          key={`RightSplitLayout-${index}`}
+          key={`${pageIndex}-RightSplitLayout-${index}`}
+          pageIndex={pageIndex}
           index={index}
           properties={layout as RightSplitLayoutInterface}
           mode={mode}
@@ -245,7 +248,8 @@ export function getLayout(
     case LayoutType.BottomSplit:
       return (
         <BottomSplitLayout
-          key={`BottomSplitLayout-${index}`}
+          key={`${pageIndex}-BottomSplitLayout-${index}`}
+          pageIndex={pageIndex}
           index={index}
           properties={layout as BottomSplitLayoutInterface}
           mode={mode}

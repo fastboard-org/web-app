@@ -7,6 +7,7 @@ import {
   Breadcrumbs,
   Spacer,
 } from "@nextui-org/react";
+import MenuItemsList from "./MenuItemsList";
 
 export default function FastboardSidebarProperties({
   properties,
@@ -15,7 +16,7 @@ export default function FastboardSidebarProperties({
   properties: SidebarProperties;
   onValueChange: (properties: SidebarProperties) => void;
 }) {
-  const { backgroundColor } = properties;
+  const { menuItems, backgroundColor } = properties;
 
   return (
     <div>
@@ -41,7 +42,14 @@ export default function FastboardSidebarProperties({
             title: "font-medium",
           }}
         >
-          <div className="overflow-x-hidden"></div>
+          <div className="overflow-x-hidden">
+            <MenuItemsList
+              items={menuItems}
+              onValueChange={(newMenuIems) => {
+                onValueChange({ ...properties, menuItems: newMenuIems });
+              }}
+            />
+          </div>
         </AccordionItem>
         <AccordionItem
           key="style"
