@@ -200,6 +200,7 @@ export function getPropertiesComponent(
 
 export function getLayout(
   layout: Layout,
+  pageIndex: string,
   index: number,
   mode: "editable" | "view"
 ) {
@@ -207,7 +208,8 @@ export function getLayout(
     case LayoutType.Full:
       return (
         <FullLayout
-          key={`FullLayout-${index}`}
+          key={`${pageIndex}-FullLayout-${index}`}
+          pageIndex={pageIndex}
           index={index}
           properties={layout as FullLayoutInterface}
           mode={mode}

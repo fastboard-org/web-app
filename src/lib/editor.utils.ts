@@ -5,6 +5,7 @@ import {
   FastboardComponent,
   Context,
   ModalFrame,
+  Index,
 } from "@/types/editor";
 import { Layout, LayoutType } from "@/types/editor/layout-types";
 import { SidebarProperties } from "@/types/editor/sidebar-types";
@@ -78,22 +79,22 @@ export function updateComponent(
 }
 
 export function addComponentToLayout(
-  layoutIndex: number,
-  containerIndex: string,
+  index: Index,
   type: ComponentType,
   defaultProperties: Object,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
+  const {
+    page: pageIndex,
+    layout: layoutIndex,
+    container: containerIndex,
+  } = index;
   // If there is already a component in the container, delete it
-  const layout = dashboardMetadata.layouts[layoutIndex];
+  const layout = dashboardMetadata.pages[pageIndex][layoutIndex];
   const curretnComponentId: ComponentId | null =
     layout[containerIndex as keyof Layout];
   if (curretnComponentId) {
-    dashboardMetadata = deleteComponentFromLayout(
-      layoutIndex,
-      containerIndex,
-      dashboardMetadata
-    );
+    dashboardMetadata = deleteComponentFromLayout(index, dashboardMetadata);
   }
 
   const [newMetadata, componentId] = createComponent(
@@ -103,25 +104,28 @@ export function addComponentToLayout(
   );
   return {
     ...newMetadata,
-    layouts: newMetadata.layouts.map((layout, index) => {
-      if (index === layoutIndex) {
-        return {
-          ...layout,
-          [containerIndex]: componentId,
-        };
-      }
-      return layout;
-    }),
+    pages: {
+      ...newMetadata.pages,
+      [pageIndex]: newMetadata.pages[pageIndex].map((layout, index) => {
+        if (index === layoutIndex) {
+          return {
+            ...layout,
+            [containerIndex]: componentId,
+          };
+        }
+        return layout;
+      }),
+    },
   };
 }
 
 export function deleteComponentFromLayout(
-  layoutIndex: number,
-  containerIndex: string,
+  index: Index,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
-  const layout = dashboardMetadata.layouts[layoutIndex];
-  const componentId: ComponentId = layout[containerIndex as keyof Layout];
+  const { page, layout: layoutIndex, container } = index;
+  const layout = dashboardMetadata.pages[page][layoutIndex];
+  const componentId: ComponentId = layout[container as keyof Layout];
   if (!componentId) {
     return dashboardMetadata;
   }
@@ -129,15 +133,18 @@ export function deleteComponentFromLayout(
   const newMetadata = deleteComponent(componentId, dashboardMetadata);
   return {
     ...newMetadata,
-    layouts: newMetadata.layouts.map((layout, index) => {
-      if (index === layoutIndex) {
-        return {
-          ...layout,
-          [containerIndex]: null,
-        };
-      }
-      return layout;
-    }),
+    pages: {
+      ...newMetadata.pages,
+      [page]: newMetadata.pages[page].map((layout, index) => {
+        if (index === layoutIndex) {
+          return {
+            ...layout,
+            [container]: null,
+          };
+        }
+        return layout;
+      }),
+    },
   };
 }
 

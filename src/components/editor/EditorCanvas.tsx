@@ -1,4 +1,5 @@
 import {
+  currentPageState,
   editorCanvasRefState,
   isComponentsDrawerOpen,
   isPropertiesDrawerOpen,
@@ -16,6 +17,7 @@ export default function EditorCanvas() {
   const { dashboard, getComponent } = useDashboard();
   const editorCanvasRef = useRef<HTMLDivElement>(null);
   const setEditorCanvasRef = useSetRecoilState(editorCanvasRefState);
+  const currentPage = useRecoilValue(currentPageState);
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
   const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
   const isSettingsOpen = useRecoilValue(isSettingsDrawerOpen);
@@ -65,9 +67,11 @@ export default function EditorCanvas() {
       )}
 
       <div className="w-full h-full">
-        {dashboard?.metadata?.layouts.map((layout, index) =>
-          getLayout(layout, index, "editable")
-        )}
+        {currentPage &&
+          dashboard?.metadata?.pages[currentPage] &&
+          dashboard?.metadata?.pages[currentPage].map((layout, index) =>
+            getLayout(layout, currentPage, index, "editable")
+          )}
       </div>
     </motion.div>
   );

@@ -1,4 +1,5 @@
 export interface MenuItemProperties {
+  key: string;
   label: string;
   caption: string;
 }
@@ -6,22 +7,12 @@ export interface MenuItemProperties {
 export class SidebarProperties {
   menuItems: MenuItemProperties[] = [
     {
-      label: "Dashboard",
-      caption: "Dashboard",
-    },
-    {
-      label: "Tables",
-      caption: "Tables",
-    },
-    {
-      label: "Group Chart",
-      caption: "Group Chart",
-    },
-    {
-      label: "Cards",
-      caption: "Cards",
+      key: "home",
+      label: "home",
+      caption: "home",
     },
   ];
+  backgroundColor: string = "#1E1E1E";
 
   static default(): SidebarProperties {
     return new SidebarProperties();

@@ -19,6 +19,11 @@ export const isSettingsDrawerOpen = atom({
   default: false,
 });
 
+export const currentPageState = atom({
+  key: "currentPage",
+  default: "home",
+});
+
 export const propertiesDrawerState = atom<PropertiesDrawerState>({
   key: "propertiesDrawerState",
   default: {

@@ -32,7 +32,14 @@ export interface DashboardMetadata {
   components: Record<ComponentId, FastboardComponent>;
   sidebar: ComponentId | null;
   modals: ModalFrame[];
+  pages: Record<string, Layout[]>;
   layouts: Array<Layout>;
+}
+
+export interface Index {
+  page: string;
+  layout: number;
+  container: string;
 }
 
 export interface Context {
@@ -40,10 +47,7 @@ export interface Context {
   modalContext?: {
     modalId: string;
   };
-  layoutContext?: {
-    layoutIndex: number;
-    containerIndex: string;
-  };
+  layoutContext?: Index;
 }
 
 export interface PropertiesDrawerState {

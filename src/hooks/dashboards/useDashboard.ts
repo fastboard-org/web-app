@@ -2,11 +2,19 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { dashboardService } from "@/lib/services/dashboards";
 import { Dashboard } from "@/types/dashboards";
 import { editorUtils } from "@/lib/editor.utils";
-import { ComponentId, ComponentType, FastboardComponent } from "@/types/editor";
+import {
+  ComponentId,
+  ComponentType,
+  FastboardComponent,
+  Index,
+} from "@/types/editor";
 import { useParams } from "next/navigation";
+import { useRecoilState } from "recoil";
+import { currentPageState } from "@/atoms/editor";
 
 const useDashboard = () => {
   const { id: dashboardId } = useParams();
+  const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
 
   const {
     isPending: loading,
@@ -35,8 +43,7 @@ const useDashboard = () => {
   };
 
   const addComponentToLayout = (
-    layoutIndex: number,
-    containerIndex: string,
+    index: Index,
     type: ComponentType,
     defaultProperties: Object
   ) => {
@@ -44,8 +51,7 @@ const useDashboard = () => {
     updateDashboard((prev) => ({
       ...prev,
       metadata: editorUtils.addComponentToLayout(
-        layoutIndex,
-        containerIndex,
+        index,
         type,
         defaultProperties,
         prev.metadata
@@ -53,18 +59,11 @@ const useDashboard = () => {
     }));
   };
 
-  const deleteComponentFromLayout = (
-    layoutIndex: number,
-    containerIndex: string
-  ) => {
+  const deleteComponentFromLayout = (index: Index) => {
     if (!dashboard) return;
     updateDashboard((prev) => ({
       ...prev,
-      metadata: editorUtils.deleteComponentFromLayout(
-        layoutIndex,
-        containerIndex,
-        prev.metadata
-      ),
+      metadata: editorUtils.deleteComponentFromLayout(index, prev.metadata),
     }));
   };
 
@@ -107,6 +106,7 @@ const useDashboard = () => {
       ...prev,
       metadata: editorUtils.deleteSidebar(prev.metadata),
     }));
+    setCurrentPage("home");
   };
 
   const updateDashboard = (updater: (previous: Dashboard) => Dashboard) => {
