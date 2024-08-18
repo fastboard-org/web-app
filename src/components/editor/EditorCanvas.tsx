@@ -45,7 +45,7 @@ export default function EditorCanvas() {
         ease: "easeInOut",
       }}
       className={
-        "flex justify-center items-center h-full w-[75%] bg-background shadow-lg overflow-y-auto rounded-lg" +
+        "flex justify-center items-center h-full w-[75%] bg-background shadow-lg overflow-y-auto overflow-x-hidden rounded-lg" +
         " " +
         scrollbarStyles.scrollbar
       }

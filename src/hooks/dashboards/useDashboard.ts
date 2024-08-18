@@ -120,6 +120,15 @@ const useDashboard = () => {
     return pageId;
   };
 
+  const deletePage = (pageId: string) => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.deletePage(pageId, prev.metadata),
+    }));
+    setCurrentPage("home");
+  };
+
   const updateDashboard = (updater: (previous: Dashboard) => Dashboard) => {
     let updatedDashboard: Dashboard | undefined;
 
@@ -159,6 +168,7 @@ const useDashboard = () => {
     addSidebar,
     deleteSidebar,
     addPage,
+    deletePage,
   };
 };
 
