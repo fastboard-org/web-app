@@ -71,6 +71,7 @@ export default function FastboardTable({
     hideHeader,
     isStriped,
     rowsPerPage,
+    headerColor,
   } = properties;
   const {
     data,
@@ -334,12 +335,18 @@ export default function FastboardTable({
         }
         bottomContentPlacement="outside"
       >
-        <TableHeader columns={finalColumns}>
-          {(column) => (
-            <TableColumn className="text-center" key={column.key}>
+        <TableHeader className="border-b-2 border border-red-600">
+          {finalColumns.map((column) => (
+            <TableColumn
+              className="text-center"
+              key={column.key}
+              style={{
+                backgroundColor: headerColor,
+              }}
+            >
               {column.label.toUpperCase()}
             </TableColumn>
-          )}
+          ))}
         </TableHeader>
         <TableBody
           isLoading={dataFetching}

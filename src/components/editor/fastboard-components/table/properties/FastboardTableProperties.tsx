@@ -16,6 +16,7 @@ import TableAddOnsList from "./TableAddOnsList";
 import TableAddRowProperties from "./TableAddRowProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
+import ColorPicker from "@/components/shared/ColorPicker";
 
 const FastboardTablePropertiesComponent = ({
   properties,
@@ -32,6 +33,7 @@ const FastboardTablePropertiesComponent = ({
     addOns,
     hideHeader,
     isStriped,
+    headerColor,
   } = properties;
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [columnsProperties, setColumnsProperties] = useState(columns);
@@ -180,6 +182,18 @@ const FastboardTablePropertiesComponent = ({
               >
                 Stripped
               </Checkbox>
+              <div className="flex flex-row justify-between">
+                <span>Header color</span>
+                <ColorPicker
+                  initialColor={headerColor}
+                  onColorChange={(color) => {
+                    onValueChange({
+                      ...properties,
+                      headerColor: color,
+                    });
+                  }}
+                />
+              </div>
             </div>
           </AccordionItem>
         </Accordion>
