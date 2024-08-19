@@ -1,37 +1,33 @@
-import { currentPageState } from "@/atoms/editor";
 import { Icon } from "@/components/shared/IconPicker";
+import useNavigation from "@/hooks/useNavigation";
 import { SidebarProperties } from "@/types/editor/sidebar-types";
 import { Tab, Tabs } from "@nextui-org/react";
-import { Folder } from "iconsax-react";
 import { Key } from "react";
-import { useSetRecoilState } from "recoil";
 
 export default function FastboardSidebar({
   properties,
 }: {
   properties: SidebarProperties;
 }) {
+  const { currentPage, changePage } = useNavigation();
   const { menuItems, backgroundColor } = properties;
-  const setCurrentPage = useSetRecoilState(currentPageState);
 
   function handleSelectionChange(key: Key) {
-    setCurrentPage(key.toString());
+    changePage(key.toString());
   }
 
   return (
-    <div
-      className="max-w-52 h-full"
-      style={{ backgroundColor: backgroundColor }}
-    >
+    <div className="w-52 h-full" style={{ backgroundColor: backgroundColor }}>
       <div key="tabs" className="flex w-full justify-center p-5">
         <Tabs
           aria-label="Sidebar"
           isVertical
+          defaultSelectedKey={currentPage}
           onSelectionChange={handleSelectionChange}
           color="primary"
-          className="max-w-40 min-w-20"
+          className="w-40"
           classNames={{
-            tabList: "bg-transparent",
+            tabList: "bg-transparent w-full",
             tab: "justify-start",
           }}
         >

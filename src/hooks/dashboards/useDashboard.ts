@@ -9,13 +9,12 @@ import {
   Index,
 } from "@/types/editor";
 import { useParams } from "next/navigation";
-import { useRecoilState } from "recoil";
-import { currentPageState } from "@/atoms/editor";
 import { LayoutType } from "@/types/editor/layout-types";
+import useNavigation from "../useNavigation";
 
 const useDashboard = () => {
   const { id: dashboardId } = useParams();
-  const [currentPage, setCurrentPage] = useRecoilState(currentPageState);
+  const { changePage } = useNavigation();
 
   const {
     isPending: loading,
@@ -107,7 +106,7 @@ const useDashboard = () => {
       ...prev,
       metadata: editorUtils.deleteSidebar(prev.metadata),
     }));
-    setCurrentPage("home");
+    changePage("home");
   };
 
   const addPage = (): string | null => {
@@ -127,7 +126,6 @@ const useDashboard = () => {
       ...prev,
       metadata: editorUtils.deletePage(pageId, prev.metadata),
     }));
-    setCurrentPage("home");
   };
 
   const changeLayout = (

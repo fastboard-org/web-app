@@ -1,5 +1,4 @@
 import {
-  currentPageState,
   editorCanvasRefState,
   isComponentsDrawerOpen,
   isPropertiesDrawerOpen,
@@ -12,19 +11,25 @@ import { getLayout } from "./fastboard-components/utils";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { useEffect, useRef } from "react";
 import FastboardComponent from "./fastboard-components/FastboardComponent";
+import useNavigation from "@/hooks/useNavigation";
 
 export default function EditorCanvas() {
   const { dashboard, getComponent } = useDashboard();
+  const { currentPage } = useNavigation();
   const editorCanvasRef = useRef<HTMLDivElement>(null);
   const setEditorCanvasRef = useSetRecoilState(editorCanvasRefState);
-  const currentPage = useRecoilValue(currentPageState);
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
   const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
   const isSettingsOpen = useRecoilValue(isSettingsDrawerOpen);
 
-  const sidebar = dashboard?.metadata?.sidebar
-    ? getComponent(dashboard.metadata.sidebar)
+  const sidebar = dashboard?.metadata?.sidebar?.id
+    ? getComponent(dashboard.metadata.sidebar?.id)
     : null;
+  const selectedPage = dashboard?.metadata?.pages[currentPage]
+    ? currentPage
+    : "home";
+  const sidebarVisible = dashboard?.metadata?.sidebar?.visible ?? false;
+  const layoutsWidth = dashboard?.metadata?.sidebar?.visible ? "80%" : "100%";
 
   useEffect(() => {
     setEditorCanvasRef(editorCanvasRef.current);
@@ -50,7 +55,7 @@ export default function EditorCanvas() {
         scrollbarStyles.scrollbar
       }
     >
-      {sidebar && (
+      {sidebar && sidebarVisible && (
         <div className="w-[20%] h-full">
           <FastboardComponent
             id={sidebar.id}
@@ -66,12 +71,15 @@ export default function EditorCanvas() {
         </div>
       )}
 
-      <div className="w-full h-full">
-        {currentPage &&
-          dashboard?.metadata?.pages[currentPage] &&
-          dashboard?.metadata?.pages[currentPage].map((layout, index) =>
-            getLayout(layout, currentPage, index, "editable")
-          )}
+      <div
+        className="w-full h-full"
+        style={{
+          width: layoutsWidth,
+        }}
+      >
+        {dashboard?.metadata?.pages[selectedPage].map((layout, index) =>
+          getLayout(layout, currentPage, index, "editable")
+        )}
       </div>
     </motion.div>
   );

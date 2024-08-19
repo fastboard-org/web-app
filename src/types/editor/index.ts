@@ -30,7 +30,7 @@ export interface ModalFrame {
 
 export interface DashboardMetadata {
   components: Record<ComponentId, FastboardComponent>;
-  sidebar: ComponentId | null;
+  sidebar: { id: ComponentId; visible: boolean } | null;
   modals: ModalFrame[];
   pages: Record<string, Layout[]>;
   layouts: Array<Layout>;

@@ -1,18 +1,21 @@
 "use client";
-import { currentPageState } from "@/atoms/editor";
 import EditorModal from "@/components/editor/EditorModal";
 import FastboardComponent from "@/components/editor/fastboard-components/FastboardComponent";
 import { getLayout } from "@/components/editor/fastboard-components/utils";
 import useDashboard from "@/hooks/dashboards/useDashboard";
+import useNavigation from "@/hooks/useNavigation";
 import { Spinner } from "@nextui-org/react";
-import { useRecoilValue } from "recoil";
 
 export default function Preview() {
   const { dashboard, loading, isError, error, getComponent } = useDashboard();
-  const currentPage = useRecoilValue(currentPageState);
+  const { currentPage } = useNavigation();
   const sidebar = dashboard?.metadata?.sidebar
-    ? getComponent(dashboard.metadata.sidebar)
+    ? getComponent(dashboard.metadata.sidebar.id)
     : null;
+  const selectedPage = dashboard?.metadata?.pages[currentPage]
+    ? currentPage
+    : "home";
+  const sidebarVisible = dashboard?.metadata?.sidebar?.visible ?? false;
 
   if (loading) {
     return (
@@ -32,7 +35,7 @@ export default function Preview() {
 
   return (
     <div className="flex flex-row w-full h-screen">
-      {sidebar && (
+      {sidebar && sidebarVisible && (
         <div className="w-[20%] h-full">
           <FastboardComponent
             id={sidebar.id}
@@ -49,11 +52,9 @@ export default function Preview() {
       )}
       <div className="flex justify-center items-center h-screen w-full bg-background">
         <EditorModal mode="view" />
-        {currentPage &&
-          dashboard?.metadata?.pages[currentPage] &&
-          dashboard?.metadata?.pages[currentPage].map((layout, index) =>
-            getLayout(layout, currentPage, index, "view")
-          )}
+        {dashboard?.metadata?.pages[selectedPage].map((layout, index) =>
+          getLayout(layout, currentPage, index, "view")
+        )}
       </div>
     </div>
   );

@@ -252,7 +252,10 @@ function addSidebar(dashboardMetadata: DashboardMetadata): DashboardMetadata {
   );
   return {
     ...newMetadata,
-    sidebar: sidebarId,
+    sidebar: {
+      id: sidebarId,
+      visible: true,
+    },
   };
 }
 
@@ -262,8 +265,17 @@ function deleteSidebar(
   if (!dashboardMetadata.sidebar) {
     return dashboardMetadata;
   }
+
+  //Remove all pages and components in the sidebar except the home page
+  const pages = Object.keys(dashboardMetadata.pages).filter(
+    (page) => page !== "home"
+  );
+  pages.forEach((page) => {
+    dashboardMetadata = deletePage(page, dashboardMetadata);
+  });
+
   const newMetadata = deleteComponent(
-    dashboardMetadata.sidebar,
+    dashboardMetadata.sidebar.id,
     dashboardMetadata
   );
   return {
