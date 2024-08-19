@@ -8,9 +8,10 @@ import {
   Spacer,
 } from "@nextui-org/react";
 import ConnectionIcon from "../shared/ConnectionIcon";
-import { Query } from "@/types/connections";
+import { Connection, Query } from "@/types/connections";
 import CustomSkeleton from "../shared/CustomSkeleton";
 import useMyQueries from "@/hooks/connections/useMyQueries";
+import { useMemo } from "react";
 
 function CreateQuery() {
   return (
@@ -52,13 +53,31 @@ export default function QuerySelection({
     return <div>Error: {error?.message}</div>;
   }
 
-  const groupedQueries = queries?.reduce((acc, query) => {
-    if (!acc[query.connection_id]) {
-      acc[query.connection_id] = [];
-    }
-    acc[query.connection_id].push(query);
-    return acc;
-  }, {} as Record<string, Query[]>);
+  const connections = useMemo(() => {
+    return (
+      queries?.reduce((acc, query) => {
+        if (!query.connection) {
+          return acc;
+        }
+
+        if (!acc.find((c) => c.id === query.connection?.id)) {
+          acc.push(query.connection);
+        }
+        return acc;
+      }, [] as Connection[]) || []
+    );
+  }, [queries]);
+  const groupedQueries = useMemo(() => {
+    return (
+      queries?.reduce((acc, query) => {
+        if (!acc[query.connection_id]) {
+          acc[query.connection_id] = [];
+        }
+        acc[query.connection_id].push(query);
+        return acc;
+      }, {} as Record<string, Query[]>) || {}
+    );
+  }, [queries]);
 
   const selectedQuery = queries?.find((q) => q.id === selectedQueryId);
 
@@ -79,7 +98,7 @@ export default function QuerySelection({
         placeholder="Select query"
         startContent={
           <ConnectionIcon
-            type={selectedQuery?.connection_type ?? null}
+            type={selectedQuery?.connection?.type ?? null}
             size={25}
             className="text-primary"
           />
@@ -97,17 +116,18 @@ export default function QuerySelection({
         errorMessage="Something went wrong, queries not found"
         isInvalid={isError}
       >
-        {Object.entries(groupedQueries || {}).map(([connectionId, queries]) => {
+        {connections.map((connection) => {
           return (
-            <AutocompleteSection key={connectionId} title={connectionId}>
-              {queries.map((query) => (
+            <AutocompleteSection key={connection.id} title={connection.name}>
+              {groupedQueries[connection.id]?.map((query) => (
                 <AutocompleteItem
                   key={query.id}
+                  value={query.id}
                   startContent={
                     <ConnectionIcon
-                      type={query.connection_type}
+                      type={query.connection?.type ?? null}
                       size={20}
-                      className={"text-primary"}
+                      className="text-primary"
                     />
                   }
                 >
