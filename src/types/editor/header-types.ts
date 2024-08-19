@@ -18,7 +18,7 @@ export enum FastboardHeaderPhotoBorder {
 
 export class FastboardHeaderProperties {
   title: { text: string; size: FastboardHeaderFontSize } = {
-    text: "",
+    text: "Header Title",
     size: FastboardHeaderFontSize.Medium,
   };
   photo: { url: string; border: string } = {
@@ -26,7 +26,7 @@ export class FastboardHeaderProperties {
     border: FastboardHeaderPhotoBorder.Rounded,
   };
 
-  position: FastboardHeaderPosition = FastboardHeaderPosition.Left;
+  position: FastboardHeaderPosition = FastboardHeaderPosition.Center;
 
   divider: boolean = false;
 

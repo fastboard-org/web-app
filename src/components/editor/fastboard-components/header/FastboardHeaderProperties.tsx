@@ -87,6 +87,7 @@ const FastboardHeaderPropertiesComponent = ({
             label="Position"
             labelPlacement="outside"
             placeholder="Select header position"
+            disallowEmptySelection={true}
             onChange={(e) => {
               onValueChange({
                 ...properties,
@@ -115,6 +116,7 @@ const FastboardHeaderPropertiesComponent = ({
             items={Object.keys(FastboardHeaderFontSize) as Iterable<any>}
             disabledKeys={[]}
             selectedKeys={[title.size]}
+            disallowEmptySelection={true}
             label="Title Size"
             labelPlacement="outside"
             placeholder="Select title size"
@@ -152,6 +154,7 @@ const FastboardHeaderPropertiesComponent = ({
             label="Photo Border"
             labelPlacement="outside"
             placeholder="Select photo border"
+            disallowEmptySelection={true}
             onChange={(e) => {
               onValueChange({
                 ...properties,
