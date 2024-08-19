@@ -1,4 +1,5 @@
 import useDashboard from "@/hooks/dashboards/useDashboard";
+import { LayoutType } from "@/types/editor/layout-types";
 import { MenuItemProperties } from "@/types/editor/sidebar-types";
 import { Button, ButtonGroup } from "@nextui-org/react";
 import { Add } from "iconsax-react";
@@ -18,7 +19,10 @@ export default function MenuItemsList({
   function addMenuItem() {
     const pageId = addPage();
     if (!pageId) return;
-    onValueChange([...items, { key: pageId, label: `New page`, caption: "" }]);
+    onValueChange([
+      ...items,
+      { key: pageId, label: `New page`, caption: "", layout: LayoutType.Full },
+    ]);
   }
 
   function removeMenuItem(index: number) {

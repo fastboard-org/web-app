@@ -5,11 +5,9 @@ import React from "react";
 import { useRecoilValue } from "recoil";
 import LayoutSelection from "./LayoutSelection";
 import useDashboard from "@/hooks/dashboards/useDashboard";
-import { changeLayout } from "@/lib/editor.utils";
 
 export default function SettingsDrawer() {
-  const { dashboard, updateDashboard, addSidebar, deleteSidebar } =
-    useDashboard();
+  const { dashboard, addSidebar, deleteSidebar, changeLayout } = useDashboard();
   const isOpen = useRecoilValue(isSettingsDrawerOpen);
   const hasSidebar = dashboard?.metadata?.sidebar ? true : false;
 
@@ -26,12 +24,9 @@ export default function SettingsDrawer() {
       <Divider />
       <div className="flex flex-col gap-5 mt-5">
         <LayoutSelection
-          selectedLayout={dashboard?.metadata?.layouts[0].type ?? null}
+          selectedLayout={dashboard?.metadata?.pages["home"][0].type ?? null}
           onLayoutSelect={(layoutType) => {
-            updateDashboard((previous) => ({
-              ...previous,
-              metadata: changeLayout(0, layoutType, previous.metadata),
-            }));
+            changeLayout("home", 0, layoutType);
           }}
         />
         <Checkbox

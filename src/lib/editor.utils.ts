@@ -148,13 +148,14 @@ export function deleteComponentFromLayout(
   };
 }
 
-export function changeLayout(
+function changeLayout(
+  pageIndex: string,
   layoutIndex: number,
   to_type: LayoutType,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
   let to = Layout.of(to_type);
-  const from = dashboardMetadata.layouts[layoutIndex];
+  const from = dashboardMetadata.pages[pageIndex][layoutIndex];
 
   const keysFrom = Object.keys(from);
   const keysTo = Object.keys(to);
@@ -168,12 +169,15 @@ export function changeLayout(
 
   return {
     ...dashboardMetadata,
-    layouts: dashboardMetadata.layouts.map((layout, index) => {
-      if (index === layoutIndex) {
-        return convertLayout(layout, to_type);
-      }
-      return layout;
-    }),
+    pages: {
+      ...dashboardMetadata.pages,
+      [pageIndex]: dashboardMetadata.pages[pageIndex].map((layout, index) => {
+        if (index === layoutIndex) {
+          return convertLayout(from, to_type);
+        }
+        return layout;
+      }),
+    },
   };
 }
 

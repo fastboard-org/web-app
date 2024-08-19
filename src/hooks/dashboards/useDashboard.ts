@@ -11,6 +11,7 @@ import {
 import { useParams } from "next/navigation";
 import { useRecoilState } from "recoil";
 import { currentPageState } from "@/atoms/editor";
+import { LayoutType } from "@/types/editor/layout-types";
 
 const useDashboard = () => {
   const { id: dashboardId } = useParams();
@@ -129,6 +130,23 @@ const useDashboard = () => {
     setCurrentPage("home");
   };
 
+  const changeLayout = (
+    pageId: string,
+    layoutIndex: number,
+    layoutType: LayoutType
+  ) => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.changeLayout(
+        pageId,
+        layoutIndex,
+        layoutType,
+        prev.metadata
+      ),
+    }));
+  };
+
   const updateDashboard = (updater: (previous: Dashboard) => Dashboard) => {
     let updatedDashboard: Dashboard | undefined;
 
@@ -169,6 +187,7 @@ const useDashboard = () => {
     deleteSidebar,
     addPage,
     deletePage,
+    changeLayout,
   };
 };
 

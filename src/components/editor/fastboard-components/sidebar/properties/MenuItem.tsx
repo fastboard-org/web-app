@@ -1,3 +1,5 @@
+import LayoutSelection from "@/components/editor/settings/LayoutSelection";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 import { MenuItemProperties } from "@/types/editor/sidebar-types";
 import { Input } from "@nextui-org/react";
 
@@ -8,7 +10,8 @@ export default function MenuItem({
   properties: MenuItemProperties;
   onValueChange: (properties: MenuItemProperties) => void;
 }) {
-  const { label, caption } = properties;
+  const { key, label, caption, layout } = properties;
+  const { changeLayout } = useDashboard();
 
   return (
     <div className="flex flex-col gap-2">
@@ -35,6 +38,16 @@ export default function MenuItem({
           onValueChange({
             ...properties,
             caption: value,
+          });
+        }}
+      />
+      <LayoutSelection
+        selectedLayout={layout}
+        onLayoutSelect={(layout) => {
+          changeLayout(key, 0, layout);
+          onValueChange({
+            ...properties,
+            layout: layout,
           });
         }}
       />
