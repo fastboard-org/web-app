@@ -1,7 +1,9 @@
 import LayoutSelection from "@/components/editor/settings/LayoutSelection";
+import IconPicker from "@/components/shared/IconPicker";
 import useDashboard from "@/hooks/dashboards/useDashboard";
+import { IconType } from "@/types/editor/icon-types";
 import { MenuItemProperties } from "@/types/editor/sidebar-types";
-import { Input } from "@nextui-org/react";
+import { Input, Spacer } from "@nextui-org/react";
 
 export default function MenuItem({
   properties,
@@ -10,7 +12,7 @@ export default function MenuItem({
   properties: MenuItemProperties;
   onValueChange: (properties: MenuItemProperties) => void;
 }) {
-  const { key, label, caption, layout } = properties;
+  const { key, label, caption, layout, icon } = properties;
   const { changeLayout } = useDashboard();
 
   return (
@@ -51,6 +53,19 @@ export default function MenuItem({
           });
         }}
       />
+      <Spacer y={1} />
+      <div className="flex flex-row justify-between items-center">
+        <span className="text-md">Icon</span>
+        <IconPicker
+          icon={icon}
+          onIconSelect={(icon) => {
+            onValueChange({
+              ...properties,
+              icon: icon,
+            });
+          }}
+        />
+      </div>
     </div>
   );
 }

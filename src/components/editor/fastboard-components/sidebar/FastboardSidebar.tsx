@@ -1,4 +1,5 @@
 import { currentPageState } from "@/atoms/editor";
+import { Icon } from "@/components/shared/IconPicker";
 import { SidebarProperties } from "@/types/editor/sidebar-types";
 import { Tab, Tabs } from "@nextui-org/react";
 import { Folder } from "iconsax-react";
@@ -40,7 +41,7 @@ export default function FastboardSidebar({
               className="h-full"
               title={
                 <div className="flex items-center space-x-2 text-white">
-                  <Folder />
+                  <Icon icon={tab.icon} />
                   <div className="flex flex-col items-start">
                     <span>{tab.label}</span>
                     <span className="opacity-40">{tab.caption}</span>

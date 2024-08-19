@@ -1,4 +1,5 @@
 import useDashboard from "@/hooks/dashboards/useDashboard";
+import { IconType } from "@/types/editor/icon-types";
 import { LayoutType } from "@/types/editor/layout-types";
 import { MenuItemProperties } from "@/types/editor/sidebar-types";
 import { Button, ButtonGroup } from "@nextui-org/react";
@@ -21,7 +22,13 @@ export default function MenuItemsList({
     if (!pageId) return;
     onValueChange([
       ...items,
-      { key: pageId, label: `New page`, caption: "", layout: LayoutType.Full },
+      {
+        key: pageId,
+        label: `New page`,
+        caption: "",
+        layout: LayoutType.Full,
+        icon: IconType.Folder,
+      },
     ]);
   }
 
