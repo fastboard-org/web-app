@@ -335,7 +335,7 @@ export default function FastboardTable({
         }
         bottomContentPlacement="outside"
       >
-        <TableHeader className="border-b-2 border border-red-600">
+        <TableHeader>
           {finalColumns.map((column) => (
             <TableColumn
               className="text-center"
