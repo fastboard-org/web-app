@@ -39,6 +39,7 @@ export class FastboardTableProperties {
   };
   hideHeader: boolean = false;
   isStriped: boolean = false;
+  headerColor: string = "#000000";
 
   static default(): FastboardTableProperties {
     return new FastboardTableProperties();
