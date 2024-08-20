@@ -78,8 +78,18 @@ export function getComponent(
       ),
     },
     [ComponentType.Form]: {
-      editable: <FastboardForm properties={properties as FormProperties} />,
-      view: <FastboardForm properties={properties as FormProperties} />,
+      editable: (
+        <FastboardForm
+          id={componentId}
+          properties={properties as FormProperties}
+        />
+      ),
+      view: (
+        <FastboardForm
+          id={componentId}
+          properties={properties as FormProperties}
+        />
+      ),
     },
     [ComponentType.Image]: {
       editable: null,
@@ -126,11 +136,15 @@ export function getPropertiesComponent(
   state: PropertiesDrawerState,
   onValueChange?: (properties: Record<string, any>) => void
 ) {
-  const { type, properties } = state;
+  const { selectedComponentId, type, properties } = state;
+  if (!selectedComponentId) {
+    return null;
+  }
 
   const components = {
     [ComponentType.Table]: (
       <FastboardTablePropertiesComponent
+        componentId={selectedComponentId}
         properties={properties as FastboardTableProperties}
         onValueChange={(properties) => {
           if (onValueChange) {

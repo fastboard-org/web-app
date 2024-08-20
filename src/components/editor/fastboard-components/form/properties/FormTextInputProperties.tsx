@@ -1,20 +1,23 @@
-import { Query } from "@/types/connections";
 import { TextInputProperties } from "@/types/editor/form";
 import { Checkbox, Input, Select, SelectItem, Spacer } from "@nextui-org/react";
 import FormDataKeySelection from "./FormDataKeySelection";
+import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
 
 export default function FormTextInputProperties({
   properties,
   queryId,
   onValueChange,
   disabledKeys = [],
+  initialData,
 }: {
   properties: TextInputProperties;
   queryId: string | null;
   onValueChange: (properties: TextInputProperties) => void;
   disabledKeys?: string[];
+  initialData?: any;
 }) {
-  const { label, placeHolder, required, formDataKey } = properties;
+  const { label, placeHolder, required, formDataKey, defaultValueKey } =
+    properties;
 
   return (
     <div className="flex flex-col">
@@ -46,18 +49,6 @@ export default function FormTextInputProperties({
         }}
       />
       <Spacer y={2} />
-      <Checkbox
-        isSelected={required}
-        onValueChange={(value) => {
-          onValueChange({
-            ...properties,
-            required: value,
-          });
-        }}
-      >
-        Required
-      </Checkbox>
-      <Spacer y={2} />
       <FormDataKeySelection
         selectedKey={formDataKey}
         disabledKeys={disabledKeys}
@@ -69,6 +60,35 @@ export default function FormTextInputProperties({
           });
         }}
       />
+      <Spacer y={2} />
+      {formDataKey !== "" && (
+        <div>
+          <Checkbox
+            isSelected={required}
+            onValueChange={(value) => {
+              onValueChange({
+                ...properties,
+                required: value,
+              });
+            }}
+          >
+            Required
+          </Checkbox>
+          <Spacer y={2} />
+          {initialData && (
+            <FormDefaultValueKeySelection
+              selectedKey={defaultValueKey}
+              initialData={initialData}
+              onSelectionChange={(key) => {
+                onValueChange({
+                  ...properties,
+                  defaultValueKey: key,
+                });
+              }}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }

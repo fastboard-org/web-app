@@ -1,6 +1,7 @@
 import {
   CheckboxProperties,
   FormProperties,
+  InputProperties,
   InputType,
   NumberInputProperties,
   TextInputProperties,
@@ -10,7 +11,6 @@ import {
   AccordionItem,
   BreadcrumbItem,
   Breadcrumbs,
-  Button,
   Input,
   Spacer,
 } from "@nextui-org/react";
@@ -22,6 +22,9 @@ import FormCheckboxProperties from "./FormCheckboxProperties";
 import FormNumberInputProperties from "./FormNumberInputProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
+import useGetQuery from "@/hooks/connections/useGetQuery";
+import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
+import QueryParameters from "./QueryParameters";
 
 export default function FastboardFormProperties({
   properties,
@@ -30,7 +33,16 @@ export default function FastboardFormProperties({
   properties: FormProperties;
   onValueChange: (properties: FormProperties) => void;
 }) {
-  const { title, submitQueryId, submitButtonLabel, inputs } = properties;
+  const {
+    title,
+    submitQueryId,
+    queryParameters,
+    submitButtonLabel,
+    inputs,
+    dataProvider,
+    initialData,
+  } = properties;
+  const { query: submitQuery } = useGetQuery(submitQueryId);
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
     null
@@ -38,9 +50,63 @@ export default function FastboardFormProperties({
   const disabledKeys = inputs.map((input) => input.formDataKey);
 
   useEffect(() => {
+    resetDefaultValues();
+  }, [initialData]);
+
+  useEffect(() => {
     //The selected component has changed, reset the input selected index
     setInputSelectedIndex(null);
   }, [selectedComponentId]);
+
+  function resetDefaultValues() {
+    const dataKeys = Object.keys(initialData || {});
+
+    //Clear all default values from query paramters
+    const newQueryParameters = Object.entries(queryParameters).reduce(
+      (acc, [key, value]) => {
+        if (!dataKeys.includes(value)) {
+          return acc;
+        }
+        return {
+          ...acc,
+          [key]: value,
+        };
+      },
+      {}
+    );
+
+    //Clear all default values from inputs
+    const newInputs = inputs.map((input) => {
+      if (!dataKeys.includes(input.defaultValueKey)) {
+        return {
+          ...input,
+          defaultValueKey: "",
+        };
+      }
+      return input;
+    });
+
+    onValueChange({
+      ...properties,
+      queryParameters: newQueryParameters,
+      inputs: newInputs,
+    });
+  }
+
+  function onInputChange(inputProperties: InputProperties) {
+    if (inputSelectedIndex === null) {
+      return;
+    }
+    const newInputs = [...inputs];
+    newInputs[inputSelectedIndex] = inputProperties;
+    const { [inputProperties.formDataKey]: _, ...newQueryParameters } =
+      queryParameters;
+    onValueChange({
+      ...properties,
+      queryParameters: newQueryParameters,
+      inputs: newInputs,
+    });
+  }
 
   return (
     <div>
@@ -59,6 +125,13 @@ export default function FastboardFormProperties({
       </Breadcrumbs>
       <Spacer y={4} />
 
+      {inputSelectedIndex === null && dataProvider && (
+        <div className="p-2 bg-primary rounded-lg">
+          <p className="text-sm text-white">
+            This form is populated with data.
+          </p>
+        </div>
+      )}
       {inputSelectedIndex === null && (
         <Accordion
           selectionMode="multiple"
@@ -89,22 +162,6 @@ export default function FastboardFormProperties({
                 }}
               />
               <Spacer y={2} />
-              <QuerySelection
-                selectedQueryId={submitQueryId || ""}
-                onQuerySelect={(query) => {
-                  //Replace formdatakey fiel from inputs to empty string
-                  const newInputs = inputs.map((input) => ({
-                    ...input,
-                    formDataKey: "",
-                  }));
-                  onValueChange({
-                    ...properties,
-                    submitQueryId: query.id,
-                    inputs: newInputs,
-                  });
-                }}
-              />
-              <Spacer y={2} />
               <Input
                 label="Submit button label"
                 labelPlacement="outside"
@@ -116,6 +173,44 @@ export default function FastboardFormProperties({
                   });
                 }}
               />
+              <Spacer y={2} />
+              <QuerySelection
+                selectedQueryId={submitQueryId || ""}
+                onQuerySelect={(query) => {
+                  //Replace formdatakey fiel from inputs to empty string
+                  const newInputs = inputs.map((input) => ({
+                    ...input,
+                    formDataKey: "",
+                    defaultValueKey: "",
+                  }));
+                  onValueChange({
+                    ...properties,
+                    submitQueryId: query.id,
+                    queryParameters: {},
+                    inputs: newInputs,
+                  });
+                }}
+              />
+              <Spacer y={2} />
+              {initialData &&
+                submitQuery &&
+                submitQuery.metadata.parameters?.length > 0 && (
+                  <div>
+                    <div className="text-sm">Query parameters</div>
+                    <QueryParameters
+                      queryId={submitQueryId}
+                      queryParameters={queryParameters}
+                      initialData={initialData}
+                      disabledParameters={disabledKeys}
+                      onValueChange={(newQueryParameters) => {
+                        onValueChange({
+                          ...properties,
+                          queryParameters: newQueryParameters,
+                        });
+                      }}
+                    />
+                  </div>
+                )}
               <Spacer y={2} />
             </div>
           </AccordionItem>
@@ -156,14 +251,10 @@ export default function FastboardFormProperties({
             properties={inputs[inputSelectedIndex] as TextInputProperties}
             queryId={submitQueryId}
             onValueChange={(inputProperties) => {
-              const newInputs = [...inputs];
-              newInputs[inputSelectedIndex] = inputProperties;
-              onValueChange({
-                ...properties,
-                inputs: newInputs,
-              });
+              onInputChange(inputProperties);
             }}
             disabledKeys={disabledKeys}
+            initialData={initialData}
           />
         )}
       {inputSelectedIndex !== null &&
@@ -172,14 +263,10 @@ export default function FastboardFormProperties({
             properties={inputs[inputSelectedIndex] as CheckboxProperties}
             queryId={submitQueryId}
             onValueChange={(inputProperties) => {
-              const newInputs = [...inputs];
-              newInputs[inputSelectedIndex] = inputProperties;
-              onValueChange({
-                ...properties,
-                inputs: newInputs,
-              });
+              onInputChange(inputProperties);
             }}
             disabledKeys={disabledKeys}
+            initialData={initialData}
           />
         )}
       {inputSelectedIndex !== null &&
@@ -188,14 +275,10 @@ export default function FastboardFormProperties({
             properties={inputs[inputSelectedIndex] as NumberInputProperties}
             queryId={submitQueryId}
             onValueChange={(inputProperties) => {
-              const newInputs = [...inputs];
-              newInputs[inputSelectedIndex] = inputProperties;
-              onValueChange({
-                ...properties,
-                inputs: newInputs,
-              });
+              onInputChange(inputProperties);
             }}
             disabledKeys={disabledKeys}
+            initialData={initialData}
           />
         )}
     </div>

@@ -13,6 +13,7 @@ import {
 } from "@/types/editor/form";
 import InputIcon from "./InputIcon";
 import FormInput from "./FormInput";
+import Option from "@/components/shared/Option";
 
 export default function FormInputsList({
   inputs,
@@ -50,9 +51,10 @@ export default function FormInputsList({
 
       <ul className="flex flex-col space-y-2 w-full pt-2">
         {inputs.map((input, index) => (
-          <FormInput
+          <Option
             key={index}
-            input={input}
+            label={input.label}
+            startIcon={<InputIcon type={input.type} size={12} />}
             onPress={() => {
               onSelectInput?.(input);
             }}

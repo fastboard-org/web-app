@@ -16,12 +16,15 @@ import TableAddOnsList from "./TableAddOnsList";
 import TableAddRowProperties from "./TableAddRowProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
+import { ComponentId } from "@/types/editor";
 import ColorPicker from "@/components/shared/ColorPicker";
 
 const FastboardTablePropertiesComponent = ({
+  componentId,
   properties,
   onValueChange,
 }: {
+  componentId: ComponentId;
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
@@ -123,6 +126,7 @@ const FastboardTablePropertiesComponent = ({
             }}
           >
             <TableActionsList
+              tableId={componentId}
               actionsProperties={actions}
               onChange={(newActions) => {
                 onValueChange({
