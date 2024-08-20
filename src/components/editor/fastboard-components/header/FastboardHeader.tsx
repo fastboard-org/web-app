@@ -1,13 +1,8 @@
 import { ComponentId } from "@/types/editor";
 import { FastboardHeaderProperties } from "@/types/editor/header-types";
-import {
-  Image,
-  Navbar,
-  NavbarContent,
-  NavbarItem,
-  Spacer,
-} from "@nextui-org/react";
+import { Image, Navbar, NavbarContent, NavbarItem } from "@nextui-org/react";
 import { FastboardHeaderPosition } from "@/types/editor/header-types";
+import { useEffect, useState } from "react";
 
 export default function FasboardHeader({
   id,
@@ -17,6 +12,11 @@ export default function FasboardHeader({
   properties: FastboardHeaderProperties;
 }) {
   const { title, photo, position, divider } = properties;
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [photo.url]);
 
   return (
     <Navbar
@@ -37,12 +37,15 @@ export default function FasboardHeader({
             }`}
           >
             <Image
-              src={photo.url}
+              src={imageError ? "../ImageErrorImage.png" : photo.url}
               alt="Header"
               radius={photo.border as any}
-              height="100%"
+              height={photo.size}
               className="object-contain"
-              classNames={{ wrapper: "h-full w-auto" }}
+              classNames={{
+                wrapper: "flex items-center justify-center h-full w-auto",
+              }}
+              onError={() => setImageError(true)}
             />
           </NavbarItem>
         )}
