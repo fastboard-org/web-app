@@ -11,8 +11,7 @@ const useGetQuery = (id: string | null) => {
   } = useQuery({
     queryKey: ["query", id],
     queryFn: () => {
-      if (!id) return null;
-      return connectionsService.getQuery(id);
+      return id ? connectionsService.getQuery(id) : null;
     },
     refetchOnWindowFocus: false,
   });

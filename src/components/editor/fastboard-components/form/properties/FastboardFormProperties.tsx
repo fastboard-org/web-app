@@ -50,7 +50,6 @@ export default function FastboardFormProperties({
   const disabledKeys = inputs.map((input) => input.formDataKey);
 
   useEffect(() => {
-    console.log("initialData changed", initialData);
     resetDefaultValues();
   }, [initialData]);
 
@@ -63,14 +62,14 @@ export default function FastboardFormProperties({
     const dataKeys = Object.keys(initialData || {});
 
     //Clear all default values from query paramters
-    const newQueryParameters = Object.keys(queryParameters).reduce(
-      (acc, key) => {
-        if (!dataKeys.includes(queryParameters[key])) {
+    const newQueryParameters = Object.entries(queryParameters).reduce(
+      (acc, [key, value]) => {
+        if (!dataKeys.includes(value)) {
           return acc;
         }
         return {
           ...acc,
-          [key]: queryParameters[key],
+          [key]: value,
         };
       },
       {}
