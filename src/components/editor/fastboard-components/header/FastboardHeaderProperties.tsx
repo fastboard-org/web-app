@@ -3,14 +3,16 @@ import {
   FastboardHeaderPosition,
   FastboardHeaderFontSize,
   FastboardHeaderPhotoBorder,
+  FastboardHeaderPhotoSize,
 } from "@/types/editor/header-types";
 import {
   Input,
   Accordion,
   AccordionItem,
-  Select,
-  SelectItem,
   Checkbox,
+  ButtonGroup,
+  Button,
+  Slider,
 } from "@nextui-org/react";
 
 const FastboardHeaderPropertiesComponent = ({
@@ -79,109 +81,168 @@ const FastboardHeaderPropertiesComponent = ({
         }}
       >
         <div className="py-2">
-          <Select
-            aria-label="Header position selector"
-            items={Object.keys(FastboardHeaderPosition) as Iterable<any>}
-            disabledKeys={[]}
-            selectedKeys={[position]}
-            label="Position"
-            labelPlacement="outside"
-            placeholder="Select header position"
-            disallowEmptySelection={true}
-            onChange={(e) => {
-              onValueChange({
-                ...properties,
-                position: e.target.value as FastboardHeaderPosition,
-              });
-            }}
-            errorMessage="Something went wrong, position not found"
-          >
-            {Object.keys(FastboardHeaderPosition).map((key) => (
-              <SelectItem
-                key={
-                  FastboardHeaderPosition[
-                    key as keyof typeof FastboardHeaderPosition
-                  ]
+          {/* group button to select header position */}
+          <p className="text-small pb-1">Position</p>
+          <ButtonGroup className="w-full">
+            {Object.entries(FastboardHeaderPosition).map(([key, value]) => (
+              <Button
+                className={
+                  position === value
+                    ? "border-1 border-default-foreground w-full"
+                    : "w-full"
                 }
+                key={value}
+                onClick={() => {
+                  onValueChange({
+                    ...properties,
+                    position: value,
+                  });
+                }}
               >
                 {key}
-              </SelectItem>
+              </Button>
             ))}
-          </Select>
+          </ButtonGroup>
+
+          <p className="pt-4 text-small pb-1">Photo Border Radius</p>
+          <ButtonGroup className="w-full">
+            {Object.entries(FastboardHeaderPhotoBorder).map(([key, value]) => (
+              <Button
+                className={
+                  photo.border === value
+                    ? "border-1 border-default-foreground w-full"
+                    : "w-full"
+                }
+                key={value}
+                startContent={
+                  <div
+                    className="overflow-hidden border-1 border-default-foreground"
+                    style={{
+                      borderRadius:
+                        value === "none" ? 0 : value === "lg" ? 8 : 100,
+                    }}
+                  >
+                    {/* <HeaderLogoIcon size={30} /> */}
+                    <div
+                      className="bg-default-100"
+                      style={{
+                        width: 30,
+                        height: 30,
+                      }}
+                    />
+                  </div>
+                }
+                onClick={() => {
+                  onValueChange({
+                    ...properties,
+                    photo: {
+                      ...properties.photo,
+                      border: value,
+                    },
+                  });
+                }}
+              >
+                {key}
+              </Button>
+            ))}
+          </ButtonGroup>
         </div>
 
-        <div className="py-2">
-          <Select
-            aria-label="Title size selector"
-            items={Object.keys(FastboardHeaderFontSize) as Iterable<any>}
-            disabledKeys={[]}
-            selectedKeys={[title.size]}
-            disallowEmptySelection={true}
+        <div className="pt-6">
+          <Slider
             label="Title Size"
-            labelPlacement="outside"
-            placeholder="Select title size"
+            step={1}
+            minValue={0}
+            maxValue={2}
+            value={
+              title.size === FastboardHeaderFontSize.Small
+                ? 0
+                : title.size === FastboardHeaderFontSize.Medium
+                ? 1
+                : 2
+            }
+            hideValue={true}
+            marks={[
+              {
+                value: 0,
+                label: "Small",
+              },
+              {
+                value: 1,
+                label: "Medium",
+              },
+              {
+                value: 2,
+                label: "Large",
+              },
+            ]}
             onChange={(e) => {
+              const selectedValue = e as number;
+              const size =
+                selectedValue === 0
+                  ? FastboardHeaderFontSize.Small
+                  : selectedValue === 1
+                  ? FastboardHeaderFontSize.Medium
+                  : FastboardHeaderFontSize.Large;
               onValueChange({
                 ...properties,
                 title: {
                   ...properties.title,
-                  size: e.target.value as FastboardHeaderFontSize,
+                  size: size,
                 },
               });
             }}
-            errorMessage="Something went wrong, title size not found"
-          >
-            {Object.keys(FastboardHeaderFontSize).map((key) => (
-              <SelectItem
-                key={
-                  FastboardHeaderFontSize[
-                    key as keyof typeof FastboardHeaderFontSize
-                  ]
-                }
-              >
-                {key}
-              </SelectItem>
-            ))}
-          </Select>
+          />
         </div>
 
-        <div className="py-2">
-          <Select
-            aria-label="Photo border selector"
-            items={Object.keys(FastboardHeaderPhotoBorder) as Iterable<any>}
-            disabledKeys={[]}
-            selectedKeys={[photo.border]}
-            label="Photo Border"
-            labelPlacement="outside"
-            placeholder="Select photo border"
-            disallowEmptySelection={true}
+        <div className="pt-6">
+          <Slider
+            label="Photo Size"
+            step={1}
+            minValue={0}
+            maxValue={2}
+            value={
+              photo.size === FastboardHeaderPhotoSize.Small
+                ? 0
+                : photo.size === FastboardHeaderPhotoSize.Medium
+                ? 1
+                : 2
+            }
+            hideValue={true}
+            marks={[
+              {
+                value: 0,
+                label: "Small",
+              },
+              {
+                value: 1,
+                label: "Medium",
+              },
+              {
+                value: 2,
+                label: "Large",
+              },
+            ]}
             onChange={(e) => {
+              const selectedValue = e as number;
+              const size =
+                selectedValue === 0
+                  ? FastboardHeaderPhotoSize.Small
+                  : selectedValue === 1
+                  ? FastboardHeaderPhotoSize.Medium
+                  : FastboardHeaderPhotoSize.Large;
               onValueChange({
                 ...properties,
                 photo: {
                   ...properties.photo,
-                  border: e.target
-                    .value as keyof typeof FastboardHeaderPhotoBorder,
+                  size: size,
                 },
               });
             }}
-            errorMessage="Something went wrong, photo border not found"
-          >
-            {Object.keys(FastboardHeaderPhotoBorder).map((key) => (
-              <SelectItem
-                key={
-                  FastboardHeaderPhotoBorder[
-                    key as keyof typeof FastboardHeaderPhotoBorder
-                  ]
-                }
-              >
-                {key}
-              </SelectItem>
-            ))}
-          </Select>
+          />
         </div>
 
-        <div className="py-2">
+        <div className="pt-6">
           <Checkbox
             isSelected={divider}
             onValueChange={(isSelected) => {
