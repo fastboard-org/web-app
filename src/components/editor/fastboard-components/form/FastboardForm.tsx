@@ -21,6 +21,7 @@ import {
   Select,
   SelectItem,
   Spacer,
+  Spinner,
 } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { useForm } from "react-hook-form";
@@ -30,20 +31,39 @@ import { toast } from "sonner";
 import FormTextInput from "./FormTextInput";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import useModalFrame from "@/hooks/editor/useModalFrame";
+import useDashboard from "@/hooks/dashboards/useDashboard";
+import { ComponentId } from "@/types/editor";
+import FormNumberInput from "./FormNumberInput";
+import FormCheckbox from "./FormCheckbox";
 
 export default function FastboardForm({
+  id,
   properties,
 }: {
+  id: ComponentId;
   properties: FormProperties;
 }) {
-  const { title, inputs, submitQueryId, submitButtonLabel, showShadow } =
-    properties;
+  const {
+    title,
+    inputs,
+    submitQueryId,
+    queryParameters,
+    submitButtonLabel,
+    showShadow,
+    dataProvider,
+    initialData,
+  } = properties;
+  const { getComponent, updateComponentProperties } = useDashboard();
   const {
     register,
+    unregister,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+    setValue,
+  } = useForm({
+    shouldUnregister: true,
+  });
   const { query: submitQuery } = useGetQuery(submitQueryId || "");
   const { closeModal } = useModalFrame();
   const { execute, isPending: isLoading } = useExecuteQuery({
@@ -59,6 +79,28 @@ export default function FastboardForm({
     },
   });
 
+  function getInitialData() {
+    if (!dataProvider) return;
+    const { componentId, property } = dataProvider;
+    const component = getComponent(componentId);
+    if (!component) return;
+
+    return component.properties[property];
+  }
+
+  useEffect(() => {
+    const data = getInitialData();
+    updateComponentProperties(
+      id,
+      {
+        ...properties,
+        initialData: data,
+      },
+      false
+    );
+    reset();
+  }, []);
+
   useEffect(() => {
     reset();
   }, [submitQueryId]);
@@ -68,9 +110,23 @@ export default function FastboardForm({
       toast.warning("Query is not defined");
       return;
     }
+
+    //Fill the query parameters with data
+    let newQueryParameters = { ...queryParameters };
+    if (initialData) {
+      Object.keys(queryParameters).map((key) => {
+        const dataKey = queryParameters[key];
+        // @ts-ignore
+        newQueryParameters[key] = initialData[dataKey];
+      });
+    }
+
     execute({
       query: submitQuery,
-      parameters: formData,
+      parameters: {
+        ...newQueryParameters,
+        ...formData,
+      },
     });
     reset();
   };
@@ -78,73 +134,42 @@ export default function FastboardForm({
   function renderInput(index: number, input: InputProperties) {
     switch (input.type) {
       case InputType.TextInput:
-        const textInput = input as TextInputProperties;
         return (
           <FormTextInput
             key={index}
-            properties={textInput}
+            properties={input as TextInputProperties}
             register={register}
+            unregister={unregister}
+            setFormValue={setValue}
             errors={errors}
+            initialData={initialData}
           />
         );
       case InputType.NumberInput:
-        const numberInput = input as NumberInputProperties;
         return (
-          <Input
+          <FormNumberInput
             key={index}
-            aria-label="Number input"
-            type="number"
-            isRequired={numberInput.required}
-            {...(numberInput.formDataKey !== ""
-              ? {
-                  ...register(numberInput.formDataKey, {
-                    required: "This field is required",
-                    valueAsNumber: true,
-                  }),
-                }
-              : {})}
-            label={numberInput.label}
-            labelPlacement="outside"
-            placeholder={numberInput.placeHolder}
-            isClearable
-            errorMessage={errors[numberInput.formDataKey]?.message as string}
-            isInvalid={!!errors[numberInput.formDataKey]}
+            properties={input as NumberInputProperties}
+            register={register}
+            unregister={unregister}
+            setFormValue={setValue}
+            errors={errors}
+            initialData={initialData}
           />
         );
       case InputType.Select:
         const selectInput = input as SelectProperties;
-        return (
-          <Select
-            key={index}
-            aria-label="Select input"
-            isRequired={selectInput.required}
-            {...register(selectInput.formDataKey, {
-              required: "This field is required",
-            })}
-            label={selectInput.label}
-            labelPlacement="outside"
-            errorMessage={errors[selectInput.formDataKey]?.message as string}
-            isInvalid={!!errors[selectInput.formDataKey]}
-          >
-            {selectInput.options.map((option) => (
-              <SelectItem key={option} value={option}>
-                {option}
-              </SelectItem>
-            ))}
-          </Select>
-        );
+        return null;
       case InputType.Checkbox:
-        const checkboxInput = input as CheckboxProperties;
         return (
-          <Checkbox
+          <FormCheckbox
             key={index}
-            aria-label="Checkbox input"
-            {...(checkboxInput.formDataKey !== ""
-              ? { ...register(checkboxInput.formDataKey) }
-              : {})}
-          >
-            {checkboxInput.label}
-          </Checkbox>
+            properties={input as CheckboxProperties}
+            register={register}
+            unregister={unregister}
+            setFormValue={setValue}
+            errors={errors}
+          />
         );
       default:
         return null;
@@ -157,7 +182,9 @@ export default function FastboardForm({
         <CardHeader>{title}</CardHeader>
         <Divider />
         <CardBody className={"space-y-8 " + scrollbarStyles.scrollbar}>
-          {inputs.map((input, index) => renderInput(index, input))}
+          {isLoading && <Spinner className="h-full" />}
+          {!isLoading &&
+            inputs.map((input, index) => renderInput(index, input))}
         </CardBody>
         <Spacer y={1} />
         <CardFooter className="flex justify-end">
