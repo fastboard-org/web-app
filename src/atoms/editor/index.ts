@@ -39,3 +39,8 @@ export const editorModalState = atom<EditorModalState>({
     modalId: null,
   },
 });
+
+export const previewAccessTokenState = atom<string>({
+  key: "previewAccessTokenState",
+  default: "",
+});
