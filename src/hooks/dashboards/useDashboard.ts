@@ -4,9 +4,12 @@ import { Dashboard } from "@/types/dashboards";
 import { editorUtils } from "@/lib/editor.utils";
 import { ComponentId, ComponentType, FastboardComponent } from "@/types/editor";
 import { useParams } from "next/navigation";
+import { useSetRecoilState } from "recoil";
+import { lastDashboardMetadata } from "@/atoms/editor";
 
 const useDashboard = () => {
   const { id: dashboardId } = useParams();
+  const setLastDashboard = useSetRecoilState(lastDashboardMetadata);
 
   const {
     isPending: loading,
@@ -125,12 +128,7 @@ const useDashboard = () => {
     if (!updatedDashboard) return;
     if (!save) return;
 
-    dashboardService.updateDashboard(
-      updatedDashboard.id,
-      updatedDashboard.name,
-      updatedDashboard.folder_id,
-      updatedDashboard.metadata
-    );
+    setLastDashboard(updatedDashboard);
   };
 
   return {
