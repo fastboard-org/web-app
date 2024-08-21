@@ -1,4 +1,4 @@
-import { isAuthDrawerOpen } from "@/atoms/editor";
+import { isAuthDrawerOpen, previewAccessTokenState } from "@/atoms/editor";
 import {
   Accordion,
   AccordionItem,
@@ -8,16 +8,43 @@ import {
 } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import QuerySelection from "@/components/editor/QuerySelection";
+//TODO: refactor FormDataKeySelection into a shared component
+import FormDataKeySelection from "@/components/editor/fastboard-components/form/properties/FormDataKeySelection";
+import scrollbarStyles from "@/styles/scrollbar.module.css";
 
 const AuthDrawer = () => {
   const { dashboard, updateDashboard } = useDashboard();
 
-  const { enabled } = dashboard?.metadata?.auth || {};
+  const setPreviewAccessToken = useSetRecoilState(previewAccessTokenState);
+
+  const {
+    enabled,
+    loginQuery,
+    accessTokenField,
+    passwordInputLabel,
+    userInputLabel,
+    userQueryParameter,
+    passwordQueryParameter,
+    previewAccessToken,
+  } = dashboard?.metadata?.auth || {};
 
   const isOpen = useRecoilValue(isAuthDrawerOpen);
+
+  const updateAuth = (auth: any) => {
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: {
+        ...prev.metadata,
+        auth: {
+          ...prev.metadata.auth,
+          ...auth,
+        },
+      },
+    }));
+  };
 
   return (
     <motion.div
@@ -25,7 +52,8 @@ const AuthDrawer = () => {
       animate={{ x: isOpen ? 0 : "-100%" }}
       transition={{ ease: "easeInOut" }}
       className={
-        "h-full w-[22%] bg-background shadow-lg absolute top-0 left-0 z-10 p-5"
+        "h-full w-[22%] bg-background shadow-lg absolute top-0 left-0 z-10 p-5 overflow-y-auto " +
+        scrollbarStyles.scrollbar
       }
     >
       <h3
@@ -38,17 +66,8 @@ const AuthDrawer = () => {
           isSelected={enabled}
           size="sm"
           onChange={(e) => {
-            updateDashboard((prev) => {
-              return {
-                ...prev,
-                metadata: {
-                  ...prev.metadata,
-                  auth: {
-                    ...prev.metadata.auth,
-                    enabled: e.target.checked,
-                  },
-                },
-              };
+            updateAuth({
+              enabled: e.target.checked,
             });
           }}
         />
@@ -70,11 +89,13 @@ const AuthDrawer = () => {
               title: "font-medium",
             }}
           >
-            <div className={"flex flex-col gap-2 mt-3"}>
+            <div className={"flex flex-col gap-3 mt-3"}>
               <QuerySelection
-                selectedQueryId={""}
+                selectedQueryId={loginQuery?.id || ""}
                 onQuerySelect={(loginQuery) => {
-                  console.log(loginQuery);
+                  updateAuth({
+                    loginQuery,
+                  });
                 }}
                 label={"Login Query"}
                 placeholder={"Select login query"}
@@ -84,8 +105,25 @@ const AuthDrawer = () => {
                 label="Access Token Field"
                 placeholder={"Example: access_token"}
                 labelPlacement="outside"
-                value={""}
-                onValueChange={(value) => {}}
+                value={accessTokenField || ""}
+                onValueChange={(value) => {
+                  updateAuth({
+                    accessTokenField: value,
+                  });
+                }}
+                isDisabled={!enabled}
+              />
+              <Input
+                label="Preview Access Token"
+                placeholder={"Access token used in editor queries"}
+                labelPlacement="outside"
+                value={previewAccessToken || ""}
+                onValueChange={(value) => {
+                  setPreviewAccessToken(value);
+                  updateAuth({
+                    previewAccessToken: value,
+                  });
+                }}
                 isDisabled={!enabled}
               />
             </div>
@@ -103,16 +141,48 @@ const AuthDrawer = () => {
                 label="User Input Label"
                 placeholder={"Enter a label"}
                 labelPlacement="outside"
-                value={""}
-                onValueChange={(value) => {}}
+                value={userInputLabel || ""}
+                onValueChange={(value) => {
+                  updateAuth({
+                    userInputLabel: value,
+                  });
+                }}
+                isDisabled={!enabled}
+              />
+              <FormDataKeySelection
+                queryId={loginQuery?.id || ""}
+                selectedKey={userQueryParameter || ""}
+                onSelectionChange={(value) => {
+                  updateAuth({
+                    userQueryParameter: value,
+                  });
+                }}
+                label={"User Query Parameter"}
+                disabledKeys={[passwordQueryParameter || ""]}
                 isDisabled={!enabled}
               />
               <Input
                 label="Password Input Label"
                 placeholder={"Enter a label"}
                 labelPlacement="outside"
-                value={""}
-                onValueChange={(value) => {}}
+                value={passwordInputLabel || ""}
+                onValueChange={(value) => {
+                  updateAuth({
+                    passwordInputLabel: value,
+                  });
+                }}
+                isDisabled={!enabled}
+              />
+              <FormDataKeySelection
+                queryId={loginQuery?.id || ""}
+                selectedKey={passwordQueryParameter || ""}
+                onSelectionChange={(value) => {
+                  updateAuth({
+                    passwordQueryParameter: value,
+                  });
+                }}
+                label={"Password Query Parameter"}
+                disabledKeys={[userQueryParameter || ""]}
                 isDisabled={!enabled}
               />
             </div>
