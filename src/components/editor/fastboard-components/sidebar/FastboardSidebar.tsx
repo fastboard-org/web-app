@@ -17,7 +17,7 @@ export default function FastboardSidebar({
   }
 
   return (
-    <div className="w-52 h-full" style={{ backgroundColor: backgroundColor }}>
+    <div className="h-full" style={{ backgroundColor: backgroundColor }}>
       <div key="tabs" className="flex w-full justify-center p-5">
         <Tabs
           aria-label="Sidebar"
