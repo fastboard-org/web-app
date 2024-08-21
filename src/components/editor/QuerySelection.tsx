@@ -8,10 +8,11 @@ import {
   Spacer,
 } from "@nextui-org/react";
 import ConnectionIcon from "../shared/ConnectionIcon";
-import { Connection, Query } from "@/types/connections";
+import { Connection, HTTP_METHOD, Query } from "@/types/connections";
 import CustomSkeleton from "../shared/CustomSkeleton";
 import useMyQueries from "@/hooks/connections/useMyQueries";
 import { useMemo } from "react";
+import { methodColor } from "@/lib/rest-methods";
 
 function CreateQuery() {
   return (
@@ -124,11 +125,15 @@ export default function QuerySelection({
                   key={query.id}
                   value={query.id}
                   startContent={
-                    <ConnectionIcon
-                      type={query.connection?.type ?? null}
-                      size={20}
-                      className="text-primary"
-                    />
+                    <div className="flex flex-row gap-x-1">
+                      <span
+                        className={`text-${methodColor(
+                          query?.metadata?.method as HTTP_METHOD
+                        )}`}
+                      >
+                        {query?.metadata?.method}
+                      </span>
+                    </div>
                   }
                 >
                   {query.name}
