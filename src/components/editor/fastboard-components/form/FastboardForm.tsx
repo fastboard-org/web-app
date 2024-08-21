@@ -30,12 +30,14 @@ import { toast } from "sonner";
 import FormTextInput from "./FormTextInput";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import useModalFrame from "@/hooks/editor/useModalFrame";
+import { useParams } from "next/navigation";
 
 export default function FastboardForm({
   properties,
 }: {
   properties: FormProperties;
 }) {
+  const { id: dashboardId } = useParams();
   const { title, inputs, submitQueryId, submitButtonLabel, showShadow } =
     properties;
   const {
@@ -47,6 +49,7 @@ export default function FastboardForm({
   const { query: submitQuery } = useGetQuery(submitQueryId || "");
   const { closeModal } = useModalFrame();
   const { execute, isPending: isLoading } = useExecuteQuery({
+    dashboardId: dashboardId as string,
     onSuccess: () => {
       toast.success("Submit successfully");
       closeModal();

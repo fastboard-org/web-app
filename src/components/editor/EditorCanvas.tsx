@@ -1,4 +1,4 @@
-import { editorCanvasRefState } from "@/atoms/editor";
+import { editorCanvasRefState, previewAccessTokenState } from "@/atoms/editor";
 import { motion } from "framer-motion";
 import { useSetRecoilState } from "recoil";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
@@ -6,12 +6,21 @@ import { getLayout } from "./fastboard-components/utils";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { useEffect, useRef } from "react";
 import { useCanvasTransform } from "@/hooks/editor/useCanvasTransform";
+import AuthVerifier from "@/components/editor/auth/AuthVerifier";
+import { DashboardAuth } from "@/types/editor";
 
 export default function EditorCanvas() {
   const { dashboard } = useDashboard();
+  const setPreviewAccessToken = useSetRecoilState(previewAccessTokenState);
   const editorCanvasRef = useRef<HTMLDivElement>(null);
   const setEditorCanvasRef = useSetRecoilState(editorCanvasRefState);
   const { x } = useCanvasTransform();
+
+  useEffect(() => {
+    if (dashboard?.metadata?.auth?.previewAccessToken) {
+      setPreviewAccessToken(dashboard.metadata.auth.previewAccessToken);
+    }
+  }, [dashboard]);
 
   useEffect(() => {
     setEditorCanvasRef(editorCanvasRef.current);
@@ -32,9 +41,14 @@ export default function EditorCanvas() {
         scrollbarStyles.scrollbar
       }
     >
-      {dashboard?.metadata?.layouts.map((layout, index) =>
-        getLayout(layout, index, "editable"),
-      )}
+      <AuthVerifier
+        dashboardId={dashboard?.id || ""}
+        auth={dashboard?.metadata?.auth as DashboardAuth}
+      >
+        {dashboard?.metadata?.layouts.map((layout, index) =>
+          getLayout(layout, index, "editable"),
+        )}
+      </AuthVerifier>
     </motion.div>
   );
 }
