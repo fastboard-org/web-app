@@ -116,6 +116,10 @@ const RestQueryEditor = ({
         return { ...acc, [param.name]: param.preview };
       }, {}) ?? {};
 
+    if (previewToken) {
+      parameters.token = previewToken;
+    }
+
     previewQuery({
       connectionId: connection.id,
       method: query.metadata.method,
@@ -174,7 +178,9 @@ const RestQueryEditor = ({
   return (
     <>
       <div
-        className={`flex ${!isMethodListClosed ? "w-[calc(100%-250px)]" : "w-full"} h-full gap-10`}
+        className={`flex ${
+          !isMethodListClosed ? "w-[calc(100%-250px)]" : "w-full"
+        } h-full gap-10`}
       >
         <div className={"flex w-[calc(100%-300px)] h-full flex-col gap-3"}>
           <div className={"flex items-center justify-between"}>
