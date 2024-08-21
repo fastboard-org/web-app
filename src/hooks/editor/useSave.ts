@@ -29,8 +29,6 @@ const useSave = (interval: number = 3000) => {
       clearInterval(timer);
     };
   }, [lastDashboard]);
-
-  return {};
 };
 
 export default useSave;
