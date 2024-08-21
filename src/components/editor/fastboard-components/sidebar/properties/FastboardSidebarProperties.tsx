@@ -10,6 +10,7 @@ import {
 import MenuItemsList from "./MenuItemsList";
 import { useState } from "react";
 import MenuItem from "./MenuItem";
+import SidebarStyle from "./SidebarStyle";
 
 export default function FastboardSidebarProperties({
   properties,
@@ -73,15 +74,10 @@ export default function FastboardSidebarProperties({
             }}
           >
             <div className="overflow-x-hidden">
-              <div className="flex flex-row justify-between items-center">
-                <span className="text-small">Background color</span>
-                <ColorPicker
-                  initialColor={backgroundColor}
-                  onColorChange={(color) => {
-                    onValueChange({ ...properties, backgroundColor: color });
-                  }}
-                />
-              </div>
+              <SidebarStyle
+                properties={properties}
+                onValueChange={onValueChange}
+              />
             </div>
           </AccordionItem>
         </Accordion>

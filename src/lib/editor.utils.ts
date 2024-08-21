@@ -3,7 +3,6 @@ import {
   ComponentType,
   DashboardMetadata,
   FastboardComponent,
-  Context,
   ModalFrame,
   Index,
 } from "@/types/editor";
@@ -335,11 +334,11 @@ function deletePage(
     });
   });
 
-  const newMetadata = dashboardMetadata.pages;
-  delete newMetadata[pageId];
+  //Remove the page
+  const { [pageId]: removedPage, ...newPages } = dashboardMetadata.pages;
   return {
     ...dashboardMetadata,
-    pages: newMetadata,
+    pages: newPages,
   };
 }
 

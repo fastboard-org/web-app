@@ -56,8 +56,8 @@ export default function SidebarSettings() {
 
       <QuestionModal
         isOpen={isModalOpen}
-        questionText="Are you sure you want to delete sidebar?"
-        warningText="This action cannot be undone and will delete all pages and components exepct the page home."
+        questionText="Are you sure you want to delete the sidebar"
+        warningText="This action cannot be undone and will delete all pages and components except the page home."
         onClose={() => setIsModalOpen(false)}
         onConfirm={() => {
           deleteSidebar();

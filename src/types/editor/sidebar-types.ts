@@ -1,5 +1,6 @@
 import { IconType } from "./icon-types";
 import { LayoutType } from "./layout-types";
+import { Color } from "./style-types";
 
 export interface MenuItemProperties {
   key: string;
@@ -19,7 +20,10 @@ export class SidebarProperties {
       icon: IconType.Folder,
     },
   ];
-  backgroundColor: string = "#1E1E1E";
+  backgroundColor: Color = {
+    light: "#27272a",
+    dark: "#18181b",
+  };
 
   static default(): SidebarProperties {
     return new SidebarProperties();

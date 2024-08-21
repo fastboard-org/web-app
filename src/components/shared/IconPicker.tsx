@@ -57,7 +57,7 @@ export default function IconPicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-5 gap-2 py-2 px-1">
           {Object.values(IconType).map((iconType) => (
             <Button
               isIconOnly
