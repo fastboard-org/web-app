@@ -1,3 +1,4 @@
+import Option from "@/components/shared/Option";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { IconType } from "@/types/editor/icon-types";
 import { LayoutType } from "@/types/editor/layout-types";
@@ -52,31 +53,16 @@ export default function MenuItemsList({
       </div>
 
       <ul className="flex flex-col space-y-2 w-full pt-2">
-        {items.map((item, index) => (
-          <ButtonGroup className="flex flex-row justify-between rounded-xl border border-content3">
-            <Button
-              className="w-full"
-              variant="light"
+        {items.map((item, index) => {
+          return (
+            <Option
+              label={item.label}
+              canDelete={item.key !== "home"}
               onPress={() => onSelectMenuItem(index)}
-              startContent={
-                <div className="flex flex-row justify-center items-center space-x-2">
-                  <p>{item.label}</p>
-                </div>
-              }
-            >
-              <div className="w-full"></div>
-            </Button>
-            {item.key !== "home" && (
-              <Button
-                variant="light"
-                isIconOnly
-                onPress={() => removeMenuItem(index)}
-              >
-                <IoIosClose size={20} className="text-foreground-600" />
-              </Button>
-            )}
-          </ButtonGroup>
-        ))}
+              onDelete={() => removeMenuItem(index)}
+            />
+          );
+        })}
       </ul>
     </div>
   );
