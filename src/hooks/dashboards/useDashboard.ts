@@ -11,10 +11,13 @@ import {
 import { useParams } from "next/navigation";
 import { LayoutType } from "@/types/editor/layout-types";
 import useNavigation from "../useNavigation";
+import { useSetRecoilState } from "recoil";
+import { lastDashboardMetadata } from "@/atoms/editor";
 
 const useDashboard = () => {
   const { id: dashboardId } = useParams();
   const { changePage } = useNavigation();
+  const setLastDashboard = useSetRecoilState(lastDashboardMetadata);
 
   const {
     isPending: loading,
@@ -177,12 +180,7 @@ const useDashboard = () => {
     if (!updatedDashboard) return;
     if (!save) return;
 
-    dashboardService.updateDashboard(
-      updatedDashboard.id,
-      updatedDashboard.name,
-      updatedDashboard.folder_id,
-      updatedDashboard.metadata
-    );
+    setLastDashboard(updatedDashboard);
   };
 
   return {
