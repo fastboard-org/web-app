@@ -1,4 +1,5 @@
 import { Layout } from "./layout-types";
+import { Query } from "@/types/connections";
 
 export default interface PublishOption {
   label: string;
@@ -26,8 +27,15 @@ export interface ModalFrame {
   body: ComponentId;
 }
 
-interface DashboardAuth {
+export interface DashboardAuth {
   enabled: boolean;
+  loginQuery: Query;
+  accessTokenField: string;
+  userInputLabel: string;
+  passwordInputLabel: string;
+  userQueryParameter: string;
+  passwordQueryParameter: string;
+  previewAccessToken: string;
 }
 
 export interface DashboardMetadata {
