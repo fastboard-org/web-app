@@ -3,14 +3,19 @@ import { InvalidateQueryFilters, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/app/providers";
 import { adapterService } from "@/lib/services/adapter";
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
+import { previewAccessTokenState } from "@/atoms/editor";
 
 const useExecuteQuery = ({
   onSuccess,
   onError,
+  dashboardId,
 }: {
   onSuccess?: (response: any) => void;
   onError?: (error: any) => void;
+  dashboardId: string;
 }) => {
+  const previewAccessToken = useRecoilValue(previewAccessTokenState);
   const [invalidateQueries, setInvalidateQueries] =
     useState<InvalidateQueryFilters>();
   const {
@@ -32,7 +37,12 @@ const useExecuteQuery = ({
       invalidateQueries?: InvalidateQueryFilters;
     }) => {
       setInvalidateQueries(invalidateQueries);
-      return adapterService.executeQuery(query, parameters);
+      return adapterService.executeQuery(
+        query,
+        dashboardId,
+        parameters,
+        previewAccessToken,
+      );
     },
     onSuccess: (data, variables) => {
       refreshData(variables.query);
