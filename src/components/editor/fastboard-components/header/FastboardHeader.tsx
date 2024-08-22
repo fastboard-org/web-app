@@ -4,7 +4,7 @@ import { Image, Navbar, NavbarContent, NavbarItem } from "@nextui-org/react";
 import { FastboardHeaderPosition } from "@/types/editor/header-types";
 import { useEffect, useState } from "react";
 
-export default function FasboardHeader({
+export default function FastboardHeader({
   id,
   properties,
 }: {
@@ -37,7 +37,7 @@ export default function FasboardHeader({
             }`}
           >
             <Image
-              src={imageError ? "../ImageErrorImage.png" : photo.url}
+              src={imageError ? "../ImageErrorImage.svg" : photo.url}
               alt="Header"
               radius={photo.border as any}
               height={photo.size}

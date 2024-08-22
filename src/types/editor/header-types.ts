@@ -27,7 +27,11 @@ export class FastboardHeaderProperties {
     text: "Header Title",
     size: FastboardHeaderFontSize.Medium,
   };
-  photo: { url: string; border: string; size: string } = {
+  photo: {
+    url: string;
+    border: FastboardHeaderPhotoBorder;
+    size: FastboardHeaderPhotoSize;
+  } = {
     url: "",
     border: FastboardHeaderPhotoBorder.Round,
     size: FastboardHeaderPhotoSize.Medium,

@@ -24,7 +24,9 @@ export default function EditorCanvas() {
     dashboard?.metadata?.header?.componentId as string
   );
 
-  const layoutsHeight = dashboard?.metadata?.header?.isVisible ? "90%" : "100%";
+  const isHeaderVisible = dashboard?.metadata?.header?.isVisible;
+
+  const layoutsHeight = isHeaderVisible ? "90%" : "100%";
 
   useEffect(() => {
     setEditorCanvasRef(editorCanvasRef.current);
@@ -50,8 +52,7 @@ export default function EditorCanvas() {
         scrollbarStyles.scrollbar
       }
     >
-      {/* if metadata.header.isVisible is True, we display a header */}
-      {dashboard?.metadata?.header?.isVisible && header && (
+      {isHeaderVisible && header && (
         <div className="h-[10%] w-full">
           <FastboardComponent
             id={header.id}

@@ -1,17 +1,23 @@
+import useDashboard from "@/hooks/dashboards/useDashboard";
 import { Checkbox } from "@nextui-org/react";
 
-export default function HeaderCheckbox({
+export default function HeaderSettings({
   isSelected,
-  onValueChange,
+  shouldCreateHeader,
 }: {
   isSelected: boolean;
-  onValueChange: (isSelected: boolean) => void;
+  shouldCreateHeader: boolean;
 }) {
+  const { addHeader, switchHeaderState } = useDashboard();
   return (
     <Checkbox
       isSelected={isSelected}
       onValueChange={(isSelected) => {
-        onValueChange(isSelected);
+        if (shouldCreateHeader) {
+          addHeader();
+        } else {
+          switchHeaderState();
+        }
       }}
     >
       Show Header

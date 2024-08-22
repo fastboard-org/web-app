@@ -42,6 +42,7 @@ const FastboardHeaderPropertiesComponent = ({
         <div className="py-2">
           <Input
             label="Header Title"
+            labelPlacement="outside"
             value={title.text}
             onValueChange={(title) => {
               onValueChange({
