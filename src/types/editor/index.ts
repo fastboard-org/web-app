@@ -44,7 +44,7 @@ export interface DashboardMetadata {
   components: Record<ComponentId, FastboardComponent>;
   modals: ModalFrame[];
   layouts: Array<Layout>;
-  auth: DashboardAuth;
+  auth: DashboardAuth | null;
 }
 
 export interface Context {
