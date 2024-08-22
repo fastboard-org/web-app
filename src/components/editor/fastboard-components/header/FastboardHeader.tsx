@@ -41,7 +41,7 @@ export default function FasboardHeader({
               alt="Header"
               radius={photo.border as any}
               height={photo.size}
-              className="object-contain"
+              className={"object-contain " + (imageError ? "dark:invert" : "")}
               classNames={{
                 wrapper: "flex items-center justify-center h-full w-auto",
               }}
