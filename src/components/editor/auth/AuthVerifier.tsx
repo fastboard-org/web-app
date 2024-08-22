@@ -41,10 +41,7 @@ const AuthVerifier = ({
     onSuccess: (response) => {
       if (response.body[auth?.accessTokenField] !== undefined) {
         if (mode === "editor") {
-          toast.info(
-            "Logged in successfully: Access Token: ",
-            response.body[auth?.accessTokenField],
-          );
+          toast.success("Logged in successfully");
         } else {
           updateAccessToken(response.body[auth?.accessTokenField]);
         }
@@ -70,7 +67,15 @@ const AuthVerifier = ({
     });
   };
 
-  return !isAuthOpen || !auth?.enabled || accessToken ? (
+  const showAuth = () => {
+    if (mode === "editor") {
+      return isAuthOpen;
+    } else {
+      return auth?.enabled && !accessToken;
+    }
+  };
+
+  return !showAuth() ? (
     children
   ) : (
     <div className={"w-full h-full flex flex-col items-center justify-center"}>
