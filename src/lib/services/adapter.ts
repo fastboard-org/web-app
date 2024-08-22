@@ -1,5 +1,6 @@
 import { HTTP_METHOD, Query } from "@/types/connections";
 import { axiosInstance } from "@/lib/axios";
+import { isPreviewPage } from "@/lib/helpers";
 
 const previewQuery = async (
   connectionId: string,
@@ -38,9 +39,9 @@ async function executeQuery(
 
     const parametersToSend = parameters ?? {};
 
-    parametersToSend.token = previewAccessToken || token || undefined;
+    const previewMode = isPreviewPage();
 
-    console.log("parametersToSend", parametersToSend);
+    parametersToSend.token = previewMode ? token : previewAccessToken;
 
     const response = await axiosInstance.post(
       `/adapter/${query.connection_id}/execute/${query.id}`,
@@ -52,6 +53,9 @@ async function executeQuery(
     if (response.data?.status_code !== 200) {
       if (response.data?.status_code === 401) {
         localStorage.removeItem(`auth-${dashboardId}`);
+        if (previewMode) {
+          window.location.reload();
+        }
       }
 
       const error = response.data?.body?.error;
