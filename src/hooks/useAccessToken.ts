@@ -4,7 +4,6 @@ export const useAccessToken = ({ dashboardId }: { dashboardId: string }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // listener
     const token = localStorage.getItem(`auth-${dashboardId}`);
     if (token) {
       setAccessToken(token);
