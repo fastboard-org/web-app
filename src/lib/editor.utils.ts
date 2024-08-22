@@ -7,6 +7,7 @@ import {
   ModalFrame,
 } from "@/types/editor";
 import { Layout, LayoutType } from "@/types/editor/layout-types";
+import { TableActionProperty } from "@/types/editor/table-types";
 import { v4 as uuidv4 } from "uuid";
 import { FastboardHeaderProperties } from "@/types/editor/header-types";
 
@@ -37,6 +38,25 @@ export function createComponent(
   return [dashboardMetadata, id];
 }
 
+function deleteTableModalsFrame(
+  component: FastboardComponent,
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  const editModalId = component.properties?.actions?.find(
+    (action: TableActionProperty) => action.type === "edit"
+  )?.modalId;
+  const addRowModalId = component.properties?.addOns?.addRowForm?.modalId;
+  if (editModalId) {
+    dashboardMetadata = removeModalFrame(editModalId, dashboardMetadata);
+  }
+
+  if (addRowModalId) {
+    dashboardMetadata = removeModalFrame(addRowModalId, dashboardMetadata);
+  }
+
+  return dashboardMetadata;
+}
+
 export function deleteComponent(
   id: ComponentId,
   dashboardMetadata: DashboardMetadata
@@ -47,10 +67,7 @@ export function deleteComponent(
   }
   if (component.type === ComponentType.Table) {
     //If the component is a table, then we need to remove the modal frame that is associated with it
-    const modalId = component.properties?.addOns?.addRowForm?.modalId;
-    if (modalId) {
-      dashboardMetadata = removeModalFrame(modalId, dashboardMetadata);
-    }
+    dashboardMetadata = deleteTableModalsFrame(component, dashboardMetadata);
   }
   delete dashboardMetadata.components[id];
   return dashboardMetadata;

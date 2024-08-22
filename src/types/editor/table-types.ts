@@ -17,6 +17,7 @@ export interface TableActionProperty {
   type: "view" | "edit" | "delete";
   query: Query | null;
   parameters: { name: string; value: string }[];
+  modalId?: string;
 }
 
 export interface AddRowFormProperties {
@@ -39,6 +40,8 @@ export class FastboardTableProperties {
   };
   hideHeader: boolean = false;
   isStriped: boolean = false;
+  selectedRow: any = null;
+  headerColor: string = "#000000";
 
   static default(): FastboardTableProperties {
     return new FastboardTableProperties();

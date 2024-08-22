@@ -5,6 +5,15 @@ const useModalFrame = () => {
   const setEditorModalState = useSetRecoilState(editorModalState);
   const setIsPropertiesDrawerOpen = useSetRecoilState(isPropertiesDrawerOpen);
 
+  function openModal(modalId: string) {
+    if (!modalId) return;
+
+    setEditorModalState({
+      isOpen: true,
+      modalId,
+    });
+  }
+
   function closeModal() {
     setIsPropertiesDrawerOpen(false);
     setEditorModalState({
@@ -14,6 +23,7 @@ const useModalFrame = () => {
   }
 
   return {
+    openModal,
     closeModal,
   };
 };

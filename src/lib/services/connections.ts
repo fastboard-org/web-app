@@ -17,6 +17,7 @@ const mapQuery = (query: any): Query => {
     name: query.name,
     connection_id: query.connection_id,
     connection_type: query.connection_type,
+    connection: mapConnection(query.connection),
     metadata: query.metadata,
   };
 };
