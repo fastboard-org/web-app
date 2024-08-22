@@ -1,4 +1,4 @@
-import { TextInputProperties } from "@/types/editor/form";
+import { NumberInputProperties } from "@/types/editor/form";
 import { Input } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import {
@@ -7,7 +7,7 @@ import {
   UseFormUnregister,
 } from "react-hook-form";
 
-export default function FormTextInput({
+export default function FormNumberInput({
   properties,
   register,
   unregister,
@@ -15,7 +15,7 @@ export default function FormTextInput({
   errors,
   initialData,
 }: {
-  properties: TextInputProperties;
+  properties: NumberInputProperties;
   register: UseFormRegister<any>;
   unregister: UseFormUnregister<any>;
   setFormValue: UseFormSetValue<any>;
@@ -47,15 +47,14 @@ export default function FormTextInput({
 
   return (
     <Input
-      aria-label="Text input"
+      aria-label="Number input"
+      type="number"
       isRequired={required}
       {...(formDataKey !== ""
         ? {
             ...register(formDataKey, {
-              required: {
-                value: required,
-                message: "This field is required",
-              },
+              required: "This field is required",
+              valueAsNumber: true,
             }),
           }
         : {})}

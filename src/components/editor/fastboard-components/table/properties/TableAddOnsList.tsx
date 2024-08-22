@@ -1,3 +1,4 @@
+import Option from "@/components/shared/Option";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { ComponentType } from "@/types/editor";
 import { FormProperties } from "@/types/editor/form";
@@ -77,33 +78,17 @@ export default function TableAddOnsList({
 
       <ul className="flex flex-col space-y-2 w-full pt-2">
         {addRowForm && (
-          <ButtonGroup className="flex flex-row justify-between rounded-xl border border-content3">
-            <Button
-              className="w-full"
-              variant="light"
-              startContent={
-                <div className="flex flex-row justify-center items-center space-x-2">
-                  <p>Add row form</p>
-                </div>
-              }
-              onPress={() => onSelectAddOn?.("add-row-form")}
-            >
-              <div className="w-full"></div>
-            </Button>
-            <Button
-              variant="light"
-              isIconOnly
-              onPress={() => {
-                deleteModalFrame(addRowForm.modalId);
-                onValueChange({
-                  ...addOns,
-                  addRowForm: null,
-                });
-              }}
-            >
-              <IoIosClose size={20} className="text-foreground-600" />
-            </Button>
-          </ButtonGroup>
+          <Option
+            label="Add Row Form"
+            onPress={() => onSelectAddOn?.("add-row-form")}
+            onDelete={() => {
+              deleteModalFrame(addRowForm.modalId);
+              onValueChange({
+                ...addOns,
+                addRowForm: null,
+              });
+            }}
+          />
         )}
       </ul>
     </div>

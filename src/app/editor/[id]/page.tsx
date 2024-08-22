@@ -12,10 +12,12 @@ import { useRouter } from "next/navigation";
 import SettingsDrawer from "@/components/editor/settings/SettingsDrawer";
 import EditorModal from "@/components/editor/EditorModal";
 import AuthDrawer from "@/components/editor/auth/AuthDrawer";
+import useSave from "@/hooks/editor/useSave";
 
 export default function Editor() {
   const router = useRouter();
   const { isError, addComponentToLayout } = useDashboard();
+  useSave();
 
   function updateDashboardMetadata(event: DragEndEvent) {
     const { over, active } = event;

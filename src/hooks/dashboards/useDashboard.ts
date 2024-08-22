@@ -4,9 +4,12 @@ import { Dashboard } from "@/types/dashboards";
 import { editorUtils } from "@/lib/editor.utils";
 import { ComponentId, ComponentType, FastboardComponent } from "@/types/editor";
 import { useParams } from "next/navigation";
+import { useSetRecoilState } from "recoil";
+import { lastDashboardMetadata } from "@/atoms/editor";
 
 const useDashboard = () => {
   const { id: dashboardId } = useParams();
+  const setLastDashboard = useSetRecoilState(lastDashboardMetadata);
 
   const {
     isPending: loading,
@@ -27,11 +30,18 @@ const useDashboard = () => {
     return editorUtils.getComponent(id, dashboard.metadata);
   };
 
-  const updateComponentProperties = (id: ComponentId, properties: Object) => {
-    updateDashboard((prev) => ({
-      ...prev,
-      metadata: editorUtils.updateComponent(id, properties, prev.metadata),
-    }));
+  const updateComponentProperties = (
+    id: ComponentId,
+    properties: Object,
+    save: boolean = true
+  ) => {
+    updateDashboard(
+      (prev) => ({
+        ...prev,
+        metadata: editorUtils.updateComponent(id, properties, prev.metadata),
+      }),
+      save
+    );
   };
 
   const addComponentToLayout = (
@@ -71,13 +81,18 @@ const useDashboard = () => {
   const createModalFrame = (body: {
     type: ComponentType;
     properties: Object;
-  }): string | null => {
-    if (!dashboard) return null;
+  }): string => {
+    if (!dashboard) {
+      throw new Error("Dashboard not found");
+    }
 
     const [newMetadata, modalId] = editorUtils.createModalFrame(
       body,
       dashboard.metadata
     );
+    if (!modalId) {
+      throw new Error("Error creating modal frame");
+    }
     updateDashboard((prev) => ({
       ...prev,
       metadata: newMetadata,
@@ -93,7 +108,10 @@ const useDashboard = () => {
     }));
   };
 
-  const updateDashboard = (updater: (previous: Dashboard) => Dashboard) => {
+  const updateDashboard = (
+    updater: (previous: Dashboard) => Dashboard,
+    save: boolean = true
+  ) => {
     let updatedDashboard: Dashboard | undefined;
 
     queryClient.setQueryData(
@@ -108,13 +126,9 @@ const useDashboard = () => {
     );
 
     if (!updatedDashboard) return;
+    if (!save) return;
 
-    dashboardService.updateDashboard(
-      updatedDashboard.id,
-      updatedDashboard.name,
-      updatedDashboard.folder_id,
-      updatedDashboard.metadata
-    );
+    setLastDashboard(updatedDashboard);
   };
 
   return {
