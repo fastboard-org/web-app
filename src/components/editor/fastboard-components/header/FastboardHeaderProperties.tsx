@@ -60,6 +60,7 @@ const FastboardHeaderPropertiesComponent = ({
         <div className="py-2">
           <Input
             label="Photo URL"
+            labelPlacement="outside"
             value={photo.url}
             onValueChange={(photo_url) => {
               onValueChange({
