@@ -2,7 +2,7 @@ import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import { Select, SelectItem } from "@nextui-org/react";
 
-export default function FormDataKeySelection({
+export default function QueryParameterSelection({
   selectedKey,
   queryId,
   onSelectionChange,
