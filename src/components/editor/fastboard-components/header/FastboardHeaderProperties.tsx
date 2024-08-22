@@ -81,7 +81,6 @@ const FastboardHeaderPropertiesComponent = ({
         }}
       >
         <div className="py-2">
-          {/* group button to select header position */}
           <p className="text-small pb-1">Position</p>
           <ButtonGroup className="w-full">
             {Object.entries(FastboardHeaderPosition).map(([key, value]) => (
@@ -122,7 +121,6 @@ const FastboardHeaderPropertiesComponent = ({
                         value === "none" ? 0 : value === "lg" ? 8 : 100,
                     }}
                   >
-                    {/* <HeaderLogoIcon size={30} /> */}
                     <div
                       className="bg-default-100"
                       style={{
