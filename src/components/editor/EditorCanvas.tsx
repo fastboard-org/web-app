@@ -10,10 +10,7 @@ import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getLayout } from "./fastboard-components/utils";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { useEffect, useRef } from "react";
-import FastboardHeaderComponent from "./fastboard-components/header/FastboardHeader";
-import { FastboardCardsProperties } from "@/types/editor/cards-types";
 import FastboardComponent from "./fastboard-components/FastboardComponent";
-import { ComponentType } from "@/types/editor";
 
 export default function EditorCanvas() {
   const { dashboard, getComponent } = useDashboard();
