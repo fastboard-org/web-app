@@ -14,6 +14,7 @@ import {
   Button,
   Slider,
 } from "@nextui-org/react";
+import AlignIcon from "@/components/shared/icons/AlignIcon";
 
 const FastboardHeaderPropertiesComponent = ({
   properties,
@@ -88,10 +89,17 @@ const FastboardHeaderPropertiesComponent = ({
               <Button
                 className={
                   position === value
-                    ? "border-1 border-default-foreground w-full"
-                    : "w-full"
+                    ? "bg-foreground bg-opacity-[0.07] w-full"
+                    : "bg-foreground bg-opacity-5 opacity-60 w-full"
                 }
                 key={value}
+                startContent={
+                  <AlignIcon
+                    align={key as string}
+                    selected={position === value ? true : false}
+                    size={24}
+                  />
+                }
                 onClick={() => {
                   onValueChange({
                     ...properties,
@@ -110,23 +118,26 @@ const FastboardHeaderPropertiesComponent = ({
               <Button
                 className={
                   photo.border === value
-                    ? "border-1 border-default-foreground w-full"
-                    : "w-full"
+                    ? "bg-foreground bg-opacity-[0.07] w-full"
+                    : "bg-foreground bg-opacity-5 opacity-60 w-full"
                 }
                 key={value}
                 startContent={
                   <div
-                    className="overflow-hidden border-1 border-default-foreground"
+                    className={
+                      photo.border === value
+                        ? "bg-primary overflow-hidden"
+                        : "bg-foreground-400 bg-opacity-75 overflow-hidden"
+                    }
                     style={{
                       borderRadius:
                         value === "none" ? 0 : value === "lg" ? 8 : 100,
                     }}
                   >
                     <div
-                      className="bg-default-100"
                       style={{
-                        width: 30,
-                        height: 30,
+                        width: 25,
+                        height: 25,
                       }}
                     />
                   </div>
