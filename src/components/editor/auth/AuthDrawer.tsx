@@ -11,8 +11,7 @@ import React from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import QuerySelection from "@/components/editor/QuerySelection";
-//TODO: refactor FormDataKeySelection into a shared component
-import FormDataKeySelection from "@/components/editor/fastboard-components/form/properties/FormDataKeySelection";
+import QueryParameterSelection from "@/components/shared/QueryParameterSelection";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 
 const AuthDrawer = () => {
@@ -29,6 +28,8 @@ const AuthDrawer = () => {
     userQueryParameter,
     passwordQueryParameter,
     previewAccessToken,
+    title,
+    buttonText,
   } = dashboard?.metadata?.auth || {};
 
   const isOpen = useRecoilValue(isAuthDrawerOpen);
@@ -78,7 +79,7 @@ const AuthDrawer = () => {
           selectionMode="multiple"
           isCompact
           fullWidth
-          defaultExpandedKeys={["basic", "inputs"]}
+          defaultExpandedKeys={["basic"]}
           isDisabled={!enabled}
         >
           <AccordionItem
@@ -149,7 +150,7 @@ const AuthDrawer = () => {
                 }}
                 isDisabled={!enabled}
               />
-              <FormDataKeySelection
+              <QueryParameterSelection
                 queryId={loginQuery?.id || ""}
                 selectedKey={userQueryParameter || ""}
                 onSelectionChange={(value) => {
@@ -173,7 +174,7 @@ const AuthDrawer = () => {
                 }}
                 isDisabled={!enabled}
               />
-              <FormDataKeySelection
+              <QueryParameterSelection
                 queryId={loginQuery?.id || ""}
                 selectedKey={passwordQueryParameter || ""}
                 onSelectionChange={(value) => {
@@ -183,6 +184,41 @@ const AuthDrawer = () => {
                 }}
                 label={"Password Query Parameter"}
                 disabledKeys={[userQueryParameter || ""]}
+                isDisabled={!enabled}
+              />
+            </div>
+          </AccordionItem>
+          <AccordionItem
+            key={"customization"}
+            title="Customization"
+            className="pb-5 pt-3"
+            classNames={{
+              title: "font-medium",
+            }}
+          >
+            <div className="flex flex-col gap-4 mt-3">
+              <Input
+                label="Title"
+                placeholder={"Enter a title"}
+                labelPlacement="outside"
+                value={title || ""}
+                onValueChange={(value) => {
+                  updateAuth({
+                    title: value,
+                  });
+                }}
+                isDisabled={!enabled}
+              />
+              <Input
+                label="Button Text"
+                placeholder={"Enter a button text"}
+                labelPlacement="outside"
+                value={buttonText || ""}
+                onValueChange={(value) => {
+                  updateAuth({
+                    buttonText: value,
+                  });
+                }}
                 isDisabled={!enabled}
               />
             </div>

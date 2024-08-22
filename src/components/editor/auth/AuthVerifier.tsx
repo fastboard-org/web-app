@@ -81,7 +81,7 @@ const AuthVerifier = ({
     <div className={"w-full h-full flex flex-col items-center justify-center"}>
       <Card className={"w-[400px] p-5"}>
         <CardHeader>
-          <h3 className={"text-xl font-medium"}>Welcome back!</h3>
+          <h3 className={"text-xl font-medium"}>{auth?.title}</h3>
         </CardHeader>
         <CardBody className={"gap-5"}>
           <Input
@@ -112,7 +112,7 @@ const AuthVerifier = ({
             isLoading={isPending}
             onClick={handleLogin}
           >
-            Login
+            {auth?.buttonText || "Login"}
           </Button>
         </CardFooter>
       </Card>

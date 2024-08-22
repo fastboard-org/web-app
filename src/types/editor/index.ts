@@ -36,6 +36,8 @@ export interface DashboardAuth {
   userQueryParameter: string;
   passwordQueryParameter: string;
   previewAccessToken: string;
+  title: string;
+  buttonText: string;
 }
 
 export interface DashboardMetadata {
