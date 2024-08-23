@@ -31,7 +31,8 @@ const FastboardTablePropertiesComponent = ({
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
-  const { sourceQuery, emptyMessage, columns, actions, addOns } = properties;
+  const { sourceQuery, rowsPerPage, emptyMessage, columns, actions, addOns } =
+    properties;
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [columnsProperties, setColumnsProperties] = useState(columns);
   const [actionSelected, setActionSelected] =
@@ -114,6 +115,23 @@ const FastboardTablePropertiesComponent = ({
                   }}
                 />
               )}
+              <Spacer y={2} />
+              <div className="flex flex-row justify-between items-center">
+                <h1 className="w-full text-sm">Rows per page</h1>
+                <Input
+                  type="number"
+                  value={String(rowsPerPage)}
+                  min={1}
+                  max={100}
+                  onValueChange={(value) => {
+                    onValueChange({
+                      ...properties,
+                      rowsPerPage: Number(value),
+                    });
+                  }}
+                  className="w-[20%]"
+                />
+              </div>
               <Spacer y={2} />
               <Input
                 label="Empty message"

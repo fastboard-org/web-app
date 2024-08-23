@@ -68,9 +68,15 @@ const useData = (
     const end = start + rowsPerPage;
 
     return data?.slice(start, end);
-  }, [page, data]);
+  }, [page, data, rowsPerPage]);
 
-  const pages = data ? Math.ceil(data.length / rowsPerPage) : 0;
+  const pages = useMemo(() => {
+    const pages = data ? Math.ceil(data.length / rowsPerPage) : 0;
+    if (page > pages) {
+      setPage(1);
+    }
+    return pages;
+  }, [data, rowsPerPage]);
 
   return {
     data: items || [],
