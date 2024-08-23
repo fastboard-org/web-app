@@ -13,6 +13,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Pagination,
+  SortDescriptor,
   Spinner,
   Table,
   TableBody,
@@ -66,6 +67,7 @@ export default function FastboardTable({
 }) {
   const { theme } = useTheme();
   const { updateComponentProperties } = useDashboard();
+  const { openModal } = useModalFrame();
   const {
     sourceQuery,
     emptyMessage,
@@ -78,6 +80,7 @@ export default function FastboardTable({
     rowsPerPage,
     headerColor,
   } = properties;
+  const [sort, setSort] = useState<SortDescriptor | undefined>(undefined);
   const {
     data,
     fulldata,
@@ -88,7 +91,7 @@ export default function FastboardTable({
     isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
-  } = useData(`${ComponentType.Table}-${id}`, sourceQuery, rowsPerPage);
+  } = useData(`${ComponentType.Table}-${id}`, sourceQuery, rowsPerPage, sort);
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState
@@ -103,7 +106,6 @@ export default function FastboardTable({
     error: executeQueryError,
   } = useExecuteQuery({});
   const finalColumns = getFinalColumns(columns, actions);
-  const { openModal } = useModalFrame();
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedRowAction, setSelectedRowAction] = useState<{
@@ -346,12 +348,17 @@ export default function FastboardTable({
           </div>
         }
         bottomContentPlacement="outside"
+        sortDescriptor={sort}
+        onSortChange={(descriptor) => {
+          setSort(descriptor);
+        }}
       >
         <TableHeader>
           {finalColumns.map((column) => (
             <TableColumn
               className="text-center"
               key={column.key}
+              allowsSorting
               style={{
                 backgroundColor:
                   theme === "light" ? headerColor.light : headerColor.dark,

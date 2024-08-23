@@ -2,11 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Query } from "@/types/connections";
 import { adapterService } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
+import { SortDescriptor } from "@nextui-org/react";
 
 const useData = (
   componentId: string,
   query: Query | null,
-  rowsPerPage: number
+  rowsPerPage: number,
+  sort?: SortDescriptor
 ) => {
   const { data, refetch, isLoading, isFetching, isError, error } = useQuery({
     queryKey: [
@@ -63,12 +65,41 @@ const useData = (
     }
   };
 
+  function sortData(
+    data: any[] | undefined,
+    descriptor: SortDescriptor | undefined
+  ): any[] {
+    if (!data) return [];
+    const { column, direction } = descriptor || {};
+
+    if (!column || !direction) return data;
+
+    const sortedData = data.sort((a, b) => {
+      let first = a[column];
+      let second = b[column];
+      let cmp =
+        (parseInt(first) || first) < (parseInt(second) || second) ? -1 : 1;
+
+      if (direction === "descending") {
+        cmp *= -1;
+      }
+
+      return cmp;
+    });
+    return sortedData;
+  }
+
+  const sortedData = useMemo(() => {
+    console.log("Sorting", sort);
+    return sortData(data, sort);
+  }, [data, sort]);
   const items = useMemo(() => {
+    console.log("Paging", page, rowsPerPage);
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
-    return data?.slice(start, end);
-  }, [page, data, rowsPerPage]);
+    return sortedData?.slice(start, end);
+  }, [page, sortedData, rowsPerPage, sort]);
 
   const pages = useMemo(() => {
     const pages = data ? Math.ceil(data.length / rowsPerPage) : 0;
@@ -80,7 +111,7 @@ const useData = (
 
   return {
     data: items || [],
-    fulldata: data || [],
+    fulldata: sortedData || [],
     keys,
     page,
     setPage,
