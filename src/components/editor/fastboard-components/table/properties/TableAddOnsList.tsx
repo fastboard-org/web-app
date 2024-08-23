@@ -69,6 +69,7 @@ export default function TableAddOnsList({
                   addRowForm: {
                     buttonLabel: "Add Row",
                     modalId: modalId,
+                    buttonColor: "#006FEE",
                   },
                 });
               }}

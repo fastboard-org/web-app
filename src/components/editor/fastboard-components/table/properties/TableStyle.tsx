@@ -11,12 +11,18 @@ export default function TableStyle({
   onValueChange: (properties: FastboardTableProperties) => void;
 }) {
   const { theme } = useTheme();
-  const { hideHeader, headerSticky, isStriped, headerColor } = properties;
+  const {
+    hideHeader,
+    headerSticky,
+    isStriped,
+    headerColor,
+    addOns: { addRowForm },
+  } = properties;
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex flex-row justify-between">
-        <span className="text-sm">Hide header</span>
+        <span>Hide header</span>
         <Checkbox
           isSelected={hideHeader}
           onValueChange={(isSelected) => {
@@ -26,9 +32,9 @@ export default function TableStyle({
             });
           }}
         />
-      </div>{" "}
+      </div>
       <div className="flex flex-row justify-between">
-        <span className="text-sm">Hide sticky</span>
+        <span>Hide sticky</span>
         <Checkbox
           isSelected={headerSticky}
           onValueChange={(isSelected) => {
@@ -40,7 +46,7 @@ export default function TableStyle({
         />
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-sm">Stripped</span>
+        <span>Stripped</span>
         <Checkbox
           isSelected={isStriped}
           onValueChange={(isSelected) => {
@@ -52,7 +58,7 @@ export default function TableStyle({
         />
       </div>
       <div className="flex flex-row justify-between">
-        <span className="text-sm">Header color</span>
+        <span>Header color</span>
         <ColorPicker
           initialColor={
             theme === "light" ? headerColor.light : headerColor.dark
@@ -78,6 +84,27 @@ export default function TableStyle({
           }}
         />
       </div>
+
+      {addRowForm && (
+        <div className="flex flex-row justify-between">
+          <span>Add row color</span>
+          <ColorPicker
+            initialColor={addRowForm.buttonColor}
+            onColorChange={(color) => {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonColor: color,
+                  },
+                },
+              });
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

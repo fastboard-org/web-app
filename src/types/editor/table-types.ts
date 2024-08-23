@@ -21,8 +21,9 @@ export interface TableActionProperty {
 }
 
 export interface AddRowFormProperties {
-  buttonLabel: string;
   modalId: string;
+  buttonLabel: string;
+  buttonColor: string;
 }
 
 export interface TableAddOnsProperties {
