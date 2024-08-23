@@ -106,7 +106,7 @@ export default function TableActionsList({
         <Dropdown placement={"bottom"}>
           <DropdownTrigger>
             <Button startContent={<Add size={20} />} variant={"flat"}>
-              Add Action
+              Add
             </Button>
           </DropdownTrigger>
           <DropdownMenu disabledKeys={getDisabledKeys()}>

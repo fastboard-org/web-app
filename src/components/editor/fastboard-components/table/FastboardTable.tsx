@@ -37,6 +37,7 @@ import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import AddRowForm from "./AddRowForm";
 import useModalFrame from "@/hooks/editor/useModalFrame";
+import { useTheme } from "next-themes";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -62,6 +63,7 @@ export default function FastboardTable({
   id: ComponentId;
   properties: FastboardTableProperties;
 }) {
+  const { theme } = useTheme();
   const { updateComponentProperties } = useDashboard();
   const {
     sourceQuery,
@@ -70,6 +72,7 @@ export default function FastboardTable({
     actions,
     addOns: { addRowForm },
     hideHeader,
+    headerSticky,
     isStriped,
     rowsPerPage,
     headerColor,
@@ -291,11 +294,7 @@ export default function FastboardTable({
   }
 
   return (
-    <CustomSkeleton
-      isLoaded={!dataFetching}
-      onlyRenderOnLoad
-      className="w-full h-full"
-    >
+    <CustomSkeleton isLoaded={true} onlyRenderOnLoad className="w-full h-full">
       {selectedRowAction && (
         <ViewActionModal
           isOpen={viewModalOpen}
@@ -327,6 +326,7 @@ export default function FastboardTable({
           wrapper: `${scrollbarStyles.scrollbar}`,
         }}
         hideHeader={hideHeader}
+        isHeaderSticky={headerSticky}
         isStriped={isStriped}
         topContent={addRowForm && <AddRowForm properties={addRowForm} />}
         topContentPlacement="outside"
@@ -350,7 +350,8 @@ export default function FastboardTable({
               className="text-center"
               key={column.key}
               style={{
-                backgroundColor: headerColor,
+                backgroundColor:
+                  theme === "light" ? headerColor.light : headerColor.dark,
               }}
             >
               {column.label.toUpperCase()}
@@ -359,13 +360,19 @@ export default function FastboardTable({
         </TableHeader>
         <TableBody
           isLoading={dataFetching}
-          loadingContent={<Spinner label="Loading..." />}
+          loadingContent={
+            <div className="fixed flex items-center">
+              <Spinner />
+            </div>
+          }
           emptyContent={emptyMessage}
         >
           {data.map((item) => (
-            <TableRow key={item.key} className="text-center">
+            <TableRow key={item.key}>
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey as string)}</TableCell>
+                <TableCell className="text-center">
+                  {renderCell(item, columnKey as string)}
+                </TableCell>
               )}
             </TableRow>
           ))}

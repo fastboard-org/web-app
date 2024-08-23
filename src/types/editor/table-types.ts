@@ -38,10 +38,15 @@ export class FastboardTableProperties {
   addOns: TableAddOnsProperties = {
     addRowForm: null,
   };
-  hideHeader: boolean = false;
-  isStriped: boolean = false;
   selectedRow: any = null;
-  headerColor: string = "#000000";
+
+  hideHeader: boolean = false;
+  headerSticky: boolean = false;
+  isStriped: boolean = false;
+  headerColor: { light: string; dark: string } = {
+    light: "#f4f4f5",
+    dark: "#27272a",
+  };
 
   static default(): FastboardTableProperties {
     return new FastboardTableProperties();

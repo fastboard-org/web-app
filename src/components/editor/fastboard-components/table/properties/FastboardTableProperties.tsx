@@ -3,7 +3,6 @@ import {
   AccordionItem,
   BreadcrumbItem,
   Breadcrumbs,
-  Checkbox,
   Input,
   Spacer,
 } from "@nextui-org/react";
@@ -17,7 +16,7 @@ import TableAddRowProperties from "./TableAddRowProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { ComponentId } from "@/types/editor";
-import ColorPicker from "@/components/shared/ColorPicker";
+import TableStyle from "./TableStyle";
 
 const FastboardTablePropertiesComponent = ({
   componentId,
@@ -28,16 +27,7 @@ const FastboardTablePropertiesComponent = ({
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
-  const {
-    sourceQuery,
-    emptyMessage,
-    columns,
-    actions,
-    addOns,
-    hideHeader,
-    isStriped,
-    headerColor,
-  } = properties;
+  const { sourceQuery, emptyMessage, columns, actions, addOns } = properties;
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [columnsProperties, setColumnsProperties] = useState(columns);
   const [addOnSelected, setAddOnSelected] = useState<string | null>(null);
@@ -73,7 +63,8 @@ const FastboardTablePropertiesComponent = ({
           selectionMode="multiple"
           isCompact
           fullWidth
-          defaultExpandedKeys={["basic", "actions", "add-ons", "style"]}
+          defaultExpandedKeys={["basic", "row-actions", "add-ons", "style"]}
+          className="p-0"
         >
           <AccordionItem
             key="basic"
@@ -103,6 +94,7 @@ const FastboardTablePropertiesComponent = ({
                   });
                 }}
               />
+              <Spacer y={2} />
               <Input
                 label="Empty message"
                 labelPlacement="outside"
@@ -118,9 +110,9 @@ const FastboardTablePropertiesComponent = ({
             </div>
           </AccordionItem>
           <AccordionItem
-            key="actions"
+            key="row-actions"
             className="pb-2"
-            title="Actions"
+            title="Row actions"
             classNames={{
               title: "font-medium",
             }}
@@ -163,42 +155,7 @@ const FastboardTablePropertiesComponent = ({
               title: "font-medium",
             }}
           >
-            <div className="flex flex-col gap-2">
-              <Checkbox
-                isSelected={hideHeader}
-                onValueChange={(isSelected) => {
-                  onValueChange({
-                    ...properties,
-                    hideHeader: isSelected,
-                  });
-                }}
-              >
-                Hide Header
-              </Checkbox>
-              <Checkbox
-                isSelected={isStriped}
-                onValueChange={(isSelected) => {
-                  onValueChange({
-                    ...properties,
-                    isStriped: isSelected,
-                  });
-                }}
-              >
-                Stripped
-              </Checkbox>
-              <div className="flex flex-row justify-between">
-                <span>Header color</span>
-                <ColorPicker
-                  initialColor={headerColor}
-                  onColorChange={(color) => {
-                    onValueChange({
-                      ...properties,
-                      headerColor: color,
-                    });
-                  }}
-                />
-              </div>
-            </div>
+            <TableStyle properties={properties} onValueChange={onValueChange} />
           </AccordionItem>
         </Accordion>
       )}
