@@ -1,3 +1,4 @@
+import { Dashboard } from "@/types/dashboards";
 import { EditorModalState, PropertiesDrawerState } from "@/types/editor";
 import { atom } from "recoil";
 
@@ -34,4 +35,9 @@ export const editorModalState = atom<EditorModalState>({
     isOpen: false,
     modalId: null,
   },
+});
+
+export const lastDashboardMetadata = atom<Dashboard | null>({
+  key: "lastDashboardMetadata",
+  default: null,
 });
