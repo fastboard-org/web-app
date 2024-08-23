@@ -69,8 +69,12 @@ export function deleteComponent(
     //If the component is a table, then we need to remove the modal frame that is associated with it
     dashboardMetadata = deleteTableModalsFrame(component, dashboardMetadata);
   }
-  delete dashboardMetadata.components[id];
-  return dashboardMetadata;
+  const { [id]: removedComponent, ...newComponents } =
+    dashboardMetadata.components;
+  return {
+    ...dashboardMetadata,
+    components: newComponents,
+  };
 }
 
 export function updateComponent(
