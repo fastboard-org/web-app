@@ -7,7 +7,10 @@ import {
   Spacer,
 } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { FastboardTableProperties } from "@/types/editor/table-types";
+import {
+  FastboardTableProperties,
+  TableActionProperty,
+} from "@/types/editor/table-types";
 import QuerySelection from "@/components/editor/QuerySelection";
 import ReorderableColumns from "./ReorderableColumns";
 import TableActionsList from "./TableActionsList";
@@ -17,6 +20,7 @@ import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { ComponentId } from "@/types/editor";
 import TableStyle from "./TableStyle";
+import { DeleteActionProperties } from "./DeleteActionProperties";
 
 const FastboardTablePropertiesComponent = ({
   componentId,
@@ -30,6 +34,8 @@ const FastboardTablePropertiesComponent = ({
   const { sourceQuery, emptyMessage, columns, actions, addOns } = properties;
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [columnsProperties, setColumnsProperties] = useState(columns);
+  const [actionSelected, setActionSelected] =
+    useState<TableActionProperty | null>(null);
   const [addOnSelected, setAddOnSelected] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,7 +43,8 @@ const FastboardTablePropertiesComponent = ({
   }, [columns]);
 
   useEffect(() => {
-    // Reset add-on selection when the selected component changes
+    // Reset selectinos when component is changed
+    setActionSelected(null);
     setAddOnSelected(null);
   }, [selectedComponentId]);
 
@@ -47,18 +54,22 @@ const FastboardTablePropertiesComponent = ({
         <BreadcrumbItem
           key={"baseProperties"}
           onPress={() => {
+            setActionSelected(null);
             setAddOnSelected(null);
           }}
         >
           Table
-        </BreadcrumbItem>
+        </BreadcrumbItem>{" "}
+        {actionSelected && (
+          <BreadcrumbItem key={"actionProperties"}>Row action</BreadcrumbItem>
+        )}
         {addOnSelected && (
           <BreadcrumbItem key={"addRowProperties"}>Add row</BreadcrumbItem>
         )}
       </Breadcrumbs>
       <Spacer y={4} />
 
-      {!addOnSelected && (
+      {!actionSelected && !addOnSelected && (
         <Accordion
           selectionMode="multiple"
           isCompact
@@ -129,6 +140,9 @@ const FastboardTablePropertiesComponent = ({
             <TableActionsList
               tableId={componentId}
               actionsProperties={actions}
+              onActionSelect={(action) => {
+                setActionSelected(action);
+              }}
               onChange={(newActions) => {
                 onValueChange({
                   ...properties,
@@ -167,6 +181,31 @@ const FastboardTablePropertiesComponent = ({
             <TableStyle properties={properties} onValueChange={onValueChange} />
           </AccordionItem>
         </Accordion>
+      )}
+
+      {actionSelected && actionSelected.type == "delete" && (
+        <DeleteActionProperties
+          action={actionSelected}
+          onChange={(action) => {
+            setActionSelected(action);
+            onValueChange({
+              ...properties,
+              actions: actions.map((a) => (a.key === action.key ? action : a)),
+            });
+          }}
+        />
+      )}
+      {actionSelected && actionSelected.type == "view" && (
+        <DeleteActionProperties
+          action={actionSelected}
+          onChange={(action) => {
+            setActionSelected(action);
+            onValueChange({
+              ...properties,
+              actions: actions.map((a) => (a.key === action.key ? action : a)),
+            });
+          }}
+        />
       )}
 
       {addOnSelected &&

@@ -14,19 +14,27 @@ export default function Option({
 }) {
   return (
     <ButtonGroup className="w-full flex flex-row justify-between rounded-xl border border-content3">
-      <Button
-        className="w-full"
-        variant="light"
-        startContent={
-          <div className="flex flex-row justify-center items-center space-x-2">
-            {startIcon}
-            <p>{label}</p>
-          </div>
-        }
-        onPress={onPress}
-      >
-        <div className="w-full"></div>
-      </Button>
+      {!onPress && (
+        <div className="flex flex-row justify-center items-center space-x-2 px-4">
+          {startIcon}
+          <span className="text-sm">{label}</span>
+        </div>
+      )}
+      {onPress && (
+        <Button
+          className="w-full"
+          variant="light"
+          startContent={
+            <div className="flex flex-row justify-center items-center space-x-2">
+              {startIcon}
+              <span>{label}</span>
+            </div>
+          }
+          onPress={onPress}
+        >
+          <div className="w-full"></div>
+        </Button>
+      )}
       <Button variant="light" isIconOnly onPress={onDelete}>
         <IoIosClose size={20} className="text-foreground-600" />
       </Button>

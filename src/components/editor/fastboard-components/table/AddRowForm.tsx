@@ -26,7 +26,7 @@ export default function AddRowForm({
             modalId: modalId,
           });
         }}
-        style={{ backgroundColor: buttonColor }}
+        style={{ backgroundColor: buttonColor, color: "white" }}
       >
         {buttonLabel}
       </Button>
