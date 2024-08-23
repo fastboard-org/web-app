@@ -27,6 +27,7 @@ export interface AddRowFormProperties {
 
 export interface TableAddOnsProperties {
   addRowForm: AddRowFormProperties | null;
+  downloadData: boolean;
 }
 
 export class FastboardTableProperties {
@@ -37,6 +38,7 @@ export class FastboardTableProperties {
   actions: TableActionProperty[] = [];
   addOns: TableAddOnsProperties = {
     addRowForm: null,
+    downloadData: false,
   };
   selectedRow: any = null;
 

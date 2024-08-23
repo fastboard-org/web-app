@@ -81,13 +81,6 @@ export default function ReorderableColumns({
     <div>
       <h1 className="text-sm">Columns</h1>
       <Spacer y={2} />
-      {columns.length === 0 && (
-        <div className="flex h-10 justify-center items-center bg-warning-100 rounded-xl">
-          <span className="text-sm text-warning-600">
-            Select query to see columns.
-          </span>
-        </div>
-      )}
       <div
         className={
           "flex w-full max-h-60 justify-center items-center overflow-y-auto" +

@@ -85,15 +85,24 @@ const FastboardTablePropertiesComponent = ({
                   });
                 }}
               />
-              <ReorderableColumns
-                columnsProperties={columnsProperties}
-                onChange={(newOrder) => {
-                  onValueChange({
-                    ...properties,
-                    columns: newOrder,
-                  });
-                }}
-              />
+              {!sourceQuery && (
+                <div className="flex h-10 justify-center items-center bg-warning-100 rounded-xl">
+                  <span className="text-sm text-warning-600">
+                    Select query to see columns.
+                  </span>
+                </div>
+              )}
+              {sourceQuery && (
+                <ReorderableColumns
+                  columnsProperties={columnsProperties}
+                  onChange={(newOrder) => {
+                    onValueChange({
+                      ...properties,
+                      columns: newOrder,
+                    });
+                  }}
+                />
+              )}
               <Spacer y={2} />
               <Input
                 label="Empty message"

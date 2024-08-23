@@ -71,7 +71,7 @@ export default function FastboardTable({
     emptyMessage,
     columns,
     actions,
-    addOns: { addRowForm },
+    addOns: { addRowForm, downloadData },
     hideHeader,
     headerSticky,
     isStriped,
@@ -333,7 +333,7 @@ export default function FastboardTable({
         topContent={addRowForm && <AddRowForm properties={addRowForm} />}
         topContentPlacement="outside"
         bottomContent={
-          <div className="flex w-full justify-center">
+          <div className="flex w-full justify-center items-center gap-2">
             <Pagination
               isCompact
               showControls
@@ -342,7 +342,7 @@ export default function FastboardTable({
               total={pages}
               onChange={(page) => setPage(page)}
             />
-            <CsvExporter data={fulldata} />
+            {downloadData && <CsvExporter data={fulldata} />}
           </div>
         }
         bottomContentPlacement="outside"
