@@ -38,6 +38,7 @@ import scrollbarStyles from "@/styles/scrollbar.module.css";
 import AddRowForm from "./AddRowForm";
 import useModalFrame from "@/hooks/editor/useModalFrame";
 import { useTheme } from "next-themes";
+import CsvExporter from "@/components/shared/CsvExporter";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -79,6 +80,7 @@ export default function FastboardTable({
   } = properties;
   const {
     data,
+    fulldata,
     keys,
     page,
     setPage,
@@ -340,6 +342,7 @@ export default function FastboardTable({
               total={pages}
               onChange={(page) => setPage(page)}
             />
+            <CsvExporter data={fulldata} />
           </div>
         }
         bottomContentPlacement="outside"

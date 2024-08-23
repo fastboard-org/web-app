@@ -74,6 +74,7 @@ const useData = (
 
   return {
     data: items || [],
+    fulldata: data || [],
     keys,
     page,
     setPage,
