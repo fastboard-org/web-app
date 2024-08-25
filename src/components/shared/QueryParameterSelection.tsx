@@ -13,7 +13,7 @@ export default function QueryParameterSelection({
 }: {
   selectedKey: string;
   queryId: string | null;
-  onSelectionChange: (formDataKey: string) => void;
+  onSelectionChange: (parameter: string) => void;
   disabledKeys?: string[];
   label?: string;
   placeholder?: string;
