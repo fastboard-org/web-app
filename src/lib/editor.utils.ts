@@ -264,23 +264,16 @@ export function addHeader(
   };
 }
 
-export function switchHeaderState(
+export function deleteHeader(
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
   const headerId = dashboardMetadata.header.componentId;
   if (!headerId) {
     return dashboardMetadata;
   }
-  const header = getComponent(headerId, dashboardMetadata);
-  if (!header) {
-    return dashboardMetadata;
-  }
   return {
-    ...dashboardMetadata,
-    header: {
-      componentId: headerId,
-      isVisible: !dashboardMetadata.header.isVisible,
-    },
+    ...deleteComponent(headerId, dashboardMetadata),
+    header: { componentId: null, isVisible: false },
   };
 }
 
@@ -295,5 +288,5 @@ export const editorUtils = {
   createModalFrame,
   removeModalFrame,
   addHeader,
-  switchHeaderState,
+  deleteHeader,
 };

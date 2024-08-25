@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
 import LayoutSelection from "./LayoutSelection";
-import HeaderSettings from "./HeaderCheckbox";
+import HeaderSettings from "./HeaderSettings";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { changeLayout } from "@/lib/editor.utils";
 
@@ -33,11 +33,7 @@ export default function SettingsDrawer() {
             }));
           }}
         />
-
-        <HeaderSettings
-          isSelected={Boolean(dashboard?.metadata?.header?.isVisible)}
-          shouldCreateHeader={!dashboard?.metadata?.header?.componentId}
-        />
+        <HeaderSettings />
       </div>
     </motion.div>
   );

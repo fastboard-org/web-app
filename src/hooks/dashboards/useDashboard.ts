@@ -86,11 +86,11 @@ const useDashboard = () => {
     }));
   };
 
-  const switchHeaderState = () => {
+  const deleteHeader = () => {
     if (!dashboard) return;
     updateDashboard((prev) => ({
       ...prev,
-      metadata: editorUtils.switchHeaderState(prev.metadata),
+      metadata: editorUtils.deleteHeader(prev.metadata),
     }));
   };
 
@@ -160,7 +160,7 @@ const useDashboard = () => {
     deleteModalFrame,
     updateDashboard,
     addHeader,
-    switchHeaderState,
+    deleteHeader,
   };
 };
 
