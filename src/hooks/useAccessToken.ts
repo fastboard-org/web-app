@@ -5,11 +5,7 @@ export const useAccessToken = ({ dashboardId }: { dashboardId: string }) => {
 
   useEffect(() => {
     const token = localStorage.getItem(`auth-${dashboardId}`);
-    if (token) {
-      setAccessToken(token);
-    } else {
-      setAccessToken(null);
-    }
+    setAccessToken(token);
 
     const listener = (e: StorageEvent) => {
       if (e.key === `auth-${dashboardId}`) {
