@@ -21,7 +21,7 @@ const AuthDrawer = () => {
 
   const {
     enabled,
-    loginQuery,
+    loginQueryId,
     accessTokenField,
     passwordInputLabel,
     userInputLabel,
@@ -92,10 +92,10 @@ const AuthDrawer = () => {
           >
             <div className={"flex flex-col gap-3 mt-3"}>
               <QuerySelection
-                selectedQueryId={loginQuery?.id || ""}
+                selectedQueryId={loginQueryId || ""}
                 onQuerySelect={(loginQuery) => {
                   updateAuth({
-                    loginQuery,
+                    loginQueryId: loginQuery.id,
                   });
                 }}
                 label={"Login Query"}
@@ -151,7 +151,7 @@ const AuthDrawer = () => {
                 isDisabled={!enabled}
               />
               <QueryParameterSelection
-                queryId={loginQuery?.id || ""}
+                queryId={loginQueryId || ""}
                 selectedKey={userQueryParameter || ""}
                 onSelectionChange={(value) => {
                   updateAuth({
@@ -175,7 +175,7 @@ const AuthDrawer = () => {
                 isDisabled={!enabled}
               />
               <QueryParameterSelection
-                queryId={loginQuery?.id || ""}
+                queryId={loginQueryId || ""}
                 selectedKey={passwordQueryParameter || ""}
                 onSelectionChange={(value) => {
                   updateAuth({

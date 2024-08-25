@@ -29,7 +29,7 @@ export interface ModalFrame {
 
 export interface DashboardAuth {
   enabled: boolean;
-  loginQuery: Query;
+  loginQueryId: string;
   accessTokenField: string;
   userInputLabel: string;
   passwordInputLabel: string;
