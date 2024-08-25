@@ -14,6 +14,13 @@ import { Eye, EyeSlash } from "iconsax-react";
 import { useAccessToken } from "@/hooks/useAccessToken";
 import { useRecoilValue } from "recoil";
 import { isAuthDrawerOpen } from "@/atoms/editor";
+import useGetQuery from "@/hooks/connections/useGetQuery";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+interface LogInForm {
+  user: string;
+  password: string;
+}
 
 const AuthVerifier = ({
   children,
@@ -27,6 +34,9 @@ const AuthVerifier = ({
   mode?: "editor" | "preview";
 }) => {
   const { accessToken, updateAccessToken } = useAccessToken({ dashboardId });
+  const { query: loginQuery, loading: queryLoading } = useGetQuery(
+    auth?.loginQueryId,
+  );
   const isAuthOpen = useRecoilValue(isAuthDrawerOpen);
 
   const { execute, isPending } = useExecuteQuery({
@@ -51,15 +61,14 @@ const AuthVerifier = ({
     },
   });
 
-  const [user, setUser] = useState("");
-  const [password, setPassword] = useState("");
+  const { handleSubmit, register } = useForm<LogInForm>();
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-  const handleLogin = () => {
+  const onSubmit: SubmitHandler<LogInForm> = ({ user, password }) => {
     if (!user || !password) return toast.error("Please fill all fields");
 
     execute({
-      query: auth?.loginQuery,
+      query: loginQuery,
       parameters: {
         [auth?.userQueryParameter]: user,
         [auth?.passwordQueryParameter]: password,
@@ -80,41 +89,44 @@ const AuthVerifier = ({
   ) : (
     <div className={"w-full h-full flex flex-col items-center justify-center"}>
       <Card className={"w-[400px] p-5"}>
-        <CardHeader>
-          <h3 className={"text-xl font-medium"}>{auth?.title}</h3>
-        </CardHeader>
-        <CardBody className={"gap-5"}>
-          <Input
-            label={auth?.userInputLabel}
-            isRequired
-            onChange={(e) => setUser(e.target.value)}
-          />
-          <Input
-            label={auth?.passwordInputLabel}
-            type={passwordVisible ? "text" : "password"}
-            isRequired
-            onChange={(e) => setPassword(e.target.value)}
-            endContent={
-              <button
-                className="focus:outline-none"
-                type="button"
-                onClick={() => setPasswordVisible(!passwordVisible)}
-              >
-                {passwordVisible ? <EyeSlash /> : <Eye />}
-              </button>
-            }
-          />
-        </CardBody>
-        <CardFooter>
-          <Button
-            color={"primary"}
-            className={"w-full"}
-            isLoading={isPending}
-            onClick={handleLogin}
-          >
-            {auth?.buttonText || "Login"}
-          </Button>
-        </CardFooter>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardHeader>
+            <h3 className={"text-xl font-medium"}>{auth?.title}</h3>
+          </CardHeader>
+          <CardBody className={"gap-5"}>
+            <Input
+              {...register("user")}
+              label={auth?.userInputLabel}
+              isRequired
+            />
+            <Input
+              {...register("password")}
+              label={auth?.passwordInputLabel}
+              type={passwordVisible ? "text" : "password"}
+              isRequired
+              endContent={
+                <button
+                  className="focus:outline-none"
+                  type="button"
+                  onClick={() => setPasswordVisible(!passwordVisible)}
+                >
+                  {passwordVisible ? <EyeSlash /> : <Eye />}
+                </button>
+              }
+            />
+          </CardBody>
+          <CardFooter>
+            <Button
+              color={"primary"}
+              className={"w-full"}
+              isLoading={isPending}
+              isDisabled={queryLoading}
+              type={"submit"}
+            >
+              {auth?.buttonText || "Login"}
+            </Button>
+          </CardFooter>
+        </form>
       </Card>
     </div>
   );
