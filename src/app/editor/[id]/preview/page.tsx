@@ -9,6 +9,11 @@ import { Spinner } from "@nextui-org/react";
 export default function Preview() {
   const { dashboard, loading, isError, error, getComponent } = useDashboard();
   const { currentPage } = useNavigation();
+  const header = getComponent(
+    dashboard?.metadata?.header?.componentId as string
+  );
+  const layoutsHeight = dashboard?.metadata?.header?.isVisible ? "90%" : "100%";
+  const layoutsWidth = dashboard?.metadata?.sidebar?.visible ? "85%" : "100%";
   const sidebar = dashboard?.metadata?.sidebar
     ? getComponent(dashboard.metadata.sidebar.id)
     : null;
@@ -33,12 +38,6 @@ export default function Preview() {
     );
   }
 
-  const header = getComponent(
-    dashboard?.metadata?.header?.componentId as string
-  );
-
-  const layoutsHeight = dashboard?.metadata?.header?.isVisible ? "90%" : "100%";
-
   return (
     <div className="flex flex-col justify-center items-center h-screen w-full bg-background">
       <EditorModal mode="view" />
@@ -55,25 +54,37 @@ export default function Preview() {
           />
         </div>
       )}
-      {sidebar && sidebarVisible && (
-        <div className="w-[20%] h-full">
-          <FastboardComponent
-            id={sidebar.id}
-            name="sidebar"
-            type={sidebar.type}
-            properties={sidebar.properties}
-            context={{
-              type: "sidebar",
-            }}
-            canDelete={false}
-            mode="view"
-          />
-        </div>
-      )}
-      <div className="w-full" style={{ height: layoutsHeight }}>
-        {dashboard?.metadata?.pages[selectedPage].map((layout, index) =>
-          getLayout(layout, currentPage, index, "view")
+      <div
+        className="flex flex-row w-full"
+        style={{
+          height: layoutsHeight,
+        }}
+      >
+        {sidebar && sidebarVisible && (
+          <div className="w-[15%] h-full">
+            <FastboardComponent
+              id={sidebar.id}
+              name="sidebar"
+              type={sidebar.type}
+              properties={sidebar.properties}
+              context={{
+                type: "sidebar",
+              }}
+              canDelete={false}
+              mode="view"
+            />
+          </div>
         )}
+        <div
+          className="w-full"
+          style={{
+            width: layoutsWidth,
+          }}
+        >
+          {dashboard?.metadata?.pages[selectedPage].map((layout, index) =>
+            getLayout(layout, currentPage, index, "view")
+          )}
+        </div>
       </div>
     </div>
   );

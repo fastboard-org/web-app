@@ -30,8 +30,8 @@ export default function SettingsDrawer() {
             changeLayout("home", 0, layoutType);
           }}
         />
-        <SidebarSettings />
         <HeaderSettings />
+        <SidebarSettings />
       </div>
     </motion.div>
   );
