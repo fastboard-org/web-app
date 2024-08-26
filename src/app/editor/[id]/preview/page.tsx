@@ -33,8 +33,28 @@ export default function Preview() {
     );
   }
 
+  const header = getComponent(
+    dashboard?.metadata?.header?.componentId as string
+  );
+
+  const layoutsHeight = dashboard?.metadata?.header?.isVisible ? "90%" : "100%";
+
   return (
-    <div className="flex flex-row w-full h-screen">
+    <div className="flex flex-col justify-center items-center h-screen w-full bg-background">
+      <EditorModal mode="view" />
+      {dashboard?.metadata?.header?.isVisible && header && (
+        <div className="h-[10%] w-full">
+          <FastboardComponent
+            id={header.id}
+            name="Header"
+            type={header.type}
+            properties={header.properties}
+            context={{ type: "header" }}
+            mode="view"
+            canDelete={false}
+          />
+        </div>
+      )}
       {sidebar && sidebarVisible && (
         <div className="w-[20%] h-full">
           <FastboardComponent
@@ -50,8 +70,7 @@ export default function Preview() {
           />
         </div>
       )}
-      <div className="flex justify-center items-center h-screen w-full bg-background">
-        <EditorModal mode="view" />
+      <div className="w-full" style={{ height: layoutsHeight }}>
         {dashboard?.metadata?.pages[selectedPage].map((layout, index) =>
           getLayout(layout, currentPage, index, "view")
         )}

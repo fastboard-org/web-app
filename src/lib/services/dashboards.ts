@@ -41,6 +41,7 @@ const createDashboard = async (name: string, folderId?: string | null) => {
       home: [Layout.of(LayoutType.Full)],
     },
     layouts: [Layout.of(LayoutType.Full)],
+    header: { componentId: null, isVisible: false },
   };
   const response = await axiosInstance.post("/dashboards", {
     name,

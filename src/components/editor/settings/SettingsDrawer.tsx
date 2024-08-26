@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
 import LayoutSelection from "./LayoutSelection";
+import HeaderSettings from "./HeaderSettings";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import SidebarSettings from "./SidebarSettings";
 
@@ -30,6 +31,7 @@ export default function SettingsDrawer() {
           }}
         />
         <SidebarSettings />
+        <HeaderSettings />
       </div>
     </motion.div>
   );

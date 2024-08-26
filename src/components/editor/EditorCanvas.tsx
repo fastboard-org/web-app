@@ -30,6 +30,13 @@ export default function EditorCanvas() {
     : "home";
   const sidebarVisible = dashboard?.metadata?.sidebar?.visible ?? false;
   const layoutsWidth = dashboard?.metadata?.sidebar?.visible ? "80%" : "100%";
+  const header = getComponent(
+    dashboard?.metadata?.header?.componentId as string
+  );
+
+  const isHeaderVisible = dashboard?.metadata?.header?.isVisible;
+
+  const layoutsHeight = isHeaderVisible ? "90%" : "100%";
 
   useEffect(() => {
     setEditorCanvasRef(editorCanvasRef.current);
@@ -50,7 +57,7 @@ export default function EditorCanvas() {
         ease: "easeInOut",
       }}
       className={
-        "flex justify-center items-center h-full w-[75%] bg-background shadow-lg overflow-y-auto overflow-x-hidden rounded-lg" +
+        "flex flex-col justify-center items-center h-full w-[75%] bg-background shadow-lg overflow-y-auto rounded-lg" +
         " " +
         scrollbarStyles.scrollbar
       }
@@ -71,11 +78,23 @@ export default function EditorCanvas() {
         </div>
       )}
 
+      {isHeaderVisible && header && (
+        <div className="h-[10%] w-full">
+          <FastboardComponent
+            id={header.id}
+            name="Header"
+            type={header.type}
+            properties={header.properties}
+            context={{ type: "header" }}
+            mode="editable"
+            canDelete={false}
+          />
+        </div>
+      )}
+      {/* map through the layouts and render them */}
       <div
         className="w-full h-full"
-        style={{
-          width: layoutsWidth,
-        }}
+        style={{ width: layoutsWidth, height: layoutsHeight }}
       >
         {dashboard?.metadata?.pages[selectedPage].map((layout, index) =>
           getLayout(layout, currentPage, index, "editable")
