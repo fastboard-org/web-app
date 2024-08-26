@@ -13,7 +13,7 @@ export default function MenuItem({
   onValueChange: (properties: MenuItemProperties) => void;
 }) {
   const { key, label, caption, layout, icon } = properties;
-  const { changeLayout } = useDashboard();
+  const { getBaseLayout, changeLayout } = useDashboard();
 
   return (
     <div className="flex flex-col gap-2">
@@ -44,7 +44,7 @@ export default function MenuItem({
         }}
       />
       <LayoutSelection
-        selectedLayout={layout}
+        selectedLayout={key === "home" ? getBaseLayout() : layout}
         onLayoutSelect={(layout) => {
           changeLayout(key, 0, layout);
           onValueChange({

@@ -143,6 +143,11 @@ const useDashboard = () => {
     }));
   };
 
+  const getBaseLayout = (): LayoutType | null => {
+    if (!dashboard) return null;
+    return dashboard.metadata.pages["home"][0].type;
+  };
+
   const changeLayout = (
     pageId: string,
     layoutIndex: number,
@@ -199,6 +204,7 @@ const useDashboard = () => {
     deleteSidebar,
     addPage,
     deletePage,
+    getBaseLayout,
     changeLayout,
   };
 };

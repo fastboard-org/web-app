@@ -36,7 +36,7 @@ export default function FastboardSidebar({
           className="w-52"
           classNames={{
             tabList: "bg-transparent w-full",
-            tab: "justify-start",
+            tab: "min-h-14 justify-start",
           }}
         >
           {menuItems.map((tab) => (
