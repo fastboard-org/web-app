@@ -10,14 +10,23 @@ import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { getLayout } from "./fastboard-components/utils";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { useEffect, useRef } from "react";
+import FastboardComponent from "./fastboard-components/FastboardComponent";
 
 export default function EditorCanvas() {
-  const { dashboard } = useDashboard();
+  const { dashboard, getComponent } = useDashboard();
   const editorCanvasRef = useRef<HTMLDivElement>(null);
   const setEditorCanvasRef = useSetRecoilState(editorCanvasRefState);
   const isComponentsOpen = useRecoilValue(isComponentsDrawerOpen);
   const isPropertiesOpen = useRecoilValue(isPropertiesDrawerOpen);
   const isSettingsOpen = useRecoilValue(isSettingsDrawerOpen);
+
+  const header = getComponent(
+    dashboard?.metadata?.header?.componentId as string
+  );
+
+  const isHeaderVisible = dashboard?.metadata?.header?.isVisible;
+
+  const layoutsHeight = isHeaderVisible ? "90%" : "100%";
 
   useEffect(() => {
     setEditorCanvasRef(editorCanvasRef.current);
@@ -38,14 +47,30 @@ export default function EditorCanvas() {
         ease: "easeInOut",
       }}
       className={
-        "flex justify-center items-center h-full w-[75%] bg-background shadow-lg overflow-y-auto rounded-lg" +
+        "flex flex-col justify-center items-center h-full w-[75%] bg-background shadow-lg overflow-y-auto rounded-lg" +
         " " +
         scrollbarStyles.scrollbar
       }
     >
-      {dashboard?.metadata?.layouts.map((layout, index) =>
-        getLayout(layout, index, "editable")
+      {isHeaderVisible && header && (
+        <div className="h-[10%] w-full">
+          <FastboardComponent
+            id={header.id}
+            name="Header"
+            type={header.type}
+            properties={header.properties}
+            context={{ type: "header" }}
+            mode="editable"
+            canDelete={false}
+          />
+        </div>
       )}
+      {/* map through the layouts and render them */}
+      <div className="w-full" style={{ height: layoutsHeight }}>
+        {dashboard?.metadata?.layouts.map((layout, index) =>
+          getLayout(layout, index, "editable")
+        )}
+      </div>
     </motion.div>
   );
 }

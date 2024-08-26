@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { Layout } from "./layout-types";
 
 export default interface PublishOption {
@@ -12,6 +11,7 @@ export enum ComponentType {
   GroupChart = "group-chart",
   Form = "form",
   Cards = "cards",
+  Header = "header",
 }
 
 export type ComponentId = string;
@@ -31,6 +31,7 @@ export interface DashboardMetadata {
   components: Record<ComponentId, FastboardComponent>;
   modals: ModalFrame[];
   layouts: Array<Layout>;
+  header: { componentId: ComponentId | null; isVisible: boolean };
 }
 
 export interface Context {

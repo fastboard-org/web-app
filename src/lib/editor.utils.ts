@@ -9,6 +9,7 @@ import {
 import { Layout, LayoutType } from "@/types/editor/layout-types";
 import { TableActionProperty } from "@/types/editor/table-types";
 import { v4 as uuidv4 } from "uuid";
+import { FastboardHeaderProperties } from "@/types/editor/header-types";
 
 export function getComponent(
   id: ComponentId,
@@ -249,6 +250,33 @@ export function getModalFrame(
   return modal || null;
 }
 
+export function addHeader(
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  const [newMetadata, componentId] = createComponent(
+    ComponentType.Header,
+    FastboardHeaderProperties.default(),
+    dashboardMetadata
+  );
+  return {
+    ...newMetadata,
+    header: { componentId: componentId, isVisible: true },
+  };
+}
+
+export function deleteHeader(
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  const headerId = dashboardMetadata.header.componentId;
+  if (!headerId) {
+    return dashboardMetadata;
+  }
+  return {
+    ...deleteComponent(headerId, dashboardMetadata),
+    header: { componentId: null, isVisible: false },
+  };
+}
+
 export const editorUtils = {
   getComponent,
   createComponent,
@@ -259,4 +287,6 @@ export const editorUtils = {
   changeLayout,
   createModalFrame,
   removeModalFrame,
+  addHeader,
+  deleteHeader,
 };

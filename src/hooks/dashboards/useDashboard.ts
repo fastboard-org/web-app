@@ -78,6 +78,22 @@ const useDashboard = () => {
     }));
   };
 
+  const addHeader = () => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.addHeader(prev.metadata),
+    }));
+  };
+
+  const deleteHeader = () => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.deleteHeader(prev.metadata),
+    }));
+  };
+
   const createModalFrame = (body: {
     type: ComponentType;
     properties: Object;
@@ -143,6 +159,8 @@ const useDashboard = () => {
     createModalFrame,
     deleteModalFrame,
     updateDashboard,
+    addHeader,
+    deleteHeader,
   };
 };
 
