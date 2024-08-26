@@ -29,7 +29,7 @@ export default function Preview() {
     <div className="flex justify-center items-center h-screen w-full bg-background">
       <AuthVerifier
         dashboardId={dashboard?.id || ""}
-        auth={dashboard?.metadata?.auth as DashboardAuth}
+        auth={dashboard?.metadata?.auth}
         mode="preview"
       >
         <EditorModal mode="view" />

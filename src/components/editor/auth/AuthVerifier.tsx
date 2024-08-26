@@ -30,12 +30,12 @@ const AuthVerifier = ({
 }: {
   children: React.ReactNode;
   dashboardId: string;
-  auth: DashboardAuth;
+  auth?: DashboardAuth | null;
   mode?: "editor" | "preview";
 }) => {
   const { accessToken, updateAccessToken } = useAccessToken({ dashboardId });
   const { query: loginQuery, loading: queryLoading } = useGetQuery(
-    auth?.loginQueryId,
+    auth?.loginQueryId || null,
   );
   const isAuthOpen = useRecoilValue(isAuthDrawerOpen);
 
@@ -49,7 +49,7 @@ const AuthVerifier = ({
       }
     },
     onSuccess: (response) => {
-      if (response.body[auth?.accessTokenField] !== undefined) {
+      if (auth && response.body[auth?.accessTokenField] !== undefined) {
         if (mode === "editor") {
           toast.success("Logged in successfully");
         } else {
@@ -65,6 +65,7 @@ const AuthVerifier = ({
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const onSubmit: SubmitHandler<LogInForm> = ({ user, password }) => {
+    if (!auth) return toast.error("Auth not found");
     if (!user || !password) return toast.error("Please fill all fields");
 
     execute({

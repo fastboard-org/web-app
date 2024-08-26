@@ -43,7 +43,7 @@ export default function EditorCanvas() {
     >
       <AuthVerifier
         dashboardId={dashboard?.id || ""}
-        auth={dashboard?.metadata?.auth as DashboardAuth}
+        auth={dashboard?.metadata?.auth}
       >
         {dashboard?.metadata?.layouts.map((layout, index) =>
           getLayout(layout, index, "editable"),
