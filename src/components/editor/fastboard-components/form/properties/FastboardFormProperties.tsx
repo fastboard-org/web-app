@@ -4,6 +4,7 @@ import {
   InputProperties,
   InputType,
   NumberInputProperties,
+  SelectProperties,
   TextInputProperties,
 } from "@/types/editor/form";
 import {
@@ -23,8 +24,9 @@ import FormNumberInputProperties from "./FormNumberInputProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import useGetQuery from "@/hooks/connections/useGetQuery";
-import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
 import QueryParameters from "./QueryParameters";
+import FormSelectProperties from "./FormSelectProperties";
+import FormSelectOption from "./FormSelectOption";
 
 export default function FastboardFormProperties({
   properties,
@@ -45,6 +47,9 @@ export default function FastboardFormProperties({
   const { query: submitQuery } = useGetQuery(submitQueryId);
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
+    null
+  );
+  const [optionSelectedIndex, setOptionSelectedIndex] = useState<number | null>(
     null
   );
   const disabledKeys = inputs.map((input) => input.formDataKey);
@@ -115,12 +120,23 @@ export default function FastboardFormProperties({
           key={"baseProperties"}
           onPress={() => {
             setInputSelectedIndex(null);
+            setOptionSelectedIndex(null);
           }}
         >
           Form
         </BreadcrumbItem>
         {inputSelectedIndex !== null && (
-          <BreadcrumbItem key={"inputProperties"}>Input</BreadcrumbItem>
+          <BreadcrumbItem
+            key={"inputProperties"}
+            onPress={() => {
+              setOptionSelectedIndex(null);
+            }}
+          >
+            Input
+          </BreadcrumbItem>
+        )}
+        {optionSelectedIndex !== null && (
+          <BreadcrumbItem key={"optionProperties"}>Option</BreadcrumbItem>
         )}
       </Breadcrumbs>
       <Spacer y={4} />
@@ -279,6 +295,53 @@ export default function FastboardFormProperties({
             }}
             disabledKeys={disabledKeys}
             initialData={initialData}
+          />
+        )}
+      {inputSelectedIndex !== null &&
+        optionSelectedIndex === null &&
+        inputs[inputSelectedIndex]?.type === InputType.Select && (
+          <FormSelectProperties
+            properties={inputs[inputSelectedIndex] as SelectProperties}
+            queryId={submitQueryId}
+            onValueChange={(inputProperties) => {
+              onInputChange(inputProperties);
+            }}
+            onSelectOption={setOptionSelectedIndex}
+            disabledKeys={disabledKeys}
+            initialData={initialData}
+          />
+        )}
+      {optionSelectedIndex !== null &&
+        inputSelectedIndex !== null &&
+        inputs[inputSelectedIndex]?.type === InputType.Select && (
+          <FormSelectOption
+            option={
+              (inputs[inputSelectedIndex] as SelectProperties).options[
+                optionSelectedIndex
+              ]
+            }
+            onValueChange={(newOption) => {
+              const newInputs = inputs.map((input, index) => {
+                if (index === inputSelectedIndex) {
+                  const input = inputs[inputSelectedIndex] as SelectProperties;
+                  const newOptions = input.options.map((option, optIndex) => {
+                    if (optIndex === optionSelectedIndex) {
+                      return newOption;
+                    }
+                    return option;
+                  });
+                  return {
+                    ...input,
+                    options: newOptions,
+                  };
+                }
+                return input;
+              });
+              onValueChange({
+                ...properties,
+                inputs: newInputs,
+              });
+            }}
           />
         )}
     </div>

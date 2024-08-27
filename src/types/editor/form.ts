@@ -1,5 +1,4 @@
 import { ComponentId } from ".";
-import { Query } from "../connections";
 
 export enum InputType {
   TextInput = "text-input",
@@ -14,19 +13,20 @@ interface BaseInputProperties {
   required: boolean;
   type: InputType;
   label: string;
+  placeHolder: string;
   defaultValueKey: string;
 }
 
-export interface TextInputProperties extends BaseInputProperties {
-  placeHolder: string;
-}
+export interface TextInputProperties extends BaseInputProperties {}
 
-export interface NumberInputProperties extends BaseInputProperties {
-  placeHolder: string;
+export interface NumberInputProperties extends BaseInputProperties {}
+
+export interface SelectOptionProperties {
+  label: string;
 }
 
 export interface SelectProperties extends BaseInputProperties {
-  options: string[];
+  options: SelectOptionProperties[];
 }
 
 export interface CheckboxProperties extends BaseInputProperties {
@@ -66,6 +66,7 @@ export class DefaultInputProperties {
           required: false,
           type: InputType.Select,
           label: "Select",
+          placeHolder: "Select an option",
           options: [],
           defaultValueKey: "",
         };
@@ -75,6 +76,7 @@ export class DefaultInputProperties {
           required: false,
           type: InputType.Checkbox,
           label: "Checkbox",
+          placeHolder: "Check me",
           checked: false,
           defaultValueKey: "",
         };

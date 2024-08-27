@@ -13,13 +13,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Checkbox,
-  DateInput,
-  DatePicker,
   Divider,
-  Input,
-  Select,
-  SelectItem,
   Spacer,
   Spinner,
 } from "@nextui-org/react";
@@ -35,6 +29,7 @@ import useDashboard from "@/hooks/dashboards/useDashboard";
 import { ComponentId } from "@/types/editor";
 import FormNumberInput from "./FormNumberInput";
 import FormCheckbox from "./FormCheckbox";
+import FormSelect from "./FormSelect";
 
 export default function FastboardForm({
   id,
@@ -158,8 +153,16 @@ export default function FastboardForm({
           />
         );
       case InputType.Select:
-        const selectInput = input as SelectProperties;
-        return null;
+        return (
+          <FormSelect
+            key={index}
+            properties={input as SelectProperties}
+            register={register}
+            unregister={unregister}
+            setFormValue={setValue}
+            errors={errors}
+          />
+        );
       case InputType.Checkbox:
         return (
           <FormCheckbox
@@ -181,7 +184,7 @@ export default function FastboardForm({
       <Card className={`grow-0 h-full ${!showShadow ? "shadow-none" : ""}`}>
         <CardHeader>{title}</CardHeader>
         <Divider />
-        <CardBody className={"space-y-8 " + scrollbarStyles.scrollbar}>
+        <CardBody className={"gap-y-2 " + scrollbarStyles.scrollbar}>
           {isLoading && <Spinner className="h-full" />}
           {!isLoading &&
             inputs.map((input, index) => renderInput(index, input))}
