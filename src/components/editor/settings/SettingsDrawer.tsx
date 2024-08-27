@@ -12,6 +12,7 @@ export default function SettingsDrawer() {
   const { dashboard, changeLayout } = useDashboard();
   const isOpen = useRecoilValue(isSettingsDrawerOpen);
   const hasSidebar = dashboard?.metadata?.sidebar ? true : false;
+  const sidebarVisible = dashboard?.metadata?.sidebar?.visible ?? false;
 
   return (
     <motion.div
@@ -25,7 +26,7 @@ export default function SettingsDrawer() {
       <h3 className={"text-xl font-medium p-2 mb-2"}>Settings</h3>
       <Divider />
       <div className="flex flex-col gap-5 mt-5">
-        {!hasSidebar && (
+        {!(hasSidebar && sidebarVisible) && (
           <LayoutSelection
             selectedLayout={dashboard?.metadata?.pages["home"][0].type ?? null}
             onLayoutSelect={(layoutType) => {

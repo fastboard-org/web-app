@@ -1,5 +1,6 @@
 import QuestionModal from "@/components/shared/QuestionModal";
 import useDashboard from "@/hooks/dashboards/useDashboard";
+import useNavigation from "@/hooks/useNavigation";
 import { Button, Checkbox } from "@nextui-org/react";
 import { Trash } from "iconsax-react";
 import { useState } from "react";
@@ -7,11 +8,13 @@ import { useState } from "react";
 export default function SidebarSettings() {
   const { dashboard, addSidebar, deleteSidebar, updateDashboard } =
     useDashboard();
+  const { changePage } = useNavigation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const hasSidebar = dashboard?.metadata?.sidebar ? true : false;
   const isVisible = dashboard?.metadata?.sidebar?.visible ?? false;
 
   function toggleVisibility(enabled: boolean) {
+    changePage("home");
     updateDashboard((previous) => {
       if (!previous.metadata.sidebar) {
         return previous;
