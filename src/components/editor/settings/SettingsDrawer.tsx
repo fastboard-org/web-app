@@ -11,6 +11,7 @@ import SidebarSettings from "./SidebarSettings";
 export default function SettingsDrawer() {
   const { dashboard, changeLayout } = useDashboard();
   const isOpen = useRecoilValue(isSettingsDrawerOpen);
+  const hasSidebar = dashboard?.metadata?.sidebar ? true : false;
 
   return (
     <motion.div
@@ -24,12 +25,15 @@ export default function SettingsDrawer() {
       <h3 className={"text-xl font-medium p-2 mb-2"}>Settings</h3>
       <Divider />
       <div className="flex flex-col gap-5 mt-5">
-        <LayoutSelection
-          selectedLayout={dashboard?.metadata?.pages["home"][0].type ?? null}
-          onLayoutSelect={(layoutType) => {
-            changeLayout("home", 0, layoutType);
-          }}
-        />
+        {!hasSidebar && (
+          <LayoutSelection
+            selectedLayout={dashboard?.metadata?.pages["home"][0].type ?? null}
+            onLayoutSelect={(layoutType) => {
+              changeLayout("home", 0, layoutType);
+            }}
+          />
+        )}
+
         <HeaderSettings />
         <SidebarSettings />
       </div>
