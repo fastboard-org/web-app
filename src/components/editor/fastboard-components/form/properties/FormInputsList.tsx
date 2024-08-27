@@ -30,10 +30,10 @@ export default function FormInputsList({
         <Dropdown placement={"bottom"}>
           <DropdownTrigger>
             <Button startContent={<Add size={20} />} variant={"flat"}>
-              Add Input
+              Add
             </Button>
           </DropdownTrigger>
-          <DropdownMenu disabledKeys={[InputType.DatePicker]}>
+          <DropdownMenu>
             {Object.values(InputType).map((type) => (
               <DropdownItem
                 key={type}

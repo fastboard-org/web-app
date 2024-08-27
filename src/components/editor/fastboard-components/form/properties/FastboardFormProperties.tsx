@@ -1,5 +1,6 @@
 import {
   CheckboxProperties,
+  DatePickerProperties,
   FormProperties,
   InputProperties,
   InputType,
@@ -27,6 +28,7 @@ import useGetQuery from "@/hooks/connections/useGetQuery";
 import QueryParameters from "./QueryParameters";
 import FormSelectProperties from "./FormSelectProperties";
 import FormSelectOption from "./FormSelectOption";
+import FormDatePickerProperties from "./FormDatePickerProperties";
 
 export default function FastboardFormProperties({
   properties,
@@ -289,6 +291,18 @@ export default function FastboardFormProperties({
         inputs[inputSelectedIndex]?.type === InputType.NumberInput && (
           <FormNumberInputProperties
             properties={inputs[inputSelectedIndex] as NumberInputProperties}
+            queryId={submitQueryId}
+            onValueChange={(inputProperties) => {
+              onInputChange(inputProperties);
+            }}
+            disabledKeys={disabledKeys}
+            initialData={initialData}
+          />
+        )}
+      {inputSelectedIndex !== null &&
+        inputs[inputSelectedIndex]?.type === InputType.DatePicker && (
+          <FormDatePickerProperties
+            properties={inputs[inputSelectedIndex] as DatePickerProperties}
             queryId={submitQueryId}
             onValueChange={(inputProperties) => {
               onInputChange(inputProperties);

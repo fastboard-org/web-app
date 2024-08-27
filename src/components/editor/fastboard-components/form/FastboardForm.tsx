@@ -1,5 +1,6 @@
 import {
   CheckboxProperties,
+  DatePickerProperties,
   FormProperties,
   InputProperties,
   InputType,
@@ -30,6 +31,7 @@ import { ComponentId } from "@/types/editor";
 import FormNumberInput from "./FormNumberInput";
 import FormCheckbox from "./FormCheckbox";
 import FormSelect from "./FormSelect";
+import FormDatePicker from "./FormDatePicker";
 
 export default function FastboardForm({
   id,
@@ -161,6 +163,7 @@ export default function FastboardForm({
             unregister={unregister}
             setFormValue={setValue}
             errors={errors}
+            initialData={initialData}
           />
         );
       case InputType.Checkbox:
@@ -172,6 +175,18 @@ export default function FastboardForm({
             unregister={unregister}
             setFormValue={setValue}
             errors={errors}
+          />
+        );
+      case InputType.DatePicker:
+        return (
+          <FormDatePicker
+            key={index}
+            properties={input as DatePickerProperties}
+            register={register}
+            unregister={unregister}
+            setFormValue={setValue}
+            errors={errors}
+            initialData={initialData}
           />
         );
       default:

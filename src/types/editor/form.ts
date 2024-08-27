@@ -33,11 +33,14 @@ export interface CheckboxProperties extends BaseInputProperties {
   checked: boolean;
 }
 
+export interface DatePickerProperties extends BaseInputProperties {}
+
 export type InputProperties =
   | TextInputProperties
   | NumberInputProperties
   | SelectProperties
-  | CheckboxProperties;
+  | CheckboxProperties
+  | DatePickerProperties;
 
 export class DefaultInputProperties {
   static of(type: InputType): InputProperties {
@@ -78,6 +81,15 @@ export class DefaultInputProperties {
           label: "Checkbox",
           placeHolder: "Check me",
           checked: false,
+          defaultValueKey: "",
+        };
+      case InputType.DatePicker:
+        return {
+          formDataKey: "",
+          required: false,
+          type: InputType.DatePicker,
+          label: "Date picker",
+          placeHolder: "Select a date",
           defaultValueKey: "",
         };
       default:
