@@ -3,10 +3,11 @@ import {
   ComponentType,
   DashboardMetadata,
   FastboardComponent,
-  Context,
   ModalFrame,
+  Index,
 } from "@/types/editor";
 import { Layout, LayoutType } from "@/types/editor/layout-types";
+import { SidebarProperties } from "@/types/editor/sidebar-types";
 import { TableActionProperty } from "@/types/editor/table-types";
 import { v4 as uuidv4 } from "uuid";
 import { FastboardHeaderProperties } from "@/types/editor/header-types";
@@ -69,8 +70,12 @@ export function deleteComponent(
     //If the component is a table, then we need to remove the modal frame that is associated with it
     dashboardMetadata = deleteTableModalsFrame(component, dashboardMetadata);
   }
-  delete dashboardMetadata.components[id];
-  return dashboardMetadata;
+  const { [id]: removedComponent, ...newComponents } =
+    dashboardMetadata.components;
+  return {
+    ...dashboardMetadata,
+    components: newComponents,
+  };
 }
 
 export function updateComponent(
@@ -95,22 +100,22 @@ export function updateComponent(
 }
 
 export function addComponentToLayout(
-  layoutIndex: number,
-  containerIndex: string,
+  index: Index,
   type: ComponentType,
   defaultProperties: Object,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
+  const {
+    page: pageIndex,
+    layout: layoutIndex,
+    container: containerIndex,
+  } = index;
   // If there is already a component in the container, delete it
-  const layout = dashboardMetadata.layouts[layoutIndex];
+  const layout = dashboardMetadata.pages[pageIndex][layoutIndex];
   const curretnComponentId: ComponentId | null =
     layout[containerIndex as keyof Layout];
   if (curretnComponentId) {
-    dashboardMetadata = deleteComponentFromLayout(
-      layoutIndex,
-      containerIndex,
-      dashboardMetadata
-    );
+    dashboardMetadata = deleteComponentFromLayout(index, dashboardMetadata);
   }
 
   const [newMetadata, componentId] = createComponent(
@@ -120,25 +125,28 @@ export function addComponentToLayout(
   );
   return {
     ...newMetadata,
-    layouts: newMetadata.layouts.map((layout, index) => {
-      if (index === layoutIndex) {
-        return {
-          ...layout,
-          [containerIndex]: componentId,
-        };
-      }
-      return layout;
-    }),
+    pages: {
+      ...newMetadata.pages,
+      [pageIndex]: newMetadata.pages[pageIndex].map((layout, index) => {
+        if (index === layoutIndex) {
+          return {
+            ...layout,
+            [containerIndex]: componentId,
+          };
+        }
+        return layout;
+      }),
+    },
   };
 }
 
 export function deleteComponentFromLayout(
-  layoutIndex: number,
-  containerIndex: string,
+  index: Index,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
-  const layout = dashboardMetadata.layouts[layoutIndex];
-  const componentId: ComponentId = layout[containerIndex as keyof Layout];
+  const { page, layout: layoutIndex, container } = index;
+  const layout = dashboardMetadata.pages[page][layoutIndex];
+  const componentId: ComponentId = layout[container as keyof Layout];
   if (!componentId) {
     return dashboardMetadata;
   }
@@ -146,25 +154,29 @@ export function deleteComponentFromLayout(
   const newMetadata = deleteComponent(componentId, dashboardMetadata);
   return {
     ...newMetadata,
-    layouts: newMetadata.layouts.map((layout, index) => {
-      if (index === layoutIndex) {
-        return {
-          ...layout,
-          [containerIndex]: null,
-        };
-      }
-      return layout;
-    }),
+    pages: {
+      ...newMetadata.pages,
+      [page]: newMetadata.pages[page].map((layout, index) => {
+        if (index === layoutIndex) {
+          return {
+            ...layout,
+            [container]: null,
+          };
+        }
+        return layout;
+      }),
+    },
   };
 }
 
-export function changeLayout(
+function changeLayout(
+  pageIndex: string,
   layoutIndex: number,
   to_type: LayoutType,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
   let to = Layout.of(to_type);
-  const from = dashboardMetadata.layouts[layoutIndex];
+  const from = dashboardMetadata.pages[pageIndex][layoutIndex];
 
   const keysFrom = Object.keys(from);
   const keysTo = Object.keys(to);
@@ -178,12 +190,15 @@ export function changeLayout(
 
   return {
     ...dashboardMetadata,
-    layouts: dashboardMetadata.layouts.map((layout, index) => {
-      if (index === layoutIndex) {
-        return convertLayout(layout, to_type);
-      }
-      return layout;
-    }),
+    pages: {
+      ...dashboardMetadata.pages,
+      [pageIndex]: dashboardMetadata.pages[pageIndex].map((layout, index) => {
+        if (index === layoutIndex) {
+          return convertLayout(from, to_type);
+        }
+        return layout;
+      }),
+    },
   };
 }
 
@@ -277,6 +292,88 @@ export function deleteHeader(
   };
 }
 
+function addSidebar(dashboardMetadata: DashboardMetadata): DashboardMetadata {
+  const [newMetadata, sidebarId] = createComponent(
+    ComponentType.Sidebar,
+    SidebarProperties.default(),
+    dashboardMetadata
+  );
+  return {
+    ...newMetadata,
+    sidebar: {
+      id: sidebarId,
+      visible: true,
+    },
+  };
+}
+
+function deleteSidebar(
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  if (!dashboardMetadata.sidebar) {
+    return dashboardMetadata;
+  }
+
+  //Remove all pages and components in the sidebar except the home page
+  const pages = Object.keys(dashboardMetadata.pages).filter(
+    (page) => page !== "home"
+  );
+  pages.forEach((page) => {
+    dashboardMetadata = deletePage(page, dashboardMetadata);
+  });
+
+  const newMetadata = deleteComponent(
+    dashboardMetadata.sidebar.id,
+    dashboardMetadata
+  );
+  return {
+    ...newMetadata,
+    sidebar: null,
+  };
+}
+
+function addPage(
+  dashboardMetadata: DashboardMetadata
+): [DashboardMetadata, string] {
+  const pageId = uuidv4();
+  return [
+    {
+      ...dashboardMetadata,
+      pages: {
+        ...dashboardMetadata.pages,
+        [pageId]: [Layout.of(LayoutType.Full)],
+      },
+    },
+    pageId,
+  ];
+}
+
+function deletePage(
+  pageId: string,
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  //Remove all components in the page
+  const layouts = dashboardMetadata.pages[pageId];
+  layouts.forEach((layout) => {
+    Object.keys(layout).forEach((key) => {
+      if (key === "type") {
+        return;
+      }
+      const componentId: ComponentId = layout[key as keyof Layout];
+      if (componentId) {
+        dashboardMetadata = deleteComponent(componentId, dashboardMetadata);
+      }
+    });
+  });
+
+  //Remove the page
+  const { [pageId]: removedPage, ...newPages } = dashboardMetadata.pages;
+  return {
+    ...dashboardMetadata,
+    pages: newPages,
+  };
+}
+
 export const editorUtils = {
   getComponent,
   createComponent,
@@ -289,4 +386,8 @@ export const editorUtils = {
   removeModalFrame,
   addHeader,
   deleteHeader,
+  addSidebar,
+  deleteSidebar,
+  addPage,
+  deletePage,
 };
