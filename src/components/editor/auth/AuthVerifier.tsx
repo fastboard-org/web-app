@@ -61,7 +61,11 @@ const AuthVerifier = ({
     },
   });
 
-  const { handleSubmit, register } = useForm<LogInForm>();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<LogInForm>();
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const onSubmit: SubmitHandler<LogInForm> = ({ user, password }) => {
@@ -96,12 +100,20 @@ const AuthVerifier = ({
           </CardHeader>
           <CardBody className={"gap-5"}>
             <Input
-              {...register("user")}
+              {...register("user", {
+                required: "This field is required",
+              })}
+              errorMessage={errors?.user?.message}
+              isInvalid={!!errors.user}
               label={auth?.userInputLabel}
               isRequired
             />
             <Input
-              {...register("password")}
+              {...register("password", {
+                required: "This field is required",
+              })}
+              errorMessage={errors?.password?.message}
+              isInvalid={!!errors.password}
               label={auth?.passwordInputLabel}
               type={passwordVisible ? "text" : "password"}
               isRequired
