@@ -1,35 +1,35 @@
 "use client";
-import {
-  Button,
-  ButtonGroup,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  Spacer,
-} from "@nextui-org/react";
-import { ArrowDown2 } from "iconsax-react";
-import { useState } from "react";
-import PublishOption from "@/types/editor";
+import { Button, Spacer } from "@nextui-org/react";
 import { useParams } from "next/navigation";
+import PublishModal from "./PublishModal";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { dashboardService } from "@/lib/services/dashboards";
+import { useRecoilValue } from "recoil";
+import { lastDashboardMetadata } from "@/atoms/editor";
 
 export default function PublishButton() {
   const { id: dashboardId } = useParams();
-  const publishOptions: PublishOption[] = [
-    {
-      label: "Publish",
-      description: "Publish this dashboard.",
+  const lastMetadata = useRecoilValue(lastDashboardMetadata);
+  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const {
+    mutate: publish,
+    data: publishedDashboard,
+    isPending: isLoading,
+    isError,
+  } = useMutation({
+    mutationFn: () => {
+      return dashboardService.publishDashboard(dashboardId as string);
     },
-    {
-      label: "As template",
-      description: "Public this dashboard as template in the community.",
-    },
-  ];
-  const [selectedOption, setSelectedOption] = useState(publishOptions[0].label);
+  });
 
   function handlePreview() {
-    //TODO: open preview with current dashboard id
     window.open(`/editor/${dashboardId}/preview`, "_blank");
+  }
+
+  function handlePublish() {
+    setIsPublishModalOpen(true);
+    publish();
   }
 
   return (
@@ -38,29 +38,22 @@ export default function PublishButton() {
         Preview
       </Button>
       <Spacer x={3} />
-      <ButtonGroup color="primary">
-        <Button>{selectedOption}</Button>
-        <Dropdown placement="bottom-end">
-          <DropdownTrigger>
-            <Button isIconOnly>
-              <ArrowDown2 size={18} />
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            disallowEmptySelection
-            aria-label="Publish options"
-            selectionMode="single"
-            onSelectionChange={(option) => setSelectedOption(option as string)}
-            className="max-w-[300px]"
-          >
-            {publishOptions.map((option: PublishOption) => (
-              <DropdownItem key={option.label} description={option.description}>
-                {option.label}
-              </DropdownItem>
-            ))}
-          </DropdownMenu>
-        </Dropdown>
-      </ButtonGroup>
+      <Button
+        color="primary"
+        isLoading={lastMetadata !== null}
+        onPress={handlePublish}
+      >
+        Publish
+      </Button>
+      <PublishModal
+        isOpen={isPublishModalOpen}
+        isLoading={isLoading}
+        isError={isError}
+        publishedDashboard={publishedDashboard}
+        onClose={() => {
+          setIsPublishModalOpen(false);
+        }}
+      />
     </div>
   );
 }

@@ -70,6 +70,16 @@ const deleteDashboard = async (id: string) => {
   await axiosInstance.delete(`/dashboards/${id}`);
 };
 
+const publishDashboard = async (id: string): Promise<Dashboard> => {
+  const response = await axiosInstance.post(`/dashboards/${id}/published`, {});
+  return mapDashboard(response.data);
+};
+
+const getPublishedDashboard = async (id: string): Promise<Dashboard> => {
+  const response = await axiosInstance.get(`/dashboards/${id}/published`);
+  return mapDashboard(response.data);
+};
+
 const getFolders = async () => {
   const response = await axiosInstance.get("/folders");
   return response.data.map(mapFolder);
@@ -95,6 +105,8 @@ export const dashboardService = {
   createDashboard,
   updateDashboard,
   deleteDashboard,
+  publishDashboard,
+  getPublishedDashboard,
   getFolders,
   createFolder,
   updateFolder,
