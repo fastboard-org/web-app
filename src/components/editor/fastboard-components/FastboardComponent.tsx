@@ -63,9 +63,8 @@ const FastboardComponent = ({
 
   function onDeleteComponent() {
     if (!context.layoutContext) return null;
-    const { layoutIndex, containerIndex } = context.layoutContext;
     setIsPropertiesDrawerOpen(false);
-    deleteComponentFromLayout(layoutIndex, containerIndex);
+    deleteComponentFromLayout(context.layoutContext);
   }
 
   function isSelected() {

@@ -35,9 +35,14 @@ const getDashboards = async () => {
 const createDashboard = async (name: string, folderId?: string | null) => {
   const metadata: DashboardMetadata = {
     components: {},
+    sidebar: null,
     modals: [],
+    pages: {
+      home: [Layout.of(LayoutType.Full)],
+    },
     layouts: [Layout.of(LayoutType.Full)],
     auth: null,
+    header: { componentId: null, isVisible: false },
   };
   const response = await axiosInstance.post("/dashboards", {
     name,

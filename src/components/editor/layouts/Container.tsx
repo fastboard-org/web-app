@@ -1,27 +1,25 @@
-import { ComponentId } from "@/types/editor";
+import { ComponentId, Index } from "@/types/editor";
 import { useDroppable } from "@dnd-kit/core";
 import FastboardComponent from "../fastboard-components/FastboardComponent";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 
 export default function Container({
-  layoutIndex,
-  containerIndex,
+  index,
   componentId,
   className,
   mode = "editable",
 }: {
-  layoutIndex: number;
-  containerIndex: string;
+  index: Index;
   componentId: ComponentId | null;
   className?: string;
   mode?: "editable" | "view";
 }) {
   const { getComponent } = useDashboard();
+  const { page, layout, container } = index;
   const { isOver, setNodeRef } = useDroppable({
-    id: `layout_${layoutIndex}_${containerIndex}`,
+    id: `${page}_layout_${layout}_${container}`,
     data: {
-      layoutIndex: layoutIndex,
-      container: containerIndex,
+      index: index,
     },
   });
   const component = componentId ? getComponent(componentId) : null;
@@ -41,10 +39,7 @@ export default function Container({
           type={component.type}
           context={{
             type: "layout",
-            layoutContext: {
-              layoutIndex,
-              containerIndex,
-            },
+            layoutContext: index,
           }}
           properties={component.properties}
           mode={mode}

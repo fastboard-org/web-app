@@ -5,7 +5,7 @@ import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { Toaster } from "@/components/shared/Toaster";
-import { ComponentType } from "@/types/editor";
+import { ComponentType, Index } from "@/types/editor";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useRouter } from "next/navigation";
@@ -24,17 +24,11 @@ export default function Editor() {
     if (!over) return;
     if (!active) return;
 
-    const layoutIndex: number = over.data.current?.layoutIndex;
-    const container: string = over.data.current?.container;
+    const index: Index = over.data.current?.index;
     const componentType: ComponentType = active.data.current?.type;
     const defaultProperties: Object = active.data.current?.defaultProperties;
 
-    addComponentToLayout(
-      layoutIndex,
-      container,
-      componentType,
-      defaultProperties,
-    );
+    addComponentToLayout(index, componentType, defaultProperties);
   }
 
   if (isError) {

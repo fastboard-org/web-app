@@ -12,6 +12,8 @@ export enum ComponentType {
   GroupChart = "group-chart",
   Form = "form",
   Cards = "cards",
+  Sidebar = "sidebar",
+  Header = "header",
 }
 
 export type ComponentId = string;
@@ -42,9 +44,18 @@ export interface DashboardAuth {
 
 export interface DashboardMetadata {
   components: Record<ComponentId, FastboardComponent>;
+  sidebar: { id: ComponentId; visible: boolean } | null;
   modals: ModalFrame[];
+  pages: Record<string, Layout[]>;
   layouts: Array<Layout>;
   auth: DashboardAuth | null;
+  header: { componentId: ComponentId | null; isVisible: boolean };
+}
+
+export interface Index {
+  page: string;
+  layout: number;
+  container: string;
 }
 
 export interface Context {
@@ -52,10 +63,7 @@ export interface Context {
   modalContext?: {
     modalId: string;
   };
-  layoutContext?: {
-    layoutIndex: number;
-    containerIndex: string;
-  };
+  layoutContext?: Index;
 }
 
 export interface PropertiesDrawerState {
