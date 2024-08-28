@@ -47,7 +47,6 @@ export interface DashboardMetadata {
   sidebar: { id: ComponentId; visible: boolean } | null;
   modals: ModalFrame[];
   pages: Record<string, Layout[]>;
-  layouts: Array<Layout>;
   auth: DashboardAuth | null;
   header: { componentId: ComponentId | null; isVisible: boolean };
 }

@@ -40,7 +40,6 @@ const createDashboard = async (name: string, folderId?: string | null) => {
     pages: {
       home: [Layout.of(LayoutType.Full)],
     },
-    layouts: [Layout.of(LayoutType.Full)],
     auth: null,
     header: { componentId: null, isVisible: false },
   };

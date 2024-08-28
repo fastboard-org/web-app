@@ -12,16 +12,6 @@ export default function PublishButton() {
   const { id: dashboardId } = useParams();
   const lastMetadata = useRecoilValue(lastDashboardMetadata);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
-  const {
-    mutate: publish,
-    data: publishedDashboard,
-    isPending: isLoading,
-    isError,
-  } = useMutation({
-    mutationFn: () => {
-      return dashboardService.publishDashboard(dashboardId as string);
-    },
-  });
 
   function handlePreview() {
     window.open(`/editor/${dashboardId}/preview`, "_blank");
@@ -29,7 +19,7 @@ export default function PublishButton() {
 
   function handlePublish() {
     setIsPublishModalOpen(true);
-    publish();
+    //publish();
   }
 
   return (
@@ -47,9 +37,6 @@ export default function PublishButton() {
       </Button>
       <PublishModal
         isOpen={isPublishModalOpen}
-        isLoading={isLoading}
-        isError={isError}
-        publishedDashboard={publishedDashboard}
         onClose={() => {
           setIsPublishModalOpen(false);
         }}
