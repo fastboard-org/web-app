@@ -28,7 +28,7 @@ const getDashboard = async (id: string) => {
 };
 
 const getDashboards = async () => {
-  const response = await axiosInstance.get("/dashboards/me");
+  const response = await axiosInstance.get("/dashboards");
   return response.data.map(mapDashboard);
 };
 
@@ -56,7 +56,7 @@ const updateDashboard = async (
   id: string,
   name: string,
   folderId?: string | null,
-  metadata?: DashboardMetadata,
+  metadata?: DashboardMetadata
 ) => {
   const response = await axiosInstance.patch(`/dashboards/${id}`, {
     name,
@@ -71,7 +71,7 @@ const deleteDashboard = async (id: string) => {
 };
 
 const getFolders = async () => {
-  const response = await axiosInstance.get("/folders/me");
+  const response = await axiosInstance.get("/folders");
   return response.data.map(mapFolder);
 };
 
