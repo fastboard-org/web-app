@@ -11,6 +11,7 @@ import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 import { useRouter } from "next/navigation";
 import SettingsDrawer from "@/components/editor/settings/SettingsDrawer";
 import EditorModal from "@/components/editor/EditorModal";
+import AuthDrawer from "@/components/editor/auth/AuthDrawer";
 import useSave from "@/hooks/editor/useSave";
 
 export default function Editor() {
@@ -48,6 +49,7 @@ export default function Editor() {
         >
           <ComponentsDrawer />
           <SettingsDrawer />
+          <AuthDrawer />
           <div className="flex justify-center items-center h-full w-full p-6">
             <EditorCanvas key={"EditorCanvas"} />
             <EditorModal />

@@ -36,11 +36,12 @@ import { Edit, Eye, Trash } from "iconsax-react";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import AddRowForm from "./AddRowForm";
+import { useParams } from "next/navigation";
 import useModalFrame from "@/hooks/editor/useModalFrame";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
-  actions: { key: string; label: string }[]
+  actions: { key: string; label: string }[],
 ) {
   if (columns.length === 0) {
     return [{ key: "empty-data", label: "" }];
@@ -62,6 +63,7 @@ export default function FastboardTable({
   id: ComponentId;
   properties: FastboardTableProperties;
 }) {
+  const { id: dashboardId } = useParams();
   const { updateComponentProperties } = useDashboard();
   const {
     sourceQuery,
@@ -86,7 +88,7 @@ export default function FastboardTable({
   } = useData(`${ComponentType.Table}-${id}`, sourceQuery, rowsPerPage);
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [propertiesState, setPropertiesState] = useRecoilState(
-    propertiesDrawerState
+    propertiesDrawerState,
   );
   const {
     execute,
@@ -96,7 +98,9 @@ export default function FastboardTable({
     isSuccess: isExecuteQuerySuccess,
     isError: isExecuteQueryError,
     error: executeQueryError,
-  } = useExecuteQuery({});
+  } = useExecuteQuery({
+    dashboardId: dashboardId as string,
+  });
   const finalColumns = getFinalColumns(columns, actions);
   const { openModal } = useModalFrame();
   const [viewModalOpen, setViewModalOpen] = useState(false);
@@ -192,7 +196,7 @@ export default function FastboardTable({
       action: TableActionProperty;
       item: any;
     } | null,
-    invalidateQueries?: InvalidateQueryFilters
+    invalidateQueries?: InvalidateQueryFilters,
   ) {
     if (!selectedRowAction) {
       return;
@@ -206,7 +210,7 @@ export default function FastboardTable({
       query: selectedRowAction.action.query,
       parameters: fillParameters(
         selectedRowAction.action.parameters,
-        selectedRowAction.item
+        selectedRowAction.item,
       ),
       invalidateQueries,
     });
@@ -258,7 +262,7 @@ export default function FastboardTable({
 
   function fillParameters(
     parameters: { name: string; value: string }[],
-    item: any
+    item: any,
   ) {
     //TODO: fix this in backend
     if (!parameters) {
@@ -276,7 +280,7 @@ export default function FastboardTable({
       const columnKey =
         columns.find(
           (column) =>
-            column.column.label.toLowerCase() === match[1].toLowerCase()
+            column.column.label.toLowerCase() === match[1].toLowerCase(),
         )?.column.key ?? "";
 
       const value = getKeyValue(item, columnKey);

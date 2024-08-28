@@ -1,5 +1,5 @@
 import { NumberInputProperties } from "@/types/editor/form";
-import FormDataKeySelection from "./FormDataKeySelection";
+import QueryParameterSelection from "../../../../shared/QueryParameterSelection";
 import { Query } from "@/types/connections";
 import { Checkbox, Input, Spacer } from "@nextui-org/react";
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
@@ -50,7 +50,7 @@ export default function FormNumberInputProperties({
         }}
       />
       <Spacer y={2} />
-      <FormDataKeySelection
+      <QueryParameterSelection
         selectedKey={formDataKey}
         disabledKeys={disabledKeys}
         queryId={queryId}

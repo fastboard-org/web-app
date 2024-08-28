@@ -1,4 +1,5 @@
 import { Layout } from "./layout-types";
+import { Query } from "@/types/connections";
 
 export default interface PublishOption {
   label: string;
@@ -28,12 +29,26 @@ export interface ModalFrame {
   body: ComponentId;
 }
 
+export interface DashboardAuth {
+  enabled: boolean;
+  loginQueryId: string;
+  accessTokenField: string;
+  userInputLabel: string;
+  passwordInputLabel: string;
+  userQueryParameter: string;
+  passwordQueryParameter: string;
+  previewAccessToken: string;
+  title: string;
+  buttonText: string;
+}
+
 export interface DashboardMetadata {
   components: Record<ComponentId, FastboardComponent>;
   sidebar: { id: ComponentId; visible: boolean } | null;
   modals: ModalFrame[];
   pages: Record<string, Layout[]>;
   layouts: Array<Layout>;
+  auth: DashboardAuth | null;
   header: { componentId: ComponentId | null; isVisible: boolean };
 }
 

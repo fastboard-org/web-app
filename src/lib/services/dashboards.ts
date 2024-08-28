@@ -41,6 +41,7 @@ const createDashboard = async (name: string, folderId?: string | null) => {
       home: [Layout.of(LayoutType.Full)],
     },
     layouts: [Layout.of(LayoutType.Full)],
+    auth: null,
     header: { componentId: null, isVisible: false },
   };
   const response = await axiosInstance.post("/dashboards", {
@@ -55,7 +56,7 @@ const updateDashboard = async (
   id: string,
   name: string,
   folderId?: string | null,
-  metadata?: DashboardMetadata
+  metadata?: DashboardMetadata,
 ) => {
   const response = await axiosInstance.patch(`/dashboards/${id}`, {
     name,
