@@ -37,6 +37,7 @@ export class FastboardTableProperties {
   emptyMessage: string = "No rows to display.";
   columns: TableColumnProperties[] = [];
   actions: TableActionProperty[] = [];
+  pinActions: boolean = false;
   addOns: TableAddOnsProperties = {
     addRowForm: null,
     downloadData: false,

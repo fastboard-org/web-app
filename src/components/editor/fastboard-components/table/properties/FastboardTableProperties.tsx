@@ -3,6 +3,7 @@ import {
   AccordionItem,
   BreadcrumbItem,
   Breadcrumbs,
+  Checkbox,
   Input,
   Spacer,
 } from "@nextui-org/react";
@@ -31,8 +32,15 @@ const FastboardTablePropertiesComponent = ({
   properties: FastboardTableProperties;
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
-  const { sourceQuery, rowsPerPage, emptyMessage, columns, actions, addOns } =
-    properties;
+  const {
+    sourceQuery,
+    rowsPerPage,
+    emptyMessage,
+    columns,
+    actions,
+    pinActions,
+    addOns,
+  } = properties;
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [columnsProperties, setColumnsProperties] = useState(columns);
   const [actionSelected, setActionSelected] =
@@ -89,10 +97,13 @@ const FastboardTablePropertiesComponent = ({
             <div className="overflow-x-hidden">
               <QuerySelection
                 selectedQueryId={sourceQuery?.id || ""}
-                onQuerySelect={(sourceQuery) => {
+                onQuerySelect={(newQuery) => {
+                  if (newQuery.id === sourceQuery?.id) {
+                    return;
+                  }
                   onValueChange({
                     ...properties,
-                    sourceQuery: sourceQuery,
+                    sourceQuery: newQuery,
                     columns: [],
                   });
                 }}
@@ -155,19 +166,33 @@ const FastboardTablePropertiesComponent = ({
               title: "font-medium",
             }}
           >
-            <TableActionsList
-              tableId={componentId}
-              actionsProperties={actions}
-              onActionSelect={(action) => {
-                setActionSelected(action);
-              }}
-              onChange={(newActions) => {
-                onValueChange({
-                  ...properties,
-                  actions: newActions,
-                });
-              }}
-            />
+            <div className="flex flex-col gap-y-2">
+              <TableActionsList
+                tableId={componentId}
+                actionsProperties={actions}
+                onActionSelect={(action) => {
+                  setActionSelected(action);
+                }}
+                onChange={(newActions) => {
+                  onValueChange({
+                    ...properties,
+                    actions: newActions,
+                  });
+                }}
+              />
+              <div className="flex flex-row justify-between pl-2">
+                <span className="text-md">Pin action column</span>
+                <Checkbox
+                  isSelected={pinActions}
+                  onValueChange={(value) => {
+                    onValueChange({
+                      ...properties,
+                      pinActions: value,
+                    });
+                  }}
+                />
+              </div>
+            </div>
           </AccordionItem>
           <AccordionItem
             key="add-ons"

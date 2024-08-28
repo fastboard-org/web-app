@@ -34,18 +34,6 @@ export default function TableStyle({
         />
       </div>
       <div className="flex flex-row justify-between">
-        <span>Hide sticky</span>
-        <Checkbox
-          isSelected={headerSticky}
-          onValueChange={(isSelected) => {
-            onValueChange({
-              ...properties,
-              headerSticky: isSelected,
-            });
-          }}
-        />
-      </div>
-      <div className="flex flex-row justify-between">
         <span>Stripped</span>
         <Checkbox
           isSelected={isStriped}

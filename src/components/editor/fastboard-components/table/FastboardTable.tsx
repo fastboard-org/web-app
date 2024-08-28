@@ -14,6 +14,7 @@ import {
   DropdownTrigger,
   Pagination,
   SortDescriptor,
+  Spacer,
   Spinner,
   Table,
   TableBody,
@@ -22,8 +23,9 @@ import {
   TableHeader,
   TableRow,
   getKeyValue,
+  semanticColors,
 } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { IoIosMore } from "react-icons/io";
 import DeleteActionModal from "../shared/DeleteActionModal";
 import useData from "@/hooks/useData";
@@ -33,13 +35,27 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import { ComponentId, ComponentType } from "@/types/editor";
 import ViewActionModal from "../shared/ViewActionModal";
 import { InvalidateQueryFilters } from "@tanstack/react-query";
-import { Edit, Eye, Trash } from "iconsax-react";
+import { ArrowDown2, ArrowUp2, Edit, Eye, Trash } from "iconsax-react";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import AddRowForm from "./AddRowForm";
 import useModalFrame from "@/hooks/editor/useModalFrame";
 import { useTheme } from "next-themes";
 import CsvExporter from "@/components/shared/CsvExporter";
+import {
+  Cell,
+  Column,
+  ColumnDef,
+  ColumnPinningState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  Header,
+  Row,
+  SortingFn,
+  SortingState,
+  useReactTable,
+} from "@tanstack/react-table";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -73,6 +89,7 @@ export default function FastboardTable({
     emptyMessage,
     columns,
     actions,
+    pinActions,
     addOns: { addRowForm, downloadData },
     hideHeader,
     headerSticky,
@@ -80,7 +97,6 @@ export default function FastboardTable({
     rowsPerPage,
     headerColor,
   } = properties;
-  const [sort, setSort] = useState<SortDescriptor | undefined>(undefined);
   const {
     data,
     fulldata,
@@ -91,7 +107,7 @@ export default function FastboardTable({
     isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
-  } = useData(`${ComponentType.Table}-${id}`, sourceQuery, rowsPerPage, sort);
+  } = useData(`${ComponentType.Table}-${id}`, sourceQuery, rowsPerPage);
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState
@@ -112,6 +128,70 @@ export default function FastboardTable({
     action: TableActionProperty;
     item: any;
   } | null>(null);
+  const [columnPinning, setColumnPinning] = useState<ColumnPinningState>({
+    left: [],
+    right: [],
+  });
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const sortFunction: SortingFn<any> = (
+    rowA: Row<any>,
+    rowB: Row<any>,
+    columnId: string
+  ) => {
+    const a = rowA.original[columnId];
+    const b = rowB.original[columnId];
+
+    if (typeof a === "number" && typeof b === "number") {
+      return a - b;
+    }
+    if (typeof a === "string" && typeof b === "string") {
+      return a.localeCompare(b);
+    }
+    if (typeof a === "boolean" && typeof b === "boolean") {
+      return a === b ? 0 : a ? 1 : -1;
+    }
+    if (a instanceof Date && b instanceof Date) {
+      return a.getTime() - b.getTime();
+    }
+    return 0;
+  };
+
+  const table = useReactTable({
+    data,
+    columns: finalColumns.map((c) => ({
+      accessorKey: c.key,
+      id: c.key,
+      header: c.label,
+      size: 180,
+      enableSorting: c.key !== "actions",
+      footer: (props) => props.column.id,
+      cell: ({ cell, row }) => {
+        return renderCell(cell, row);
+      },
+      sortingFn: sortFunction,
+    })),
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      columnPinning,
+      sorting,
+    },
+    onColumnPinningChange: setColumnPinning,
+    onSortingChange: setSorting,
+  });
+
+  useEffect(() => {
+    if (pinActions) {
+      setColumnPinning({
+        right: ["actions"],
+      });
+    } else {
+      setColumnPinning({
+        right: [],
+      });
+    }
+  }, [pinActions]);
 
   useEffect(() => {
     if (!sourceQuery) {
@@ -219,7 +299,42 @@ export default function FastboardTable({
     });
   }
 
-  const renderCell = (item: any, columnKey: string) => {
+  const renderHeader = (header: Header<any, unknown>) => {
+    const canSort = header.column.getCanSort();
+    const isSorted = header.column.getIsSorted();
+
+    return (
+      <div
+        className={
+          "flex flex-row items-center justify-center gap-x-2 whitespace-nowrap  " +
+          (canSort ? "cursor-pointer select-none" : " ")
+        }
+        onClick={header.column.getToggleSortingHandler()}
+      >
+        {header.isPlaceholder
+          ? null
+          : flexRender(
+              header.column.columnDef.header?.toString().toUpperCase(),
+              header.getContext()
+            )}
+
+        {isSorted && (
+          <div>
+            {isSorted === "asc" ? (
+              <ArrowUp2 size={15} />
+            ) : (
+              <ArrowDown2 size={15} />
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderCell = (cell: Cell<any, any>, row: Row<any>) => {
+    const columnKey = cell.column.id;
+    const item = row.original;
+
     if (columnKey === "actions") {
       return (
         <Dropdown>
@@ -260,7 +375,7 @@ export default function FastboardTable({
         </Dropdown>
       );
     }
-    return getKeyValue(item, columnKey);
+    return item[columnKey];
   };
 
   function fillParameters(
@@ -296,6 +411,54 @@ export default function FastboardTable({
       return { ...acc, [parameter.name]: parameter.value };
     }, {});
   }
+  const getCommonPinningStyles = (column: Column<any>): CSSProperties => {
+    const isPinned = column.getIsPinned();
+    const isLastLeftPinnedColumn =
+      isPinned === "left" && column.getIsLastColumn("left");
+    const isFirstRightPinnedColumn =
+      isPinned === "right" && column.getIsFirstColumn("right");
+
+    return {
+      boxShadow: isLastLeftPinnedColumn
+        ? "-4px 0 4px -4px gray inset"
+        : isFirstRightPinnedColumn
+        ? "4px 0 4px -4px gray inset"
+        : undefined,
+      backgroundColor: isPinned
+        ? theme === "light"
+          ? // @ts-ignore
+            semanticColors.light.background.DEFAULT // @ts-ignore
+          : semanticColors.dark.content1.DEFAULT
+        : undefined,
+      left:
+        isPinned === "left" ? `${column.getStart("left") - 20}px` : undefined,
+      right:
+        isPinned === "right" ? `${column.getAfter("right") - 20}px` : undefined,
+      position: isPinned ? "sticky" : "relative",
+      width: column.getSize(),
+      zIndex: isPinned ? 1 : 0,
+    };
+  };
+
+  function TopContent() {
+    return addRowForm && <AddRowForm properties={addRowForm} />;
+  }
+
+  function BottomContent() {
+    return (
+      <div className="flex w-full justify-center items-center gap-2">
+        <Pagination
+          isCompact
+          showControls
+          showShadow
+          page={page}
+          total={pages}
+          onChange={(page) => setPage(page)}
+        />
+        {downloadData && <CsvExporter data={fulldata} />}
+      </div>
+    );
+  }
 
   return (
     <CustomSkeleton isLoaded={true} onlyRenderOnLoad className="w-full h-full">
@@ -322,6 +485,113 @@ export default function FastboardTable({
         />
       )}
 
+      <div className="flex flex-col w-full h-full gap-y-2">
+        <TopContent />
+        <div
+          className={
+            "flex flex-col gap-y-2 w-full max-h-[80%] grow-0 p-5 overflow-auto shadow-lg rounded-large dark:bg-content1 border dark:border-content1  " +
+            scrollbarStyles.scrollbar
+          }
+        >
+          <table className="w-full">
+            {!hideHeader && (
+              <thead
+                className="w-full"
+                style={{
+                  height: "40px",
+                }}
+              >
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      const { column } = header;
+
+                      return (
+                        <th
+                          key={header.id}
+                          colSpan={header.colSpan}
+                          className="p-2 text-xs font-semibold text-default-600 dark:text-default-500 bg-content2 dark:bg-content2"
+                          style={{
+                            ...getCommonPinningStyles(column),
+                            backgroundColor:
+                              theme === "light"
+                                ? headerColor.light
+                                : headerColor.dark,
+                            borderTopRightRadius: column.getIsLastColumn()
+                              ? "10px"
+                              : undefined,
+                            borderBottomRightRadius: column.getIsLastColumn()
+                              ? "10px"
+                              : undefined,
+                            borderTopLeftRadius: column.getIsFirstColumn()
+                              ? "10px"
+                              : undefined,
+                            borderBottomLeftRadius: column.getIsFirstColumn()
+                              ? "10px"
+                              : undefined,
+                          }}
+                        >
+                          {renderHeader(header)}
+                        </th>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </thead>
+            )}
+
+            <tbody className="h-full relative">
+              {!dataFetching &&
+                table.getRowModel().rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className={
+                      isStriped
+                        ? "even:bg-content2 odd:bg-background dark:odd:bg-content1 "
+                        : ""
+                    }
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      const { column } = cell;
+                      return (
+                        <td
+                          key={cell.id}
+                          className="p-2 text-center text-xs"
+                          style={{ ...getCommonPinningStyles(column) }}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+          {!dataFetching && table.getRowModel().rows.length === 0 && (
+            <div
+              className="flex items-center justify-center"
+              style={{
+                height: "200px",
+              }}
+            >
+              <h1 className="text-center text-md text-default-400">
+                {emptyMessage}
+              </h1>
+            </div>
+          )}
+          {dataFetching && (
+            <div className="flex items-center justify-center w-full z-50 min-h-28">
+              <Spinner />
+            </div>
+          )}
+        </div>
+        <BottomContent />
+      </div>
+
+      {/*
       <Table
         aria-label="Fastboard table component"
         className="grow-0 h-full "
@@ -378,7 +648,7 @@ export default function FastboardTable({
           emptyContent={emptyMessage}
         >
           {data.map((item) => (
-            <TableRow key={item.key}>
+            <TableRow key={item.key} className="relative">
               {(columnKey) => (
                 <TableCell className="text-center">
                   {renderCell(item, columnKey as string)}
@@ -388,6 +658,7 @@ export default function FastboardTable({
           ))}
         </TableBody>
       </Table>
+ */}
     </CustomSkeleton>
   );
 }
