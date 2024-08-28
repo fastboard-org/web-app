@@ -23,7 +23,7 @@ const mapQuery = (query: any): Query => {
 };
 
 const getConnections = async () => {
-  const response = await axiosInstance.get("/connections/me");
+  const response = await axiosInstance.get("/connections");
   return response.data.map(mapConnection);
 };
 
@@ -66,13 +66,13 @@ const deleteConnection = async (id: string) => {
 
 const getQueriesByConnectionId = async (connectionId: string) => {
   const response = await axiosInstance.get(
-    `/queries/me?connection_id=${connectionId}`
+    `/queries?connection_id=${connectionId}`
   );
   return response.data.map(mapQuery);
 };
 
 const getMyQueries = async () => {
-  const response = await axiosInstance.get(`/queries/me`);
+  const response = await axiosInstance.get(`/queries`);
   const data: any[] = response.data;
   return data.map(mapQuery);
 };
