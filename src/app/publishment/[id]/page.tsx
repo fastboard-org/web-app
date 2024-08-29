@@ -7,11 +7,12 @@ import useNavigation from "@/hooks/useNavigation";
 import { Spinner } from "@nextui-org/react";
 import AuthVerifier from "@/components/editor/auth/AuthVerifier";
 import { DashboardAuth } from "@/types/editor";
-import { AxiosError } from "axios";
 import { notFound } from "next/navigation";
+import { AxiosError } from "axios";
 
-export default function Preview() {
-  const { dashboard, loading, isError, error, getComponent } = useDashboard();
+export default function Dashboard() {
+  const { dashboard, loading, isError, error, getComponent } =
+    useDashboard("published");
   const { currentPage } = useNavigation();
   const header = getComponent(
     dashboard?.metadata?.header?.componentId as string
