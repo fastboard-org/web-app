@@ -8,15 +8,16 @@ import { Toaster } from "@/components/shared/Toaster";
 import { ComponentType, Index } from "@/types/editor";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import SettingsDrawer from "@/components/editor/settings/SettingsDrawer";
 import EditorModal from "@/components/editor/EditorModal";
 import AuthDrawer from "@/components/editor/auth/AuthDrawer";
 import useSave from "@/hooks/editor/useSave";
+import { Spinner } from "@nextui-org/react";
+import { AxiosError } from "axios";
 
 export default function Editor() {
-  const router = useRouter();
-  const { isError, addComponentToLayout } = useDashboard();
+  const { loading, isError, error, addComponentToLayout } = useDashboard();
   useSave();
 
   function updateDashboardMetadata(event: DragEndEvent) {
@@ -31,9 +32,24 @@ export default function Editor() {
     addComponentToLayout(index, componentType, defaultProperties);
   }
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full">
+        <Spinner />
+      </div>
+    );
+  }
+
   if (isError) {
-    //TODO: This could be a not found page and link to home
-    router.push("/home/dashboards");
+    if ((error as AxiosError).response?.status === 404) {
+      notFound();
+    }
+
+    return (
+      <div className="flex justify-center items-center h-screen w-full">
+        <p>{error?.message}</p>
+      </div>
+    );
   }
 
   return (

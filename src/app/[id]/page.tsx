@@ -7,6 +7,8 @@ import useNavigation from "@/hooks/useNavigation";
 import { Spinner } from "@nextui-org/react";
 import AuthVerifier from "@/components/editor/auth/AuthVerifier";
 import { DashboardAuth } from "@/types/editor";
+import { notFound } from "next/navigation";
+import { AxiosError } from "axios";
 
 export default function Dashboard() {
   const { dashboard, loading, isError, error, getComponent } =
@@ -34,6 +36,10 @@ export default function Dashboard() {
   }
 
   if (isError) {
+    if ((error as AxiosError).response?.status === 404) {
+      notFound();
+    }
+
     return (
       <div className="flex justify-center items-center h-screen w-full">
         <p>{error?.message}</p>

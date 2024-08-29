@@ -7,12 +7,14 @@ import useNavigation from "@/hooks/useNavigation";
 import { Spinner } from "@nextui-org/react";
 import AuthVerifier from "@/components/editor/auth/AuthVerifier";
 import { DashboardAuth } from "@/types/editor";
+import { AxiosError } from "axios";
+import { notFound } from "next/navigation";
 
 export default function Preview() {
   const { dashboard, loading, isError, error, getComponent } = useDashboard();
   const { currentPage } = useNavigation();
   const header = getComponent(
-    dashboard?.metadata?.header?.componentId as string,
+    dashboard?.metadata?.header?.componentId as string
   );
   const layoutsHeight = dashboard?.metadata?.header?.isVisible ? "90%" : "100%";
   const layoutsWidth = dashboard?.metadata?.sidebar?.visible ? "85%" : "100%";
@@ -33,6 +35,10 @@ export default function Preview() {
   }
 
   if (isError) {
+    if ((error as AxiosError).response?.status === 404) {
+      notFound();
+    }
+
     return (
       <div className="flex justify-center items-center h-screen w-full">
         <p>{error?.message}</p>
@@ -89,7 +95,7 @@ export default function Preview() {
             }}
           >
             {dashboard?.metadata?.pages[selectedPage].map((layout, index) =>
-              getLayout(layout, currentPage, index, "view"),
+              getLayout(layout, currentPage, index, "view")
             )}
           </div>
         </div>
