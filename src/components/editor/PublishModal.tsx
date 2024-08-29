@@ -79,7 +79,7 @@ export default function PublishModal({
                   classNames={{
                     pre: "truncate",
                   }}
-                >{`${baseUrl}${
+                >{`${baseUrl}publishment/${
                   currentPublishedDashboard?.id ?? publishedDashboard?.id
                 }`}</Snippet>
                 <p className="text-sm text-center">
