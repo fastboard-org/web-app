@@ -14,6 +14,7 @@ import { TickCircle } from "iconsax-react";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { IoIosClose } from "react-icons/io";
+import { toast } from "sonner";
 
 const QueryParametersDrawer = ({
   queryParameters,
@@ -44,6 +45,11 @@ const QueryParametersDrawer = ({
   };
 
   const handleAddParameter = () => {
+    if (newParameterName.trim() === "token") {
+      return toast.error(
+        "Parameter name 'token' is reserved. Please use another name.",
+      );
+    }
     if (canAddParameter()) {
       setQueryParameters([
         ...queryParameters,

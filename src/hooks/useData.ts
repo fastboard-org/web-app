@@ -2,13 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { Query } from "@/types/connections";
 import { adapterService } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
-import { SortDescriptor } from "@nextui-org/react";
+import { useRecoilValue } from "recoil";
+import { previewAccessTokenState } from "@/atoms/editor";
+import { useParams } from "next/navigation";
 
 const useData = (
   componentId: string,
   query: Query | null,
   rowsPerPage: number
 ) => {
+  const { id: dashboardId } = useParams();
+  const previewAccessToken = useRecoilValue(previewAccessTokenState);
   const { data, refetch, isLoading, isFetching, isError, error } = useQuery({
     queryKey: [
       "get_data",
@@ -35,7 +39,12 @@ const useData = (
 
   const fetchData = async (query: Query | null) => {
     try {
-      const response = await adapterService.executeQuery(query);
+      const response = await adapterService.executeQuery(
+        query,
+        dashboardId as string,
+        {},
+        previewAccessToken
+      );
       let responseData = response?.body;
 
       if (!responseData) {

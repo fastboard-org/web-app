@@ -37,6 +37,13 @@ import { FormProperties } from "@/types/editor/form";
 import FastboardFormProperties from "./form/properties/FastboardFormProperties";
 import FastboardTableDraggable from "./table/FastboardTableDraggable";
 import FastboardTablePropertiesComponent from "./table/properties/FastboardTableProperties";
+import FastboardSidebar from "./sidebar/FastboardSidebar";
+import FastboardSidebarProperties from "./sidebar/properties/FastboardSidebarProperties";
+import { SidebarProperties } from "@/types/editor/sidebar-types";
+
+import FastboardHeader from "./header/FastboardHeader";
+import FastboardHeaderPropertiesComponent from "./header/FastboardHeaderProperties";
+import { FastboardHeaderProperties } from "@/types/editor/header-types";
 
 export function getDraggableComponent(id: ComponentType) {
   const components = {
@@ -47,6 +54,8 @@ export function getDraggableComponent(id: ComponentType) {
       <FastboardGroupChartDraggable key={"GroupChartDraggable"} />
     ),
     [ComponentType.Cards]: <FastboardCardsDraggable key={"CardsDraggable"} />,
+    [ComponentType.Sidebar]: null,
+    [ComponentType.Header]: null,
   };
 
   return components[id];
@@ -124,6 +133,26 @@ export function getComponent(
         />
       ),
     },
+    [ComponentType.Sidebar]: {
+      editable: (
+        <FastboardSidebar properties={properties as SidebarProperties} />
+      ),
+      view: <FastboardSidebar properties={properties as SidebarProperties} />,
+    },
+    [ComponentType.Header]: {
+      editable: (
+        <FastboardHeader
+          id={componentId}
+          properties={properties as FastboardHeaderProperties}
+        />
+      ),
+      view: (
+        <FastboardHeader
+          id={componentId}
+          properties={properties as FastboardHeaderProperties}
+        />
+      ),
+    },
   };
 
   if (!components[id]) {
@@ -184,6 +213,26 @@ export function getPropertiesComponent(
         }}
       />
     ),
+    [ComponentType.Sidebar]: (
+      <FastboardSidebarProperties
+        properties={properties as SidebarProperties}
+        onValueChange={(properties) => {
+          if (onValueChange) {
+            onValueChange(properties);
+          }
+        }}
+      />
+    ),
+    [ComponentType.Header]: (
+      <FastboardHeaderPropertiesComponent
+        properties={properties as FastboardHeaderProperties}
+        onValueChange={(properties) => {
+          if (onValueChange) {
+            onValueChange(properties);
+          }
+        }}
+      />
+    ),
   };
 
   if (!type) {
@@ -194,6 +243,7 @@ export function getPropertiesComponent(
 
 export function getLayout(
   layout: Layout,
+  pageIndex: string,
   index: number,
   mode: "editable" | "view"
 ) {
@@ -201,7 +251,8 @@ export function getLayout(
     case LayoutType.Full:
       return (
         <FullLayout
-          key={`FullLayout-${index}`}
+          key={`${pageIndex}-FullLayout-${index}`}
+          pageIndex={pageIndex}
           index={index}
           properties={layout as FullLayoutInterface}
           mode={mode}
@@ -210,7 +261,8 @@ export function getLayout(
     case LayoutType.Row:
       return (
         <RowLayout
-          key={`RowLayout-${index}`}
+          key={`${pageIndex}-RowLayout-${index}`}
+          pageIndex={pageIndex}
           index={index}
           properties={layout as RowLayoutInterface}
           mode={mode}
@@ -219,7 +271,8 @@ export function getLayout(
     case LayoutType.Column:
       return (
         <ColumnLayout
-          key={`ColumnLayout-${index}`}
+          key={`${pageIndex}-ColumnLayout-${index}`}
+          pageIndex={pageIndex}
           index={index}
           properties={layout as ColumnLayoutInterface}
           mode={mode}
@@ -228,7 +281,8 @@ export function getLayout(
     case LayoutType.RightSplit:
       return (
         <RightSplitLayout
-          key={`RightSplitLayout-${index}`}
+          key={`${pageIndex}-RightSplitLayout-${index}`}
+          pageIndex={pageIndex}
           index={index}
           properties={layout as RightSplitLayoutInterface}
           mode={mode}
@@ -237,7 +291,8 @@ export function getLayout(
     case LayoutType.BottomSplit:
       return (
         <BottomSplitLayout
-          key={`BottomSplitLayout-${index}`}
+          key={`${pageIndex}-BottomSplitLayout-${index}`}
+          pageIndex={pageIndex}
           index={index}
           properties={layout as BottomSplitLayoutInterface}
           mode={mode}

@@ -28,15 +28,21 @@ const getDashboard = async (id: string) => {
 };
 
 const getDashboards = async () => {
-  const response = await axiosInstance.get("/dashboards/me");
+  const response = await axiosInstance.get("/dashboards");
   return response.data.map(mapDashboard);
 };
 
 const createDashboard = async (name: string, folderId?: string | null) => {
   const metadata: DashboardMetadata = {
     components: {},
+    sidebar: null,
     modals: [],
+    pages: {
+      home: [Layout.of(LayoutType.Full)],
+    },
     layouts: [Layout.of(LayoutType.Full)],
+    auth: null,
+    header: { componentId: null, isVisible: false },
   };
   const response = await axiosInstance.post("/dashboards", {
     name,
@@ -65,7 +71,7 @@ const deleteDashboard = async (id: string) => {
 };
 
 const getFolders = async () => {
-  const response = await axiosInstance.get("/folders/me");
+  const response = await axiosInstance.get("/folders");
   return response.data.map(mapFolder);
 };
 

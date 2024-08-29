@@ -3,11 +3,13 @@ import { IoIosClose } from "react-icons/io";
 
 export default function Option({
   label,
+  canDelete = true,
   startIcon,
   onPress,
   onDelete,
 }: {
   label: string;
+  canDelete?: boolean;
   startIcon?: React.ReactNode;
   onPress?: () => void;
   onDelete?: () => void;
@@ -35,9 +37,11 @@ export default function Option({
           <div className="w-full"></div>
         </Button>
       )}
-      <Button variant="light" isIconOnly onPress={onDelete}>
-        <IoIosClose size={20} className="text-foreground-600" />
-      </Button>
+      {canDelete && (
+        <Button variant="light" isIconOnly onPress={onDelete}>
+          <IoIosClose size={20} className="text-foreground-600" />
+        </Button>
+      )}
     </ButtonGroup>
   );
 }

@@ -1,4 +1,5 @@
 import {
+  isAuthDrawerOpen,
   isComponentsDrawerOpen,
   isPropertiesDrawerOpen,
   isSettingsDrawerOpen,
@@ -34,11 +35,12 @@ const FastboardComponent = ({
   const { deleteComponentFromLayout } = useDashboard();
   const setIsComponentsDrawerOpen = useSetRecoilState(isComponentsDrawerOpen);
   const setIsSettingsDrawerOpen = useSetRecoilState(isSettingsDrawerOpen);
+  const setIsAuthDrawerOpen = useSetRecoilState(isAuthDrawerOpen);
   const [propertiesDrawerOpen, setIsPropertiesDrawerOpen] = useRecoilState(
-    isPropertiesDrawerOpen
+    isPropertiesDrawerOpen,
   );
   const [propertiesDrawerStateValue, setPropertiesDrawerState] = useRecoilState(
-    propertiesDrawerState
+    propertiesDrawerState,
   );
   const [isHovered, setIsHovered] = useState(false);
 
@@ -46,6 +48,7 @@ const FastboardComponent = ({
     e.preventDefault();
     setIsComponentsDrawerOpen(false);
     setIsSettingsDrawerOpen(false);
+    setIsAuthDrawerOpen(false);
     setIsPropertiesDrawerOpen(true);
     setPropertiesDrawerState({
       selectedComponentId: id,
@@ -60,9 +63,8 @@ const FastboardComponent = ({
 
   function onDeleteComponent() {
     if (!context.layoutContext) return null;
-    const { layoutIndex, containerIndex } = context.layoutContext;
     setIsPropertiesDrawerOpen(false);
-    deleteComponentFromLayout(layoutIndex, containerIndex);
+    deleteComponentFromLayout(context.layoutContext);
   }
 
   function isSelected() {

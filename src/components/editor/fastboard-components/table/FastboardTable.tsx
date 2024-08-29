@@ -39,6 +39,7 @@ import { ArrowDown2, ArrowUp2, Edit, Eye, Trash } from "iconsax-react";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import AddRowForm from "./AddRowForm";
+import { useParams } from "next/navigation";
 import useModalFrame from "@/hooks/editor/useModalFrame";
 import { useTheme } from "next-themes";
 import CsvExporter from "@/components/shared/CsvExporter";
@@ -82,6 +83,7 @@ export default function FastboardTable({
   properties: FastboardTableProperties;
 }) {
   const { theme } = useTheme();
+  const { id: dashboardId } = useParams();
   const { updateComponentProperties } = useDashboard();
   const { openModal } = useModalFrame();
   const {
@@ -120,7 +122,9 @@ export default function FastboardTable({
     isSuccess: isExecuteQuerySuccess,
     isError: isExecuteQueryError,
     error: executeQueryError,
-  } = useExecuteQuery({});
+  } = useExecuteQuery({
+    dashboardId: dashboardId as string,
+  });
   const finalColumns = getFinalColumns(columns, actions);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
