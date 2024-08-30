@@ -57,6 +57,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
+import { HTTP_METHOD } from "@/types/connections";
 
 function getFinalColumns(
   columns: TableColumnProperties[],
@@ -86,6 +87,7 @@ export default function FastboardTable({
   const { id: dashboardId } = useParams();
   const { updateComponentProperties } = useDashboard();
   const { openModal } = useModalFrame();
+  //TODO: change sourceQuery to type RestQueryData
   const {
     sourceQuery,
     emptyMessage,
@@ -109,7 +111,15 @@ export default function FastboardTable({
     isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
-  } = useData(`${ComponentType.Table}-${id}`, sourceQuery, rowsPerPage);
+  } = useData(
+    `${ComponentType.Table}-${id}`,
+    {
+      queryId: sourceQuery?.id as string,
+      connectionId: sourceQuery?.connection_id as string,
+      method: sourceQuery?.metadata?.method as HTTP_METHOD,
+    },
+    rowsPerPage
+  );
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState
@@ -294,7 +304,12 @@ export default function FastboardTable({
     }
     reset();
     execute({
-      query: selectedRowAction.action.query,
+      //TODO: change selectedRowAction.action to type RestQueryData
+      queryData: {
+        queryId: selectedRowAction.action.query.id,
+        connectionId: selectedRowAction.action.query.connection_id,
+        method: selectedRowAction.action.query.metadata.method as HTTP_METHOD,
+      },
       parameters: fillParameters(
         selectedRowAction.action.parameters,
         selectedRowAction.item

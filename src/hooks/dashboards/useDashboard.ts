@@ -14,7 +14,7 @@ import useNavigation from "../useNavigation";
 import { useSetRecoilState } from "recoil";
 import { lastDashboardMetadata } from "@/atoms/editor";
 
-const useDashboard = () => {
+const useDashboard = (mode: "editor" | "published" = "editor") => {
   const { id: dashboardId } = useParams();
   const { changePage } = useNavigation();
   const setLastDashboard = useSetRecoilState(lastDashboardMetadata);
@@ -26,7 +26,13 @@ const useDashboard = () => {
     error,
   } = useQuery({
     queryKey: ["dashboard", dashboardId],
-    queryFn: () => dashboardService.getDashboard(dashboardId as string),
+    queryFn: () => {
+      if (mode === "editor") {
+        return dashboardService.getDashboard(dashboardId as string);
+      } else {
+        return dashboardService.getPublishedDashboard(dashboardId as string);
+      }
+    },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });

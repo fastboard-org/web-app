@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Query } from "@/types/connections";
+import { RestQueryData } from "@/types/connections";
 import { adapterService } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -8,18 +8,15 @@ import { useParams } from "next/navigation";
 
 const useData = (
   componentId: string,
-  query: Query | null,
+  queryData: RestQueryData | null,
   rowsPerPage: number
 ) => {
+  const { queryId, connectionId } = queryData || {};
   const { id: dashboardId } = useParams();
   const previewAccessToken = useRecoilValue(previewAccessTokenState);
   const { data, refetch, isLoading, isFetching, isError, error } = useQuery({
-    queryKey: [
-      "get_data",
-      query?.connection_id,
-      { queryId: query?.id, componentId },
-    ],
-    queryFn: () => fetchData(query),
+    queryKey: ["get_data", connectionId, { queryId, componentId }],
+    queryFn: () => fetchData(queryId || ""),
     refetchOnWindowFocus: false,
   });
   const [keys, setKeys] = useState<string[]>([]);
@@ -37,10 +34,10 @@ const useData = (
     });
   };
 
-  const fetchData = async (query: Query | null) => {
+  const fetchData = async (queryId: string | null) => {
     try {
       const response = await adapterService.executeQuery(
-        query,
+        queryId,
         dashboardId as string,
         {},
         previewAccessToken

@@ -1,6 +1,6 @@
 import { HTTP_METHOD, Query } from "@/types/connections";
 import { axiosInstance } from "@/lib/axios";
-import { isPreviewPage } from "@/lib/helpers";
+import { isPreviewPage, isPublishPage } from "@/lib/helpers";
 
 const previewQuery = async (
   connectionId: string,
@@ -25,13 +25,13 @@ const previewQuery = async (
 };
 
 async function executeQuery(
-  query: Query | null,
+  queryId: string | null,
   dashboardId: string,
   parameters?: Record<string, any>,
   previewAccessToken?: string,
 ) {
   try {
-    if (!query) {
+    if (!queryId) {
       return null;
     }
 
@@ -39,21 +39,18 @@ async function executeQuery(
 
     const parametersToSend = parameters ?? {};
 
-    const previewMode = isPreviewPage();
+    const viewMode = isPreviewPage() || isPublishPage();
 
-    parametersToSend.token = previewMode ? token : previewAccessToken;
+    parametersToSend.token = viewMode ? token : previewAccessToken;
 
-    const response = await axiosInstance.post(
-      `/adapter/${query.connection_id}/execute/${query.id}`,
-      {
-        parameters: parametersToSend,
-      },
-    );
+    const response = await axiosInstance.post(`/adapter/execute/${queryId}`, {
+      parameters: parametersToSend,
+    });
 
     if (response.data?.status_code !== 200) {
       if (response.data?.status_code === 401) {
         localStorage.removeItem(`auth-${dashboardId}`);
-        if (previewMode) {
+        if (viewMode) {
           window.location.reload();
         }
       }
