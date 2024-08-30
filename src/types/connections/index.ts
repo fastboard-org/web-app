@@ -38,3 +38,9 @@ export enum HTTP_METHOD {
   DELETE = "DELETE",
   PATCH = "PATCH",
 }
+
+export interface RestQueryData {
+  queryId: string;
+  connectionId: string;
+  method: HTTP_METHOD;
+}
