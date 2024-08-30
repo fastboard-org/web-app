@@ -14,7 +14,6 @@ import { Eye, EyeSlash } from "iconsax-react";
 import { useAccessToken } from "@/hooks/useAccessToken";
 import { useRecoilValue } from "recoil";
 import { isAuthDrawerOpen } from "@/atoms/editor";
-import useGetQuery from "@/hooks/connections/useGetQuery";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 interface LogInForm {
@@ -34,9 +33,6 @@ const AuthVerifier = ({
   mode?: "editor" | "preview";
 }) => {
   const { accessToken, updateAccessToken } = useAccessToken({ dashboardId });
-  const { query: loginQuery, loading: queryLoading } = useGetQuery(
-    auth?.loginQueryId || null,
-  );
   const isAuthOpen = useRecoilValue(isAuthDrawerOpen);
 
   const { execute, isPending } = useExecuteQuery({
@@ -73,7 +69,7 @@ const AuthVerifier = ({
     if (!user || !password) return toast.error("Please fill all fields");
 
     execute({
-      query: loginQuery,
+      queryData: auth?.loginQueryData,
       parameters: {
         [auth?.userQueryParameter]: user,
         [auth?.passwordQueryParameter]: password,
@@ -133,7 +129,6 @@ const AuthVerifier = ({
               color={"primary"}
               className={"w-full"}
               isLoading={isPending}
-              isDisabled={queryLoading}
               type={"submit"}
             >
               {auth?.buttonText || "Login"}
