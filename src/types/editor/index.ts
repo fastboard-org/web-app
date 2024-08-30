@@ -1,5 +1,5 @@
 import { Layout } from "./layout-types";
-import { Query } from "@/types/connections";
+import { Query, RestQueryData } from "@/types/connections";
 
 export default interface PublishOption {
   label: string;
@@ -31,7 +31,7 @@ export interface ModalFrame {
 
 export interface DashboardAuth {
   enabled: boolean;
-  loginQueryId: string;
+  loginQueryData: RestQueryData;
   accessTokenField: string;
   userInputLabel: string;
   passwordInputLabel: string;
