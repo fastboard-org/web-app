@@ -25,7 +25,7 @@ import {
   getKeyValue,
   semanticColors,
 } from "@nextui-org/react";
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useEffect, useMemo, useState } from "react";
 import { IoIosMore } from "react-icons/io";
 import DeleteActionModal from "../shared/DeleteActionModal";
 import useData from "@/hooks/useData";
@@ -58,23 +58,12 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { HTTP_METHOD } from "@/types/connections";
-
-function getFinalColumns(
-  columns: TableColumnProperties[],
-  actions: { key: string; label: string }[]
-) {
-  if (columns.length === 0) {
-    return [{ key: "empty-data", label: "" }];
-  }
-  const finalColumns = columns
-    .filter((column) => column.visible)
-    .map((column) => column.column);
-
-  if (actions.length > 0) {
-    finalColumns.push({ key: "actions", label: "Actions" });
-  }
-  return finalColumns;
-}
+import {
+  fillParameters,
+  getExportData,
+  getFinalColumns,
+  sortFunction,
+} from "@/lib/table.utils";
 
 export default function FastboardTable({
   id,
@@ -127,6 +116,10 @@ export default function FastboardTable({
     dashboardId: dashboardId as string,
   });
   const finalColumns = getFinalColumns(columns, actions);
+  const exportData = useMemo(() => {
+    return getExportData(fulldata, finalColumns);
+  }, [finalColumns]);
+
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedRowAction, setSelectedRowAction] = useState<{
@@ -138,29 +131,6 @@ export default function FastboardTable({
     right: [],
   });
   const [sorting, setSorting] = useState<SortingState>([]);
-
-  const sortFunction: SortingFn<any> = (
-    rowA: Row<any>,
-    rowB: Row<any>,
-    columnId: string
-  ) => {
-    const a = rowA.original[columnId];
-    const b = rowB.original[columnId];
-
-    if (typeof a === "number" && typeof b === "number") {
-      return a - b;
-    }
-    if (typeof a === "string" && typeof b === "string") {
-      return a.localeCompare(b);
-    }
-    if (typeof a === "boolean" && typeof b === "boolean") {
-      return a === b ? 0 : a ? 1 : -1;
-    }
-    if (a instanceof Date && b instanceof Date) {
-      return a.getTime() - b.getTime();
-    }
-    return 0;
-  };
 
   const table = useReactTable({
     data,
@@ -303,6 +273,7 @@ export default function FastboardTable({
       },
       parameters: fillParameters(
         selectedRowAction.action.parameters,
+        columns,
         selectedRowAction.item
       ),
       invalidateQueries,
@@ -388,39 +359,6 @@ export default function FastboardTable({
     return item[columnKey];
   };
 
-  function fillParameters(
-    parameters: { name: string; value: string }[],
-    item: any
-  ) {
-    //TODO: fix this in backend
-    if (!parameters) {
-      return {};
-    }
-
-    const filledParams = parameters.map((parameter) => {
-      const regex = /^{{row\.(\w+)}}$/;
-      const match = parameter.value.match(regex);
-      if (!match) {
-        return parameter;
-      }
-
-      //Get column key from column label
-      const columnKey =
-        columns.find(
-          (column) =>
-            column.column.label.toLowerCase() === match[1].toLowerCase()
-        )?.column.key ?? "";
-
-      const value = getKeyValue(item, columnKey);
-      return {
-        ...parameter,
-        value,
-      };
-    });
-    return filledParams.reduce((acc, parameter) => {
-      return { ...acc, [parameter.name]: parameter.value };
-    }, {});
-  }
   const getCommonPinningStyles = (column: Column<any>): CSSProperties => {
     const isPinned = column.getIsPinned();
     const isLastLeftPinnedColumn =
@@ -465,7 +403,7 @@ export default function FastboardTable({
           total={pages}
           onChange={(page) => setPage(page)}
         />
-        {downloadData && <CsvExporter data={fulldata} />}
+        {downloadData && <CsvExporter data={exportData} />}
       </div>
     );
   }
