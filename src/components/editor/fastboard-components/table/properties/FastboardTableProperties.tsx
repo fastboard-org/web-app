@@ -33,7 +33,7 @@ const FastboardTablePropertiesComponent = ({
   onValueChange: (properties: FastboardTableProperties) => void;
 }) => {
   const {
-    sourceQuery,
+    sourceQueryData,
     rowsPerPage,
     emptyMessage,
     columns,
@@ -96,26 +96,30 @@ const FastboardTablePropertiesComponent = ({
           >
             <div className="overflow-x-hidden">
               <QuerySelection
-                selectedQueryId={sourceQuery?.id || ""}
+                selectedQueryId={sourceQueryData?.queryId || ""}
                 onQuerySelect={(newQuery) => {
-                  if (newQuery.id === sourceQuery?.id) {
+                  if (newQuery.id === sourceQueryData?.queryId) {
                     return;
                   }
                   onValueChange({
                     ...properties,
-                    sourceQuery: newQuery,
+                    sourceQueryData: {
+                      queryId: newQuery.id,
+                      connectionId: newQuery.connection_id,
+                      method: newQuery.metadata?.method,
+                    },
                     columns: [],
                   });
                 }}
               />
-              {!sourceQuery && (
+              {!sourceQueryData && (
                 <div className="flex h-10 justify-center items-center bg-warning-100 rounded-xl">
                   <span className="text-sm text-warning-600">
                     Select query to see columns.
                   </span>
                 </div>
               )}
-              {sourceQuery && (
+              {sourceQueryData && (
                 <ReorderableColumns
                   columnsProperties={columnsProperties}
                   onChange={(newOrder) => {
