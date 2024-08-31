@@ -379,9 +379,9 @@ export default function FastboardTable({
           : semanticColors.dark.content1.DEFAULT
         : undefined,
       left:
-        isPinned === "left" ? `${column.getStart("left") - 20}px` : undefined,
+        isPinned === "left" ? `${column.getStart("left") - 21}px` : undefined,
       right:
-        isPinned === "right" ? `${column.getAfter("right") - 20}px` : undefined,
+        isPinned === "right" ? `${column.getAfter("right") - 21}px` : undefined,
       position: isPinned ? "sticky" : "relative",
       width: column.getSize(),
       zIndex: isPinned ? 1 : 0,

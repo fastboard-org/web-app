@@ -2,6 +2,7 @@ import { Button } from "@nextui-org/react";
 import { SiMicrosoftexcel } from "react-icons/si";
 import { useMemo } from "react";
 import * as XLSX from "xlsx";
+import { DocumentDownload } from "iconsax-react";
 
 export default function CsvExporter({ data }: { data: any[] }) {
   const workbook = useMemo(() => {
@@ -13,13 +14,13 @@ export default function CsvExporter({ data }: { data: any[] }) {
 
   return (
     <Button
-      isIconOnly
       variant="flat"
       onPress={() => {
         XLSX.writeFileXLSX(workbook, "data.xlsx");
       }}
+      startContent={<DocumentDownload className="text-default-600" />}
     >
-      <SiMicrosoftexcel color="green" size={25} />
+      Download
     </Button>
   );
 }
