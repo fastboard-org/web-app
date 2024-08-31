@@ -93,8 +93,6 @@ const createQuery = async (
     metadata,
   });
 
-  console.log(response);
-
   return mapQuery(response.data);
 };
 
