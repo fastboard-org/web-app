@@ -3,7 +3,6 @@ import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import {
   FastboardTableProperties,
   TableActionProperty,
-  TableColumnProperties,
 } from "@/types/editor/table-types";
 import {
   Button,
@@ -12,17 +11,9 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Input,
   Pagination,
-  SortDescriptor,
-  Spacer,
   Spinner,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  getKeyValue,
   semanticColors,
 } from "@nextui-org/react";
 import { CSSProperties, useEffect, useMemo, useState } from "react";
@@ -46,14 +37,16 @@ import CsvExporter from "@/components/shared/CsvExporter";
 import {
   Cell,
   Column,
-  ColumnDef,
+  ColumnFiltersState,
   ColumnPinningState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   Header,
+  PaginationState,
   Row,
-  SortingFn,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
@@ -64,6 +57,7 @@ import {
   getFinalColumns,
   sortFunction,
 } from "@/lib/table.utils";
+import Filters, { StringFilter } from "./Filters";
 
 export default function FastboardTable({
   id,
@@ -93,9 +87,6 @@ export default function FastboardTable({
     data,
     fulldata,
     keys,
-    page,
-    setPage,
-    pages,
     isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
@@ -119,7 +110,6 @@ export default function FastboardTable({
   const exportData = useMemo(() => {
     return getExportData(fulldata, finalColumns);
   }, [finalColumns]);
-
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedRowAction, setSelectedRowAction] = useState<{
@@ -131,6 +121,11 @@ export default function FastboardTable({
     right: [],
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: rowsPerPage,
+  });
 
   const table = useReactTable({
     data,
@@ -148,13 +143,20 @@ export default function FastboardTable({
     })),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
       columnPinning,
       sorting,
+      columnFilters,
+      pagination,
     },
     onColumnPinningChange: setColumnPinning,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
   });
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     if (pinActions) {
@@ -174,12 +176,13 @@ export default function FastboardTable({
     }
 
     if (columns.length === 0) {
-      setPage(1);
+      //table.setPageIndex(1);
       setShouldUpdateColumns(true);
     }
   }, [sourceQueryData]);
 
   useEffect(() => {
+    setTotalPages(table.getPageCount());
     if (!shouldUpdateColumns) {
       return;
     }
@@ -265,12 +268,7 @@ export default function FastboardTable({
     }
     reset();
     execute({
-      //TODO: change selectedRowAction.action to type RestQueryData
-      queryData: {
-        queryId: selectedRowAction.action.query.id,
-        connectionId: selectedRowAction.action.query.connection_id,
-        method: selectedRowAction.action.query.metadata.method as HTTP_METHOD,
-      },
+      queryData: sourceQueryData,
       parameters: fillParameters(
         selectedRowAction.action.parameters,
         columns,
@@ -389,21 +387,32 @@ export default function FastboardTable({
   };
 
   function TopContent() {
-    return addRowForm && <AddRowForm properties={addRowForm} />;
+    const col = table.getColumn("first_name");
+    return (
+      <div className="flex flex-row justify-between items-center gap-x-2">
+        <Filters />
+        {col && <StringFilter column={col} />}
+        {addRowForm && <AddRowForm properties={addRowForm} />}
+      </div>
+    );
   }
 
   function BottomContent() {
     return (
       <div className="flex w-full justify-center items-center gap-2">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          page={page}
-          total={pages}
-          onChange={(page) => setPage(page)}
-        />
-        {downloadData && <CsvExporter data={exportData} />}
+        {!dataFetching && (
+          <div className="flex flex-row justify-center items-center gap-x-2">
+            <Pagination
+              isCompact
+              showControls
+              showShadow
+              page={table.getState().pagination.pageIndex + 1}
+              total={table.getPageCount()}
+              onChange={(page) => table.setPageIndex(page - 1)}
+            />
+            {downloadData && <CsvExporter data={exportData} />}
+          </div>
+        )}
       </div>
     );
   }
@@ -433,6 +442,7 @@ export default function FastboardTable({
         />
       )}
 
+      <Input />
       <div className="flex flex-col w-full h-full gap-y-2">
         <TopContent />
         <div
@@ -538,75 +548,6 @@ export default function FastboardTable({
         </div>
         <BottomContent />
       </div>
-
-      {/*
-      <Table
-        aria-label="Fastboard table component"
-        className="grow-0 h-full "
-        classNames={{
-          thead: "-z-10",
-          wrapper: `${scrollbarStyles.scrollbar}`,
-        }}
-        hideHeader={hideHeader}
-        isHeaderSticky={headerSticky}
-        isStriped={isStriped}
-        topContent={addRowForm && <AddRowForm properties={addRowForm} />}
-        topContentPlacement="outside"
-        bottomContent={
-          <div className="flex w-full justify-center items-center gap-2">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              page={page}
-              total={pages}
-              onChange={(page) => setPage(page)}
-            />
-            {downloadData && <CsvExporter data={fulldata} />}
-          </div>
-        }
-        bottomContentPlacement="outside"
-        sortDescriptor={sort}
-        onSortChange={(descriptor) => {
-          setSort(descriptor);
-        }}
-      >
-        <TableHeader>
-          {finalColumns.map((column) => (
-            <TableColumn
-              className="text-center"
-              key={column.key}
-              allowsSorting
-              style={{
-                backgroundColor:
-                  theme === "light" ? headerColor.light : headerColor.dark,
-              }}
-            >
-              {column.label.toUpperCase()}
-            </TableColumn>
-          ))}
-        </TableHeader>
-        <TableBody
-          isLoading={dataFetching}
-          loadingContent={
-            <div className="fixed flex items-center">
-              <Spinner />
-            </div>
-          }
-          emptyContent={emptyMessage}
-        >
-          {data.map((item) => (
-            <TableRow key={item.key} className="relative">
-              {(columnKey) => (
-                <TableCell className="text-center">
-                  {renderCell(item, columnKey as string)}
-                </TableCell>
-              )}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
- */}
     </CustomSkeleton>
   );
 }

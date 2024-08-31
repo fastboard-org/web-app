@@ -86,7 +86,7 @@ const useData = (
   }, [data, rowsPerPage]);
 
   return {
-    data: items || [],
+    data: data || [],
     fulldata: data || [],
     keys,
     page,
