@@ -371,9 +371,9 @@ export default function FastboardTable({
 
     return {
       boxShadow: isLastLeftPinnedColumn
-        ? "-4px 0 4px -4px gray inset"
+        ? "-2px 0 2px -2px gray inset"
         : isFirstRightPinnedColumn
-        ? "4px 0 4px -4px gray inset"
+        ? "2px 0 2px -2px gray inset"
         : undefined,
       backgroundColor:
         isPinned && !isStriped
