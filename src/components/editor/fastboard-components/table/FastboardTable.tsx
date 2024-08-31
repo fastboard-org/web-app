@@ -359,7 +359,10 @@ export default function FastboardTable({
     return item[columnKey];
   };
 
-  const getCommonPinningStyles = (column: Column<any>): CSSProperties => {
+  const getCommonPinningStyles = (
+    column: Column<any>,
+    isStriped: boolean = false
+  ): CSSProperties => {
     const isPinned = column.getIsPinned();
     const isLastLeftPinnedColumn =
       isPinned === "left" && column.getIsLastColumn("left");
@@ -372,12 +375,13 @@ export default function FastboardTable({
         : isFirstRightPinnedColumn
         ? "4px 0 4px -4px gray inset"
         : undefined,
-      backgroundColor: isPinned
-        ? theme === "light"
-          ? // @ts-ignore
-            semanticColors.light.background.DEFAULT // @ts-ignore
-          : semanticColors.dark.content1.DEFAULT
-        : undefined,
+      backgroundColor:
+        isPinned && !isStriped
+          ? theme === "light"
+            ? // @ts-ignore
+              semanticColors.light.background.DEFAULT // @ts-ignore
+            : semanticColors.dark.content1.DEFAULT
+          : undefined,
       left:
         isPinned === "left" ? `${column.getStart("left") - 21}px` : undefined,
       right:
@@ -490,22 +494,22 @@ export default function FastboardTable({
 
             <tbody className="h-full relative">
               {!dataFetching &&
-                table.getRowModel().rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className={
-                      isStriped
-                        ? "even:bg-content2 odd:bg-background dark:odd:bg-content1 "
-                        : ""
-                    }
-                  >
+                table.getRowModel().rows.map((row, index) => (
+                  <tr key={row.id}>
                     {row.getVisibleCells().map((cell) => {
                       const { column } = cell;
+                      const bgColor = !isStriped
+                        ? ""
+                        : index % 2
+                        ? "bg-content2"
+                        : "bg-background dark:bg-content1 ";
                       return (
                         <td
                           key={cell.id}
-                          className="p-2 text-center text-xs"
-                          style={{ ...getCommonPinningStyles(column) }}
+                          className={"p-2 text-center text-xs " + bgColor}
+                          style={{
+                            ...getCommonPinningStyles(column, isStriped),
+                          }}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
@@ -538,75 +542,6 @@ export default function FastboardTable({
         </div>
         <BottomContent />
       </div>
-
-      {/*
-      <Table
-        aria-label="Fastboard table component"
-        className="grow-0 h-full "
-        classNames={{
-          thead: "-z-10",
-          wrapper: `${scrollbarStyles.scrollbar}`,
-        }}
-        hideHeader={hideHeader}
-        isHeaderSticky={headerSticky}
-        isStriped={isStriped}
-        topContent={addRowForm && <AddRowForm properties={addRowForm} />}
-        topContentPlacement="outside"
-        bottomContent={
-          <div className="flex w-full justify-center items-center gap-2">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              page={page}
-              total={pages}
-              onChange={(page) => setPage(page)}
-            />
-            {downloadData && <CsvExporter data={fulldata} />}
-          </div>
-        }
-        bottomContentPlacement="outside"
-        sortDescriptor={sort}
-        onSortChange={(descriptor) => {
-          setSort(descriptor);
-        }}
-      >
-        <TableHeader>
-          {finalColumns.map((column) => (
-            <TableColumn
-              className="text-center"
-              key={column.key}
-              allowsSorting
-              style={{
-                backgroundColor:
-                  theme === "light" ? headerColor.light : headerColor.dark,
-              }}
-            >
-              {column.label.toUpperCase()}
-            </TableColumn>
-          ))}
-        </TableHeader>
-        <TableBody
-          isLoading={dataFetching}
-          loadingContent={
-            <div className="fixed flex items-center">
-              <Spinner />
-            </div>
-          }
-          emptyContent={emptyMessage}
-        >
-          {data.map((item) => (
-            <TableRow key={item.key} className="relative">
-              {(columnKey) => (
-                <TableCell className="text-center">
-                  {renderCell(item, columnKey as string)}
-                </TableCell>
-              )}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
- */}
     </CustomSkeleton>
   );
 }
