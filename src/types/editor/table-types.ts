@@ -31,12 +31,53 @@ export interface TableAddOnsProperties {
   downloadData: boolean;
 }
 
+export enum FilterType {
+  StringFilter = "string-filter",
+  NumberFilter = "number-filter",
+}
+
+interface BaseFilterProperties {
+  type: FilterType;
+  columnKey: string | null;
+}
+
+export interface StringFilterProperties extends BaseFilterProperties {
+  label: string;
+  placeholder: string;
+  caseSensitive: boolean;
+  exactMatch: boolean;
+}
+export interface NumberFilterProperties extends BaseFilterProperties {}
+
+export type FilterProperties = StringFilterProperties | NumberFilterProperties;
+
+export class DefaultFilterProperties {
+  static of(type: FilterType): FilterProperties {
+    switch (type) {
+      case FilterType.StringFilter:
+        return {
+          type: FilterType.StringFilter,
+          columnKey: null,
+          label: "Search",
+          placeholder: "search ...",
+          caseSensitive: false,
+          exactMatch: false,
+        };
+      case FilterType.NumberFilter:
+        return { type: FilterType.NumberFilter, columnKey: null };
+      default:
+        return { type: FilterType.StringFilter, columnKey: null };
+    }
+  }
+}
+
 export class FastboardTableProperties {
   sourceQueryData: RestQueryData | null = null;
   rowsPerPage: number = 10;
   emptyMessage: string = "No rows to display.";
   columns: TableColumnProperties[] = [];
   actions: TableActionProperty[] = [];
+  filters: FilterProperties[] = [];
   pinActions: boolean = false;
   addOns: TableAddOnsProperties = {
     addRowForm: null,

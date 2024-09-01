@@ -2,6 +2,7 @@ import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import {
   FastboardTableProperties,
+  FilterProperties,
   TableActionProperty,
 } from "@/types/editor/table-types";
 import {
@@ -48,16 +49,18 @@ import {
   PaginationState,
   Row,
   SortingState,
+  Table,
   useReactTable,
 } from "@tanstack/react-table";
 import { HTTP_METHOD } from "@/types/connections";
 import {
   fillParameters,
   getExportData,
+  getFilterFunction,
   getFinalColumns,
   sortFunction,
 } from "@/lib/table.utils";
-import Filters, { StringFilter } from "./Filters";
+import Filters, { NumberFilter, StringFilter } from "./Filters";
 
 export default function FastboardTable({
   id,
@@ -75,6 +78,7 @@ export default function FastboardTable({
     emptyMessage,
     columns,
     actions,
+    filters,
     pinActions,
     addOns: { addRowForm, downloadData },
     hideHeader,
@@ -140,6 +144,7 @@ export default function FastboardTable({
         return renderCell(cell, row);
       },
       sortingFn: sortFunction,
+      filterFn: getFilterFunction(c.key, filters),
     })),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -386,37 +391,6 @@ export default function FastboardTable({
     };
   };
 
-  function TopContent() {
-    const col = table.getColumn("first_name");
-    return (
-      <div className="flex flex-row justify-between items-center gap-x-2">
-        <Filters />
-        {col && <StringFilter column={col} />}
-        {addRowForm && <AddRowForm properties={addRowForm} />}
-      </div>
-    );
-  }
-
-  function BottomContent() {
-    return (
-      <div className="flex w-full justify-center items-center gap-2">
-        {!dataFetching && (
-          <div className="flex flex-row justify-center items-center gap-x-2">
-            <Pagination
-              isCompact
-              showControls
-              showShadow
-              page={table.getState().pagination.pageIndex + 1}
-              total={table.getPageCount()}
-              onChange={(page) => table.setPageIndex(page - 1)}
-            />
-            {downloadData && <CsvExporter data={exportData} />}
-          </div>
-        )}
-      </div>
-    );
-  }
-
   return (
     <CustomSkeleton isLoaded={true} onlyRenderOnLoad className="w-full h-full">
       {selectedRowAction && (
@@ -442,9 +416,8 @@ export default function FastboardTable({
         />
       )}
 
-      <Input />
       <div className="flex flex-col w-full h-full gap-y-2">
-        <TopContent />
+        <TopContent table={table} filters={filters} addRowForm={addRowForm} />
         <div
           className={
             "flex flex-col gap-y-2 w-full max-h-[80%] grow-0 p-5 overflow-auto shadow-lg rounded-large dark:bg-content1 border dark:border-content1  " +
@@ -546,8 +519,60 @@ export default function FastboardTable({
             </div>
           )}
         </div>
-        <BottomContent />
+        <BottomContent
+          table={table}
+          dataFetching={dataFetching}
+          downloadData={downloadData}
+          exportData={exportData}
+        />
       </div>
     </CustomSkeleton>
+  );
+}
+
+function TopContent({
+  table,
+  filters,
+  addRowForm,
+}: {
+  table: Table<any>;
+  filters: FilterProperties[];
+  addRowForm: any;
+}) {
+  return (
+    <div className="flex flex-row justify-between items-center gap-x-2">
+      <Filters table={table} filters={filters} />
+      {addRowForm && <AddRowForm properties={addRowForm} />}
+    </div>
+  );
+}
+
+function BottomContent({
+  table,
+  dataFetching,
+  downloadData,
+  exportData,
+}: {
+  table: Table<any>;
+  dataFetching: boolean;
+  downloadData: boolean;
+  exportData: any[];
+}) {
+  return (
+    <div className="flex w-full justify-center items-center gap-2">
+      {!dataFetching && (
+        <div className="flex flex-row justify-center items-center gap-x-2">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            page={table.getState().pagination.pageIndex + 1}
+            total={table.getPageCount()}
+            onChange={(page) => table.setPageIndex(page - 1)}
+          />
+          {downloadData && <CsvExporter data={exportData} />}
+        </div>
+      )}
+    </div>
   );
 }

@@ -1,4 +1,10 @@
-import { Column, TableColumnProperties } from "@/types/editor/table-types";
+import {
+  Column,
+  FilterProperties,
+  FilterType,
+  StringFilterProperties,
+  TableColumnProperties,
+} from "@/types/editor/table-types";
 import { getKeyValue } from "@nextui-org/react";
 import { Row, SortingFn } from "@tanstack/react-table";
 
@@ -85,4 +91,57 @@ export function fillParameters(
   return filledParams.reduce((acc, parameter) => {
     return { ...acc, [parameter.name]: parameter.value };
   }, {});
+}
+
+export function getFilterFunction(
+  columnKey: string,
+  filters: FilterProperties[]
+) {
+  const filter = filters.find((filter) => filter.columnKey === columnKey);
+  if (!filter) {
+    return (row: Row<any>, columnId: string, filterValue: any) => true;
+  }
+  switch (filter.type) {
+    case FilterType.StringFilter:
+      const stringFilter = filter as StringFilterProperties;
+      if (stringFilter.exactMatch) {
+        return stringFilter.caseSensitive
+          ? equalsStringSensitive
+          : equalsString;
+      }
+      return stringFilter.caseSensitive
+        ? includesStringSensitive
+        : includesString;
+    default:
+      return (row: Row<any>, columnId: string, filterValue: any) => true;
+  }
+}
+
+function includesString(row: Row<any>, columnId: string, filterValue: string) {
+  const value = row.original[columnId] as string;
+  return value.toLowerCase().includes(filterValue.toLowerCase());
+}
+
+function includesStringSensitive(
+  row: Row<any>,
+  columnId: string,
+  filterValue: string
+) {
+  const value = row.original[columnId] as string;
+  return value.includes(filterValue);
+}
+
+function equalsString(row: Row<any>, columnId: string, filterValue: string) {
+  const value = row.original[columnId] as string;
+  console.log(value, filterValue);
+
+  return value.toLowerCase() === filterValue.toLowerCase();
+}
+
+function equalsStringSensitive(
+  row: Row<any>,
+  columnId: string,
+  filterValue: any
+) {
+  return row.original[columnId] === filterValue;
 }
