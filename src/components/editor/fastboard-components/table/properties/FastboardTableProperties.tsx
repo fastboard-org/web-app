@@ -12,6 +12,7 @@ import {
   FastboardTableProperties,
   FilterProperties,
   FilterType,
+  NumberFilterProperties,
   StringFilterProperties,
   TableActionProperty,
 } from "@/types/editor/table-types";
@@ -27,6 +28,7 @@ import TableStyle from "./TableStyle";
 import { DeleteActionProperties } from "./DeleteActionProperties";
 import FiltersList from "./filters/FiltersList";
 import TableStringFilterProperties from "./filters/TableStringFilterProperties";
+import TableNumberFilterProperties from "./filters/TableNumberFilterProperties";
 
 const FastboardTablePropertiesComponent = ({
   componentId,
@@ -141,6 +143,10 @@ const FastboardTablePropertiesComponent = ({
                       method: newQuery.metadata?.method,
                     },
                     columns: [],
+                    filters: filters.map((filter) => ({
+                      ...filter,
+                      columnKey: "",
+                    })),
                   });
                 }}
               />
@@ -314,6 +320,17 @@ const FastboardTablePropertiesComponent = ({
         filters[filterIndexSelected]?.type === FilterType.StringFilter && (
           <TableStringFilterProperties
             properties={filters[filterIndexSelected] as StringFilterProperties}
+            columns={columnsProperties}
+            onValueChange={(properties) => {
+              onFilterChange(properties);
+            }}
+          />
+        )}
+
+      {filterIndexSelected !== null &&
+        filters[filterIndexSelected]?.type === FilterType.NumberFilter && (
+          <TableNumberFilterProperties
+            properties={filters[filterIndexSelected] as NumberFilterProperties}
             columns={columnsProperties}
             onValueChange={(properties) => {
               onFilterChange(properties);

@@ -15,9 +15,7 @@ export function getFinalColumns(
   if (columns.length === 0) {
     return [{ key: "empty-data", label: "" }];
   }
-  const finalColumns = columns
-    .filter((column) => column.visible)
-    .map((column) => column.column);
+  const finalColumns = columns.map((column) => column.column);
 
   if (actions.length > 0) {
     finalColumns.push({ key: "actions", label: "Actions" });
@@ -48,10 +46,13 @@ export const sortFunction: SortingFn<any> = (
   return 0;
 };
 
-export function getExportData(fulldata: any[], finalColumns: Column[]) {
+export function getExportData(
+  fulldata: any[],
+  columns: TableColumnProperties[]
+) {
   return fulldata.map((row) => {
     return Object.keys(row).reduce((acc, key) => {
-      if (finalColumns.find((column) => column.key === key)) {
+      if (columns.find((c) => c.column.key === key && c.visible)) {
         return { ...acc, [key]: row[key] };
       }
       return acc;
@@ -112,6 +113,8 @@ export function getFilterFunction(
       return stringFilter.caseSensitive
         ? includesStringSensitive
         : includesString;
+    case FilterType.NumberFilter:
+      return inRange;
     default:
       return (row: Row<any>, columnId: string, filterValue: any) => true;
   }
@@ -133,8 +136,6 @@ function includesStringSensitive(
 
 function equalsString(row: Row<any>, columnId: string, filterValue: string) {
   const value = row.original[columnId] as string;
-  console.log(value, filterValue);
-
   return value.toLowerCase() === filterValue.toLowerCase();
 }
 
@@ -144,4 +145,15 @@ function equalsStringSensitive(
   filterValue: any
 ) {
   return row.original[columnId] === filterValue;
+}
+
+function inRange(
+  row: Row<any>,
+  columnId: string,
+  filterValue: [number | "", number | ""]
+) {
+  const value = row.original[columnId] as number;
+  const min = filterValue[0] !== "" ? filterValue[0] : Number.MIN_VALUE;
+  const max = filterValue[1] !== "" ? filterValue[1] : Number.MAX_VALUE;
+  return value >= min && value <= max;
 }

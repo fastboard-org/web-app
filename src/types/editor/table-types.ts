@@ -47,7 +47,9 @@ export interface StringFilterProperties extends BaseFilterProperties {
   caseSensitive: boolean;
   exactMatch: boolean;
 }
-export interface NumberFilterProperties extends BaseFilterProperties {}
+export interface NumberFilterProperties extends BaseFilterProperties {
+  label: string;
+}
 
 export type FilterProperties = StringFilterProperties | NumberFilterProperties;
 
@@ -64,9 +66,20 @@ export class DefaultFilterProperties {
           exactMatch: false,
         };
       case FilterType.NumberFilter:
-        return { type: FilterType.NumberFilter, columnKey: null };
+        return {
+          type: FilterType.NumberFilter,
+          columnKey: null,
+          label: "Filter",
+        };
       default:
-        return { type: FilterType.StringFilter, columnKey: null };
+        return {
+          type: FilterType.StringFilter,
+          columnKey: null,
+          label: "Search",
+          placeholder: "search ...",
+          caseSensitive: false,
+          exactMatch: false,
+        };
     }
   }
 }

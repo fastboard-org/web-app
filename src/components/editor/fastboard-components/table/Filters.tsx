@@ -1,9 +1,10 @@
 import {
   FilterProperties,
   FilterType,
+  NumberFilterProperties,
   StringFilterProperties,
 } from "@/types/editor/table-types";
-import { Input } from "@nextui-org/react";
+import { Input, Spacer } from "@nextui-org/react";
 import { Column, Table } from "@tanstack/react-table";
 
 export function StringFilter({
@@ -29,31 +30,41 @@ export function StringFilter({
   );
 }
 
-export function NumberFilter({ column }: { column: Column<any, unknown> }) {
+export function NumberFilter({
+  column,
+  properties,
+}: {
+  column: Column<any, unknown>;
+  properties: NumberFilterProperties;
+}) {
   const columnFilterValue = column.getFilterValue();
+  const { label } = properties;
 
   return (
-    <div className="flex flex-row h-full items-end gap-x-1">
-      <Input
-        aria-label="Number filter input"
-        type="number"
-        placeholder="min"
-        max={(columnFilterValue as [number, number])?.[1]}
-        value={(columnFilterValue as [number, number])?.[0]?.toString() ?? ""}
-        onValueChange={(value) =>
-          column.setFilterValue((old: [number, number]) => [value, old?.[1]])
-        }
-      />
-      <Input
-        aria-label="Number filter input"
-        type="number"
-        placeholder="max"
-        min={(columnFilterValue as [number, number])?.[0]}
-        value={(columnFilterValue as [number, number])?.[1]?.toString() ?? ""}
-        onValueChange={(value) =>
-          column.setFilterValue((old: [number, number]) => [old?.[0], value])
-        }
-      />
+    <div className="flex flex-col h-full">
+      <h2 className="text-sm">{label}</h2>
+      <div className="flex flex-row h-full items-end gap-x-1">
+        <Input
+          aria-label="Number filter input"
+          type="number"
+          placeholder="min"
+          max={(columnFilterValue as [number, number])?.[1]}
+          value={(columnFilterValue as [number, number])?.[0]?.toString() ?? ""}
+          onValueChange={(value) =>
+            column.setFilterValue((old: [number, number]) => [value, old?.[1]])
+          }
+        />
+        <Input
+          aria-label="Number filter input"
+          type="number"
+          placeholder="max"
+          min={(columnFilterValue as [number, number])?.[0]}
+          value={(columnFilterValue as [number, number])?.[1]?.toString() ?? ""}
+          onValueChange={(value) =>
+            column.setFilterValue((old: [number, number]) => [old?.[0], value])
+          }
+        />
+      </div>
     </div>
   );
 }
@@ -68,7 +79,7 @@ export default function Filters({
   const columns = table.getAllColumns();
 
   return (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-row gap-2 h-full">
       {filters.map((filter, index) => {
         const column = columns.find((column) => column.id === filter.columnKey);
 
@@ -83,7 +94,13 @@ export default function Filters({
               />
             );
           case FilterType.NumberFilter:
-            return <NumberFilter key={index} column={column} />;
+            return (
+              <NumberFilter
+                key={index}
+                column={column}
+                properties={filter as NumberFilterProperties}
+              />
+            );
         }
       })}
     </div>

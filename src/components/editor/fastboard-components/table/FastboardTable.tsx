@@ -112,7 +112,7 @@ export default function FastboardTable({
   });
   const finalColumns = getFinalColumns(columns, actions);
   const exportData = useMemo(() => {
-    return getExportData(fulldata, finalColumns);
+    return getExportData(fulldata, columns);
   }, [finalColumns]);
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -120,6 +120,7 @@ export default function FastboardTable({
     action: TableActionProperty;
     item: any;
   } | null>(null);
+  const [columnVisibility, setColumnVisibility] = useState({});
   const [columnPinning, setColumnPinning] = useState<ColumnPinningState>({
     left: [],
     right: [],
@@ -151,17 +152,24 @@ export default function FastboardTable({
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     state: {
+      columnVisibility,
       columnPinning,
       sorting,
       columnFilters,
       pagination,
     },
+    onColumnVisibilityChange: setColumnVisibility,
     onColumnPinningChange: setColumnPinning,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onPaginationChange: setPagination,
   });
-  const [totalPages, setTotalPages] = useState(0);
+
+  useEffect(() => {
+    columns.map((c) => {
+      table.getColumn(c.column.key)?.toggleVisibility(c.visible);
+    });
+  }, [columns]);
 
   useEffect(() => {
     if (pinActions) {
@@ -187,7 +195,6 @@ export default function FastboardTable({
   }, [sourceQueryData]);
 
   useEffect(() => {
-    setTotalPages(table.getPageCount());
     if (!shouldUpdateColumns) {
       return;
     }
@@ -436,6 +443,7 @@ export default function FastboardTable({
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
                       const { column } = header;
+                      if (column.getIsVisible() === false) return null;
 
                       return (
                         <th
