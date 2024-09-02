@@ -1,7 +1,13 @@
-import { ConnectionType, HTTP_METHOD, Query } from "@/types/connections";
+import {
+  ConnectionType,
+  HTTP_METHOD,
+  MONGO_METHOD,
+  Query,
+} from "@/types/connections";
 import { Button, Listbox, ListboxItem } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import { methodColor } from "@/lib/rest-methods";
+import { methodColor as httpColor } from "@/lib/rest-methods";
+import { methodColor as mongoColor } from "@/lib/mongo-methods";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
 import { motion } from "framer-motion";
 import { useRecoilState } from "recoil";
@@ -11,7 +17,7 @@ const RestQueryContent = ({ query }: { query: Query }) => {
   return (
     <>
       <span
-        className={`text-${methodColor(
+        className={`text-${httpColor(
           query?.metadata?.method as HTTP_METHOD,
         )} inline-block w-[60px]`}
       >
@@ -23,7 +29,18 @@ const RestQueryContent = ({ query }: { query: Query }) => {
 };
 
 const MongoQueryContent = ({ query }: { query: Query }) => {
-  return <>{query?.name}</>;
+  return (
+    <div className={"flex flex-col"}>
+      <span
+        className={`text-${mongoColor(
+          query?.metadata?.method as MONGO_METHOD,
+        )} inline-block w-[60px]`}
+      >
+        {query?.metadata?.method}
+      </span>{" "}
+      {query?.name}
+    </div>
+  );
 };
 
 const queryContents = {

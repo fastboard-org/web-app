@@ -18,13 +18,10 @@ import { useRecoilValue } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
 import RestBodyEditor from "@/components/connections/queries/rest/RestBodyEditor";
 import { convertToHeaders, convertToObject } from "@/lib/rest-queries";
-import QuestionModal from "@/components/shared/QuestionModal";
 import { toast } from "sonner";
 import { Toaster } from "@/components/shared/Toaster";
-import { useCreateQuery } from "@/hooks/connections/useCreateQuery";
-import { useUpdateQuery } from "@/hooks/connections/useUpdateQuery";
-import { useDeleteQuery } from "@/hooks/connections/useDeleteQuery";
 import { usePreviewQuery } from "@/hooks/adapter/usePreviewQuery";
+import QueryButtons from "@/components/connections/queries/QueryButtons";
 
 const RestQueryEditor = ({
   connection,
@@ -45,46 +42,10 @@ const RestQueryEditor = ({
   );
   const [path, setPath] = useState<string>(query?.metadata?.path || "");
   const [body, setBody] = useState<string>(
-    JSON.stringify(query?.metadata?.body) || "{}",
+    JSON.stringify(query?.metadata?.body, null, 4) || "{}",
   );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const {
-    isOpen: isDeleteModalOpen,
-    onOpen: onOpenDeleteModal,
-    onClose: onCloseDeleteModal,
-  } = useDisclosure();
-
-  const { createQuery, loading: createQueryLoading } = useCreateQuery({
-    onSuccess: (query: Query) => {
-      onChange(query);
-    },
-    onError: (error: any) => {
-      console.error("Error creating query", error);
-      toast.error("Error creating query, try again later.");
-    },
-  });
-
-  const { updateQuery, loading: updateQueryLoading } = useUpdateQuery({
-    onSuccess: (query: Query) => {
-      onChange(query);
-    },
-    onError: (error: any) => {
-      console.error("Error updating query", error);
-      toast.error("Error updating query, try again later.");
-    },
-  });
-
-  const { deleteQuery, loading: deleteQueryLoading } = useDeleteQuery({
-    onSuccess: (data: any) => {
-      onChange(null);
-    },
-    onError: (error: any) => {
-      console.error("Error deleting query", error);
-      toast.error("Error deleting query, try again later");
-    },
-  });
 
   const { previewQuery, loading: previewQueryLoading } = usePreviewQuery({
     onSuccess: (response: any) => {
@@ -100,13 +61,11 @@ const RestQueryEditor = ({
 
   const isMethodListClosed = useRecoilValue(isMethodListClosedState);
 
-  const queryExists = !query?.id?.includes(" new");
-
   useEffect(() => {
     setResponse(null);
     setResponseData(null);
     setPath(query?.metadata?.path || "");
-    setBody(JSON.stringify(query?.metadata?.body) || "{}");
+    setBody(JSON.stringify(query?.metadata?.body, null, 4) || "{}");
     setHeaders(convertToHeaders(query?.metadata?.headers));
   }, [query.id]);
 
@@ -140,49 +99,18 @@ const RestQueryEditor = ({
     }
   };
 
-  const handleSave = () => {
-    const shouldCreate = !queryExists;
-    const headersObject = convertToObject(headers);
-
-    if (shouldCreate) {
-      createQuery({
-        name: query.name,
-        connectionId: connection.id,
-        metadata: {
-          ...query.metadata,
-          path,
-          headers: headersObject,
-          body: JSON.parse(body),
-        },
-      });
-    } else {
-      updateQuery({
-        id: query.id,
-        name: query.name,
-        metadata: {
-          ...query.metadata,
-          path,
-          headers: headersObject,
-          body: JSON.parse(body),
-        },
-      });
-    }
-  };
-
-  const handleDelete = () => {
-    deleteQuery({
-      id: query.id,
-    });
-  };
-
   return (
     <>
       <div
         className={`flex ${
-          !isMethodListClosed ? "w-[calc(100%-250px)]" : "w-full"
+          !isMethodListClosed ? "w-[calc(100%-250px)]" : "w-[calc(100%-50px)]"
         } h-full gap-10`}
       >
-        <div className={"flex w-[calc(100%-300px)] h-full flex-col gap-3"}>
+        <div
+          className={
+            "flex w-[calc(100%-330px)] max-w-[calc(100%-330px)] h-full flex-col gap-3 "
+          }
+        >
           <div className={"flex items-center justify-between"}>
             <EditableTitle
               value={query.name}
@@ -195,28 +123,20 @@ const RestQueryEditor = ({
               }
               placeholder={"Enter a query name"}
             />
-            <div className={"flex gap-2 items-center"}>
-              {queryExists && (
-                <Button
-                  variant={"flat"}
-                  color={"danger"}
-                  size={"sm"}
-                  isLoading={deleteQueryLoading}
-                  onClick={onOpenDeleteModal}
-                >
-                  Delete
-                </Button>
-              )}
-              <Button
-                size={"sm"}
-                isLoading={updateQueryLoading || createQueryLoading}
-                onClick={handleSave}
-                variant={"flat"}
-                isDisabled={!hasValidBody()}
-              >
-                Save
-              </Button>
-            </div>
+            <QueryButtons
+              newMetadata={() => {
+                return {
+                  path,
+                  headers: convertToObject(headers),
+                  body: JSON.parse(body),
+                };
+              }}
+              onSaveSuccess={(query) => onChange(query)}
+              onDeleteSuccess={() => onChange(null)}
+              query={query}
+              connection={connection}
+              saveDisabled={!hasValidBody()}
+            />
           </div>
           <MethodAndPathSelector
             method={query?.metadata?.method ?? ""}
@@ -290,14 +210,6 @@ const RestQueryEditor = ({
           }}
           isOpen={isOpen}
           onClose={onClose}
-        />
-        <QuestionModal
-          titleText={"Delete Query"}
-          questionText={"Are you sure you want to delete this query?"}
-          isOpen={isDeleteModalOpen || deleteQueryLoading}
-          isLoading={deleteQueryLoading}
-          onClose={onCloseDeleteModal}
-          onConfirm={handleDelete}
         />
       </div>
       <div className={"absolute"}>
