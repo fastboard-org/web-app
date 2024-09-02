@@ -12,8 +12,9 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Input,
   Pagination,
+  Select,
+  SelectItem,
   Spinner,
   semanticColors,
 } from "@nextui-org/react";
@@ -75,6 +76,7 @@ export default function FastboardTable({
   const { openModal } = useModalFrame();
   const {
     sourceQueryData,
+    tableTitle,
     emptyMessage,
     columns,
     actions,
@@ -84,7 +86,6 @@ export default function FastboardTable({
     hideHeader,
     headerSticky,
     isStriped,
-    rowsPerPage,
     headerColor,
   } = properties;
   const {
@@ -94,7 +95,7 @@ export default function FastboardTable({
     isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
-  } = useData(`${ComponentType.Table}-${id}`, sourceQueryData, rowsPerPage);
+  } = useData(`${ComponentType.Table}-${id}`, sourceQueryData);
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState
@@ -129,7 +130,7 @@ export default function FastboardTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: rowsPerPage,
+    pageSize: 10,
   });
 
   const table = useReactTable({
@@ -280,7 +281,11 @@ export default function FastboardTable({
     }
     reset();
     execute({
-      queryData: sourceQueryData,
+      queryData: {
+        queryId: selectedRowAction.action.query.id,
+        connectionId: selectedRowAction.action.query.connection_id,
+        method: selectedRowAction.action.query.metadata?.method as HTTP_METHOD,
+      },
       parameters: fillParameters(
         selectedRowAction.action.parameters,
         columns,
@@ -424,7 +429,12 @@ export default function FastboardTable({
       )}
 
       <div className="flex flex-col w-full h-full gap-y-2">
-        <TopContent table={table} filters={filters} addRowForm={addRowForm} />
+        <TopContent
+          table={table}
+          title={tableTitle}
+          filters={filters}
+          addRowForm={addRowForm}
+        />
         <div
           className={
             "flex flex-col gap-y-2 w-full max-h-[80%] grow-0 p-5 overflow-auto shadow-lg rounded-large dark:bg-content1 border dark:border-content1  " +
@@ -540,17 +550,22 @@ export default function FastboardTable({
 
 function TopContent({
   table,
+  title,
   filters,
   addRowForm,
 }: {
   table: Table<any>;
+  title: string;
   filters: FilterProperties[];
   addRowForm: any;
 }) {
   return (
-    <div className="flex flex-row justify-between items-center gap-x-2">
-      <Filters table={table} filters={filters} />
-      {addRowForm && <AddRowForm properties={addRowForm} />}
+    <div className="flex flex-col">
+      <h2 className="text-[40px]">{title}</h2>
+      <div className="flex flex-row justify-between items-end gap-x-2">
+        <Filters table={table} filters={filters} />
+        {addRowForm && <AddRowForm properties={addRowForm} />}
+      </div>
     </div>
   );
 }
@@ -569,7 +584,7 @@ function BottomContent({
   return (
     <div className="flex w-full justify-center items-center gap-2">
       {!dataFetching && (
-        <div className="flex flex-row justify-center items-center gap-x-2">
+        <div className="flex flex-row w-full justify-center items-center gap-x-2">
           <Pagination
             isCompact
             showControls
@@ -578,6 +593,18 @@ function BottomContent({
             total={table.getPageCount()}
             onChange={(page) => table.setPageIndex(page - 1)}
           />
+          <Select
+            aria-label="Rows per page"
+            className="max-w-20"
+            selectedKeys={[table.getState().pagination.pageSize.toString()]}
+            onChange={(e) => table.setPageSize(Number(e.target.value))}
+          >
+            {[10, 20, 40, 50, 100].map((pageSize) => (
+              <SelectItem key={pageSize} value={pageSize}>
+                {pageSize.toString()}
+              </SelectItem>
+            ))}
+          </Select>
           {downloadData && <CsvExporter data={exportData} />}
         </div>
       )}

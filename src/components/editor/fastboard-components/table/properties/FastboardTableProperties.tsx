@@ -41,7 +41,7 @@ const FastboardTablePropertiesComponent = ({
 }) => {
   const {
     sourceQueryData,
-    rowsPerPage,
+    tableTitle,
     emptyMessage,
     columns,
     actions,
@@ -169,22 +169,18 @@ const FastboardTablePropertiesComponent = ({
                 />
               )}
               <Spacer y={2} />
-              <div className="flex flex-row justify-between items-center">
-                <h1 className="w-full text-sm">Rows per page</h1>
-                <Input
-                  type="number"
-                  value={String(rowsPerPage)}
-                  min={1}
-                  max={100}
-                  onValueChange={(value) => {
-                    onValueChange({
-                      ...properties,
-                      rowsPerPage: Number(value),
-                    });
-                  }}
-                  className="w-[20%]"
-                />
-              </div>
+              <Input
+                label="Title"
+                labelPlacement="outside"
+                placeholder="Enter a title"
+                value={tableTitle}
+                onValueChange={(value) => {
+                  onValueChange({
+                    ...properties,
+                    tableTitle: value,
+                  });
+                }}
+              />
               <Spacer y={2} />
               <Input
                 label="Empty message"

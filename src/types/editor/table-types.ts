@@ -86,7 +86,7 @@ export class DefaultFilterProperties {
 
 export class FastboardTableProperties {
   sourceQueryData: RestQueryData | null = null;
-  rowsPerPage: number = 10;
+  tableTitle: string = "Table Title";
   emptyMessage: string = "No rows to display.";
   columns: TableColumnProperties[] = [];
   actions: TableActionProperty[] = [];

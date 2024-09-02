@@ -150,10 +150,17 @@ function equalsStringSensitive(
 function inRange(
   row: Row<any>,
   columnId: string,
-  filterValue: [number | "", number | ""]
+  filterValue: [number | "" | undefined, number | "" | undefined]
 ) {
   const value = row.original[columnId] as number;
-  const min = filterValue[0] !== "" ? filterValue[0] : Number.MIN_VALUE;
-  const max = filterValue[1] !== "" ? filterValue[1] : Number.MAX_VALUE;
+  const min =
+    filterValue[0] !== undefined && filterValue[0] !== ""
+      ? filterValue[0]
+      : Number.MIN_VALUE;
+  const max =
+    filterValue[1] !== undefined && filterValue[1] !== ""
+      ? filterValue[1]
+      : Number.MAX_VALUE;
+
   return value >= min && value <= max;
 }
