@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Connection } from "@/types/connections";
+import { Connection, ConnectionType } from "@/types/connections";
 import {
   Button,
   Input,
@@ -12,6 +12,7 @@ import {
 import ConnectionVariablesTable from "@/components/connections/edit/ConnectionVariablesTable";
 import { useUpdateConnection } from "@/hooks/connections/useUpdateConnection";
 import { toast } from "sonner";
+import UrlInput from "@/components/shared/UrlInput";
 
 const ConnectionSettingsModal = ({
   isOpen,
@@ -78,22 +79,18 @@ const ConnectionSettingsModal = ({
                 </div>
                 <div className={"flex flex-col gap-1.5"}>
                   <p className={"text-lg mt-8"}>Credentials</p>
-                  <Input
-                    size={"lg"}
-                    className={"w-full"}
+                  <UrlInput
+                    label={""}
                     placeholder={"Main URL"}
-                    value={credentials?.main_url?.split("://")[1]}
-                    startContent={
-                      <div className="pointer-events-none flex items-center">
-                        <span className="text-default-400 text-small">
-                          https://
-                        </span>
-                      </div>
-                    }
-                    onChange={(e) =>
+                    value={credentials?.main_url}
+                    showHttps={connection.type === ConnectionType.REST}
+                    onChange={(newValue) =>
                       setCredentials({
                         ...credentials,
-                        main_url: `https://${e.target.value}`,
+                        main_url:
+                          connection.type === ConnectionType.REST
+                            ? `https://${newValue}`
+                            : newValue,
                       })
                     }
                   />
