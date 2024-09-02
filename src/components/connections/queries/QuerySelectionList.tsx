@@ -1,4 +1,4 @@
-import { HTTP_METHOD, Query } from "@/types/connections";
+import { ConnectionType, HTTP_METHOD, Query } from "@/types/connections";
 import { Button, Listbox, ListboxItem } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { methodColor } from "@/lib/rest-methods";
@@ -7,12 +7,39 @@ import { motion } from "framer-motion";
 import { useRecoilState } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
 
-const RestQueriesSelectionList = ({
+const RestQueryContent = ({ query }: { query: Query }) => {
+  return (
+    <>
+      <span
+        className={`text-${methodColor(
+          query?.metadata?.method as HTTP_METHOD,
+        )} inline-block w-[60px]`}
+      >
+        {query?.metadata?.method}
+      </span>{" "}
+      {query?.name}
+    </>
+  );
+};
+
+const MongoQueryContent = ({ query }: { query: Query }) => {
+  return <>{query?.name}</>;
+};
+
+const queryContents = {
+  [ConnectionType.REST]: RestQueryContent,
+  [ConnectionType.MONGO]: MongoQueryContent,
+  [ConnectionType.SQL]: RestQueryContent,
+};
+
+const QuerySelectionList = ({
+  type,
   queries,
   selectedQuery,
   onSelectQuery,
   onAddClick,
 }: {
+  type: ConnectionType;
   queries: Query[];
   selectedQuery: Query;
   onSelectQuery: (index: number) => void;
@@ -98,25 +125,21 @@ const RestQueriesSelectionList = ({
                  p-3 mb-1`,
             }}
           >
-            {queries.map((query, index) => (
-              <ListboxItem
-                key={query.id}
-                value={query.id}
-                onClick={() => onSelectQuery(index)}
-                classNames={{
-                  title: "text-md",
-                }}
-              >
-                <span
-                  className={`text-${methodColor(
-                    query?.metadata?.method as HTTP_METHOD,
-                  )} inline-block w-[60px]`}
+            {queries.map((query, index) => {
+              const content = type ? queryContents[type]({ query }) : null;
+              return (
+                <ListboxItem
+                  key={query.id}
+                  value={query.id}
+                  onClick={() => onSelectQuery(index)}
+                  classNames={{
+                    title: "text-md",
+                  }}
                 >
-                  {query?.metadata?.method}
-                </span>{" "}
-                {query?.name}
-              </ListboxItem>
-            ))}
+                  {content}
+                </ListboxItem>
+              );
+            })}
           </Listbox>
           <Button className={"w-[95%]"} onClick={onAddClick} variant={"flat"}>
             Add Query
@@ -127,4 +150,4 @@ const RestQueriesSelectionList = ({
   );
 };
 
-export default RestQueriesSelectionList;
+export default QuerySelectionList;
