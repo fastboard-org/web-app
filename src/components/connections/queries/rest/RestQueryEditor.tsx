@@ -16,12 +16,13 @@ import RestResponse from "@/components/connections/queries/rest/RestResponse";
 import AuthModal from "@/components/connections/queries/rest/AuthModal";
 import { useRecoilValue } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
-import RestBodyEditor from "@/components/connections/queries/rest/RestBodyEditor";
+import BodyEditor from "@/components/connections/queries/BodyEditor";
 import { convertToHeaders, convertToObject } from "@/lib/rest-queries";
 import { toast } from "sonner";
 import { Toaster } from "@/components/shared/Toaster";
 import { usePreviewQuery } from "@/hooks/adapter/usePreviewQuery";
 import QueryButtons from "@/components/connections/queries/QueryButtons";
+import { isValidBody } from "@/lib/queries";
 
 const RestQueryEditor = ({
   connection,
@@ -89,16 +90,6 @@ const RestQueryEditor = ({
     });
   };
 
-  const hasValidBody = () => {
-    if (!body) return true;
-    try {
-      JSON.parse(body);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
   return (
     <>
       <div
@@ -135,7 +126,7 @@ const RestQueryEditor = ({
               onDeleteSuccess={() => onChange(null)}
               query={query}
               connection={connection}
-              saveDisabled={!hasValidBody()}
+              saveDisabled={!isValidBody(body)}
             />
           </div>
           <MethodAndPathSelector
@@ -147,7 +138,7 @@ const RestQueryEditor = ({
             onPathChange={(path: string) => setPath(path)}
             onSendClick={handleSend}
             loading={previewQueryLoading}
-            disabled={!hasValidBody()}
+            disabled={!isValidBody(body)}
           />
           <Card className={"w-full h-full p-4"}>
             <Tabs
@@ -168,16 +159,10 @@ const RestQueryEditor = ({
                 />
               </Tab>
               <Tab key={"body"} title={"Body"}>
-                <RestBodyEditor
+                <BodyEditor
                   body={body || "{}"}
-                  onChange={(body) => {
-                    if (!body) {
-                      setBody("{}");
-                    } else {
-                      setBody(body);
-                    }
-                  }}
-                  invalidBody={!hasValidBody()}
+                  onChange={setBody}
+                  invalidBody={!isValidBody(body)}
                 />
               </Tab>
               <Tab key={"response"} title={"Response"}>

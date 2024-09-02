@@ -7,6 +7,9 @@ import MongoMethodSelector from "@/components/connections/queries/mongo/MongoMet
 import { Button, Card, Tab, Tabs } from "@nextui-org/react";
 import QueryParametersDrawer from "@/components/connections/queries/QueryParametersDrawer";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
+import BodyEditor from "@/components/connections/queries/BodyEditor";
+import { useEffect, useState } from "react";
+import { isValidBody } from "@/lib/queries";
 
 const MongoQueryEditor = ({
   connection,
@@ -18,6 +21,13 @@ const MongoQueryEditor = ({
   onChange: (query: Query | null) => void;
 }) => {
   const isMethodListClosed = useRecoilValue(isMethodListClosedState);
+  const [body, setBody] = useState<string>(
+    JSON.stringify(query?.metadata?.body, null, 4) || "{}",
+  );
+
+  useEffect(() => {
+    setBody(JSON.stringify(query?.metadata?.body, null, 4) || "{}");
+  }, [query]);
 
   return (
     <div
@@ -43,7 +53,9 @@ const MongoQueryEditor = ({
             placeholder={"Enter a query name"}
           />
           <QueryButtons
-            newMetadata={() => ({})}
+            newMetadata={() => ({
+              body: JSON.parse(body),
+            })}
             onSaveSuccess={(query) => {
               onChange(query);
             }}
@@ -52,6 +64,7 @@ const MongoQueryEditor = ({
             }}
             query={query}
             connection={connection}
+            saveDisabled={!isValidBody(body)}
           />
         </div>
         <div className={"flex w-full gap-3 justify-between"}>
@@ -61,12 +74,7 @@ const MongoQueryEditor = ({
               onChange({ ...query, metadata: { ...query.metadata, method } })
             }
           />
-          <Button
-            color={"primary"}
-            // onClick={onSendClick}
-            // isLoading={loading}
-            // isDisabled={disabled}
-          >
+          <Button color={"primary"} isDisabled={!isValidBody(body)}>
             Send
           </Button>
         </div>
@@ -76,10 +84,14 @@ const MongoQueryEditor = ({
               panel:
                 "p-0 mt-2 h-full overflow-y-auto " + scrollbarStyles.scrollbar,
             }}
-            // selectedKey={selectedTab}
-            // onSelectionChange={(key) => setSelectedTab(key as string)}
           >
-            <Tab key={"body"} title={"Body"}></Tab>
+            <Tab key={"body"} title={"Body"}>
+              <BodyEditor
+                body={body || "{}"}
+                onChange={setBody}
+                invalidBody={!isValidBody(body)}
+              />
+            </Tab>
             <Tab key={"response"} title={"Response"}></Tab>
           </Tabs>
         </Card>

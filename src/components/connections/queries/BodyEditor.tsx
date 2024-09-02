@@ -1,7 +1,7 @@
 import { Button, Textarea } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 
-const RestBodyEditor = ({
+const BodyEditor = ({
   body,
   onChange,
   invalidBody,
@@ -35,7 +35,14 @@ const RestBodyEditor = ({
       </Button>
       <Textarea
         value={body}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          const newBody = e.target.value;
+          if (!body) {
+            onChange("{}");
+          } else {
+            onChange(newBody);
+          }
+        }}
         className={"h-full w-full"}
         size={"lg"}
         placeholder={"Enter request body here"}
@@ -63,4 +70,4 @@ const RestBodyEditor = ({
   );
 };
 
-export default RestBodyEditor;
+export default BodyEditor;
