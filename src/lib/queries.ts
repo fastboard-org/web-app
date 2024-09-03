@@ -1,4 +1,4 @@
-export const isValidBody = (body: Object) => {
+export const isValidBody = (body: string) => {
   if (!body) return true;
   try {
     JSON.parse(body);
