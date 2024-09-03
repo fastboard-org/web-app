@@ -1,15 +1,21 @@
-import { Connection, Query, QueryParameter } from "@/types/connections";
+import {
+  Connection,
+  MONGO_METHOD,
+  Query,
+  QueryParameter,
+} from "@/types/connections";
 import EditableTitle from "@/components/shared/EditableTitle";
 import { useRecoilValue } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
 import QueryButtons from "@/components/connections/queries/QueryButtons";
 import MongoMethodSelector from "@/components/connections/queries/mongo/MongoMethodSelector";
-import { Button, Card, Tab, Tabs } from "@nextui-org/react";
+import { Button, Card, Input, Tab, Tabs } from "@nextui-org/react";
 import QueryParametersDrawer from "@/components/connections/queries/QueryParametersDrawer";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import BodyEditor from "@/components/connections/queries/BodyEditor";
 import { useEffect, useState } from "react";
 import { isValidBody } from "@/lib/queries";
+import { methodHasUpdateBody } from "@/lib/mongo-methods";
 
 const MongoQueryEditor = ({
   connection,
@@ -21,13 +27,34 @@ const MongoQueryEditor = ({
   onChange: (query: Query | null) => void;
 }) => {
   const isMethodListClosed = useRecoilValue(isMethodListClosedState);
-  const [body, setBody] = useState<string>(
-    JSON.stringify(query?.metadata?.body, null, 4) || "{}",
+
+  const [filterBody, setFilterBody] = useState<string>(
+    JSON.stringify(query?.metadata?.filter_body, null, 4) || "{}",
+  );
+
+  const [updateBody, setUpdateBody] = useState<string>(
+    JSON.stringify(query?.metadata?.update_body, null, 4) || "{}",
+  );
+
+  const [collectionName, setCollectionName] = useState<string>(
+    query?.metadata?.collection ?? "",
   );
 
   useEffect(() => {
-    setBody(JSON.stringify(query?.metadata?.body, null, 4) || "{}");
+    setFilterBody(
+      JSON.stringify(query?.metadata?.filter_body, null, 4) || "{}",
+    );
+    setUpdateBody(
+      JSON.stringify(query?.metadata?.update_body, null, 4) || "{}",
+    );
+    setCollectionName(query?.metadata?.collection ?? "");
   }, [query]);
+
+  const canSave =
+    isValidBody(filterBody) &&
+    isValidBody(updateBody) &&
+    collectionName &&
+    query.metadata.method;
 
   return (
     <div
@@ -54,7 +81,9 @@ const MongoQueryEditor = ({
           />
           <QueryButtons
             newMetadata={() => ({
-              body: JSON.parse(body),
+              filter_body: JSON.parse(filterBody),
+              update_body: JSON.parse(updateBody),
+              collection: collectionName,
             })}
             onSaveSuccess={(query) => {
               onChange(query);
@@ -64,7 +93,7 @@ const MongoQueryEditor = ({
             }}
             query={query}
             connection={connection}
-            saveDisabled={!isValidBody(body)}
+            saveDisabled={!canSave}
           />
         </div>
         <div className={"flex w-full gap-3 justify-between"}>
@@ -74,7 +103,17 @@ const MongoQueryEditor = ({
               onChange({ ...query, metadata: { ...query.metadata, method } })
             }
           />
-          <Button color={"primary"} isDisabled={!isValidBody(body)}>
+          <Input
+            placeholder={"Collection Name"}
+            value={collectionName}
+            onChange={(e) => setCollectionName(e.target.value)}
+            isClearable
+            onClear={() => setCollectionName("")}
+          />
+          <Button
+            color={"primary"}
+            isDisabled={!isValidBody(filterBody) && !isValidBody(updateBody)}
+          >
             Send
           </Button>
         </div>
@@ -85,12 +124,26 @@ const MongoQueryEditor = ({
                 "p-0 mt-2 h-full overflow-y-auto " + scrollbarStyles.scrollbar,
             }}
           >
-            <Tab key={"body"} title={"Body"}>
+            <Tab key={"body"} title={"Body"} className={"flex gap-5"}>
               <BodyEditor
-                body={body || "{}"}
-                onChange={setBody}
-                invalidBody={!isValidBody(body)}
+                body={filterBody}
+                onChange={setFilterBody}
+                invalidBody={!isValidBody(filterBody)}
+                label={"Filter Body"}
+                placeholder={"Enter filter body here"}
+                defaultValue={
+                  query.metadata.method === MONGO_METHOD.AGGREGATE ? "[]" : "{}"
+                }
               />
+              {methodHasUpdateBody(query.metadata.method) && (
+                <BodyEditor
+                  body={updateBody}
+                  onChange={setUpdateBody}
+                  invalidBody={!isValidBody(updateBody)}
+                  label={"Update Body"}
+                  placeholder={"Enter update body here"}
+                />
+              )}
             </Tab>
             <Tab key={"response"} title={"Response"}></Tab>
           </Tabs>

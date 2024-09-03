@@ -21,3 +21,13 @@ export const methodColor = (method: MONGO_METHOD) => {
 
   return colors[method];
 };
+
+export const methodHasUpdateBody = (method: MONGO_METHOD) => {
+  return [
+    MONGO_METHOD.FIND_AND_MODIFY,
+    MONGO_METHOD.FIND_ONE_AND_REPLACE,
+    MONGO_METHOD.FIND_ONE_AND_UPDATE,
+    MONGO_METHOD.UPDATE_ONE,
+    MONGO_METHOD.UPDATE_MANY,
+  ].includes(method);
+};
