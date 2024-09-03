@@ -374,7 +374,10 @@ export default function FastboardTable({
     return item[columnKey];
   };
 
-  const getCommonPinningStyles = (column: Column<any>): CSSProperties => {
+  const getCommonPinningStyles = (
+    column: Column<any>,
+    isStriped: boolean = false
+  ): CSSProperties => {
     const isPinned = column.getIsPinned();
     const isLastLeftPinnedColumn =
       isPinned === "left" && column.getIsLastColumn("left");
@@ -383,20 +386,21 @@ export default function FastboardTable({
 
     return {
       boxShadow: isLastLeftPinnedColumn
-        ? "-4px 0 4px -4px gray inset"
+        ? "-2px 0 2px -2px gray inset"
         : isFirstRightPinnedColumn
-        ? "4px 0 4px -4px gray inset"
+        ? "2px 0 2px -2px gray inset"
         : undefined,
-      backgroundColor: isPinned
-        ? theme === "light"
-          ? // @ts-ignore
-            semanticColors.light.background.DEFAULT // @ts-ignore
-          : semanticColors.dark.content1.DEFAULT
-        : undefined,
+      backgroundColor:
+        isPinned && !isStriped
+          ? theme === "light"
+            ? // @ts-ignore
+              semanticColors.light.background.DEFAULT // @ts-ignore
+            : semanticColors.dark.content1.DEFAULT
+          : undefined,
       left:
-        isPinned === "left" ? `${column.getStart("left") - 20}px` : undefined,
+        isPinned === "left" ? `${column.getStart("left") - 21}px` : undefined,
       right:
-        isPinned === "right" ? `${column.getAfter("right") - 20}px` : undefined,
+        isPinned === "right" ? `${column.getAfter("right") - 21}px` : undefined,
       position: isPinned ? "sticky" : "relative",
       width: column.getSize(),
       zIndex: isPinned ? 1 : 0,
@@ -491,22 +495,22 @@ export default function FastboardTable({
 
             <tbody className="h-full relative">
               {!dataFetching &&
-                table.getRowModel().rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className={
-                      isStriped
-                        ? "even:bg-content2 odd:bg-background dark:odd:bg-content1 "
-                        : ""
-                    }
-                  >
+                table.getRowModel().rows.map((row, index) => (
+                  <tr key={row.id}>
                     {row.getVisibleCells().map((cell) => {
                       const { column } = cell;
+                      const bgColor = !isStriped
+                        ? ""
+                        : index % 2
+                        ? "bg-content2"
+                        : "bg-background dark:bg-content1 ";
                       return (
                         <td
                           key={cell.id}
-                          className="p-2 text-center text-xs"
-                          style={{ ...getCommonPinningStyles(column) }}
+                          className={"p-2 text-center text-xs " + bgColor}
+                          style={{
+                            ...getCommonPinningStyles(column, isStriped),
+                          }}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
