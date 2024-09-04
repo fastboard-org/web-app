@@ -28,12 +28,15 @@ export default function TableAddOnsList({
 }) {
   const { createModalFrame, deleteModalFrame } = useDashboard();
   const { addOns } = tableProperties;
-  const { addRowForm } = addOns;
+  const { addRowForm, downloadData } = addOns;
 
   function getDisabledKeys() {
     const disabledKeys = [];
     if (addRowForm) {
       disabledKeys.push("add-row-form");
+    }
+    if (downloadData) {
+      disabledKeys.push("download-data");
     }
     return disabledKeys;
   }
@@ -66,11 +69,23 @@ export default function TableAddOnsList({
                   addRowForm: {
                     buttonLabel: "Add Row",
                     modalId: modalId,
+                    buttonColor: "#006FEE",
                   },
                 });
               }}
             >
               Add Row Form
+            </DropdownItem>
+            <DropdownItem
+              key={"download-data"}
+              onPress={() => {
+                onValueChange({
+                  ...addOns,
+                  downloadData: true,
+                });
+              }}
+            >
+              Download Button
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -86,6 +101,17 @@ export default function TableAddOnsList({
               onValueChange({
                 ...addOns,
                 addRowForm: null,
+              });
+            }}
+          />
+        )}
+        {downloadData && (
+          <Option
+            label="Download Button"
+            onDelete={() => {
+              onValueChange({
+                ...addOns,
+                downloadData: false,
               });
             }}
           />

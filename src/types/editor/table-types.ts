@@ -1,4 +1,4 @@
-import { Query } from "../connections";
+import { Query, RestQueryData } from "../connections";
 import { FormProperties } from "./form";
 
 export interface Column {
@@ -21,27 +21,36 @@ export interface TableActionProperty {
 }
 
 export interface AddRowFormProperties {
-  buttonLabel: string;
   modalId: string;
+  buttonLabel: string;
+  buttonColor: string;
 }
 
 export interface TableAddOnsProperties {
   addRowForm: AddRowFormProperties | null;
+  downloadData: boolean;
 }
 
 export class FastboardTableProperties {
-  sourceQuery: Query | null = null;
+  sourceQueryData: RestQueryData | null = null;
   rowsPerPage: number = 10;
   emptyMessage: string = "No rows to display.";
   columns: TableColumnProperties[] = [];
   actions: TableActionProperty[] = [];
+  pinActions: boolean = false;
   addOns: TableAddOnsProperties = {
     addRowForm: null,
+    downloadData: false,
   };
-  hideHeader: boolean = false;
-  isStriped: boolean = false;
   selectedRow: any = null;
-  headerColor: string = "#000000";
+
+  hideHeader: boolean = false;
+  headerSticky: boolean = false;
+  isStriped: boolean = false;
+  headerColor: { light: string; dark: string } = {
+    light: "#f4f4f5",
+    dark: "#27272a",
+  };
 
   static default(): FastboardTableProperties {
     return new FastboardTableProperties();
