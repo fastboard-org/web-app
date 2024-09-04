@@ -130,7 +130,7 @@ export default function FastboardTable({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 5,
   });
 
   const table = useReactTable({
@@ -603,7 +603,7 @@ function BottomContent({
             selectedKeys={[table.getState().pagination.pageSize.toString()]}
             onChange={(e) => table.setPageSize(Number(e.target.value))}
           >
-            {[10, 20, 40, 50, 100].map((pageSize) => (
+            {[5, 20, 40, 50, 100].map((pageSize) => (
               <SelectItem key={pageSize} value={pageSize}>
                 {pageSize.toString()}
               </SelectItem>
