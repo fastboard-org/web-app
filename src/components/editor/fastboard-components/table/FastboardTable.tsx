@@ -281,11 +281,7 @@ export default function FastboardTable({
     }
     reset();
     execute({
-      queryData: {
-        queryId: selectedRowAction.action.query.id,
-        connectionId: selectedRowAction.action.query.connection_id,
-        method: selectedRowAction.action.query.metadata?.method as HTTP_METHOD,
-      },
+      queryData: selectedRowAction.action.query,
       parameters: fillParameters(
         selectedRowAction.action.parameters,
         columns,

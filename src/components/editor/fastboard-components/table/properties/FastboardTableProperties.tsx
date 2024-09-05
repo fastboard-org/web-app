@@ -290,6 +290,7 @@ const FastboardTablePropertiesComponent = ({
       {actionSelected && actionSelected.type == "delete" && (
         <DeleteActionProperties
           action={actionSelected}
+          columns={columnsProperties.map((c) => c.column)}
           onChange={(action) => {
             setActionSelected(action);
             onValueChange({
@@ -302,6 +303,7 @@ const FastboardTablePropertiesComponent = ({
       {actionSelected && actionSelected.type == "view" && (
         <DeleteActionProperties
           action={actionSelected}
+          columns={columnsProperties.map((c) => c.column)}
           onChange={(action) => {
             setActionSelected(action);
             onValueChange({

@@ -61,7 +61,7 @@ export function getExportData(
 }
 
 export function fillParameters(
-  parameters: { name: string; value: string }[],
+  parameters: { name: string; columnKey: string | null; value: string }[],
   columns: TableColumnProperties[],
   item: any
 ) {
@@ -71,19 +71,9 @@ export function fillParameters(
   }
 
   const filledParams = parameters.map((parameter) => {
-    const regex = /^{{row\.(\w+)}}$/;
-    const match = parameter.value.match(regex);
-    if (!match) {
-      return parameter;
-    }
-
-    //Get column key from column label
-    const columnKey =
-      columns.find(
-        (column) => column.column.label.toLowerCase() === match[1].toLowerCase()
-      )?.column.key ?? "";
-
-    const value = getKeyValue(item, columnKey);
+    const value = parameter.columnKey
+      ? getKeyValue(item, parameter.columnKey)
+      : parameter.value;
     return {
       ...parameter,
       value,

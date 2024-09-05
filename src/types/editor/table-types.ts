@@ -1,5 +1,4 @@
-import { Query, RestQueryData } from "../connections";
-import { FormProperties } from "./form";
+import { RestQueryData } from "../connections";
 
 export interface Column {
   key: string;
@@ -15,8 +14,8 @@ export interface TableActionProperty {
   key: string;
   label: string;
   type: "view" | "edit" | "delete";
-  query: Query | null;
-  parameters: { name: string; value: string }[];
+  query: RestQueryData | null;
+  parameters: { name: string; columnKey: string; value: string }[];
   modalId?: string;
 }
 
@@ -86,7 +85,7 @@ export class DefaultFilterProperties {
 
 export class FastboardTableProperties {
   sourceQueryData: RestQueryData | null = null;
-  tableTitle: string = "Table Title";
+  tableTitle: string = "";
   emptyMessage: string = "No rows to display.";
   columns: TableColumnProperties[] = [];
   actions: TableActionProperty[] = [];
