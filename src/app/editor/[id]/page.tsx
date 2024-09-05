@@ -5,17 +5,19 @@ import EditorNavbar from "@/components/editor/EditorNavbar";
 import PropertiesDrawer from "@/components/editor/PropertiesDrawer";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { Toaster } from "@/components/shared/Toaster";
-import { ComponentType } from "@/types/editor";
+import { ComponentType, Index } from "@/types/editor";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
-import { useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import SettingsDrawer from "@/components/editor/settings/SettingsDrawer";
 import EditorModal from "@/components/editor/EditorModal";
+import AuthDrawer from "@/components/editor/auth/AuthDrawer";
 import useSave from "@/hooks/editor/useSave";
+import { Spinner } from "@nextui-org/react";
+import { AxiosError } from "axios";
 
 export default function Editor() {
-  const router = useRouter();
-  const { isError, addComponentToLayout } = useDashboard();
+  const { loading, isError, error, addComponentToLayout } = useDashboard();
   useSave();
 
   function updateDashboardMetadata(event: DragEndEvent) {
@@ -23,22 +25,31 @@ export default function Editor() {
     if (!over) return;
     if (!active) return;
 
-    const layoutIndex: number = over.data.current?.layoutIndex;
-    const container: string = over.data.current?.container;
+    const index: Index = over.data.current?.index;
     const componentType: ComponentType = active.data.current?.type;
     const defaultProperties: Object = active.data.current?.defaultProperties;
 
-    addComponentToLayout(
-      layoutIndex,
-      container,
-      componentType,
-      defaultProperties
+    addComponentToLayout(index, componentType, defaultProperties);
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen w-full">
+        <Spinner />
+      </div>
     );
   }
 
   if (isError) {
-    //TODO: This could be a not found page and link to home
-    router.push("/home/dashboards");
+    if ((error as AxiosError).response?.status === 404) {
+      notFound();
+    }
+
+    return (
+      <div className="flex justify-center items-center h-screen w-full">
+        <p>{error?.message}</p>
+      </div>
+    );
   }
 
   return (
@@ -54,6 +65,7 @@ export default function Editor() {
         >
           <ComponentsDrawer />
           <SettingsDrawer />
+          <AuthDrawer />
           <div className="flex justify-center items-center h-full w-full p-6">
             <EditorCanvas key={"EditorCanvas"} />
             <EditorModal />

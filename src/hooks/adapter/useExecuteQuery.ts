@@ -1,16 +1,21 @@
-import { HTTP_METHOD, Query } from "@/types/connections";
+import { HTTP_METHOD, Query, RestQueryData } from "@/types/connections";
 import { InvalidateQueryFilters, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/app/providers";
 import { adapterService } from "@/lib/services/adapter";
 import { useState } from "react";
+import { useRecoilValue } from "recoil";
+import { previewAccessTokenState } from "@/atoms/editor";
 
 const useExecuteQuery = ({
   onSuccess,
   onError,
+  dashboardId,
 }: {
   onSuccess?: (response: any) => void;
   onError?: (error: any) => void;
+  dashboardId: string;
 }) => {
+  const previewAccessToken = useRecoilValue(previewAccessTokenState);
   const [invalidateQueries, setInvalidateQueries] =
     useState<InvalidateQueryFilters>();
   const {
@@ -23,19 +28,24 @@ const useExecuteQuery = ({
     error,
   } = useMutation({
     mutationFn: ({
-      query,
+      queryData,
       parameters,
       invalidateQueries,
     }: {
-      query: Query | null;
+      queryData: RestQueryData | null;
       parameters: Record<string, any>;
       invalidateQueries?: InvalidateQueryFilters;
     }) => {
       setInvalidateQueries(invalidateQueries);
-      return adapterService.executeQuery(query, parameters);
+      return adapterService.executeQuery(
+        queryData?.queryId || null,
+        dashboardId,
+        parameters,
+        previewAccessToken,
+      );
     },
     onSuccess: (data, variables) => {
-      refreshData(variables.query);
+      refreshData(variables.queryData);
       if (onSuccess) {
         onSuccess(data);
       }
@@ -45,18 +55,18 @@ const useExecuteQuery = ({
     onError,
   });
 
-  const refreshData = (query: Query | null) => {
-    if (!query) return;
+  const refreshData = (queryData: RestQueryData | null) => {
+    if (!queryData) return;
     const updateMethods = [
       HTTP_METHOD.POST,
       HTTP_METHOD.PUT,
       HTTP_METHOD.PATCH,
       HTTP_METHOD.DELETE,
     ];
-    if (query && updateMethods.includes(query.metadata.method)) {
+    if (queryData && updateMethods.includes(queryData.method)) {
       //Invalidate all querys that gets data from this connection
       queryClient.invalidateQueries({
-        queryKey: ["get_data", query.connection_id],
+        queryKey: ["get_data", queryData.connectionId],
       });
     }
   };

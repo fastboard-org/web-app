@@ -19,6 +19,10 @@ export const isSettingsDrawerOpen = atom({
   key: "isSettingsDrawerOpen",
   default: false,
 });
+export const isAuthDrawerOpen = atom({
+  key: "isAuthModalOpen",
+  default: false,
+});
 
 export const propertiesDrawerState = atom<PropertiesDrawerState>({
   key: "propertiesDrawerState",
@@ -35,6 +39,11 @@ export const editorModalState = atom<EditorModalState>({
     isOpen: false,
     modalId: null,
   },
+});
+
+export const previewAccessTokenState = atom<string>({
+  key: "previewAccessTokenState",
+  default: "",
 });
 
 export const lastDashboardMetadata = atom<Dashboard | null>({

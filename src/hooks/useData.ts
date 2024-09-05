@@ -1,20 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { Query } from "@/types/connections";
+import { RestQueryData } from "@/types/connections";
 import { adapterService } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { previewAccessTokenState } from "@/atoms/editor";
+import { useParams } from "next/navigation";
 
 const useData = (
   componentId: string,
-  query: Query | null,
+  queryData: RestQueryData | null,
   rowsPerPage: number
 ) => {
+  const { queryId, connectionId } = queryData || {};
+  const { id: dashboardId } = useParams();
+  const previewAccessToken = useRecoilValue(previewAccessTokenState);
   const { data, refetch, isLoading, isFetching, isError, error } = useQuery({
-    queryKey: [
-      "get_data",
-      query?.connection_id,
-      { queryId: query?.id, componentId },
-    ],
-    queryFn: () => fetchData(query),
+    queryKey: ["get_data", connectionId, { queryId, componentId }],
+    queryFn: () => fetchData(queryId || ""),
     refetchOnWindowFocus: false,
   });
   const [keys, setKeys] = useState<string[]>([]);
@@ -32,9 +34,14 @@ const useData = (
     });
   };
 
-  const fetchData = async (query: Query | null) => {
+  const fetchData = async (queryId: string | null) => {
     try {
-      const response = await adapterService.executeQuery(query);
+      const response = await adapterService.executeQuery(
+        queryId,
+        dashboardId as string,
+        {},
+        previewAccessToken
+      );
       let responseData = response?.body;
 
       if (!responseData) {
@@ -68,12 +75,19 @@ const useData = (
     const end = start + rowsPerPage;
 
     return data?.slice(start, end);
-  }, [page, data]);
+  }, [page, data, rowsPerPage]);
 
-  const pages = data ? Math.ceil(data.length / rowsPerPage) : 0;
+  const pages = useMemo(() => {
+    const pages = data ? Math.ceil(data.length / rowsPerPage) : 0;
+    if (page > pages) {
+      setPage(1);
+    }
+    return pages;
+  }, [data, rowsPerPage]);
 
   return {
     data: items || [],
+    fulldata: data || [],
     keys,
     page,
     setPage,

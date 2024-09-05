@@ -24,8 +24,8 @@ import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import FormTextInput from "./FormTextInput";
-import useGetQuery from "@/hooks/connections/useGetQuery";
 import useModalFrame from "@/hooks/editor/useModalFrame";
+import { useParams } from "next/navigation";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { ComponentId } from "@/types/editor";
 import FormNumberInput from "./FormNumberInput";
@@ -40,10 +40,13 @@ export default function FastboardForm({
   id: ComponentId;
   properties: FormProperties;
 }) {
+  const { id: dashboardId } = useParams();
+
   const {
     title,
     inputs,
     submitQueryId,
+    submitQueryData,
     queryParameters,
     submitButtonLabel,
     showShadow,
@@ -61,9 +64,9 @@ export default function FastboardForm({
   } = useForm({
     shouldUnregister: true,
   });
-  const { query: submitQuery } = useGetQuery(submitQueryId || "");
   const { closeModal } = useModalFrame();
   const { execute, isPending: isLoading } = useExecuteQuery({
+    dashboardId: dashboardId as string,
     onSuccess: () => {
       toast.success("Submit successfully");
       closeModal();
@@ -93,7 +96,7 @@ export default function FastboardForm({
         ...properties,
         initialData: data,
       },
-      false
+      false,
     );
     reset();
   }, []);
@@ -119,7 +122,7 @@ export default function FastboardForm({
     }
 
     execute({
-      query: submitQuery,
+      queryData: submitQueryData,
       parameters: {
         ...newQueryParameters,
         ...formData,

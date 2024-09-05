@@ -28,15 +28,19 @@ const getDashboard = async (id: string) => {
 };
 
 const getDashboards = async () => {
-  const response = await axiosInstance.get("/dashboards/me");
+  const response = await axiosInstance.get("/dashboards");
   return response.data.map(mapDashboard);
 };
 
 const createDashboard = async (name: string, folderId?: string | null) => {
   const metadata: DashboardMetadata = {
     components: {},
+    sidebar: null,
     modals: [],
-    layouts: [Layout.of(LayoutType.Full)],
+    pages: {
+      home: [Layout.of(LayoutType.Full)],
+    },
+    auth: null,
     header: { componentId: null, isVisible: false },
   };
   const response = await axiosInstance.post("/dashboards", {
@@ -65,8 +69,18 @@ const deleteDashboard = async (id: string) => {
   await axiosInstance.delete(`/dashboards/${id}`);
 };
 
+const publishDashboard = async (id: string): Promise<Dashboard> => {
+  const response = await axiosInstance.post(`/dashboards/${id}/published`, {});
+  return mapDashboard(response.data);
+};
+
+const getPublishedDashboard = async (id: string): Promise<Dashboard> => {
+  const response = await axiosInstance.get(`/dashboards/${id}/published`);
+  return mapDashboard(response.data);
+};
+
 const getFolders = async () => {
-  const response = await axiosInstance.get("/folders/me");
+  const response = await axiosInstance.get("/folders");
   return response.data.map(mapFolder);
 };
 
@@ -90,6 +104,8 @@ export const dashboardService = {
   createDashboard,
   updateDashboard,
   deleteDashboard,
+  publishDashboard,
+  getPublishedDashboard,
   getFolders,
   createFolder,
   updateFolder,

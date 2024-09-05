@@ -2,10 +2,12 @@ import { BottomSplitLayout as BottomSplitLayoutInterface } from "@/types/editor/
 import Container from "./Container";
 
 export default function BottomSplitLayout({
+  pageIndex,
   index,
   properties,
   mode = "editable",
 }: {
+  pageIndex: string;
   index: number;
   properties: BottomSplitLayoutInterface;
   mode?: "editable" | "view";
@@ -13,8 +15,11 @@ export default function BottomSplitLayout({
   return (
     <div className="flex flex-col h-full w-full">
       <Container
-        layoutIndex={index}
-        containerIndex="component1"
+        index={{
+          page: pageIndex,
+          layout: index,
+          container: "component1",
+        }}
         componentId={properties.component1}
         mode={mode}
         className="px-5 pt-5 pb-2 h-1/2"
@@ -22,8 +27,11 @@ export default function BottomSplitLayout({
       <div className="flex flex-row h-1/2">
         <div className="w-1/2">
           <Container
-            layoutIndex={index}
-            containerIndex="component2"
+            index={{
+              page: pageIndex,
+              layout: index,
+              container: "component2",
+            }}
             componentId={properties.component2}
             mode={mode}
             className="pl-5 pr-1 pt-1 pb-5 h-full"
@@ -31,8 +39,11 @@ export default function BottomSplitLayout({
         </div>
         <div className="w-1/2">
           <Container
-            layoutIndex={index}
-            containerIndex="component3"
+            index={{
+              page: pageIndex,
+              layout: index,
+              container: "component3",
+            }}
             componentId={properties.component3}
             mode={mode}
             className="pr-5 pl-1 pt-1 pb-5 h-full"

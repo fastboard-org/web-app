@@ -2,16 +2,22 @@ import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import { Select, SelectItem } from "@nextui-org/react";
 
-export default function FormDataKeySelection({
+export default function QueryParameterSelection({
   selectedKey,
   queryId,
   onSelectionChange,
   disabledKeys = [],
+  label = "Query parameter",
+  placeholder = "Select query parameter",
+  isDisabled = false,
 }: {
   selectedKey: string;
   queryId: string | null;
-  onSelectionChange: (formDataKey: string) => void;
+  onSelectionChange: (parameter: string) => void;
   disabledKeys?: string[];
+  label?: string;
+  placeholder?: string;
+  isDisabled?: boolean;
 }) {
   const { query, loading } = useGetQuery(queryId || "");
   const parameters: () => { key: string; label: string }[] = () => {
@@ -20,7 +26,7 @@ export default function FormDataKeySelection({
         (p: { name: string; preview: string }) => ({
           key: p.name,
           label: p.name,
-        })
+        }),
       ) || []
     );
   };
@@ -29,7 +35,8 @@ export default function FormDataKeySelection({
     <CustomSkeleton isLoaded={!loading} loadingClassName="rounded-xl">
       <Select
         aria-label="Select query parameter"
-        label="Query parameter"
+        label={label}
+        placeholder={placeholder}
         labelPlacement="outside"
         items={parameters()}
         selectedKeys={[selectedKey]}
@@ -37,6 +44,7 @@ export default function FormDataKeySelection({
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
           onSelectionChange(e.target.value);
         }}
+        isDisabled={isDisabled}
       >
         {(parameter) => (
           <SelectItem key={parameter.key}>{parameter.label}</SelectItem>

@@ -22,7 +22,10 @@ const RestQueriesSelectionList = ({
 
   return (
     <div
-      className={`h-full flex items-center flex-col w-[${isClosed ? "1%" : "250px"}]`}
+      className={`h-full flex items-center flex-col`}
+      style={{
+        width: isClosed ? "1%" : "250px",
+      }}
     >
       <div
         className={`w-full flex items-center justify-between pl-1 ${

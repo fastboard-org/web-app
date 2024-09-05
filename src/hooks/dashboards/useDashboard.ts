@@ -2,13 +2,21 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { dashboardService } from "@/lib/services/dashboards";
 import { Dashboard } from "@/types/dashboards";
 import { editorUtils } from "@/lib/editor.utils";
-import { ComponentId, ComponentType, FastboardComponent } from "@/types/editor";
+import {
+  ComponentId,
+  ComponentType,
+  FastboardComponent,
+  Index,
+} from "@/types/editor";
 import { useParams } from "next/navigation";
+import { LayoutType } from "@/types/editor/layout-types";
+import useNavigation from "../useNavigation";
 import { useSetRecoilState } from "recoil";
 import { lastDashboardMetadata } from "@/atoms/editor";
 
-const useDashboard = () => {
+const useDashboard = (mode: "editor" | "published" = "editor") => {
   const { id: dashboardId } = useParams();
+  const { changePage } = useNavigation();
   const setLastDashboard = useSetRecoilState(lastDashboardMetadata);
 
   const {
@@ -18,7 +26,13 @@ const useDashboard = () => {
     error,
   } = useQuery({
     queryKey: ["dashboard", dashboardId],
-    queryFn: () => dashboardService.getDashboard(dashboardId as string),
+    queryFn: () => {
+      if (mode === "editor") {
+        return dashboardService.getDashboard(dashboardId as string);
+      } else {
+        return dashboardService.getPublishedDashboard(dashboardId as string);
+      }
+    },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
@@ -45,8 +59,7 @@ const useDashboard = () => {
   };
 
   const addComponentToLayout = (
-    layoutIndex: number,
-    containerIndex: string,
+    index: Index,
     type: ComponentType,
     defaultProperties: Object
   ) => {
@@ -54,8 +67,7 @@ const useDashboard = () => {
     updateDashboard((prev) => ({
       ...prev,
       metadata: editorUtils.addComponentToLayout(
-        layoutIndex,
-        containerIndex,
+        index,
         type,
         defaultProperties,
         prev.metadata
@@ -63,18 +75,11 @@ const useDashboard = () => {
     }));
   };
 
-  const deleteComponentFromLayout = (
-    layoutIndex: number,
-    containerIndex: string
-  ) => {
+  const deleteComponentFromLayout = (index: Index) => {
     if (!dashboard) return;
     updateDashboard((prev) => ({
       ...prev,
-      metadata: editorUtils.deleteComponentFromLayout(
-        layoutIndex,
-        containerIndex,
-        prev.metadata
-      ),
+      metadata: editorUtils.deleteComponentFromLayout(index, prev.metadata),
     }));
   };
 
@@ -124,6 +129,64 @@ const useDashboard = () => {
     }));
   };
 
+  const addSidebar = () => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.addSidebar(prev.metadata),
+    }));
+  };
+
+  const deleteSidebar = () => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.deleteSidebar(prev.metadata),
+    }));
+    changePage("home");
+  };
+
+  const addPage = (): string | null => {
+    if (!dashboard) return null;
+
+    const [newMetadata, pageId] = editorUtils.addPage(dashboard.metadata);
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: newMetadata,
+    }));
+    return pageId;
+  };
+
+  const deletePage = (pageId: string) => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.deletePage(pageId, prev.metadata),
+    }));
+  };
+
+  const getBaseLayout = (): LayoutType | null => {
+    if (!dashboard) return null;
+    return dashboard.metadata.pages["home"][0].type;
+  };
+
+  const changeLayout = (
+    pageId: string,
+    layoutIndex: number,
+    layoutType: LayoutType
+  ) => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: editorUtils.changeLayout(
+        pageId,
+        layoutIndex,
+        layoutType,
+        prev.metadata
+      ),
+    }));
+  };
+
   const updateDashboard = (
     updater: (previous: Dashboard) => Dashboard,
     save: boolean = true
@@ -159,6 +222,12 @@ const useDashboard = () => {
     createModalFrame,
     deleteModalFrame,
     updateDashboard,
+    addSidebar,
+    deleteSidebar,
+    addPage,
+    deletePage,
+    getBaseLayout,
+    changeLayout,
     addHeader,
     deleteHeader,
   };

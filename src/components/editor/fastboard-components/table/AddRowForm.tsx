@@ -3,7 +3,6 @@ import { Button } from "@nextui-org/react";
 import { useSetRecoilState } from "recoil";
 import { editorModalState } from "@/atoms/editor";
 import useDashboard from "@/hooks/dashboards/useDashboard";
-import { getModalFrame } from "@/lib/editor.utils";
 
 export default function AddRowForm({
   properties,
@@ -11,7 +10,7 @@ export default function AddRowForm({
   properties: AddRowFormProperties;
 }) {
   const { dashboard } = useDashboard();
-  const { buttonLabel, modalId } = properties;
+  const { buttonLabel, modalId, buttonColor } = properties;
   const setEditorModalState = useSetRecoilState(editorModalState);
 
   if (!dashboard) {
@@ -21,13 +20,13 @@ export default function AddRowForm({
   return (
     <div className="flex justify-end">
       <Button
-        color="primary"
         onPress={() => {
           setEditorModalState({
             isOpen: true,
             modalId: modalId,
           });
         }}
+        style={{ backgroundColor: buttonColor, color: "white" }}
       >
         {buttonLabel}
       </Button>
