@@ -76,7 +76,7 @@ export default function TableActionsList({
 
   function removeAction(key: string, index: number) {
     if (actions[index].modalId) {
-      deleteModalFrame(actions[index].modalId);
+      deleteModalFrame(actions[index].modalId as string);
     }
     const newActions = actions.filter((action) => action.key !== key);
     setActions(newActions);
