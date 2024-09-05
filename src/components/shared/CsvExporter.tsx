@@ -24,9 +24,9 @@ export default function CsvExporter({
         const date = new Date();
         XLSX.writeFileXLSX(
           workbook,
-          `${filename ? filename + "-" : ""}${
+          `${filename ? filename + "-" : ""}${date.getFullYear()}-${
             date.getMonth() + 1
-          } ${date.getDate()} ${date.getFullYear()} ${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}.xlsx`
+          }-${date.getDate()}-${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}.xlsx`
         );
       }}
       startContent={<DocumentDownload className="text-default-600" />}
