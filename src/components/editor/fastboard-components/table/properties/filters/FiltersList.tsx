@@ -22,6 +22,16 @@ export default function FiltersList({
   onFilterSelect?: (filter: FilterProperties) => void;
   onChange?: (filters: FilterProperties[]) => void;
 }) {
+  function formatString(input: string): string {
+    let result = input.replace(/-/g, " ");
+
+    if (result.length > 0) {
+      result = result.charAt(0).toUpperCase() + result.slice(1);
+    }
+
+    return result;
+  }
+
   return (
     <div className="flex flex-col items-start">
       <div className="flex justify-end w-full">
@@ -39,7 +49,7 @@ export default function FiltersList({
                   onChange?.([...filters, DefaultFilterProperties.of(type)]);
                 }}
               >
-                {type}
+                {formatString(type)}
               </DropdownItem>
             ))}
           </DropdownMenu>
@@ -50,7 +60,7 @@ export default function FiltersList({
         {filters.map((filter, index) => (
           <Option
             key={index}
-            label={filter.type}
+            label={formatString(filter.type)}
             onPress={() => {
               onFilterSelect?.(filter);
             }}

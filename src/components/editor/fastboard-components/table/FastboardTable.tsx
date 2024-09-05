@@ -546,6 +546,7 @@ export default function FastboardTable({
           dataFetching={dataFetching}
           downloadData={downloadData}
           exportData={exportData}
+          title={tableTitle}
         />
       </div>
     </CustomSkeleton>
@@ -579,11 +580,13 @@ function BottomContent({
   dataFetching,
   downloadData,
   exportData,
+  title,
 }: {
   table: Table<any>;
   dataFetching: boolean;
   downloadData: boolean;
   exportData: any[];
+  title: string;
 }) {
   return (
     <div className="flex w-full justify-center items-center gap-2">
@@ -609,7 +612,7 @@ function BottomContent({
               </SelectItem>
             ))}
           </Select>
-          {downloadData && <CsvExporter data={exportData} />}
+          {downloadData && <CsvExporter data={exportData} filename={title} />}
         </div>
       )}
     </div>
