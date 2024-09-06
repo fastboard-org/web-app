@@ -45,7 +45,6 @@ export default function FastboardForm({
   const {
     title,
     inputs,
-    submitQueryId,
     submitQueryData,
     queryParameters,
     submitButtonLabel,
@@ -96,18 +95,18 @@ export default function FastboardForm({
         ...properties,
         initialData: data,
       },
-      false,
+      false
     );
     reset();
   }, []);
 
   useEffect(() => {
     reset();
-  }, [submitQueryId]);
+  }, [submitQueryData]);
 
   const onSubmit = async (formData: any) => {
-    if (!submitQueryId) {
-      toast.warning("Query is not defined");
+    if (!submitQueryData) {
+      toast.warning("No query found");
       return;
     }
 
