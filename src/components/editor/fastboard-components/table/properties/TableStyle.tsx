@@ -1,3 +1,4 @@
+import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 import ColorPicker from "@/components/shared/ColorPicker";
 import { FastboardTableProperties } from "@/types/editor/table-types";
 import { Checkbox } from "@nextui-org/react";
@@ -21,30 +22,26 @@ export default function TableStyle({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-row justify-between">
-        <span>Hide header</span>
-        <Checkbox
-          isSelected={hideHeader}
-          onValueChange={(isSelected) => {
-            onValueChange({
-              ...properties,
-              hideHeader: isSelected,
-            });
-          }}
-        />
-      </div>
-      <div className="flex flex-row justify-between">
-        <span>Stripped</span>
-        <Checkbox
-          isSelected={isStriped}
-          onValueChange={(isSelected) => {
-            onValueChange({
-              ...properties,
-              isStriped: isSelected,
-            });
-          }}
-        />
-      </div>
+      <CheckBoxProperty
+        label="Hide header"
+        isSelected={hideHeader}
+        onValueChange={(value) => {
+          onValueChange({
+            ...properties,
+            hideHeader: value,
+          });
+        }}
+      />
+      <CheckBoxProperty
+        label="Stripped"
+        isSelected={isStriped}
+        onValueChange={(value) => {
+          onValueChange({
+            ...properties,
+            isStriped: value,
+          });
+        }}
+      />
       <div className="flex flex-row justify-between">
         <span>Header color</span>
         <ColorPicker

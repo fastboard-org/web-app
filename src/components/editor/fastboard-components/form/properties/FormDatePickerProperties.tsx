@@ -3,6 +3,7 @@ import { Checkbox, Input, Spacer } from "@nextui-org/react";
 
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
 import QueryParameterSelection from "@/components/shared/QueryParameterSelection";
+import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 
 export default function FormDatePickerProperties({
   properties,
@@ -48,7 +49,8 @@ export default function FormDatePickerProperties({
       />
       {formDataKey !== "" && (
         <div>
-          <Checkbox
+          <CheckBoxProperty
+            label="Required"
             isSelected={required}
             onValueChange={(value) => {
               onValueChange({
@@ -56,9 +58,7 @@ export default function FormDatePickerProperties({
                 required: value,
               });
             }}
-          >
-            Required
-          </Checkbox>
+          />
           <Spacer y={2} />
           {initialData && (
             <FormDefaultValueKeySelection

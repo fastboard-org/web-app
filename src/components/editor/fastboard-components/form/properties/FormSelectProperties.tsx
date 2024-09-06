@@ -9,6 +9,7 @@ import {
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
 import FormSelectOptionsList from "./FormSelectOptionsList";
 import QueryParameterSelection from "@/components/shared/QueryParameterSelection";
+import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 
 export default function FormSelectProperties({
   properties,
@@ -88,7 +89,8 @@ export default function FormSelectProperties({
           />
           {formDataKey !== "" && (
             <div>
-              <Checkbox
+              <CheckBoxProperty
+                label="Required"
                 isSelected={required}
                 onValueChange={(value) => {
                   onValueChange({
@@ -96,9 +98,7 @@ export default function FormSelectProperties({
                     required: value,
                   });
                 }}
-              >
-                Required
-              </Checkbox>
+              />
               <Spacer y={2} />
               {initialData && (
                 <FormDefaultValueKeySelection

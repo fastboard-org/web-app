@@ -52,7 +52,8 @@ export default function FormInput({
     <div className="flex flex-col gap-2">
       {optionSelectedIndex === null && (
         <Select
-          aria-label="Select input type"
+          label="Input type"
+          labelPlacement="outside"
           selectedKeys={[type]}
           startContent={<InputIcon type={type} size={15} />}
           onChange={(e) => {

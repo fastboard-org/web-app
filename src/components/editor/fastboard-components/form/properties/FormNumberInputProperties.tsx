@@ -3,6 +3,7 @@ import QueryParameterSelection from "../../../../shared/QueryParameterSelection"
 import { Query } from "@/types/connections";
 import { Checkbox, Input, Spacer } from "@nextui-org/react";
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
+import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 
 export default function FormNumberInputProperties({
   properties,
@@ -64,7 +65,8 @@ export default function FormNumberInputProperties({
       <Spacer y={2} />
       {formDataKey !== "" && (
         <div>
-          <Checkbox
+          <CheckBoxProperty
+            label="Required"
             isSelected={required}
             onValueChange={(value) => {
               onValueChange({
@@ -72,9 +74,7 @@ export default function FormNumberInputProperties({
                 required: value,
               });
             }}
-          >
-            Required
-          </Checkbox>
+          />
           <Spacer y={2} />
           {initialData && (
             <FormDefaultValueKeySelection

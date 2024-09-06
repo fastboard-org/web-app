@@ -22,6 +22,7 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import { ComponentId } from "@/types/editor";
 import TableStyle from "./TableStyle";
 import { DeleteActionProperties } from "./DeleteActionProperties";
+import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 
 const FastboardTablePropertiesComponent = ({
   componentId,
@@ -184,18 +185,16 @@ const FastboardTablePropertiesComponent = ({
                   });
                 }}
               />
-              <div className="flex flex-row justify-between pl-2">
-                <span className="text-md">Pin action column</span>
-                <Checkbox
-                  isSelected={pinActions}
-                  onValueChange={(value) => {
-                    onValueChange({
-                      ...properties,
-                      pinActions: value,
-                    });
-                  }}
-                />
-              </div>
+              <CheckBoxProperty
+                label="Pin action column"
+                isSelected={pinActions}
+                onValueChange={(value) => {
+                  onValueChange({
+                    ...properties,
+                    pinActions: value,
+                  });
+                }}
+              />
             </div>
           </AccordionItem>
           <AccordionItem
