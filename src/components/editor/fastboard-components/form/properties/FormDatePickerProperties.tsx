@@ -1,7 +1,8 @@
 import { DatePickerProperties, TextInputProperties } from "@/types/editor/form";
 import { Checkbox, Input, Spacer } from "@nextui-org/react";
-import FormDataKeySelection from "./FormDataKeySelection";
+
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
+import QueryParameterSelection from "@/components/shared/QueryParameterSelection";
 
 export default function FormDatePickerProperties({
   properties,
@@ -34,7 +35,7 @@ export default function FormDatePickerProperties({
           });
         }}
       />
-      <FormDataKeySelection
+      <QueryParameterSelection
         selectedKey={formDataKey}
         disabledKeys={disabledKeys}
         queryId={queryId}

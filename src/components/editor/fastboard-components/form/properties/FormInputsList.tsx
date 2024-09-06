@@ -12,7 +12,6 @@ import {
   InputType,
 } from "@/types/editor/form";
 import InputIcon from "./InputIcon";
-import FormInput from "./FormInput";
 import Option from "@/components/shared/Option";
 
 export default function FormInputsList({

@@ -6,9 +6,9 @@ import {
   Input,
   Spacer,
 } from "@nextui-org/react";
-import FormDataKeySelection from "./FormDataKeySelection";
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
 import FormSelectOptionsList from "./FormSelectOptionsList";
+import QueryParameterSelection from "@/components/shared/QueryParameterSelection";
 
 export default function FormSelectProperties({
   properties,
@@ -75,7 +75,7 @@ export default function FormSelectProperties({
               });
             }}
           />
-          <FormDataKeySelection
+          <QueryParameterSelection
             selectedKey={formDataKey}
             disabledKeys={disabledKeys}
             queryId={queryId}

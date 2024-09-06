@@ -1,35 +1,150 @@
-import { Button, ButtonGroup } from "@nextui-org/react";
+import {
+  CheckboxProperties,
+  DatePickerProperties,
+  DefaultInputProperties,
+  InputProperties,
+  InputType,
+  NumberInputProperties,
+  SelectProperties,
+  TextInputProperties,
+} from "@/types/editor/form";
+import { Select, SelectItem } from "@nextui-org/react";
 import InputIcon from "./InputIcon";
-import { InputProperties } from "@/types/editor/form";
-import { IoIosClose } from "react-icons/io";
+import FormTextInputProperties from "./FormTextInputProperties";
+import { RestQueryData } from "@/types/connections";
+import FormCheckboxProperties from "./FormCheckboxProperties";
+import FormNumberInputProperties from "./FormNumberInputProperties";
+import FormDatePickerProperties from "./FormDatePickerProperties";
+import FormSelectProperties from "./FormSelectProperties";
+import { useState } from "react";
+import FormSelectOption from "./FormSelectOption";
 
 export default function FormInput({
   input,
-  onPress,
-  onDelete,
+  submitQueryData,
+  disabledKeys,
+  initialData,
+  onInputChange,
 }: {
   input: InputProperties;
-  onPress?: () => void;
-  onDelete?: () => void;
+  submitQueryData: RestQueryData | null;
+  disabledKeys: string[];
+  initialData: Object | null;
+  onInputChange: (inputProperties: InputProperties) => void;
 }) {
+  const [optionSelectedIndex, setOptionSelectedIndex] = useState<number | null>(
+    null
+  );
+  const { type } = input;
+
+  function changeInputType(type: InputType): InputProperties {
+    const newProperties = DefaultInputProperties.of(type);
+    return {
+      ...newProperties,
+      label: input.label,
+      required: input.required,
+      formDataKey: input.formDataKey,
+      defaultValueKey: input.defaultValueKey,
+    };
+  }
+
   return (
-    <ButtonGroup className="flex flex-row justify-between rounded-xl border border-content3">
-      <Button
-        className="w-full"
-        variant="light"
-        onPress={onPress}
-        startContent={
-          <div className="flex flex-row justify-center items-center space-x-2">
-            <InputIcon type={input.type} size={12} />
-            <p>{input.label}</p>
-          </div>
-        }
-      >
-        <div className="w-full"></div>
-      </Button>
-      <Button variant="light" isIconOnly onPress={onDelete}>
-        <IoIosClose size={20} className="text-foreground-600" />
-      </Button>
-    </ButtonGroup>
+    <div className="flex flex-col gap-2">
+      {optionSelectedIndex === null && (
+        <Select
+          aria-label="Select input type"
+          selectedKeys={[type]}
+          startContent={<InputIcon type={type} size={15} />}
+          onChange={(e) => {
+            onInputChange(changeInputType(e.target.value as InputType));
+          }}
+        >
+          {Object.values(InputType).map((type) => (
+            <SelectItem
+              key={type}
+              startContent={<InputIcon type={type} size={15} />}
+            >
+              {type}
+            </SelectItem>
+          ))}
+        </Select>
+      )}
+
+      {input.type === InputType.TextInput && (
+        <FormTextInputProperties
+          properties={input as TextInputProperties}
+          queryId={submitQueryData?.queryId || ""}
+          onValueChange={(inputProperties) => {
+            onInputChange(inputProperties);
+          }}
+          disabledKeys={disabledKeys}
+          initialData={initialData}
+        />
+      )}
+      {input.type === InputType.Checkbox && (
+        <FormCheckboxProperties
+          properties={input as CheckboxProperties}
+          queryId={submitQueryData?.queryId || ""}
+          onValueChange={(inputProperties) => {
+            onInputChange(inputProperties);
+          }}
+          disabledKeys={disabledKeys}
+          initialData={initialData}
+        />
+      )}
+      {input.type === InputType.NumberInput && (
+        <FormNumberInputProperties
+          properties={input as NumberInputProperties}
+          queryId={submitQueryData?.queryId || ""}
+          onValueChange={(inputProperties) => {
+            onInputChange(inputProperties);
+          }}
+          disabledKeys={disabledKeys}
+          initialData={initialData}
+        />
+      )}
+      {input.type === InputType.DatePicker && (
+        <FormDatePickerProperties
+          properties={input as DatePickerProperties}
+          queryId={submitQueryData?.queryId || ""}
+          onValueChange={(inputProperties) => {
+            onInputChange(inputProperties);
+          }}
+          disabledKeys={disabledKeys}
+          initialData={initialData}
+        />
+      )}
+      {optionSelectedIndex === null && input.type === InputType.Select && (
+        <FormSelectProperties
+          properties={input as SelectProperties}
+          queryId={submitQueryData?.queryId || ""}
+          onValueChange={(inputProperties) => {
+            onInputChange(inputProperties);
+          }}
+          onSelectOption={setOptionSelectedIndex}
+          disabledKeys={disabledKeys}
+          initialData={initialData}
+        />
+      )}
+      {optionSelectedIndex !== null && input.type === InputType.Select && (
+        <FormSelectOption
+          option={(input as SelectProperties).options[optionSelectedIndex]}
+          onValueChange={(newOption) => {
+            const selectInput = input as SelectProperties;
+            const newOptions = selectInput.options.map((option, optIndex) => {
+              if (optIndex === optionSelectedIndex) {
+                return newOption;
+              }
+              return option;
+            });
+
+            onInputChange({
+              ...selectInput,
+              options: newOptions,
+            });
+          }}
+        />
+      )}
+    </div>
   );
 }

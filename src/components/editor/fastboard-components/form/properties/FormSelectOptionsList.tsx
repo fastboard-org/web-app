@@ -51,8 +51,17 @@ export default function FormSelectOptionsList({
           <Option
             key={index}
             label={option.label}
-            onPress={() => onSelectOption(index)}
+            canEditLabel={true}
             onDelete={() => deleteOption(index)}
+            onLabelChange={(value) => {
+              const newOptions = options.map((options, i) => {
+                if (i === index) {
+                  return { ...options, label: value };
+                }
+                return options;
+              });
+              onOptionsChange(newOptions);
+            }}
           />
         ))}
       </ul>

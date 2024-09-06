@@ -73,9 +73,11 @@ export default function FormSelect({
       placeholder={placeHolder}
       selectedKeys={[value]}
     >
-      {options.map((option, index) => (
-        <SelectItem key={option.label}>{option.label}</SelectItem>
-      ))}
+      {options
+        .filter((option) => option.label !== "")
+        .map((option, index) => {
+          return <SelectItem key={option.label}>{option.label}</SelectItem>;
+        })}
     </Select>
   );
 }

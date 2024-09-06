@@ -1,12 +1,8 @@
 import {
-  CheckboxProperties,
-  DatePickerProperties,
+  DefaultInputProperties,
   FormProperties,
   InputProperties,
   InputType,
-  NumberInputProperties,
-  SelectProperties,
-  TextInputProperties,
 } from "@/types/editor/form";
 import {
   Accordion,
@@ -19,16 +15,11 @@ import {
 import QuerySelection from "../../../QuerySelection";
 import { useEffect, useState } from "react";
 import FormInputsList from "./FormInputsList";
-import FormTextInputProperties from "./FormTextInputProperties";
-import FormCheckboxProperties from "./FormCheckboxProperties";
-import FormNumberInputProperties from "./FormNumberInputProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import QueryParameters from "./QueryParameters";
-import FormSelectProperties from "./FormSelectProperties";
-import FormSelectOption from "./FormSelectOption";
-import FormDatePickerProperties from "./FormDatePickerProperties";
+import FormInput from "./FormInput";
 
 export default function FastboardFormProperties({
   properties,
@@ -39,19 +30,16 @@ export default function FastboardFormProperties({
 }) {
   const {
     title,
-    submitQueryId,
+    submitQueryData,
     queryParameters,
     submitButtonLabel,
     inputs,
     dataProvider,
     initialData,
   } = properties;
-  const { query: submitQuery } = useGetQuery(submitQueryId);
+  const { query: submitQuery } = useGetQuery(submitQueryData?.queryId || "");
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
-    null,
-  );
-  const [optionSelectedIndex, setOptionSelectedIndex] = useState<number | null>(
     null
   );
   const disabledKeys = inputs.map((input) => input.formDataKey);
@@ -64,6 +52,31 @@ export default function FastboardFormProperties({
     //The selected component has changed, reset the input selected index
     setInputSelectedIndex(null);
   }, [selectedComponentId]);
+
+  function createInputs(
+    parameters: any[] | undefined | null
+  ): InputProperties[] {
+    if (!parameters) {
+      return [];
+    }
+
+    return parameters.map((parameter) => {
+      let inputProperties = DefaultInputProperties.of(InputType.TextInput);
+      if (!isNaN(Number(parameter.preview))) {
+        inputProperties = DefaultInputProperties.of(InputType.NumberInput);
+      } else if (
+        parameter.preview === "true" ||
+        parameter.preview === "false"
+      ) {
+        inputProperties = DefaultInputProperties.of(InputType.Checkbox);
+      }
+      return {
+        ...inputProperties,
+        label: parameter.name,
+        formDataKey: parameter.name,
+      };
+    });
+  }
 
   function resetDefaultValues() {
     const dataKeys = Object.keys(initialData || {});
@@ -79,7 +92,7 @@ export default function FastboardFormProperties({
           [key]: value,
         };
       },
-      {},
+      {}
     );
 
     //Clear all default values from inputs
@@ -122,23 +135,12 @@ export default function FastboardFormProperties({
           key={"baseProperties"}
           onPress={() => {
             setInputSelectedIndex(null);
-            setOptionSelectedIndex(null);
           }}
         >
           Form
         </BreadcrumbItem>
         {inputSelectedIndex !== null && (
-          <BreadcrumbItem
-            key={"inputProperties"}
-            onPress={() => {
-              setOptionSelectedIndex(null);
-            }}
-          >
-            Input
-          </BreadcrumbItem>
-        )}
-        {optionSelectedIndex !== null && (
-          <BreadcrumbItem key={"optionProperties"}>Option</BreadcrumbItem>
+          <BreadcrumbItem key={"inputProperties"}>Input</BreadcrumbItem>
         )}
       </Breadcrumbs>
       <Spacer y={4} />
@@ -193,24 +195,17 @@ export default function FastboardFormProperties({
               />
               <Spacer y={2} />
               <QuerySelection
-                selectedQueryId={submitQueryId || ""}
+                selectedQueryId={submitQueryData?.queryId || ""}
                 onQuerySelect={(query) => {
-                  //Replace formdatakey fiel from inputs to empty string
-                  const newInputs = inputs.map((input) => ({
-                    ...input,
-                    formDataKey: "",
-                    defaultValueKey: "",
-                  }));
                   onValueChange({
                     ...properties,
-                    submitQueryId: query.id,
                     submitQueryData: {
                       queryId: query.id,
                       connectionId: query.connection_id,
                       method: query.metadata.method,
                     },
                     queryParameters: {},
-                    inputs: newInputs,
+                    inputs: createInputs(query.metadata?.parameters),
                   });
                 }}
               />
@@ -219,9 +214,8 @@ export default function FastboardFormProperties({
                 submitQuery &&
                 submitQuery.metadata.parameters?.length > 0 && (
                   <div>
-                    <div className="text-sm">Query parameters</div>
                     <QueryParameters
-                      queryId={submitQueryId}
+                      queryId={submitQueryData?.queryId || ""}
                       queryParameters={queryParameters}
                       initialData={initialData}
                       disabledParameters={disabledKeys}
@@ -245,12 +239,12 @@ export default function FastboardFormProperties({
               title: "font-medium",
             }}
           >
-            {!submitQueryId && (
+            {!submitQueryData && (
               <div className="flex justify-center text-sm">
                 Select a query to enable inputs
               </div>
             )}
-            {submitQueryId && (
+            {submitQueryData && (
               <FormInputsList
                 inputs={inputs}
                 onSelectInput={(inputProperties) => {
@@ -268,101 +262,15 @@ export default function FastboardFormProperties({
         </Accordion>
       )}
 
-      {inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex]?.type === InputType.TextInput && (
-          <FormTextInputProperties
-            properties={inputs[inputSelectedIndex] as TextInputProperties}
-            queryId={submitQueryId}
-            onValueChange={(inputProperties) => {
-              onInputChange(inputProperties);
-            }}
-            disabledKeys={disabledKeys}
-            initialData={initialData}
-          />
-        )}
-      {inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex]?.type === InputType.Checkbox && (
-          <FormCheckboxProperties
-            properties={inputs[inputSelectedIndex] as CheckboxProperties}
-            queryId={submitQueryId}
-            onValueChange={(inputProperties) => {
-              onInputChange(inputProperties);
-            }}
-            disabledKeys={disabledKeys}
-            initialData={initialData}
-          />
-        )}
-      {inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex]?.type === InputType.NumberInput && (
-          <FormNumberInputProperties
-            properties={inputs[inputSelectedIndex] as NumberInputProperties}
-            queryId={submitQueryId}
-            onValueChange={(inputProperties) => {
-              onInputChange(inputProperties);
-            }}
-            disabledKeys={disabledKeys}
-            initialData={initialData}
-          />
-        )}
-      {inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex]?.type === InputType.DatePicker && (
-          <FormDatePickerProperties
-            properties={inputs[inputSelectedIndex] as DatePickerProperties}
-            queryId={submitQueryId}
-            onValueChange={(inputProperties) => {
-              onInputChange(inputProperties);
-            }}
-            disabledKeys={disabledKeys}
-            initialData={initialData}
-          />
-        )}
-      {inputSelectedIndex !== null &&
-        optionSelectedIndex === null &&
-        inputs[inputSelectedIndex]?.type === InputType.Select && (
-          <FormSelectProperties
-            properties={inputs[inputSelectedIndex] as SelectProperties}
-            queryId={submitQueryId}
-            onValueChange={(inputProperties) => {
-              onInputChange(inputProperties);
-            }}
-            onSelectOption={setOptionSelectedIndex}
-            disabledKeys={disabledKeys}
-            initialData={initialData}
-          />
-        )}
-      {optionSelectedIndex !== null &&
-        inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex]?.type === InputType.Select && (
-          <FormSelectOption
-            option={
-              (inputs[inputSelectedIndex] as SelectProperties).options[
-                optionSelectedIndex
-              ]
-            }
-            onValueChange={(newOption) => {
-              const newInputs = inputs.map((input, index) => {
-                if (index === inputSelectedIndex) {
-                  const input = inputs[inputSelectedIndex] as SelectProperties;
-                  const newOptions = input.options.map((option, optIndex) => {
-                    if (optIndex === optionSelectedIndex) {
-                      return newOption;
-                    }
-                    return option;
-                  });
-                  return {
-                    ...input,
-                    options: newOptions,
-                  };
-                }
-                return input;
-              });
-              onValueChange({
-                ...properties,
-                inputs: newInputs,
-              });
-            }}
-          />
-        )}
+      {inputSelectedIndex !== null && (
+        <FormInput
+          input={inputs[inputSelectedIndex]}
+          submitQueryData={submitQueryData}
+          disabledKeys={disabledKeys}
+          initialData={initialData}
+          onInputChange={onInputChange}
+        />
+      )}
     </div>
   );
 }

@@ -113,7 +113,6 @@ export interface DataProvider {
 
 export class FormProperties {
   title: string = "Form title";
-  submitQueryId: string | null = null;
   submitQueryData: RestQueryData | null = null;
   queryParameters: Record<string, any> = {};
   submitButtonLabel: string = "Submit";
