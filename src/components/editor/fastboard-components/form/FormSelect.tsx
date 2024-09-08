@@ -36,7 +36,9 @@ export default function FormSelect({
   useEffect(() => {
     if (!formDataKey) return;
     const data = initialData ? initialData[defaultValueKey] : "";
-    setValue(data);
+    //get the first option that its label is equal to the data
+    const option = options.find((option) => option.label === data);
+    setValue(option ? `${option.key}/${option.label}` : "");
     setFormValue(formDataKey, data);
   }, [initialData, defaultValueKey]);
 

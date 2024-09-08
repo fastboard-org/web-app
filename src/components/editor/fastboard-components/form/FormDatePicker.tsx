@@ -72,6 +72,9 @@ export default function FormDatePicker({
       showMonthAndYearPickers
       value={value}
       onChange={(date) => {
+        if (!date) {
+          return;
+        }
         setValue(date);
         setFormValue(formDataKey, date.toString(), {
           shouldValidate: true,
