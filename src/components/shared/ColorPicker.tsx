@@ -20,6 +20,7 @@ export default function ColorPicker({
     <Popover placement="right">
       <PopoverTrigger>
         <Button
+          className="border border-default-300"
           isIconOnly
           size="sm"
           style={{
