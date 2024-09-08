@@ -23,6 +23,7 @@ export interface TextInputProperties extends BaseInputProperties {}
 export interface NumberInputProperties extends BaseInputProperties {}
 
 export interface SelectOptionProperties {
+  key: string;
   label: string;
 }
 

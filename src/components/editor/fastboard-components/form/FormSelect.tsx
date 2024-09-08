@@ -63,7 +63,9 @@ export default function FormSelect({
                 message: "This field is required",
               },
               onChange: (e) => {
-                setValue(e.target.value);
+                const value = e.target.value as string;
+                setValue(value);
+                setFormValue(formDataKey, value.split("/")[1]);
               },
             }),
           }
@@ -76,7 +78,11 @@ export default function FormSelect({
       {options
         .filter((option) => option.label !== "")
         .map((option, index) => {
-          return <SelectItem key={option.label}>{option.label}</SelectItem>;
+          return (
+            <SelectItem key={`${option.key}/${option.label}`}>
+              {option.label}
+            </SelectItem>
+          );
         })}
     </Select>
   );

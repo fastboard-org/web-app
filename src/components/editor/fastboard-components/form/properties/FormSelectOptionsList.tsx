@@ -2,6 +2,7 @@ import Option from "@/components/shared/Option";
 import { SelectOptionProperties } from "@/types/editor/form";
 import { Button } from "@nextui-org/react";
 import { Add } from "iconsax-react";
+import { v4 as uuidv4 } from "uuid";
 
 export default function FormSelectOptionsList({
   options,
@@ -12,18 +13,11 @@ export default function FormSelectOptionsList({
   onOptionsChange: (options: SelectOptionProperties[]) => void;
   onSelectOption: (index: number) => void;
 }) {
-  const getNextIndex = (label: string | undefined) => {
-    if (!label) return 0;
-    const index = label.split(" ")[1];
-    return parseInt(index) + 1;
-  };
-
   function addOption() {
-    const lastOption = options[options.length - 1];
-    const index = getNextIndex(lastOption?.label);
     onOptionsChange(
       options.concat({
-        label: `Option ${index}`,
+        key: uuidv4(),
+        label: `New Option`,
       })
     );
   }
