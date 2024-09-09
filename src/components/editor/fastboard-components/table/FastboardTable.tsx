@@ -138,7 +138,6 @@ export default function FastboardTable({
       accessorKey: c.key,
       id: c.key,
       header: c.label,
-      size: 180,
       enableSorting: c.key !== "actions",
       footer: (props) => props.column.id,
       cell: ({ cell, row }) => {
@@ -387,7 +386,6 @@ export default function FastboardTable({
       right:
         isPinned === "right" ? `${column.getAfter("right") - 21}px` : undefined,
       position: isPinned ? "sticky" : "relative",
-      width: column.getSize(),
       zIndex: isPinned ? 1 : 0,
     };
   };
@@ -413,7 +411,7 @@ export default function FastboardTable({
   }
 
   return (
-    <CustomSkeleton isLoaded={true} onlyRenderOnLoad className="w-full h-full">
+    <div className="w-full h-full">
       {selectedRowAction && (
         <ViewActionModal
           isOpen={viewModalOpen}
@@ -445,10 +443,9 @@ export default function FastboardTable({
             scrollbarStyles.scrollbar
           }
         >
-          <table className="w-full">
+          <table className="table-auto">
             {!hideHeader && (
               <thead
-                className="w-full"
                 style={{
                   height: "40px",
                 }}
@@ -542,6 +539,6 @@ export default function FastboardTable({
         </div>
         <BottomContent />
       </div>
-    </CustomSkeleton>
+    </div>
   );
 }

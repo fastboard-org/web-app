@@ -33,9 +33,9 @@ export default function FastboardSidebar({
           defaultSelectedKey={currentPage}
           onSelectionChange={handleSelectionChange}
           color="primary"
-          className="w-52"
+          className="w-full"
           classNames={{
-            tabList: "bg-transparent w-full",
+            tabList: "bg-transparent w-full max-w-52",
             tab: "min-h-14 justify-start",
           }}
         >
@@ -47,7 +47,7 @@ export default function FastboardSidebar({
                 <div className="flex items-center space-x-2 text-white">
                   <Icon icon={tab.icon} />
                   <div className="flex flex-col items-start">
-                    <span>{tab.label}</span>
+                    <span className="truncate">{tab.label}</span>
                     <span className="opacity-40">{tab.caption}</span>
                   </div>
                 </div>

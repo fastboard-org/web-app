@@ -21,7 +21,7 @@ export default function FastboardHeader({
   return (
     <Navbar
       maxWidth="full"
-      className="flex flex-row h-full w-full px-2"
+      className="flex flex-row h-full w-full px-2 shadow"
       classNames={{
         wrapper: "flex flex-row h-full w-full",
       }}
