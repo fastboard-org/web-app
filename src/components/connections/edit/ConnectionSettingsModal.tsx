@@ -83,7 +83,9 @@ const ConnectionSettingsModal = ({
                     label={""}
                     placeholder={"Main URL"}
                     value={credentials?.main_url}
-                    showHttps={connection.type === ConnectionType.REST}
+                    prefix={
+                      connection.type === ConnectionType.REST ? "https://" : ""
+                    }
                     onChange={(newValue) =>
                       setCredentials({
                         ...credentials,
