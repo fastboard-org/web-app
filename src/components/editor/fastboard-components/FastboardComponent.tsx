@@ -86,8 +86,12 @@ const FastboardComponent = ({
 
   return (
     <div
-      className={`relative w-full h-full transition border-2 rounded-2xl cursor-pointer  ${
+      className={`relative w-full h-full transition border-2 cursor-pointer  ${
         isSelected() ? "border-primary" : "border-transparent"
+      } ${
+        type === ComponentType.Header || type === ComponentType.Sidebar
+          ? "rounded-none"
+          : "rounded-2xl"
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
