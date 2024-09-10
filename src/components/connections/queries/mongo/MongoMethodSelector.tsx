@@ -1,9 +1,5 @@
 import { MONGO_METHOD } from "@/types/connections";
-import {
-  Autocomplete,
-  AutocompleteItem,
-  AutocompleteSection,
-} from "@nextui-org/react";
+import { Select, SelectItem, SelectSection } from "@nextui-org/react";
 import { methodColor } from "@/lib/mongo-methods";
 
 const sections = [
@@ -47,30 +43,31 @@ const MongoMethodSelector = ({
   onMethodChange: (method: MONGO_METHOD) => void;
 }) => {
   return (
-    <Autocomplete
+    <Select
       className={`w-1/4 min-w-[250px]`}
       aria-label={"Method"}
       placeholder={"Method"}
-      defaultSelectedKey={method}
-      selectedKey={method}
-      isClearable={false}
-      allowsEmptyCollection={false}
-      onSelectionChange={(key) => onMethodChange(key as MONGO_METHOD)}
+      selectedKeys={[method]}
+      disallowEmptySelection
+      onChange={(e) => onMethodChange(e.target.value as MONGO_METHOD)}
+      classNames={{
+        value: `text-${methodColor(method)} group-data-[has-value=true]:text-${methodColor(method)}`,
+      }}
     >
       {sections.map((section) => (
-        <AutocompleteSection key={section.title} title={section.title}>
+        <SelectSection key={section.title} title={section.title}>
           {section.methods.map((method) => (
-            <AutocompleteItem
+            <SelectItem
               key={method}
               value={method}
               className={`text-${methodColor(method)} data-[selectable=true]:focus:text-${methodColor(method)}`}
             >
               {method}
-            </AutocompleteItem>
+            </SelectItem>
           ))}
-        </AutocompleteSection>
+        </SelectSection>
       ))}
-    </Autocomplete>
+    </Select>
   );
 };
 
