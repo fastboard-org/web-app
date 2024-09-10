@@ -39,6 +39,11 @@ export enum HTTP_METHOD {
   PATCH = "PATCH",
 }
 
+export enum HTTP_CONTENT_TYPE {
+  JSON = "application/json",
+  MULTIPART = "multipart/form-data",
+}
+
 export interface RestQueryData {
   queryId: string;
   connectionId: string;

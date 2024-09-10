@@ -16,7 +16,6 @@ import {
   CardFooter,
   CardHeader,
   Divider,
-  Input,
   Spacer,
   Spinner,
 } from "@nextui-org/react";
@@ -35,6 +34,7 @@ import FormCheckbox from "./FormCheckbox";
 import FormSelect from "./FormSelect";
 import FormDatePicker from "./FormDatePicker";
 import FormFileInput from "./FormFileInput";
+import { fillQueryParameters, transformFiles } from "@/lib/form.utils";
 
 export default function FastboardForm({
   id,
@@ -49,6 +49,7 @@ export default function FastboardForm({
     title,
     inputs,
     submitQueryData,
+    contentType,
     queryParameters,
     submitButtonLabel,
     showShadow,
@@ -114,25 +115,12 @@ export default function FastboardForm({
     }
 
     //Fill the query parameters with data
-    let newQueryParameters = { ...queryParameters };
-    if (initialData) {
-      Object.keys(queryParameters).map((key) => {
-        const dataKey = queryParameters[key];
-        // @ts-ignore
-        newQueryParameters[key] = initialData[dataKey];
-      });
-    }
+    const newQueryParameters = fillQueryParameters(
+      queryParameters,
+      initialData
+    );
 
-    formData = Object.entries(formData).reduce((acc, [key, value]) => {
-      if (value instanceof FileList) {
-        value = value.item(0);
-      }
-      return {
-        ...acc,
-        [key]: value,
-      };
-    }, {});
-
+    formData = transformFiles(formData);
     execute({
       queryData: submitQueryData,
       parameters: {
@@ -141,7 +129,7 @@ export default function FastboardForm({
       },
       config: {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": contentType,
         },
       },
     });

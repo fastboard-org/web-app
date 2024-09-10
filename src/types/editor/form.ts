@@ -1,5 +1,5 @@
 import { ComponentId } from ".";
-import { Query, RestQueryData } from "../connections";
+import { HTTP_CONTENT_TYPE, Query, RestQueryData } from "../connections";
 
 export enum InputType {
   TextInput = "text-input",
@@ -133,6 +133,7 @@ export interface DataProvider {
 export class FormProperties {
   title: string = "Form title";
   submitQueryData: RestQueryData | null = null;
+  contentType: HTTP_CONTENT_TYPE = HTTP_CONTENT_TYPE.JSON;
   queryParameters: Record<string, any> = {};
   submitButtonLabel: string = "Submit";
   inputs: InputProperties[] = [];

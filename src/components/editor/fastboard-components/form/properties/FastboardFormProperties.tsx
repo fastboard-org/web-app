@@ -10,6 +10,8 @@ import {
   BreadcrumbItem,
   Breadcrumbs,
   Input,
+  Select,
+  SelectItem,
   Spacer,
 } from "@nextui-org/react";
 import QuerySelection from "../../../QuerySelection";
@@ -20,6 +22,7 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import QueryParameters from "./QueryParameters";
 import FormInput from "./FormInput";
+import { HTTP_CONTENT_TYPE } from "@/types/connections";
 
 export default function FastboardFormProperties({
   properties,
@@ -31,6 +34,7 @@ export default function FastboardFormProperties({
   const {
     title,
     submitQueryData,
+    contentType,
     queryParameters,
     submitButtonLabel,
     inputs,
@@ -168,7 +172,7 @@ export default function FastboardFormProperties({
               title: "font-medium",
             }}
           >
-            <div className="overflow-x-hidden">
+            <div className="flex flex-col gap-y-2 overflow-hidden">
               <Input
                 label="Title"
                 labelPlacement="outside"
@@ -181,7 +185,6 @@ export default function FastboardFormProperties({
                   });
                 }}
               />
-              <Spacer y={2} />
               <Input
                 label="Submit button label"
                 labelPlacement="outside"
@@ -193,7 +196,6 @@ export default function FastboardFormProperties({
                   });
                 }}
               />
-              <Spacer y={2} />
               <QuerySelection
                 selectedQueryId={submitQueryData?.queryId || ""}
                 onQuerySelect={(query) => {
@@ -209,7 +211,26 @@ export default function FastboardFormProperties({
                   });
                 }}
               />
-              <Spacer y={2} />
+              <Select
+                label="Content type"
+                labelPlacement="outside"
+                placeholder="Select content type"
+                disallowEmptySelection
+                selectedKeys={[contentType]}
+                onChange={(e) => {
+                  onValueChange({
+                    ...properties,
+                    contentType: e.target.value as HTTP_CONTENT_TYPE,
+                  });
+                }}
+              >
+                <SelectItem key={HTTP_CONTENT_TYPE.JSON}>
+                  {HTTP_CONTENT_TYPE.JSON}
+                </SelectItem>
+                <SelectItem key={HTTP_CONTENT_TYPE.MULTIPART}>
+                  {HTTP_CONTENT_TYPE.MULTIPART}
+                </SelectItem>
+              </Select>
               {initialData &&
                 submitQuery &&
                 submitQuery.metadata.parameters?.length > 0 && (
@@ -228,7 +249,6 @@ export default function FastboardFormProperties({
                     />
                   </div>
                 )}
-              <Spacer y={2} />
             </div>
           </AccordionItem>
           <AccordionItem

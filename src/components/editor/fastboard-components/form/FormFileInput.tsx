@@ -50,9 +50,6 @@ export default function FormFileInput({
                 value: required,
                 message: "This field is required",
               },
-              onChange: (e) => {
-                console.log(e.target.files?.item(0));
-              },
             }),
           }
         : {})}
