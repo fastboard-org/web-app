@@ -1,5 +1,6 @@
-import { NumberInputProperties } from "@/types/editor/form";
+import { FileInputProperties } from "@/types/editor/form";
 import { Input } from "@nextui-org/react";
+import { SearchNormal1 } from "iconsax-react";
 import { useEffect, useState } from "react";
 import {
   UseFormRegister,
@@ -7,32 +8,22 @@ import {
   UseFormUnregister,
 } from "react-hook-form";
 
-export default function FormNumberInput({
+export default function FormFileInput({
   properties,
   register,
   unregister,
   setFormValue,
   errors,
-  initialData,
 }: {
-  properties: NumberInputProperties;
+  properties: FileInputProperties;
   register: UseFormRegister<any>;
   unregister: UseFormUnregister<any>;
   setFormValue: UseFormSetValue<any>;
   errors: any;
-  initialData?: any;
 }) {
-  const { required, formDataKey, label, placeHolder, defaultValueKey } =
+  const { required, formDataKey, label, placeHolder, multiple, accept } =
     properties;
   const [formKey, setFormKey] = useState("");
-  const [value, setValue] = useState("");
-
-  useEffect(() => {
-    if (!formDataKey) return;
-    const data = initialData ? initialData[defaultValueKey] : "";
-    setValue(data);
-    setFormValue(formDataKey, data);
-  }, [initialData, defaultValueKey]);
 
   useEffect(() => {
     if (formDataKey === "") {
@@ -47,23 +38,28 @@ export default function FormNumberInput({
 
   return (
     <Input
-      aria-label="Number input"
-      type="number"
+      type="file"
+      multiple={multiple}
+      accept={accept?.join(",")}
+      aria-label="File input"
       isRequired={formDataKey !== "" ? required : false}
       {...(formDataKey !== ""
         ? {
             ...register(formDataKey, {
-              required: "This field is required",
-              valueAsNumber: true,
+              required: {
+                value: required,
+                message: "This field is required",
+              },
+              onChange: (e) => {
+                console.log(e.target.files?.item(0));
+              },
             }),
           }
         : {})}
       label={label}
       labelPlacement="outside"
       placeholder={placeHolder}
-      value={value}
-      onValueChange={setValue}
-      isClearable
+      startContent={<SearchNormal1 size={15} />}
       errorMessage={errors[formDataKey]?.message as string}
       isInvalid={!!errors[formDataKey]}
     />

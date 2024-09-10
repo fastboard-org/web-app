@@ -11,7 +11,7 @@ export default function CheckBoxProperty({
 }) {
   return (
     <div className="flex flex-row justify-between">
-      <span>{label}</span>
+      <span className="text-sm">{label}</span>
       <Checkbox isSelected={isSelected} onValueChange={onValueChange} />
     </div>
   );

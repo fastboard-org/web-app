@@ -7,6 +7,7 @@ export enum InputType {
   Select = "select",
   Checkbox = "checkbox",
   DatePicker = "date-picker",
+  FileInput = "file-input",
 }
 
 interface BaseInputProperties {
@@ -37,12 +38,18 @@ export interface CheckboxProperties extends BaseInputProperties {
 
 export interface DatePickerProperties extends BaseInputProperties {}
 
+export interface FileInputProperties extends BaseInputProperties {
+  accept: string[];
+  multiple: boolean;
+}
+
 export type InputProperties =
   | TextInputProperties
   | NumberInputProperties
   | SelectProperties
   | CheckboxProperties
-  | DatePickerProperties;
+  | DatePickerProperties
+  | FileInputProperties;
 
 export class DefaultInputProperties {
   static of(type: InputType): InputProperties {
@@ -92,6 +99,17 @@ export class DefaultInputProperties {
           type: InputType.DatePicker,
           label: "Date picker",
           placeHolder: "Select a date",
+          defaultValueKey: "",
+        };
+      case InputType.FileInput:
+        return {
+          formDataKey: "",
+          required: true,
+          type: InputType.FileInput,
+          label: "File input",
+          placeHolder: "Select a file",
+          accept: ["all"],
+          multiple: false,
           defaultValueKey: "",
         };
       default:

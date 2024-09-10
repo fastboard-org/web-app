@@ -1,6 +1,7 @@
 import { HTTP_METHOD, Query } from "@/types/connections";
 import { axiosInstance } from "@/lib/axios";
 import { isPreviewPage, isPublishPage } from "@/lib/helpers";
+import { AxiosRequestConfig } from "axios";
 
 const previewQuery = async (
   connectionId: string,
@@ -8,7 +9,7 @@ const previewQuery = async (
   path: string,
   headers: any,
   body: any,
-  parameters: any,
+  parameters: any
 ) => {
   const response = await axiosInstance.post(
     `/adapter/${connectionId}/preview`,
@@ -18,7 +19,7 @@ const previewQuery = async (
       headers,
       body,
       parameters,
-    },
+    }
   );
 
   return response.data;
@@ -29,6 +30,7 @@ async function executeQuery(
   dashboardId: string,
   parameters?: Record<string, any>,
   previewAccessToken?: string,
+  config?: AxiosRequestConfig
 ) {
   try {
     if (!queryId) {
@@ -43,9 +45,13 @@ async function executeQuery(
 
     parametersToSend.token = viewMode ? token : previewAccessToken;
 
-    const response = await axiosInstance.post(`/adapter/execute/${queryId}`, {
-      parameters: parametersToSend,
-    });
+    const response = await axiosInstance.post(
+      `/adapter/execute/${queryId}`,
+      {
+        parameters: parametersToSend,
+      },
+      config
+    );
 
     if (response.data?.status_code !== 200) {
       if (response.data?.status_code === 401) {
@@ -57,7 +63,7 @@ async function executeQuery(
 
       const error = response.data?.body?.error;
       throw new Error(
-        `Error ${response.data.status_code}: ${error?.description ?? ""}`,
+        `Error ${response.data.status_code}: ${error?.description ?? ""}`
       );
     }
     return response.data;

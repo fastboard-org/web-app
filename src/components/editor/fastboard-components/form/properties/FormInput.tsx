@@ -2,6 +2,7 @@ import {
   CheckboxProperties,
   DatePickerProperties,
   DefaultInputProperties,
+  FileInputProperties,
   InputProperties,
   InputType,
   NumberInputProperties,
@@ -18,6 +19,7 @@ import FormDatePickerProperties from "./FormDatePickerProperties";
 import FormSelectProperties from "./FormSelectProperties";
 import { useState } from "react";
 import FormSelectOption from "./FormSelectOption";
+import FormFileInputProperties from "./FormFileInputProperties";
 
 export default function FormInput({
   input,
@@ -144,6 +146,16 @@ export default function FormInput({
               options: newOptions,
             });
           }}
+        />
+      )}
+      {input.type === InputType.FileInput && (
+        <FormFileInputProperties
+          properties={input as FileInputProperties}
+          queryId={submitQueryData?.queryId || ""}
+          onValueChange={(inputProperties) => {
+            onInputChange(inputProperties);
+          }}
+          disabledKeys={disabledKeys}
         />
       )}
     </div>

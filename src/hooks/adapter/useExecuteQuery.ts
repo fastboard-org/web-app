@@ -5,6 +5,7 @@ import { adapterService } from "@/lib/services/adapter";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { previewAccessTokenState } from "@/atoms/editor";
+import { AxiosRequestConfig } from "axios";
 
 const useExecuteQuery = ({
   onSuccess,
@@ -31,10 +32,12 @@ const useExecuteQuery = ({
       queryData,
       parameters,
       invalidateQueries,
+      config,
     }: {
       queryData: RestQueryData | null;
       parameters: Record<string, any>;
       invalidateQueries?: InvalidateQueryFilters;
+      config?: AxiosRequestConfig;
     }) => {
       setInvalidateQueries(invalidateQueries);
       return adapterService.executeQuery(
@@ -42,6 +45,7 @@ const useExecuteQuery = ({
         dashboardId,
         parameters,
         previewAccessToken,
+        config
       );
     },
     onSuccess: (data, variables) => {

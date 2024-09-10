@@ -48,7 +48,7 @@ export default function FormTextInput({
   return (
     <Input
       aria-label="Text input"
-      isRequired={required}
+      isRequired={formDataKey !== "" ? required : false}
       {...(formDataKey !== ""
         ? {
             ...register(formDataKey, {

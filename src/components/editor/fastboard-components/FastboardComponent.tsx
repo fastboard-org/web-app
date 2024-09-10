@@ -37,15 +37,14 @@ const FastboardComponent = ({
   const setIsSettingsDrawerOpen = useSetRecoilState(isSettingsDrawerOpen);
   const setIsAuthDrawerOpen = useSetRecoilState(isAuthDrawerOpen);
   const [propertiesDrawerOpen, setIsPropertiesDrawerOpen] = useRecoilState(
-    isPropertiesDrawerOpen,
+    isPropertiesDrawerOpen
   );
   const [propertiesDrawerStateValue, setPropertiesDrawerState] = useRecoilState(
-    propertiesDrawerState,
+    propertiesDrawerState
   );
   const [isHovered, setIsHovered] = useState(false);
 
   function onClickComponent(e: React.MouseEvent<HTMLDivElement>) {
-    e.preventDefault();
     setIsComponentsDrawerOpen(false);
     setIsSettingsDrawerOpen(false);
     setIsAuthDrawerOpen(false);

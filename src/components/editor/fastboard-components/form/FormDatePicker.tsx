@@ -56,7 +56,7 @@ export default function FormDatePicker({
   return (
     <DatePicker
       aria-label="Date picker"
-      isRequired={required}
+      isRequired={formDataKey !== "" ? required : false}
       {...(formDataKey !== ""
         ? {
             ...register(formDataKey, {

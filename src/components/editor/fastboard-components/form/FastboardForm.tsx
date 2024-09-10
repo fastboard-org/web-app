@@ -1,6 +1,7 @@
 import {
   CheckboxProperties,
   DatePickerProperties,
+  FileInputProperties,
   FormProperties,
   InputProperties,
   InputType,
@@ -15,6 +16,7 @@ import {
   CardFooter,
   CardHeader,
   Divider,
+  Input,
   Spacer,
   Spinner,
 } from "@nextui-org/react";
@@ -32,6 +34,7 @@ import FormNumberInput from "./FormNumberInput";
 import FormCheckbox from "./FormCheckbox";
 import FormSelect from "./FormSelect";
 import FormDatePicker from "./FormDatePicker";
+import FormFileInput from "./FormFileInput";
 
 export default function FastboardForm({
   id,
@@ -120,11 +123,26 @@ export default function FastboardForm({
       });
     }
 
+    formData = Object.entries(formData).reduce((acc, [key, value]) => {
+      if (value instanceof FileList) {
+        value = value.item(0);
+      }
+      return {
+        ...acc,
+        [key]: value,
+      };
+    }, {});
+
     execute({
       queryData: submitQueryData,
       parameters: {
         ...newQueryParameters,
         ...formData,
+      },
+      config: {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       },
     });
     reset();
@@ -189,6 +207,17 @@ export default function FastboardForm({
             setFormValue={setValue}
             errors={errors}
             initialData={initialData}
+          />
+        );
+      case InputType.FileInput:
+        return (
+          <FormFileInput
+            key={index}
+            properties={input as FileInputProperties}
+            register={register}
+            unregister={unregister}
+            setFormValue={setValue}
+            errors={errors}
           />
         );
       default:

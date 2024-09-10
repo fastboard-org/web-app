@@ -56,7 +56,7 @@ export default function FormSelect({
   return (
     <Select
       aria-label="Select input"
-      isRequired={required}
+      isRequired={formDataKey !== "" ? required : false}
       {...(formDataKey !== ""
         ? {
             ...register(formDataKey, {
