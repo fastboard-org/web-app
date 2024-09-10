@@ -127,6 +127,7 @@ const QuerySelectionList = ({
         >
           <Listbox
             aria-label="Queries List"
+            label={"Queries"}
             disallowEmptySelection
             selectionMode="single"
             selectedKeys={[selectedQuery?.id]}
@@ -152,13 +153,19 @@ const QuerySelectionList = ({
                   classNames={{
                     title: "text-md",
                   }}
+                  aria-label={query.name}
                 >
                   {content}
                 </ListboxItem>
               );
             })}
           </Listbox>
-          <Button className={"w-[95%]"} onClick={onAddClick} variant={"flat"}>
+          <Button
+            className={"w-[95%]"}
+            onClick={onAddClick}
+            variant={"flat"}
+            aria-label={"Add Query"}
+          >
             Add Query
           </Button>
         </motion.div>

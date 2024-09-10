@@ -1,24 +1,20 @@
 import { Input } from "@nextui-org/react";
 
-const HTTPS_PREFIX = "https://";
-
 const UrlInput = ({
   value,
   onChange,
-  showHttps = true,
   label = "Main URL",
   placeholder = "api.example.com",
+  prefix = "",
 }: {
   value: string;
   onChange: (newValue: string) => void;
-  showHttps?: boolean;
   label?: string;
   placeholder?: string;
+  prefix?: string;
 }) => {
   const valueToShow =
-    showHttps && value.startsWith(HTTPS_PREFIX)
-      ? value.split(HTTPS_PREFIX)[1]
-      : value;
+    prefix && value.startsWith(prefix) ? value.split(prefix)[1] : value;
 
   return (
     <Input
@@ -31,16 +27,16 @@ const UrlInput = ({
       value={valueToShow}
       onChange={(e) => {
         const newValue = e.target.value;
-        if (showHttps && newValue.startsWith(HTTPS_PREFIX)) {
-          onChange(newValue.split(HTTPS_PREFIX)[1]);
+        if (prefix && newValue.startsWith(prefix)) {
+          onChange(newValue.split(prefix)[1]);
         } else {
           onChange(newValue);
         }
       }}
       startContent={
-        showHttps ? (
+        prefix ? (
           <div className="pointer-events-none flex items-center">
-            <span className="text-default-400 text-small">{HTTPS_PREFIX}</span>
+            <span className="text-default-400 text-small">{prefix}</span>
           </div>
         ) : null
       }

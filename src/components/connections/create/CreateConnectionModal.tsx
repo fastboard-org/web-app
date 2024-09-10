@@ -66,7 +66,7 @@ const CreateConnectionModal = ({
   };
 
   const urlPlaceholders = {
-    [ConnectionType.REST]: "https://api.example.com",
+    [ConnectionType.REST]: "api.example.com",
     [ConnectionType.MONGO]: "mongodb://<user>:<pass>@<host>/<db>",
     [ConnectionType.SQL]: "mysql://",
   };
@@ -117,7 +117,9 @@ const CreateConnectionModal = ({
                   <UrlInput
                     value={mainUrl}
                     onChange={setMainUrl}
-                    showHttps={connectionType === ConnectionType.REST}
+                    prefix={
+                      connectionType === ConnectionType.REST ? "https://" : ""
+                    }
                     placeholder={
                       connectionType ? urlPlaceholders[connectionType] : ""
                     }

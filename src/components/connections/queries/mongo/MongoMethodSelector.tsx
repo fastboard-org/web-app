@@ -48,13 +48,13 @@ const MongoMethodSelector = ({
 }) => {
   return (
     <Autocomplete
-      className={
-        "w-1/4 min-w-[250px] text-${color} group-data-[has-value=true]:text-${color}"
-      }
+      className={`w-1/4 min-w-[250px]`}
+      aria-label={"Method"}
       placeholder={"Method"}
       defaultSelectedKey={method}
       selectedKey={method}
       isClearable={false}
+      allowsEmptyCollection={false}
       onSelectionChange={(key) => onMethodChange(key as MONGO_METHOD)}
     >
       {sections.map((section) => (
