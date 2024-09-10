@@ -17,6 +17,23 @@ import { useEffect, useState } from "react";
 import { isValidBody } from "@/lib/queries";
 import { methodHasUpdateBody } from "@/lib/mongo-methods";
 
+const methodDefaultValue = (method: MONGO_METHOD) => {
+  switch (method) {
+    case MONGO_METHOD.AGGREGATE:
+      return "[]";
+    case MONGO_METHOD.DISTINCT:
+      return '""';
+    case MONGO_METHOD.INSERT_MANY:
+      return "[]";
+    default:
+      return "{}";
+  }
+};
+
+const getBody = (body: any, method: MONGO_METHOD) => {
+  return JSON.stringify(body, null, 4) || methodDefaultValue(method);
+};
+
 const MongoQueryEditor = ({
   connection,
   query,
@@ -29,23 +46,23 @@ const MongoQueryEditor = ({
   const isMethodListClosed = useRecoilValue(isMethodListClosedState);
 
   const [filterBody, setFilterBody] = useState<string>(
-    JSON.stringify(query?.metadata?.filter_body, null, 4) || "{}",
+    getBody(query?.metadata?.filter_body, query?.metadata?.method)
   );
 
   const [updateBody, setUpdateBody] = useState<string>(
-    JSON.stringify(query?.metadata?.update_body, null, 4) || "{}",
+    getBody(query?.metadata?.update_body, query?.metadata?.method)
   );
 
   const [collectionName, setCollectionName] = useState<string>(
-    query?.metadata?.collection ?? "",
+    query?.metadata?.collection ?? ""
   );
 
   useEffect(() => {
     setFilterBody(
-      JSON.stringify(query?.metadata?.filter_body, null, 4) || "{}",
+      getBody(query?.metadata?.filter_body, query?.metadata?.method)
     );
     setUpdateBody(
-      JSON.stringify(query?.metadata?.update_body, null, 4) || "{}",
+      getBody(query?.metadata?.update_body, query?.metadata?.method)
     );
     setCollectionName(query?.metadata?.collection ?? "");
   }, [query]);
@@ -131,9 +148,7 @@ const MongoQueryEditor = ({
                 invalidBody={!isValidBody(filterBody)}
                 label={"Filter Body"}
                 placeholder={"Enter filter body here"}
-                defaultValue={
-                  query.metadata.method === MONGO_METHOD.AGGREGATE ? "[]" : "{}"
-                }
+                defaultValue={methodDefaultValue(query?.metadata?.method)}
               />
               {methodHasUpdateBody(query.metadata.method) && (
                 <BodyEditor
