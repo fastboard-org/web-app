@@ -62,3 +62,17 @@ export enum MONGO_METHOD {
   UPDATE_ONE = "updateOne",
   UPDATE_MANY = "updateMany",
 }
+
+export interface MongoQueryMetadata {
+  method: MONGO_METHOD;
+  collection: string;
+  filter_body: any;
+  update_body: any;
+}
+
+export interface RestQueryMetadata {
+  method: HTTP_METHOD;
+  path: string;
+  headers: RestHeader[];
+  body: any;
+}
