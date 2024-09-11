@@ -1,22 +1,16 @@
-import { HTTP_METHOD, Query } from "@/types/connections";
+import { MongoQueryMetadata, RestQueryMetadata } from "@/types/connections";
 import { axiosInstance } from "@/lib/axios";
 import { isPreviewPage, isPublishPage } from "@/lib/helpers";
 
 const previewQuery = async (
   connectionId: string,
-  method: HTTP_METHOD,
-  path: string,
-  headers: any,
-  body: any,
+  queryMetadata: MongoQueryMetadata | RestQueryMetadata,
   parameters: any,
 ) => {
   const response = await axiosInstance.post(
     `/adapter/${connectionId}/preview`,
     {
-      method,
-      path,
-      headers,
-      body,
+      connection_metadata: queryMetadata,
       parameters,
     },
   );
