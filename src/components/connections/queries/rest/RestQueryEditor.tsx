@@ -12,7 +12,7 @@ import HeadersTable from "@/components/connections/queries/rest/HeadersTable";
 import { useEffect, useState } from "react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { Lock } from "iconsax-react";
-import RestResponse from "@/components/connections/queries/rest/RestResponse";
+import ResponseViewer from "@/components/connections/queries/ResponseViewer";
 import AuthModal from "@/components/connections/queries/rest/AuthModal";
 import { useRecoilValue } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
@@ -82,10 +82,12 @@ const RestQueryEditor = ({
 
     previewQuery({
       connectionId: connection.id,
-      method: query.metadata.method,
-      path,
-      headers: convertToObject(headers),
-      body: JSON.parse(body),
+      queryMetadata: {
+        method: query.metadata.method,
+        path,
+        headers: convertToObject(headers),
+        body: JSON.parse(body),
+      },
       parameters,
     });
   };
@@ -166,7 +168,10 @@ const RestQueryEditor = ({
                 />
               </Tab>
               <Tab key={"response"} title={"Response"}>
-                <RestResponse response={response} responseData={responseData} />
+                <ResponseViewer
+                  status={response?.status_code}
+                  data={responseData}
+                />
               </Tab>
             </Tabs>
             <Button

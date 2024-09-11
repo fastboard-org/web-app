@@ -16,6 +16,10 @@ import BodyEditor from "@/components/connections/queries/BodyEditor";
 import { useEffect, useState } from "react";
 import { isValidBody } from "@/lib/queries";
 import { methodHasUpdateBody } from "@/lib/mongo-methods";
+import { convertToObject } from "@/lib/rest-queries";
+import { usePreviewQuery } from "@/hooks/adapter/usePreviewQuery";
+import { toast } from "sonner";
+import ResponseViewer from "@/components/connections/queries/ResponseViewer";
 
 const methodDefaultValue = (method: MONGO_METHOD) => {
   switch (method) {
@@ -46,26 +50,58 @@ const MongoQueryEditor = ({
   const isMethodListClosed = useRecoilValue(isMethodListClosedState);
 
   const [filterBody, setFilterBody] = useState<string>(
-    getBody(query?.metadata?.filter_body, query?.metadata?.method)
+    getBody(query?.metadata?.filter_body, query?.metadata?.method),
   );
 
   const [updateBody, setUpdateBody] = useState<string>(
-    getBody(query?.metadata?.update_body, query?.metadata?.method)
+    getBody(query?.metadata?.update_body, query?.metadata?.method),
   );
 
   const [collectionName, setCollectionName] = useState<string>(
-    query?.metadata?.collection ?? ""
+    query?.metadata?.collection ?? "",
   );
+
+  const [response, setResponse] = useState<any>(null);
+  const [selectedTab, setSelectedTab] = useState<string>("body");
+
+  const { previewQuery, loading: previewQueryLoading } = usePreviewQuery({
+    onSuccess: (response: any) => {
+      setResponse(response);
+      setSelectedTab("response");
+    },
+    onError: (error: any) => {
+      console.error("Error previewing query", error);
+      toast.error("Failed to send request.");
+    },
+  });
 
   useEffect(() => {
     setFilterBody(
-      getBody(query?.metadata?.filter_body, query?.metadata?.method)
+      getBody(query?.metadata?.filter_body, query?.metadata?.method),
     );
     setUpdateBody(
-      getBody(query?.metadata?.update_body, query?.metadata?.method)
+      getBody(query?.metadata?.update_body, query?.metadata?.method),
     );
     setCollectionName(query?.metadata?.collection ?? "");
   }, [query]);
+
+  const handleSend = () => {
+    const parameters =
+      query?.metadata?.parameters?.reduce((acc: any, param: QueryParameter) => {
+        return { ...acc, [param.name]: param.preview };
+      }, {}) ?? {};
+
+    previewQuery({
+      connectionId: connection.id,
+      queryMetadata: {
+        method: query.metadata.method,
+        collection: collectionName,
+        filter_body: JSON.parse(filterBody),
+        update_body: JSON.parse(updateBody),
+      },
+      parameters,
+    });
+  };
 
   const canSave =
     isValidBody(filterBody) &&
@@ -129,7 +165,9 @@ const MongoQueryEditor = ({
           />
           <Button
             color={"primary"}
-            isDisabled={!isValidBody(filterBody) && !isValidBody(updateBody)}
+            isDisabled={!canSave}
+            onClick={handleSend}
+            isLoading={previewQueryLoading}
           >
             Send
           </Button>
@@ -140,6 +178,8 @@ const MongoQueryEditor = ({
               panel:
                 "p-0 mt-2 h-full overflow-y-auto " + scrollbarStyles.scrollbar,
             }}
+            selectedKey={selectedTab}
+            onSelectionChange={(key) => setSelectedTab(key as string)}
           >
             <Tab key={"body"} title={"Body"} className={"flex gap-5"}>
               <BodyEditor
@@ -160,7 +200,9 @@ const MongoQueryEditor = ({
                 />
               )}
             </Tab>
-            <Tab key={"response"} title={"Response"}></Tab>
+            <Tab key={"response"} title={"Response"}>
+              <ResponseViewer data={response} />
+            </Tab>
           </Tabs>
         </Card>
       </div>
