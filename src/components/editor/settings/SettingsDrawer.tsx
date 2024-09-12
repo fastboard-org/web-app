@@ -7,6 +7,7 @@ import LayoutSelection from "./LayoutSelection";
 import HeaderSettings from "./HeaderSettings";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import SidebarSettings from "./SidebarSettings";
+import { Moon, Sun1 } from "iconsax-react";
 
 export default function SettingsDrawer() {
   const { dashboard, changeLayout, changeDefaultTheme } = useDashboard();
@@ -45,9 +46,26 @@ export default function SettingsDrawer() {
           onChange={(e) => {
             changeDefaultTheme(e.target.value as "light" | "dark");
           }}
+          startContent={
+            dashboard?.metadata.defaultTheme === "light" ? (
+              <Sun1 size="20" variant="Bold" />
+            ) : (
+              <Moon size="20" variant="Bold" />
+            )
+          }
         >
-          <SelectItem key={"light"}>Light</SelectItem>
-          <SelectItem key={"dark"}>Dark</SelectItem>
+          <SelectItem
+            key={"light"}
+            startContent={<Sun1 size="20" variant="Bold" />}
+          >
+            Light
+          </SelectItem>
+          <SelectItem
+            key={"dark"}
+            startContent={<Moon size="20" variant="Bold" />}
+          >
+            Dark
+          </SelectItem>
         </Select>
       </div>
     </motion.div>

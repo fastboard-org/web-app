@@ -50,25 +50,6 @@ export default function SidebarStyle({
           }
         }}
       />
-      <ColorPicker
-        label="Selected color"
-        initialColor={
-          theme === "light" ? selectedColor.light : selectedColor.dark
-        }
-        onColorChange={(color) => {
-          if (theme === "light") {
-            onValueChange({
-              ...properties,
-              selectedColor: { ...selectedColor, light: color },
-            });
-          } else {
-            onValueChange({
-              ...properties,
-              selectedColor: { ...selectedColor, dark: color },
-            });
-          }
-        }}
-      />
     </div>
   );
 }
