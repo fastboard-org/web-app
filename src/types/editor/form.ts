@@ -1,5 +1,6 @@
 import { ComponentId } from ".";
 import { Query, RestQueryData } from "../connections";
+import { Color } from "./style-types";
 
 export enum InputType {
   TextInput = "text-input",
@@ -106,6 +107,10 @@ export class FormProperties {
   showShadow: boolean = true;
   initialData: Object | null = null;
   dataProvider: DataProvider | null = null;
+  submitColor: Color = {
+    light: "#006FEE",
+    dark: "#006FEE",
+  };
 
   static default(): FormProperties {
     return new FormProperties();

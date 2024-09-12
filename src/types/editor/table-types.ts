@@ -52,6 +52,10 @@ export class FastboardTableProperties {
     light: "#f4f4f5",
     dark: "#27272a",
   };
+  headerTextColor: Color = {
+    light: "#52525b",
+    dark: "#71717a",
+  };
 
   static default(): FastboardTableProperties {
     return new FastboardTableProperties();

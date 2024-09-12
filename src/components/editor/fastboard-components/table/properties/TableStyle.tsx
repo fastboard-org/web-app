@@ -16,6 +16,7 @@ export default function TableStyle({
     headerSticky,
     isStriped,
     headerColor,
+    headerTextColor,
     addOns: { addRowForm },
   } = properties;
 
@@ -45,53 +46,72 @@ export default function TableStyle({
           }}
         />
       </div>
-      <div className="flex flex-row justify-between">
-        <span>Header color</span>
-        <ColorPicker
-          initialColor={
-            theme === "light" ? headerColor.light : headerColor.dark
+      <ColorPicker
+        label="Header color"
+        initialColor={theme === "light" ? headerColor.light : headerColor.dark}
+        onColorChange={(color) => {
+          if (theme === "light") {
+            onValueChange({
+              ...properties,
+              headerColor: {
+                light: color,
+                dark: headerColor.dark,
+              },
+            });
+          } else {
+            onValueChange({
+              ...properties,
+              headerColor: {
+                light: headerColor.light,
+                dark: color,
+              },
+            });
           }
-          onColorChange={(color) => {
-            if (theme === "light") {
-              onValueChange({
-                ...properties,
-                headerColor: {
-                  light: color,
-                  dark: headerColor.dark,
-                },
-              });
-            } else {
-              onValueChange({
-                ...properties,
-                headerColor: {
-                  light: headerColor.light,
-                  dark: color,
-                },
-              });
-            }
-          }}
-        />
-      </div>
+        }}
+      />
+      <ColorPicker
+        label="Header text color"
+        initialColor={
+          theme === "light" ? headerTextColor.light : headerTextColor.dark
+        }
+        onColorChange={(color) => {
+          if (theme === "light") {
+            onValueChange({
+              ...properties,
+              headerTextColor: {
+                light: color,
+                dark: headerTextColor.dark,
+              },
+            });
+          } else {
+            onValueChange({
+              ...properties,
+              headerTextColor: {
+                light: headerTextColor.light,
+                dark: color,
+              },
+            });
+          }
+        }}
+      />
 
       {addRowForm && (
-        <div className="flex flex-row justify-between">
-          <span>Add row color</span>
-          <ColorPicker
-            initialColor={addRowForm.buttonColor}
-            onColorChange={(color) => {
-              onValueChange({
-                ...properties,
-                addOns: {
-                  ...properties.addOns,
-                  addRowForm: {
-                    ...addRowForm,
-                    buttonColor: color,
-                  },
+        <ColorPicker
+          label="Add row color"
+          initialColor={addRowForm.buttonColor}
+          onColorChange={(color) => {
+            onValueChange({
+              ...properties,
+              addOns: {
+                ...properties.addOns,
+                addRowForm: {
+                  ...addRowForm,
+                  buttonColor: color,
                 },
-              });
-            }}
-          />
-        </div>
+              },
+            });
+          }}
+        />
       )}
     </div>
   );

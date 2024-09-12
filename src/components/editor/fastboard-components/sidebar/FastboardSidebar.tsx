@@ -1,7 +1,7 @@
 import { Icon } from "@/components/shared/IconPicker";
 import useNavigation from "@/hooks/useNavigation";
 import { SidebarProperties } from "@/types/editor/sidebar-types";
-import { Tab, Tabs } from "@nextui-org/react";
+import { extendVariants, Tab, Tabs } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 import { Key } from "react";
 
@@ -13,6 +13,7 @@ export default function FastboardSidebar({
   const { theme } = useTheme();
   const { currentPage, changePage } = useNavigation();
   const { menuItems, backgroundColor, textColor, selectedColor } = properties;
+  const cursorClassName = `bg-[${selectedColor.light}]`;
 
   function handleSelectionChange(key: Key) {
     changePage(key.toString());
@@ -32,8 +33,8 @@ export default function FastboardSidebar({
           isVertical
           defaultSelectedKey={currentPage}
           onSelectionChange={handleSelectionChange}
-          color="primary"
           className="w-full"
+          color="primary"
           classNames={{
             tabList: "bg-transparent w-full w-52",
             tab: "min-h-14 justify-start",

@@ -88,6 +88,7 @@ export default function FastboardTable({
     isStriped,
     rowsPerPage,
     headerColor,
+    headerTextColor,
   } = properties;
   const {
     data,
@@ -459,13 +460,17 @@ export default function FastboardTable({
                         <th
                           key={header.id}
                           colSpan={header.colSpan}
-                          className="p-2 text-xs font-semibold text-default-600 dark:text-default-500 bg-content2 dark:bg-content2"
+                          className="p-2 text-xs font-semibold"
                           style={{
                             ...getCommonPinningStyles(column),
                             backgroundColor:
                               theme === "light"
                                 ? headerColor.light
                                 : headerColor.dark,
+                            color:
+                              theme === "light"
+                                ? headerTextColor.light
+                                : headerTextColor.dark,
                             borderTopRightRadius: column.getIsLastColumn()
                               ? "10px"
                               : undefined,

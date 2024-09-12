@@ -25,6 +25,7 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
 import QueryParameters from "./QueryParameters";
+import FormStyle from "./FormStyle";
 
 export default function FastboardFormProperties({
   properties,
@@ -45,7 +46,7 @@ export default function FastboardFormProperties({
   const { query: submitQuery } = useGetQuery(submitQueryId);
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
-    null,
+    null
   );
   const disabledKeys = inputs.map((input) => input.formDataKey);
 
@@ -72,7 +73,7 @@ export default function FastboardFormProperties({
           [key]: value,
         };
       },
-      {},
+      {}
     );
 
     //Clear all default values from inputs
@@ -137,7 +138,7 @@ export default function FastboardFormProperties({
           selectionMode="multiple"
           isCompact
           fullWidth
-          defaultExpandedKeys={["basic", "inputs", "style"]}
+          defaultExpandedKeys={["basic", "inputs"]}
           className="p-0"
         >
           <AccordionItem
@@ -246,6 +247,16 @@ export default function FastboardFormProperties({
                 }}
               />
             )}
+          </AccordionItem>
+          <AccordionItem
+            key="style"
+            className="pb-2"
+            title="Style"
+            classNames={{
+              title: "font-medium",
+            }}
+          >
+            <FormStyle properties={properties} onValueChange={onValueChange} />
           </AccordionItem>
         </Accordion>
       )}

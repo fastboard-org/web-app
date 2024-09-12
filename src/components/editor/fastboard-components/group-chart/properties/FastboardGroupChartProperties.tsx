@@ -125,25 +125,23 @@ const FastboardGroupChartPropertiesComponent = ({
         >
           Minimized labels
         </Checkbox>
-        <div className="flex flex-row justify-between items-center">
-          <span className="text-small">Background color</span>
-          <ColorPicker
-            initialColor={theme === "light" ? barsColor.light : barsColor.dark}
-            onColorChange={(color) => {
-              if (theme === "light") {
-                onValueChange({
-                  ...properties,
-                  barsColor: { ...barsColor, light: color },
-                });
-              } else {
-                onValueChange({
-                  ...properties,
-                  barsColor: { ...barsColor, dark: color },
-                });
-              }
-            }}
-          />
-        </div>
+        <ColorPicker
+          label="Bar color"
+          initialColor={theme === "light" ? barsColor.light : barsColor.dark}
+          onColorChange={(color) => {
+            if (theme === "light") {
+              onValueChange({
+                ...properties,
+                barsColor: { ...barsColor, light: color },
+              });
+            } else {
+              onValueChange({
+                ...properties,
+                barsColor: { ...barsColor, dark: color },
+              });
+            }
+          }}
+        />
       </AccordionItem>
     </Accordion>
   );

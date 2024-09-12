@@ -9,7 +9,7 @@ export const editorCanvasRefState = atom<HTMLDivElement | null>({
 
 export const isComponentsDrawerOpen = atom({
   key: "isComponentsDrawerOpen",
-  default: false,
+  default: true,
 });
 export const isPropertiesDrawerOpen = atom({
   key: "isPropertiesDrawerOpen",
