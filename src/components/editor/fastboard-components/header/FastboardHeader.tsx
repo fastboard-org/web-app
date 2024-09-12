@@ -22,6 +22,7 @@ export default function FastboardHeader({
     divider,
     backgroundColor,
     textColor,
+    themeSwitcherColor,
   } = properties;
   const [imageError, setImageError] = useState(false);
 
@@ -84,14 +85,28 @@ export default function FastboardHeader({
 
         {showThemeSwitcher && position === FastboardHeaderPosition.Right && (
           <NavbarItem className="order-3">
-            <ThemeSwitcher size="md" />
+            <ThemeSwitcher
+              size="md"
+              color={
+                theme === "light"
+                  ? themeSwitcherColor.light
+                  : themeSwitcherColor.dark
+              }
+            />
           </NavbarItem>
         )}
       </NavbarContent>
       {showThemeSwitcher && position !== FastboardHeaderPosition.Right && (
         <NavbarContent className="py-1" justify="end">
           <NavbarItem>
-            <ThemeSwitcher size="md" />
+            <ThemeSwitcher
+              size="md"
+              color={
+                theme === "light"
+                  ? themeSwitcherColor.light
+                  : themeSwitcherColor.dark
+              }
+            />
           </NavbarItem>
         </NavbarContent>
       )}

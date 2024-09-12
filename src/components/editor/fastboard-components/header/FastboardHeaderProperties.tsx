@@ -34,6 +34,7 @@ const FastboardHeaderPropertiesComponent = ({
     divider,
     backgroundColor,
     textColor,
+    themeSwitcherColor,
   } = properties;
 
   return (
@@ -330,6 +331,29 @@ const FastboardHeaderPropertiesComponent = ({
               }
             }}
           />
+          {showThemeSwitcher && (
+            <ColorPicker
+              label="Theme switcher"
+              initialColor={
+                theme === "light"
+                  ? themeSwitcherColor.light
+                  : themeSwitcherColor.dark
+              }
+              onColorChange={(color) => {
+                if (theme === "light") {
+                  onValueChange({
+                    ...properties,
+                    themeSwitcherColor: { ...themeSwitcherColor, light: color },
+                  });
+                } else {
+                  onValueChange({
+                    ...properties,
+                    themeSwitcherColor: { ...themeSwitcherColor, dark: color },
+                  });
+                }
+              }}
+            />
+          )}
         </div>
       </AccordionItem>
     </Accordion>

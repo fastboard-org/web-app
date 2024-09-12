@@ -49,6 +49,10 @@ export class FastboardHeaderProperties {
     light: "#11181C",
     dark: "#ECEDEE",
   };
+  themeSwitcherColor: Color = {
+    light: "#006FEE",
+    dark: "#006FEE",
+  };
 
   static default(): FastboardHeaderProperties {
     return new FastboardHeaderProperties();
