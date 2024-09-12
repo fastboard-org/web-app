@@ -8,4 +8,6 @@ export enum IconType {
   Delete = "Delete",
   Edit = "Edit",
   Folder = "Folder",
+  User = "User",
+  Home = "Home",
 }

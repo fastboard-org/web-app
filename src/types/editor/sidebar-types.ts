@@ -24,6 +24,14 @@ export class SidebarProperties {
     light: "#27272a",
     dark: "#18181b",
   };
+  textColor: Color = {
+    light: "#ffffff",
+    dark: "#ffffff",
+  };
+  selectedColor: Color = {
+    light: "#006FEE",
+    dark: "#006FEE",
+  };
 
   static default(): SidebarProperties {
     return new SidebarProperties();

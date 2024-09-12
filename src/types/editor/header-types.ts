@@ -1,3 +1,5 @@
+import { Color } from "./style-types";
+
 export enum FastboardHeaderPosition {
   Left = "start",
   Center = "center",
@@ -36,10 +38,17 @@ export class FastboardHeaderProperties {
     border: FastboardHeaderPhotoBorder.Round,
     size: FastboardHeaderPhotoSize.Medium,
   };
-
+  showThemeSwitcher: boolean = false;
   position: FastboardHeaderPosition = FastboardHeaderPosition.Center;
-
   divider: boolean = false;
+  backgroundColor: Color = {
+    light: "#ffffff",
+    dark: "#000000",
+  };
+  textColor: Color = {
+    light: "#11181C",
+    dark: "#ECEDEE",
+  };
 
   static default(): FastboardHeaderProperties {
     return new FastboardHeaderProperties();

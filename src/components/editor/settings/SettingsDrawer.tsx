@@ -1,5 +1,5 @@
 import { isSettingsDrawerOpen } from "@/atoms/editor";
-import { Divider } from "@nextui-org/react";
+import { Divider, Select, SelectItem } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
@@ -9,7 +9,7 @@ import useDashboard from "@/hooks/dashboards/useDashboard";
 import SidebarSettings from "./SidebarSettings";
 
 export default function SettingsDrawer() {
-  const { dashboard, changeLayout } = useDashboard();
+  const { dashboard, changeLayout, changeDefaultTheme } = useDashboard();
   const isOpen = useRecoilValue(isSettingsDrawerOpen);
   const hasSidebar = dashboard?.metadata?.sidebar ? true : false;
   const sidebarVisible = dashboard?.metadata?.sidebar?.visible ?? false;
@@ -34,9 +34,21 @@ export default function SettingsDrawer() {
             }}
           />
         )}
-
         <HeaderSettings />
         <SidebarSettings />
+        <Select
+          label="Default theme"
+          labelPlacement="outside"
+          placeholder="Select default theme"
+          disallowEmptySelection
+          selectedKeys={[dashboard?.metadata.defaultTheme ?? "light"]}
+          onChange={(e) => {
+            changeDefaultTheme(e.target.value as "light" | "dark");
+          }}
+        >
+          <SelectItem key={"light"}>Light</SelectItem>
+          <SelectItem key={"dark"}>Dark</SelectItem>
+        </Select>
       </div>
     </motion.div>
   );

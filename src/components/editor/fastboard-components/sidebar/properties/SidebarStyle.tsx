@@ -10,10 +10,10 @@ export default function SidebarStyle({
   onValueChange: (properties: SidebarProperties) => void;
 }) {
   const { theme } = useTheme();
-  const { backgroundColor } = properties;
+  const { backgroundColor, textColor, selectedColor } = properties;
 
   return (
-    <div>
+    <div className="flex flex-col gap-y-2">
       <div className="flex flex-row justify-between items-center">
         <span className="text-small">Background color</span>
         <ColorPicker
@@ -30,6 +30,46 @@ export default function SidebarStyle({
               onValueChange({
                 ...properties,
                 backgroundColor: { ...backgroundColor, dark: color },
+              });
+            }
+          }}
+        />
+      </div>
+      <div className="flex flex-row justify-between items-center">
+        <span className="text-small">Text color</span>
+        <ColorPicker
+          initialColor={theme === "light" ? textColor.light : textColor.dark}
+          onColorChange={(color) => {
+            if (theme === "light") {
+              onValueChange({
+                ...properties,
+                textColor: { ...textColor, light: color },
+              });
+            } else {
+              onValueChange({
+                ...properties,
+                textColor: { ...textColor, dark: color },
+              });
+            }
+          }}
+        />
+      </div>
+      <div className="flex flex-row justify-between items-center">
+        <span className="text-small">Selected color</span>
+        <ColorPicker
+          initialColor={
+            theme === "light" ? selectedColor.light : selectedColor.dark
+          }
+          onColorChange={(color) => {
+            if (theme === "light") {
+              onValueChange({
+                ...properties,
+                selectedColor: { ...selectedColor, light: color },
+              });
+            } else {
+              onValueChange({
+                ...properties,
+                selectedColor: { ...selectedColor, dark: color },
               });
             }
           }}

@@ -44,11 +44,12 @@ export interface DashboardAuth {
 
 export interface DashboardMetadata {
   components: Record<ComponentId, FastboardComponent>;
+  header: { componentId: ComponentId | null; isVisible: boolean };
   sidebar: { id: ComponentId; visible: boolean } | null;
   modals: ModalFrame[];
   pages: Record<string, Layout[]>;
   auth: DashboardAuth | null;
-  header: { componentId: ComponentId | null; isVisible: boolean };
+  defaultTheme: "light" | "dark";
 }
 
 export interface Index {

@@ -12,7 +12,7 @@ export default function FastboardSidebar({
 }) {
   const { theme } = useTheme();
   const { currentPage, changePage } = useNavigation();
-  const { menuItems, backgroundColor } = properties;
+  const { menuItems, backgroundColor, textColor, selectedColor } = properties;
 
   function handleSelectionChange(key: Key) {
     changePage(key.toString());
@@ -35,7 +35,7 @@ export default function FastboardSidebar({
           color="primary"
           className="w-full"
           classNames={{
-            tabList: "bg-transparent w-full max-w-52",
+            tabList: "bg-transparent w-full w-52",
             tab: "min-h-14 justify-start",
           }}
         >
@@ -44,7 +44,12 @@ export default function FastboardSidebar({
               key={tab.key}
               className="h-full"
               title={
-                <div className="flex items-center space-x-2 text-white">
+                <div
+                  className="flex items-center space-x-2"
+                  style={{
+                    color: theme === "light" ? textColor.light : textColor.dark,
+                  }}
+                >
                   <Icon icon={tab.icon} />
                   <div className="flex flex-col items-start">
                     <span className="truncate">{tab.label}</span>

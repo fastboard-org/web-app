@@ -42,6 +42,7 @@ const createDashboard = async (name: string, folderId?: string | null) => {
     },
     auth: null,
     header: { componentId: null, isVisible: false },
+    defaultTheme: "light",
   };
   const response = await axiosInstance.post("/dashboards", {
     name,

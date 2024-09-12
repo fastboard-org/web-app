@@ -15,6 +15,8 @@ import {
   Slider,
 } from "@nextui-org/react";
 import AlignIcon from "@/components/shared/icons/AlignIcon";
+import ColorPicker from "@/components/shared/ColorPicker";
+import { useTheme } from "next-themes";
 
 const FastboardHeaderPropertiesComponent = ({
   properties,
@@ -23,7 +25,16 @@ const FastboardHeaderPropertiesComponent = ({
   properties: FastboardHeaderProperties;
   onValueChange: (properties: FastboardHeaderProperties) => void;
 }) => {
-  const { title, photo, position, divider } = properties;
+  const { theme } = useTheme();
+  const {
+    title,
+    photo,
+    showThemeSwitcher,
+    position,
+    divider,
+    backgroundColor,
+    textColor,
+  } = properties;
 
   return (
     <Accordion
@@ -61,6 +72,7 @@ const FastboardHeaderPropertiesComponent = ({
           <Input
             label="Photo URL"
             labelPlacement="outside"
+            placeholder="https://example.com/photo.jpg"
             value={photo.url}
             onValueChange={(photo_url) => {
               onValueChange({
@@ -69,6 +81,19 @@ const FastboardHeaderPropertiesComponent = ({
                   ...properties.photo,
                   url: photo_url,
                 },
+              });
+            }}
+          />
+        </div>
+
+        <div className="flex flex-row justify-between">
+          <span className="text-sm">Show Theme Swithcer</span>
+          <Checkbox
+            isSelected={showThemeSwitcher}
+            onValueChange={(value) => {
+              onValueChange({
+                ...properties,
+                showThemeSwitcher: value,
               });
             }}
           />
@@ -265,6 +290,46 @@ const FastboardHeaderPropertiesComponent = ({
           >
             Show divider
           </Checkbox>
+        </div>
+        <div className="flex flex-row justify-between items-center">
+          <span className="text-small">Background color</span>
+          <ColorPicker
+            initialColor={
+              theme === "light" ? backgroundColor.light : backgroundColor.dark
+            }
+            onColorChange={(color) => {
+              if (theme === "light") {
+                onValueChange({
+                  ...properties,
+                  backgroundColor: { ...backgroundColor, light: color },
+                });
+              } else {
+                onValueChange({
+                  ...properties,
+                  backgroundColor: { ...backgroundColor, dark: color },
+                });
+              }
+            }}
+          />
+        </div>
+        <div className="flex flex-row justify-between items-center">
+          <span className="text-small">Text color</span>
+          <ColorPicker
+            initialColor={theme === "light" ? textColor.light : textColor.dark}
+            onColorChange={(color) => {
+              if (theme === "light") {
+                onValueChange({
+                  ...properties,
+                  textColor: { ...textColor, light: color },
+                });
+              } else {
+                onValueChange({
+                  ...properties,
+                  textColor: { ...textColor, dark: color },
+                });
+              }
+            }}
+          />
         </div>
       </AccordionItem>
     </Accordion>

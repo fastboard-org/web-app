@@ -14,6 +14,8 @@ import {
   Edit,
   Folder,
   Trash,
+  User,
+  Home,
 } from "iconsax-react";
 import { IoIosClose } from "react-icons/io";
 
@@ -37,6 +39,8 @@ export function Icon({
     [IconType.ArrowRight]: <ArrowRight size={size} />,
     [IconType.Close]: <IoIosClose size={size + 5} />,
     [IconType.Folder]: <Folder size={size} />,
+    [IconType.User]: <User size={size} />,
+    [IconType.Home]: <Home size={size} />,
   };
 
   return <div className={className}>{options[icon]}</div>;

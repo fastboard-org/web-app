@@ -1,5 +1,6 @@
 import { Query, RestQueryData } from "../connections";
 import { FormProperties } from "./form";
+import { Color } from "./style-types";
 
 export interface Column {
   key: string;
@@ -47,7 +48,7 @@ export class FastboardTableProperties {
   hideHeader: boolean = false;
   headerSticky: boolean = false;
   isStriped: boolean = false;
-  headerColor: { light: string; dark: string } = {
+  headerColor: Color = {
     light: "#f4f4f5",
     dark: "#27272a",
   };
