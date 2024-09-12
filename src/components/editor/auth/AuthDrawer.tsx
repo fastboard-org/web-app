@@ -232,7 +232,14 @@ const AuthDrawer = () => {
               />
             </div>
           </AccordionItem>
-          <AccordionItem>
+          <AccordionItem
+            key={"style"}
+            title="Style"
+            className="pb-5 pt-3"
+            classNames={{
+              title: "font-medium",
+            }}
+          >
             <div className="flex flex-col gap-y-2">
               <ColorPicker
                 label="Button color"
