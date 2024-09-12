@@ -1,5 +1,6 @@
 import { Layout } from "./layout-types";
 import { Query, RestQueryData } from "@/types/connections";
+import { Color } from "./style-types";
 
 export default interface PublishOption {
   label: string;
@@ -29,17 +30,29 @@ export interface ModalFrame {
   body: ComponentId;
 }
 
-export interface DashboardAuth {
-  enabled: boolean;
-  loginQueryData: RestQueryData;
-  accessTokenField: string;
-  userInputLabel: string;
-  passwordInputLabel: string;
-  userQueryParameter: string;
-  passwordQueryParameter: string;
-  previewAccessToken: string;
-  title: string;
-  buttonText: string;
+export class DashboardAuth {
+  enabled: boolean = false;
+  loginQueryData: RestQueryData | null = null;
+  accessTokenField: string = "";
+  userInputLabel: string = "username";
+  passwordInputLabel: string = "password";
+  userQueryParameter: string = "";
+  passwordQueryParameter: string = "";
+  previewAccessToken: string = "";
+  title: string = "Welcome!";
+  buttonText: string = "Login";
+  buttonColor: Color = {
+    light: "#006FEE",
+    dark: "#006FEE",
+  };
+  buttonTextColor: Color = {
+    light: "#ffffff",
+    dark: "#ffffff",
+  };
+
+  static default(): DashboardAuth {
+    return new DashboardAuth();
+  }
 }
 
 export interface DashboardMetadata {
@@ -48,7 +61,7 @@ export interface DashboardMetadata {
   sidebar: { id: ComponentId; visible: boolean } | null;
   modals: ModalFrame[];
   pages: Record<string, Layout[]>;
-  auth: DashboardAuth | null;
+  auth: DashboardAuth;
   defaultTheme: "light" | "dark";
 }
 

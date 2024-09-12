@@ -10,7 +10,7 @@ export default function FormStyle({
   onValueChange: (properties: FormProperties) => void;
 }) {
   const { theme } = useTheme();
-  const { submitColor } = properties;
+  const { submitColor, textColor } = properties;
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -31,6 +31,29 @@ export default function FormStyle({
               ...properties,
               submitColor: {
                 light: submitColor.light,
+                dark: color,
+              },
+            });
+          }
+        }}
+      />
+      <ColorPicker
+        label="Text color"
+        initialColor={theme === "light" ? textColor.light : textColor.dark}
+        onColorChange={(color) => {
+          if (theme === "light") {
+            onValueChange({
+              ...properties,
+              textColor: {
+                light: color,
+                dark: textColor.dark,
+              },
+            });
+          } else {
+            onValueChange({
+              ...properties,
+              textColor: {
+                light: textColor.light,
                 dark: color,
               },
             });

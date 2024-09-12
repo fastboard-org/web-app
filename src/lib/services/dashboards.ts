@@ -1,6 +1,6 @@
 import { axiosInstance } from "@/lib/axios";
 import { Dashboard, Folder } from "@/types/dashboards";
-import { DashboardMetadata } from "@/types/editor";
+import { DashboardAuth, DashboardMetadata } from "@/types/editor";
 import { Layout, LayoutType } from "@/types/editor/layout-types";
 
 const mapDashboard = (data: any): Dashboard => {
@@ -40,7 +40,7 @@ const createDashboard = async (name: string, folderId?: string | null) => {
     pages: {
       home: [Layout.of(LayoutType.Full)],
     },
-    auth: null,
+    auth: DashboardAuth.default(),
     header: { componentId: null, isVisible: false },
     defaultTheme: "light",
   };

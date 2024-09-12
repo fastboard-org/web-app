@@ -111,6 +111,10 @@ export class FormProperties {
     light: "#006FEE",
     dark: "#006FEE",
   };
+  textColor: Color = {
+    light: "#ffffff",
+    dark: "#ffffff",
+  };
 
   static default(): FormProperties {
     return new FormProperties();

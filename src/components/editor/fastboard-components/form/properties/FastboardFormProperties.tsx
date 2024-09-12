@@ -138,7 +138,7 @@ export default function FastboardFormProperties({
           selectionMode="multiple"
           isCompact
           fullWidth
-          defaultExpandedKeys={["basic", "inputs"]}
+          defaultExpandedKeys={["basic", "inputs", "style"]}
           className="p-0"
         >
           <AccordionItem

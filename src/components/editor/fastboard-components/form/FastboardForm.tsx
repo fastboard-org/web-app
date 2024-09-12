@@ -51,6 +51,7 @@ export default function FastboardForm({
     dataProvider,
     initialData,
     submitColor,
+    textColor,
   } = properties;
   const { getComponent, updateComponentProperties } = useDashboard();
   const {
@@ -193,6 +194,7 @@ export default function FastboardForm({
             style={{
               backgroundColor:
                 theme === "light" ? submitColor.light : submitColor.dark,
+              color: theme === "light" ? textColor.light : textColor.dark,
             }}
           >
             {submitButtonLabel}
