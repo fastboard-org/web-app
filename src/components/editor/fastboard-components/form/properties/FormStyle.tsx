@@ -38,7 +38,7 @@ export default function FormStyle({
         }}
       />
       <ColorPicker
-        label="Text color"
+        label="Submit text"
         initialColor={theme === "light" ? textColor.light : textColor.dark}
         onColorChange={(color) => {
           if (theme === "light") {

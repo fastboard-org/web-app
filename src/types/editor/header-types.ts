@@ -41,18 +41,9 @@ export class FastboardHeaderProperties {
   showThemeSwitcher: boolean = false;
   position: FastboardHeaderPosition = FastboardHeaderPosition.Center;
   divider: boolean = false;
-  backgroundColor: Color = {
-    light: "#ffffff",
-    dark: "#000000",
-  };
-  textColor: Color = {
-    light: "#11181C",
-    dark: "#ECEDEE",
-  };
-  themeSwitcherColor: Color = {
-    light: "#006FEE",
-    dark: "#006FEE",
-  };
+  backgroundColor: Color = new Color("#ffffff", "#000000");
+  textColor: Color = new Color("#11181C", "#ECEDEE");
+  themeSwitcherColor: Color = Color.primary();
 
   static default(): FastboardHeaderProperties {
     return new FastboardHeaderProperties();

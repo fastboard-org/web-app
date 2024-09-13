@@ -10,7 +10,11 @@ export default function Dashboard() {
   const { dashboard } = useDashboard("published");
 
   useEffect(() => {
-    const defaultTheme = dashboard?.metadata.defaultTheme ?? "light";
+    if (!dashboard) return;
+    const pageTitle = dashboard?.metadata?.pageTitle ?? null;
+    const defaultTheme = dashboard?.metadata?.defaultTheme ?? "light";
+
+    document.title = pageTitle ?? "Fastboard | My Dashboard";
     setTheme(defaultTheme);
   }, [dashboard]);
 

@@ -107,14 +107,8 @@ export class FormProperties {
   showShadow: boolean = true;
   initialData: Object | null = null;
   dataProvider: DataProvider | null = null;
-  submitColor: Color = {
-    light: "#006FEE",
-    dark: "#006FEE",
-  };
-  textColor: Color = {
-    light: "#ffffff",
-    dark: "#ffffff",
-  };
+  submitColor: Color = Color.primary();
+  textColor: Color = new Color("#ffffff", "#ffffff");
 
   static default(): FormProperties {
     return new FormProperties();

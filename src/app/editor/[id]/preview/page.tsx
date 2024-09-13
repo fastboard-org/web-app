@@ -10,7 +10,13 @@ export default function Preview() {
   const { dashboard } = useDashboard();
 
   useEffect(() => {
-    const defaultTheme = dashboard?.metadata.defaultTheme ?? "light";
+    if (!dashboard) return;
+    const pageTitle = dashboard?.metadata?.pageTitle ?? null;
+    const defaultTheme = dashboard?.metadata?.defaultTheme ?? "light";
+
+    document.title = pageTitle
+      ? `Fastboard | Preview | ${pageTitle}`
+      : "Fastboard | Preview";
     setTheme(defaultTheme);
   }, [dashboard]);
 

@@ -41,28 +41,31 @@ export class DashboardAuth {
   previewAccessToken: string = "";
   title: string = "Welcome!";
   buttonText: string = "Login";
-  buttonColor: Color = {
-    light: "#006FEE",
-    dark: "#006FEE",
-  };
-  buttonTextColor: Color = {
-    light: "#ffffff",
-    dark: "#ffffff",
-  };
+  buttonColor: Color = Color.primary();
+  buttonTextColor: Color = new Color("#ffffff", "#ffffff");
 
   static default(): DashboardAuth {
     return new DashboardAuth();
   }
 }
 
-export interface DashboardMetadata {
-  components: Record<ComponentId, FastboardComponent>;
-  header: { componentId: ComponentId | null; isVisible: boolean };
-  sidebar: { id: ComponentId; visible: boolean } | null;
-  modals: ModalFrame[];
-  pages: Record<string, Layout[]>;
-  auth: DashboardAuth;
-  defaultTheme: "light" | "dark";
+export class DashboardMetadata {
+  components: Record<ComponentId, FastboardComponent> = {};
+  header: { componentId: ComponentId | null; isVisible: boolean } = {
+    componentId: null,
+    isVisible: false,
+  };
+  sidebar: { id: ComponentId; visible: boolean } | null = null;
+  modals: ModalFrame[] = [];
+  pages: Record<string, Layout[]> = {};
+  auth: DashboardAuth = DashboardAuth.default();
+  pageTitle: string = "";
+  pageIcon: string = "";
+  defaultTheme: "light" | "dark" = "light";
+
+  static default(): DashboardMetadata {
+    return new DashboardMetadata();
+  }
 }
 
 export interface Index {

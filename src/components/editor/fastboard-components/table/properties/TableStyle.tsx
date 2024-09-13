@@ -70,7 +70,7 @@ export default function TableStyle({
         }}
       />
       <ColorPicker
-        label="Header text color"
+        label="Header text"
         initialColor={
           theme === "light" ? headerTextColor.light : headerTextColor.dark
         }
@@ -98,18 +98,82 @@ export default function TableStyle({
       {addRowForm && (
         <ColorPicker
           label="Add row color"
-          initialColor={addRowForm.buttonColor}
+          initialColor={
+            theme === "light"
+              ? addRowForm.buttonColor.light
+              : addRowForm.buttonColor.dark
+          }
           onColorChange={(color) => {
-            onValueChange({
-              ...properties,
-              addOns: {
-                ...properties.addOns,
-                addRowForm: {
-                  ...addRowForm,
-                  buttonColor: color,
+            if (theme === "light") {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonColor: {
+                      light: color,
+                      dark: addRowForm.buttonColor.dark,
+                    },
+                  },
                 },
-              },
-            });
+              });
+            } else {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonColor: {
+                      light: addRowForm.buttonColor.light,
+                      dark: color,
+                    },
+                  },
+                },
+              });
+            }
+          }}
+        />
+      )}
+      {addRowForm && (
+        <ColorPicker
+          label="Add row text"
+          initialColor={
+            theme === "light"
+              ? addRowForm.buttonTextColor.light
+              : addRowForm.buttonTextColor.dark
+          }
+          onColorChange={(color) => {
+            if (theme === "light") {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonTextColor: {
+                      light: color,
+                      dark: addRowForm.buttonTextColor.dark,
+                    },
+                  },
+                },
+              });
+            } else {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonTextColor: {
+                      light: addRowForm.buttonTextColor.light,
+                      dark: color,
+                    },
+                  },
+                },
+              });
+            }
           }}
         />
       )}

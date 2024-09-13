@@ -9,10 +9,7 @@ export class FastboardGroupChartProperties {
   groupBy: string = "";
   emptyMessage: string = "No data to display.";
   minimizedLabels: boolean = false;
-  barsColor: Color = {
-    light: "#006FEE",
-    dark: "#006FEE",
-  };
+  barsColor: Color = Color.primary();
 
   static default(): FastboardGroupChartProperties {
     return new FastboardGroupChartProperties();

@@ -3,14 +3,16 @@ import { Button } from "@nextui-org/react";
 import { useSetRecoilState } from "recoil";
 import { editorModalState } from "@/atoms/editor";
 import useDashboard from "@/hooks/dashboards/useDashboard";
+import { useTheme } from "next-themes";
 
 export default function AddRowForm({
   properties,
 }: {
   properties: AddRowFormProperties;
 }) {
+  const { theme } = useTheme();
   const { dashboard } = useDashboard();
-  const { buttonLabel, modalId, buttonColor } = properties;
+  const { buttonLabel, modalId, buttonColor, buttonTextColor } = properties;
   const setEditorModalState = useSetRecoilState(editorModalState);
 
   if (!dashboard) {
@@ -26,7 +28,12 @@ export default function AddRowForm({
             modalId: modalId,
           });
         }}
-        style={{ backgroundColor: buttonColor, color: "white" }}
+        style={{
+          backgroundColor:
+            theme === "light" ? buttonColor.light : buttonColor.dark,
+          color:
+            theme === "light" ? buttonTextColor.light : buttonTextColor.dark,
+        }}
       >
         {buttonLabel}
       </Button>

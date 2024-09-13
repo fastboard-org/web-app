@@ -1,5 +1,5 @@
 import { isSettingsDrawerOpen } from "@/atoms/editor";
-import { Divider, Select, SelectItem } from "@nextui-org/react";
+import { Divider, Input, Select, SelectItem } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import React from "react";
 import { useRecoilValue } from "recoil";
@@ -10,7 +10,8 @@ import SidebarSettings from "./SidebarSettings";
 import { Moon, Sun1 } from "iconsax-react";
 
 export default function SettingsDrawer() {
-  const { dashboard, changeLayout, changeDefaultTheme } = useDashboard();
+  const { dashboard, changeLayout, changeDefaultTheme, updateDashboard } =
+    useDashboard();
   const isOpen = useRecoilValue(isSettingsDrawerOpen);
   const hasSidebar = dashboard?.metadata?.sidebar ? true : false;
   const sidebarVisible = dashboard?.metadata?.sidebar?.visible ?? false;
@@ -37,6 +38,21 @@ export default function SettingsDrawer() {
         )}
         <HeaderSettings />
         <SidebarSettings />
+        <Input
+          label="Page title"
+          labelPlacement="outside"
+          placeholder="Enter page title"
+          value={dashboard?.metadata?.pageTitle}
+          onValueChange={(value) => {
+            updateDashboard((prev) => ({
+              ...prev,
+              metadata: {
+                ...prev.metadata,
+                pageTitle: value,
+              },
+            }));
+          }}
+        />
         <Select
           label="Default theme"
           labelPlacement="outside"
@@ -48,7 +64,7 @@ export default function SettingsDrawer() {
           }}
           startContent={
             dashboard?.metadata.defaultTheme === "light" ? (
-              <Sun1 size="20" variant="Bold" />
+              <Sun1 size="20" variant="Bold" className="text-foreground-400" />
             ) : (
               <Moon size="20" variant="Bold" />
             )
@@ -56,13 +72,17 @@ export default function SettingsDrawer() {
         >
           <SelectItem
             key={"light"}
-            startContent={<Sun1 size="20" variant="Bold" />}
+            startContent={
+              <Sun1 size="20" variant="Bold" className="text-foreground-400" />
+            }
           >
             Light
           </SelectItem>
           <SelectItem
             key={"dark"}
-            startContent={<Moon size="20" variant="Bold" />}
+            startContent={
+              <Moon size="20" variant="Bold" className="text-foreground-400" />
+            }
           >
             Dark
           </SelectItem>

@@ -24,7 +24,8 @@ export interface TableActionProperty {
 export interface AddRowFormProperties {
   modalId: string;
   buttonLabel: string;
-  buttonColor: string;
+  buttonColor: Color;
+  buttonTextColor: Color;
 }
 
 export interface TableAddOnsProperties {
@@ -48,14 +49,8 @@ export class FastboardTableProperties {
   hideHeader: boolean = false;
   headerSticky: boolean = false;
   isStriped: boolean = false;
-  headerColor: Color = {
-    light: "#f4f4f5",
-    dark: "#27272a",
-  };
-  headerTextColor: Color = {
-    light: "#52525b",
-    dark: "#71717a",
-  };
+  headerColor: Color = new Color("#f4f4f5", "#27272a");
+  headerTextColor: Color = new Color("#52525b", "#71717a");
 
   static default(): FastboardTableProperties {
     return new FastboardTableProperties();
