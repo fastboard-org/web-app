@@ -1,14 +1,20 @@
 import { Button, Textarea } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 
-const RestBodyEditor = ({
+const BodyEditor = ({
   body,
   onChange,
   invalidBody,
+  label,
+  placeholder = "Enter request body here",
+  defaultValue = "{}",
 }: {
   body: string;
   onChange: (body: string) => void;
   invalidBody: boolean;
+  label?: string;
+  placeholder?: string;
+  defaultValue?: string;
 }) => {
   const beautify = () => {
     if (!invalidBody) {
@@ -33,12 +39,26 @@ const RestBodyEditor = ({
       >
         Beautify
       </Button>
+      <p
+        className={
+          "text-sm absolute right-5 bottom-2 text-foreground-500 z-[100]"
+        }
+      >
+        {label}
+      </p>
       <Textarea
         value={body}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          const newBody = e.target.value;
+          if (!body) {
+            onChange(defaultValue);
+          } else {
+            onChange(newBody);
+          }
+        }}
         className={"h-full w-full"}
         size={"lg"}
-        placeholder={"Enter request body here"}
+        placeholder={placeholder}
         classNames={{
           inputWrapper: "!h-full",
           input: "h-full " + scrollbarStyles.scrollbar,
@@ -63,4 +83,4 @@ const RestBodyEditor = ({
   );
 };
 
-export default RestBodyEditor;
+export default BodyEditor;

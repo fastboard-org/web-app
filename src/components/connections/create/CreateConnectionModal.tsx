@@ -12,6 +12,7 @@ import ConnectionTypeButton from "@/components/connections/create/ConnectionType
 import { useState } from "react";
 import { useCreateConnection } from "@/hooks/connections/useCreateConnection";
 import { toast } from "sonner";
+import UrlInput from "@/components/shared/UrlInput";
 
 const CreateConnectionModal = ({
   isOpen,
@@ -26,7 +27,7 @@ const CreateConnectionModal = ({
     null,
   );
   const [connectionName, setConnectionName] = useState("");
-  const [mainUrl, setMainUrl] = useState("https://");
+  const [mainUrl, setMainUrl] = useState("");
 
   const { createConnection, loading } = useCreateConnection({
     onSuccess: (connection: Connection) => {
@@ -43,15 +44,31 @@ const CreateConnectionModal = ({
   const refreshStates = () => {
     setConnectionType(null);
     setConnectionName("");
-    setMainUrl("https://");
+    setMainUrl("");
   };
 
   const handleCreateConnection = () => {
+    let connectionUrl = "";
+
+    if (connectionType === ConnectionType.REST) {
+      connectionUrl = mainUrl.startsWith("https://")
+        ? mainUrl
+        : `https://${mainUrl}`;
+    } else {
+      connectionUrl = mainUrl;
+    }
+
     createConnection({
       name: connectionName,
       type: connectionType!,
-      credentials: { main_url: mainUrl },
+      credentials: { main_url: connectionUrl },
     });
+  };
+
+  const urlPlaceholders = {
+    [ConnectionType.REST]: "api.example.com",
+    [ConnectionType.MONGO]: "mongodb://<user>:<pass>@<host>/<db>",
+    [ConnectionType.SQL]: "mysql://",
   };
 
   return (
@@ -90,28 +107,21 @@ const CreateConnectionModal = ({
                         type={type}
                         onClick={() => setConnectionType(type)}
                         selected={connectionType === type}
-                        isDisabled={type !== ConnectionType.REST}
+                        isDisabled={type === ConnectionType.SQL}
                       />
                     ))}
                   </div>
                 </div>
                 <div className={"flex flex-col gap-1.5"}>
                   <p className={"text-xl mt-8 mb-3"}>Credentials</p>
-                  <Input
-                    size={"lg"}
-                    className={"w-full"}
-                    label={"Main URL"}
-                    labelPlacement={"outside"}
-                    isRequired
-                    placeholder={"api.example.com"}
-                    value={mainUrl?.split("://")[1]}
-                    onChange={(e) => setMainUrl(`https://${e.target.value}`)}
-                    startContent={
-                      <div className="pointer-events-none flex items-center">
-                        <span className="text-default-400 text-small">
-                          https://
-                        </span>
-                      </div>
+                  <UrlInput
+                    value={mainUrl}
+                    onChange={setMainUrl}
+                    prefix={
+                      connectionType === ConnectionType.REST ? "https://" : ""
+                    }
+                    placeholder={
+                      connectionType ? urlPlaceholders[connectionType] : ""
                     }
                   />
                 </div>

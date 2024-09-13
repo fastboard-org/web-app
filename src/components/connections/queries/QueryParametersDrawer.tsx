@@ -74,7 +74,7 @@ const QueryParametersDrawer = ({
   };
 
   return (
-    <Card className={"w-[300px] h-full"}>
+    <Card className={"w-[290px] h-full absolute right-0"}>
       <CardHeader className={"gap-2 p-5 pb-1"}>
         Preview parameters
         <Tooltip

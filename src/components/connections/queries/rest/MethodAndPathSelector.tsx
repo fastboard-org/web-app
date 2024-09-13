@@ -22,7 +22,7 @@ const MethodAndPathSelector = ({
   return (
     <div className={"flex w-full gap-3"}>
       <Select
-        className={"w-1/5 min-w-[100px] text-${methodColor(method)}"}
+        className={`w-1/5 min-w-[100px]`}
         placeholder={"Method"}
         selectedKeys={[method]}
         disallowEmptySelection
