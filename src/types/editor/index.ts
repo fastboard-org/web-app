@@ -1,4 +1,4 @@
-import { Layout } from "./layout-types";
+import { Layout, LayoutType } from "./layout-types";
 import { Query, RestQueryData } from "@/types/connections";
 import { Color } from "./style-types";
 
@@ -57,7 +57,9 @@ export class DashboardMetadata {
   };
   sidebar: { id: ComponentId; visible: boolean } | null = null;
   modals: ModalFrame[] = [];
-  pages: Record<string, Layout[]> = {};
+  pages: Record<string, Layout[]> = {
+    home: [Layout.of(LayoutType.Full)],
+  };
   auth: DashboardAuth = DashboardAuth.default();
   pageTitle: string = "";
   pageIcon: string = "";
