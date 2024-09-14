@@ -1,6 +1,6 @@
 import { FileInputProperties } from "@/types/editor/form";
 import { Input } from "@nextui-org/react";
-import { SearchNormal1 } from "iconsax-react";
+import { DocumentUpload } from "iconsax-react";
 import { useEffect, useState } from "react";
 import {
   UseFormRegister,
@@ -56,7 +56,7 @@ export default function FormFileInput({
       label={label}
       labelPlacement="outside"
       placeholder={placeHolder}
-      startContent={<SearchNormal1 size={15} />}
+      startContent={<DocumentUpload size={15} />}
       errorMessage={errors[formDataKey]?.message as string}
       isInvalid={!!errors[formDataKey]}
     />
