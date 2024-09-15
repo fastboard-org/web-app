@@ -1,4 +1,4 @@
-import { Query, RestQueryData } from "../connections";
+import { Query, QueryData } from "../connections";
 import { FormProperties } from "./form";
 
 export interface Column {
@@ -32,7 +32,7 @@ export interface TableAddOnsProperties {
 }
 
 export class FastboardTableProperties {
-  sourceQueryData: RestQueryData | null = null;
+  sourceQueryData: QueryData | null = null;
   rowsPerPage: number = 10;
   emptyMessage: string = "No rows to display.";
   columns: TableColumnProperties[] = [];

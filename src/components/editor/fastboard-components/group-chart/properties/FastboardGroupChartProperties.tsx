@@ -1,5 +1,5 @@
 import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
-import {Accordion, AccordionItem, Checkbox, Input} from "@nextui-org/react";
+import { Accordion, AccordionItem, Checkbox, Input } from "@nextui-org/react";
 import QuerySelection from "@/components/editor/QuerySelection";
 import GroupKeySelect from "@/components/editor/fastboard-components/group-chart/properties/GroupKeySelect";
 
@@ -10,8 +10,15 @@ const FastboardGroupChartPropertiesComponent = ({
   properties: FastboardGroupChartProperties;
   onValueChange: (properties: FastboardGroupChartProperties) => void;
 }) => {
-  const { sourceQuery, keys, groupBy, emptyMessage, title, subtitle, minimizedLabels } =
-    properties;
+  const {
+    sourceQueryData,
+    keys,
+    groupBy,
+    emptyMessage,
+    title,
+    subtitle,
+    minimizedLabels,
+  } = properties;
 
   return (
     <Accordion
@@ -30,11 +37,15 @@ const FastboardGroupChartPropertiesComponent = ({
       >
         <div className="flex flex-col gap-2 overflow-x-hidden">
           <QuerySelection
-            selectedQueryId={sourceQuery?.id || ""}
+            selectedQueryId={sourceQueryData?.queryId || ""}
             onQuerySelect={(sourceQuery) => {
               onValueChange({
                 ...properties,
-                sourceQuery: sourceQuery,
+                sourceQueryData: {
+                  queryId: sourceQuery.id,
+                  connectionId: sourceQuery.connection_id,
+                  method: sourceQuery?.metadata?.method,
+                },
                 keys: [],
                 groupBy: "",
               });
@@ -102,21 +113,17 @@ const FastboardGroupChartPropertiesComponent = ({
           />
         </div>
       </AccordionItem>
-      <AccordionItem
-          key="style"
-          title="Style"
-          className="pb-2"
-      >
+      <AccordionItem key="style" title="Style" className="pb-2">
         <Checkbox
-            defaultSelected={minimizedLabels}
-            onChange={(e) => {
-              onValueChange({
-                ...properties,
-                minimizedLabels: e.target.checked,
-              });
-            }}
+          defaultSelected={minimizedLabels}
+          onChange={(e) => {
+            onValueChange({
+              ...properties,
+              minimizedLabels: e.target.checked,
+            });
+          }}
         >
-            Minimized labels
+          Minimized labels
         </Checkbox>
       </AccordionItem>
     </Accordion>

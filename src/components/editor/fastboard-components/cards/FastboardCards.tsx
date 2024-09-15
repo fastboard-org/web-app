@@ -20,7 +20,7 @@ export default function FastboardCards({
   properties: FastboardCardsProperties;
 }) {
   const { updateComponentProperties } = useDashboard();
-  //TODO: change sourceQuery to type RestQueryData
+  //TODO: change sourceQuery to type QueryData
   const { sourceQuery, emptyMessage, header, footer, body, cardsPerRow } =
     properties;
   const {

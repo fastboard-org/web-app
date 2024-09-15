@@ -1,5 +1,5 @@
 import { ComponentId } from ".";
-import { Query, RestQueryData } from "../connections";
+import { Query, QueryData } from "../connections";
 
 export enum InputType {
   TextInput = "text-input",
@@ -99,7 +99,7 @@ export interface DataProvider {
 export class FormProperties {
   title: string = "Form title";
   submitQueryId: string | null = null;
-  submitQueryData: RestQueryData | null = null;
+  submitQueryData: QueryData | null = null;
   queryParameters: Record<string, any> = {};
   submitButtonLabel: string = "Submit";
   inputs: InputProperties[] = [];
