@@ -1,7 +1,7 @@
 import { Icon } from "@/components/shared/IconPicker";
 import useNavigation from "@/hooks/useNavigation";
 import { SidebarProperties } from "@/types/editor/sidebar-types";
-import { Tab, Tabs } from "@nextui-org/react";
+import { extendVariants, Tab, Tabs } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 import { Key } from "react";
 
@@ -12,7 +12,8 @@ export default function FastboardSidebar({
 }) {
   const { theme } = useTheme();
   const { currentPage, changePage } = useNavigation();
-  const { menuItems, backgroundColor } = properties;
+  const { menuItems, backgroundColor, textColor, selectedColor } = properties;
+  const cursorClassName = `bg-[${selectedColor.light}]`;
 
   function handleSelectionChange(key: Key) {
     changePage(key.toString());
@@ -32,10 +33,10 @@ export default function FastboardSidebar({
           isVertical
           defaultSelectedKey={currentPage}
           onSelectionChange={handleSelectionChange}
+          className="w-full"
           color="primary"
-          className="w-52"
           classNames={{
-            tabList: "bg-transparent w-full",
+            tabList: "bg-transparent w-full w-52",
             tab: "min-h-14 justify-start",
           }}
         >
@@ -44,10 +45,15 @@ export default function FastboardSidebar({
               key={tab.key}
               className="h-full"
               title={
-                <div className="flex items-center space-x-2 text-white">
+                <div
+                  className="flex items-center space-x-2"
+                  style={{
+                    color: theme === "light" ? textColor.light : textColor.dark,
+                  }}
+                >
                   <Icon icon={tab.icon} />
                   <div className="flex flex-col items-start">
-                    <span>{tab.label}</span>
+                    <span className="truncate">{tab.label}</span>
                     <span className="opacity-40">{tab.caption}</span>
                   </div>
                 </div>

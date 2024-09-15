@@ -1,51 +1,61 @@
 import ColorPicker from "@/components/shared/ColorPicker";
-import { SidebarProperties } from "@/types/editor/sidebar-types";
+import { FormProperties } from "@/types/editor/form";
 import { useTheme } from "next-themes";
 
-export default function SidebarStyle({
+export default function FormStyle({
   properties,
   onValueChange,
 }: {
-  properties: SidebarProperties;
-  onValueChange: (properties: SidebarProperties) => void;
+  properties: FormProperties;
+  onValueChange: (properties: FormProperties) => void;
 }) {
   const { theme } = useTheme();
-  const { backgroundColor, textColor, selectedColor } = properties;
+  const { submitColor, textColor } = properties;
 
   return (
     <div className="flex flex-col gap-y-2">
       <ColorPicker
-        label="Background color"
-        initialColor={
-          theme === "light" ? backgroundColor.light : backgroundColor.dark
-        }
+        label="Submit color"
+        initialColor={theme === "light" ? submitColor.light : submitColor.dark}
         onColorChange={(color) => {
           if (theme === "light") {
             onValueChange({
               ...properties,
-              backgroundColor: { ...backgroundColor, light: color },
+              submitColor: {
+                light: color,
+                dark: submitColor.dark,
+              },
             });
           } else {
             onValueChange({
               ...properties,
-              backgroundColor: { ...backgroundColor, dark: color },
+              submitColor: {
+                light: submitColor.light,
+                dark: color,
+              },
             });
           }
         }}
       />
       <ColorPicker
-        label="Text color"
+        label="Submit text"
         initialColor={theme === "light" ? textColor.light : textColor.dark}
         onColorChange={(color) => {
           if (theme === "light") {
             onValueChange({
               ...properties,
-              textColor: { ...textColor, light: color },
+              textColor: {
+                light: color,
+                dark: textColor.dark,
+              },
             });
           } else {
             onValueChange({
               ...properties,
-              textColor: { ...textColor, dark: color },
+              textColor: {
+                light: textColor.light,
+                dark: color,
+              },
             });
           }
         }}

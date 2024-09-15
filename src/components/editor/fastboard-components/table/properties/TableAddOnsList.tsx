@@ -2,6 +2,7 @@ import Option from "@/components/shared/Option";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { ComponentType } from "@/types/editor";
 import { FormProperties } from "@/types/editor/form";
+import { Color } from "@/types/editor/style-types";
 import {
   FastboardTableProperties,
   TableAddOnsProperties,
@@ -69,7 +70,8 @@ export default function TableAddOnsList({
                   addRowForm: {
                     buttonLabel: "Add Row",
                     modalId: modalId,
-                    buttonColor: "#006FEE",
+                    buttonColor: Color.primary(),
+                    buttonTextColor: new Color("#ffffff", "#ffffff"),
                   },
                 });
               }}

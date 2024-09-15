@@ -1,5 +1,6 @@
 import { Query, RestQueryData } from "../connections";
 import { FormProperties } from "./form";
+import { Color } from "./style-types";
 
 export interface Column {
   key: string;
@@ -23,7 +24,8 @@ export interface TableActionProperty {
 export interface AddRowFormProperties {
   modalId: string;
   buttonLabel: string;
-  buttonColor: string;
+  buttonColor: Color;
+  buttonTextColor: Color;
 }
 
 export interface TableAddOnsProperties {
@@ -47,10 +49,8 @@ export class FastboardTableProperties {
   hideHeader: boolean = false;
   headerSticky: boolean = false;
   isStriped: boolean = false;
-  headerColor: { light: string; dark: string } = {
-    light: "#f4f4f5",
-    dark: "#27272a",
-  };
+  headerColor: Color = new Color("#f4f4f5", "#27272a");
+  headerTextColor: Color = new Color("#52525b", "#71717a");
 
   static default(): FastboardTableProperties {
     return new FastboardTableProperties();

@@ -37,10 +37,10 @@ const FastboardComponent = ({
   const setIsSettingsDrawerOpen = useSetRecoilState(isSettingsDrawerOpen);
   const setIsAuthDrawerOpen = useSetRecoilState(isAuthDrawerOpen);
   const [propertiesDrawerOpen, setIsPropertiesDrawerOpen] = useRecoilState(
-    isPropertiesDrawerOpen,
+    isPropertiesDrawerOpen
   );
   const [propertiesDrawerStateValue, setPropertiesDrawerState] = useRecoilState(
-    propertiesDrawerState,
+    propertiesDrawerState
   );
   const [isHovered, setIsHovered] = useState(false);
 
@@ -86,16 +86,17 @@ const FastboardComponent = ({
 
   return (
     <div
-      className={`relative w-full h-full transition border-2 rounded-2xl cursor-pointer p-2 ${
+      className={`relative w-full h-full transition border-2  cursor-pointer ${
         isSelected() ? "border-primary" : "border-transparent"
+      } ${
+        type === ComponentType.Header || type === ComponentType.Sidebar
+          ? "rounded-none"
+          : "rounded-2xl"
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={onClickComponent}
     >
-      {isSelected() && (
-        <p className="absolute right-4 bottom-2 text-primary z-10">{name}</p>
-      )}
       {isSelected() && canDelete && (
         <Button
           isIconOnly

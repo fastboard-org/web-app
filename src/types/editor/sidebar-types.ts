@@ -20,10 +20,9 @@ export class SidebarProperties {
       icon: IconType.Folder,
     },
   ];
-  backgroundColor: Color = {
-    light: "#27272a",
-    dark: "#18181b",
-  };
+  backgroundColor: Color = new Color("#27272a", "#18181b");
+  textColor: Color = new Color("#ffffff", "#ffffff");
+  selectedColor: Color = Color.primary();
 
   static default(): SidebarProperties {
     return new SidebarProperties();
