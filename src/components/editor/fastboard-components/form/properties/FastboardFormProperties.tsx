@@ -25,6 +25,7 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
 import QueryParameters from "./QueryParameters";
+import { QueryType } from "@/types/connections";
 
 export default function FastboardFormProperties({
   properties,
@@ -195,6 +196,7 @@ export default function FastboardFormProperties({
                     inputs: newInputs,
                   });
                 }}
+                type={QueryType.UPDATE}
               />
               <Spacer y={2} />
               {initialData &&

@@ -2,6 +2,7 @@ import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types"
 import { Accordion, AccordionItem, Checkbox, Input } from "@nextui-org/react";
 import QuerySelection from "@/components/editor/QuerySelection";
 import GroupKeySelect from "@/components/editor/fastboard-components/group-chart/properties/GroupKeySelect";
+import { QueryType } from "@/types/connections";
 
 const FastboardGroupChartPropertiesComponent = ({
   properties,
@@ -50,6 +51,7 @@ const FastboardGroupChartPropertiesComponent = ({
                 groupBy: "",
               });
             }}
+            type={QueryType.GET}
           />
           <GroupKeySelect
             keys={keys}

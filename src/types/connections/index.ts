@@ -78,3 +78,9 @@ export interface RestQueryMetadata {
   headers: RestHeader[];
   body: any;
 }
+
+export enum QueryType {
+  GET = "GET",
+  UPDATE = "UPDATE",
+  AI = "AI",
+}

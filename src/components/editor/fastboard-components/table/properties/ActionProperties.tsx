@@ -2,8 +2,18 @@ import { Code, Input, Tooltip } from "@nextui-org/react";
 import { RiQuestionLine } from "react-icons/ri";
 import { TableActionProperty } from "@/types/editor/table-types";
 import QuerySelection from "@/components/editor/QuerySelection";
+import { QueryType } from "@/types/connections";
 
-export function ViewActionProperties({
+const actionToQueryType = (action: TableActionProperty) => {
+  switch (action.type) {
+    case "view":
+      return QueryType.GET;
+    default:
+      return QueryType.UPDATE;
+  }
+};
+
+export function ActionProperties({
   action,
   onChange,
 }: {
@@ -36,10 +46,11 @@ export function ViewActionProperties({
               (p: { name: string; preview: string }) => ({
                 name: p.name,
                 value: p.preview,
-              })
+              }),
             ),
           });
         }}
+        type={actionToQueryType(action)}
       />
       {parameters?.length > 0 && (
         <div className="flex justify-between">
@@ -72,7 +83,7 @@ export function ViewActionProperties({
             value={parameter.value}
             onValueChange={(newValue) => {
               const newParameters = parameters.map((p) =>
-                p.name === parameter.name ? { ...p, value: newValue } : p
+                p.name === parameter.name ? { ...p, value: newValue } : p,
               );
               onChange({
                 ...action,

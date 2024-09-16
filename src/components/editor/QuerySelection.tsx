@@ -15,12 +15,14 @@ import {
   MONGO_METHOD,
   Query,
   QueryMethod,
+  QueryType,
 } from "@/types/connections";
 import CustomSkeleton from "../shared/CustomSkeleton";
 import useMyQueries from "@/hooks/connections/useMyQueries";
 import { useMemo } from "react";
 import { methodColor as restMethodColor } from "@/lib/rest-methods";
 import { methodColor as mongoMethodColor } from "@/lib/mongo-methods";
+import { getQueryType } from "@/lib/queries";
 
 function CreateQuery() {
   return (
@@ -66,12 +68,14 @@ export default function QuerySelection({
   label = "Query",
   placeholder = "Select query",
   isDisabled = false,
+  type = null,
 }: {
   selectedQueryId: string;
   onQuerySelect: (query: Query) => void;
   label?: string;
   placeholder?: string;
   isDisabled?: boolean;
+  type?: QueryType | null;
 }) {
   const { queries, loading, isError, error } = useMyQueries();
 
@@ -147,9 +151,23 @@ export default function QuerySelection({
         isInvalid={isError}
       >
         {connections.map((connection) => {
+          const filteredQueries = groupedQueries[connection.id]?.filter(
+            (query) => {
+              if (type) {
+                return query?.metadata?.method && getQueryType(query) === type;
+              }
+              return true;
+            },
+          );
           return (
-            <AutocompleteSection key={connection.id} title={connection.name}>
-              {groupedQueries[connection.id]?.map((query) => (
+            <AutocompleteSection
+              key={connection.id}
+              title={connection.name}
+              style={{
+                display: filteredQueries.length > 0 ? "block" : "none",
+              }}
+            >
+              {filteredQueries.map((query) => (
                 <AutocompleteItem
                   key={query.id}
                   value={query.id}

@@ -13,6 +13,7 @@ import useDashboard from "@/hooks/dashboards/useDashboard";
 import QuerySelection from "@/components/editor/QuerySelection";
 import QueryParameterSelection from "@/components/shared/QueryParameterSelection";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
+import { QueryType } from "@/types/connections";
 
 const AuthDrawer = () => {
   const { dashboard, updateDashboard } = useDashboard();
@@ -105,6 +106,7 @@ const AuthDrawer = () => {
                 label={"Login Query"}
                 placeholder={"Select login query"}
                 isDisabled={!enabled}
+                type={QueryType.UPDATE}
               />
               <Input
                 label="Access Token Field"
