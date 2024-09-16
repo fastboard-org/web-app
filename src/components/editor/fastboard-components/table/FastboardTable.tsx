@@ -87,6 +87,7 @@ export default function FastboardTable({
     headerSticky,
     isStriped,
     headerColor,
+    headerTextColor,
   } = properties;
   const {
     data,
@@ -139,7 +140,6 @@ export default function FastboardTable({
       accessorKey: c.key,
       id: c.key,
       header: c.label,
-      size: 180,
       enableSorting: c.key !== "actions",
       footer: (props) => props.column.id,
       cell: ({ cell, row }) => {
@@ -397,13 +397,12 @@ export default function FastboardTable({
       right:
         isPinned === "right" ? `${column.getAfter("right") - 21}px` : undefined,
       position: isPinned ? "sticky" : "relative",
-      width: column.getSize(),
       zIndex: isPinned ? 1 : 0,
     };
   };
 
   return (
-    <CustomSkeleton isLoaded={true} onlyRenderOnLoad className="w-full h-full">
+    <div className="w-full h-full">
       {selectedRowAction && (
         <ViewActionModal
           isOpen={viewModalOpen}
@@ -440,10 +439,9 @@ export default function FastboardTable({
             scrollbarStyles.scrollbar
           }
         >
-          <table className="w-full">
+          <table className="table-auto">
             {!hideHeader && (
               <thead
-                className="w-full"
                 style={{
                   height: "40px",
                 }}
@@ -458,13 +456,17 @@ export default function FastboardTable({
                         <th
                           key={header.id}
                           colSpan={header.colSpan}
-                          className="p-2 text-xs font-semibold text-default-600 dark:text-default-500 bg-content2 dark:bg-content2"
+                          className="p-2 text-xs font-semibold"
                           style={{
                             ...getCommonPinningStyles(column),
                             backgroundColor:
                               theme === "light"
                                 ? headerColor.light
                                 : headerColor.dark,
+                            color:
+                              theme === "light"
+                                ? headerTextColor.light
+                                : headerTextColor.dark,
                             borderTopRightRadius: column.getIsLastColumn()
                               ? "10px"
                               : undefined,
@@ -544,7 +546,7 @@ export default function FastboardTable({
           title={tableTitle}
         />
       </div>
-    </CustomSkeleton>
+    </div>
   );
 }
 

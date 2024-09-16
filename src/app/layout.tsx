@@ -3,8 +3,11 @@ import "./globals.css";
 import { Providers } from "@/app/providers";
 import { poppins } from "@/fonts";
 
-const metadata: Metadata = {
-  title: "Fastboard",
+export const metadata: Metadata = {
+  title: {
+    default: "Fastboard",
+    template: "Fastboard | %s",
+  },
   description: "Create awesome dashboards with Fastboard",
 };
 

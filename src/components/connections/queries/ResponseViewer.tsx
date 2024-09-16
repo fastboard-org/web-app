@@ -8,21 +8,23 @@ import "react-json-view-lite/dist/index.css";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { useTheme } from "next-themes";
 
-const RestResponse = ({
-  response,
-  responseData,
+const ResponseViewer = ({
+  status = "",
+  data,
 }: {
-  response: any;
-  responseData: any;
+  status?: string;
+  data: any;
 }) => {
   const { theme } = useTheme();
-  return response ? (
+  return data ? (
     <>
-      <p className={"text-sm absolute right-5 bottom-5 text-foreground-500"}>
-        Status: {response.status_code}
-      </p>
+      {status && (
+        <p className={"text-sm absolute right-5 bottom-5 text-foreground-500"}>
+          Status: {status}
+        </p>
+      )}
       <JsonView
-        data={responseData}
+        data={data}
         shouldExpandNode={collapseAllNested}
         style={{
           ...(theme === "dark" ? darkStyles : defaultStyles),
@@ -42,4 +44,4 @@ const RestResponse = ({
   );
 };
 
-export default RestResponse;
+export default ResponseViewer;

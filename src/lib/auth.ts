@@ -22,6 +22,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
+export const getToken = async () => auth.currentUser?.getIdToken();
+
 export class FastboardAuthError extends Error {
   cause: { inputKey: "email" | "password"; message: string }[];
 

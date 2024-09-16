@@ -16,7 +16,7 @@ const ConnectionList = ({
   ) => void;
 }) => {
   return (
-    <section className={"flex flex-wrap w-full h-full gap-10 mt-5 "}>
+    <section className={"flex flex-wrap w-full  gap-10 mt-5 "}>
       {connections.length === 0 && (
         <p
           className={"text-center w-full text-xl text-foreground-400 mt-[15%]"}

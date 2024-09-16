@@ -1,7 +1,9 @@
 import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
-import {Accordion, AccordionItem, Checkbox, Input} from "@nextui-org/react";
+import { Accordion, AccordionItem, Checkbox, Input } from "@nextui-org/react";
 import QuerySelection from "@/components/editor/QuerySelection";
 import GroupKeySelect from "@/components/editor/fastboard-components/group-chart/properties/GroupKeySelect";
+import ColorPicker from "@/components/shared/ColorPicker";
+import { useTheme } from "next-themes";
 
 const FastboardGroupChartPropertiesComponent = ({
   properties,
@@ -10,8 +12,17 @@ const FastboardGroupChartPropertiesComponent = ({
   properties: FastboardGroupChartProperties;
   onValueChange: (properties: FastboardGroupChartProperties) => void;
 }) => {
-  const { sourceQuery, keys, groupBy, emptyMessage, title, subtitle, minimizedLabels } =
-    properties;
+  const { theme } = useTheme();
+  const {
+    sourceQuery,
+    keys,
+    groupBy,
+    emptyMessage,
+    title,
+    subtitle,
+    minimizedLabels,
+    barsColor,
+  } = properties;
 
   return (
     <Accordion
@@ -102,22 +113,35 @@ const FastboardGroupChartPropertiesComponent = ({
           />
         </div>
       </AccordionItem>
-      <AccordionItem
-          key="style"
-          title="Style"
-          className="pb-2"
-      >
+      <AccordionItem key="style" title="Style" className="pb-2">
         <Checkbox
-            defaultSelected={minimizedLabels}
-            onChange={(e) => {
+          defaultSelected={minimizedLabels}
+          onChange={(e) => {
+            onValueChange({
+              ...properties,
+              minimizedLabels: e.target.checked,
+            });
+          }}
+        >
+          Minimized labels
+        </Checkbox>
+        <ColorPicker
+          label="Bar color"
+          initialColor={theme === "light" ? barsColor.light : barsColor.dark}
+          onColorChange={(color) => {
+            if (theme === "light") {
               onValueChange({
                 ...properties,
-                minimizedLabels: e.target.checked,
+                barsColor: { ...barsColor, light: color },
               });
-            }}
-        >
-            Minimized labels
-        </Checkbox>
+            } else {
+              onValueChange({
+                ...properties,
+                barsColor: { ...barsColor, dark: color },
+              });
+            }
+          }}
+        />
       </AccordionItem>
     </Accordion>
   );

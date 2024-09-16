@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { HTTP_METHOD } from "@/types/connections";
+import { useTheme } from "next-themes";
 
 const groupData = (data: any[], groupBy: string) => {
   return data.reduce((acc, item) => {
@@ -36,6 +37,7 @@ const FastboardGroupChart = ({
   container?: string;
   properties: FastboardGroupChartProperties;
 }) => {
+  const { theme } = useTheme();
   //TODO: change sourceQuery to type RestQueryData
   const {
     sourceQuery,
@@ -44,6 +46,7 @@ const FastboardGroupChart = ({
     groupBy,
     emptyMessage,
     minimizedLabels,
+    barsColor,
   } = properties;
   const setProperties = useSetRecoilState(propertiesDrawerState);
 
@@ -122,7 +125,11 @@ const FastboardGroupChart = ({
               />
 
               <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-              <Bar dataKey="count" fill="var(--color-desktop)" radius={8} />
+              <Bar
+                dataKey="count"
+                fill={theme === "light" ? barsColor.light : barsColor.dark}
+                radius={8}
+              />
             </BarChart>
           </ChartContainer>
         </CustomSkeleton>

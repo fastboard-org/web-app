@@ -29,6 +29,7 @@ import useDashboard from "@/hooks/dashboards/useDashboard";
 import { ComponentId } from "@/types/editor";
 import FormNumberInput from "./FormNumberInput";
 import FormCheckbox from "./FormCheckbox";
+import { useTheme } from "next-themes";
 
 export default function FastboardForm({
   id,
@@ -38,7 +39,7 @@ export default function FastboardForm({
   properties: FormProperties;
 }) {
   const { id: dashboardId } = useParams();
-
+  const { theme } = useTheme();
   const {
     title,
     inputs,
@@ -49,6 +50,8 @@ export default function FastboardForm({
     showShadow,
     dataProvider,
     initialData,
+    submitColor,
+    textColor,
   } = properties;
   const { getComponent, updateComponentProperties } = useDashboard();
   const {
@@ -93,7 +96,7 @@ export default function FastboardForm({
         ...properties,
         initialData: data,
       },
-      false,
+      false
     );
     reset();
   }, []);
@@ -185,7 +188,15 @@ export default function FastboardForm({
         </CardBody>
         <Spacer y={1} />
         <CardFooter className="flex justify-end">
-          <Button type="submit" color="primary" isLoading={isLoading}>
+          <Button
+            type="submit"
+            isLoading={isLoading}
+            style={{
+              backgroundColor:
+                theme === "light" ? submitColor.light : submitColor.dark,
+              color: theme === "light" ? textColor.light : textColor.dark,
+            }}
+          >
             {submitButtonLabel}
           </Button>
         </CardFooter>

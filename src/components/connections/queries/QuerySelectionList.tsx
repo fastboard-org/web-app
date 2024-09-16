@@ -1,18 +1,62 @@
-import { HTTP_METHOD, Query } from "@/types/connections";
+import {
+  ConnectionType,
+  HTTP_METHOD,
+  MONGO_METHOD,
+  Query,
+} from "@/types/connections";
 import { Button, Listbox, ListboxItem } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import { methodColor } from "@/lib/rest-methods";
+import { methodColor as httpColor } from "@/lib/rest-methods";
+import { methodColor as mongoColor } from "@/lib/mongo-methods";
 import { ArrowLeft2, ArrowRight2 } from "iconsax-react";
 import { motion } from "framer-motion";
 import { useRecoilState } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
 
-const RestQueriesSelectionList = ({
+const RestQueryContent = ({ query }: { query: Query }) => {
+  return (
+    <>
+      <span
+        className={`text-${httpColor(
+          query?.metadata?.method as HTTP_METHOD,
+        )} inline-block w-[60px]`}
+      >
+        {query?.metadata?.method}
+      </span>{" "}
+      {query?.name}
+    </>
+  );
+};
+
+const MongoQueryContent = ({ query }: { query: Query }) => {
+  return (
+    <div className={"flex flex-col"}>
+      <span
+        className={`text-${mongoColor(
+          query?.metadata?.method as MONGO_METHOD,
+        )} inline-block w-[60px]`}
+      >
+        {query?.metadata?.method}
+      </span>{" "}
+      {query?.name}
+    </div>
+  );
+};
+
+const queryContents = {
+  [ConnectionType.REST]: RestQueryContent,
+  [ConnectionType.MONGO]: MongoQueryContent,
+  [ConnectionType.SQL]: RestQueryContent,
+};
+
+const QuerySelectionList = ({
+  type,
   queries,
   selectedQuery,
   onSelectQuery,
   onAddClick,
 }: {
+  type: ConnectionType;
   queries: Query[];
   selectedQuery: Query;
   onSelectQuery: (index: number) => void;
@@ -83,6 +127,7 @@ const RestQueriesSelectionList = ({
         >
           <Listbox
             aria-label="Queries List"
+            label={"Queries"}
             disallowEmptySelection
             selectionMode="single"
             selectedKeys={[selectedQuery?.id]}
@@ -98,27 +143,29 @@ const RestQueriesSelectionList = ({
                  p-3 mb-1`,
             }}
           >
-            {queries.map((query, index) => (
-              <ListboxItem
-                key={query.id}
-                value={query.id}
-                onClick={() => onSelectQuery(index)}
-                classNames={{
-                  title: "text-md",
-                }}
-              >
-                <span
-                  className={`text-${methodColor(
-                    query?.metadata?.method as HTTP_METHOD,
-                  )} inline-block w-[60px]`}
+            {queries.map((query, index) => {
+              const content = type ? queryContents[type]({ query }) : null;
+              return (
+                <ListboxItem
+                  key={query.id}
+                  value={query.id}
+                  onClick={() => onSelectQuery(index)}
+                  classNames={{
+                    title: "text-md",
+                  }}
+                  aria-label={query.name}
                 >
-                  {query?.metadata?.method}
-                </span>{" "}
-                {query?.name}
-              </ListboxItem>
-            ))}
+                  {content}
+                </ListboxItem>
+              );
+            })}
           </Listbox>
-          <Button className={"w-[95%]"} onClick={onAddClick} variant={"flat"}>
+          <Button
+            className={"w-[95%]"}
+            onClick={onAddClick}
+            variant={"flat"}
+            aria-label={"Add Query"}
+          >
             Add Query
           </Button>
         </motion.div>
@@ -127,4 +174,4 @@ const RestQueriesSelectionList = ({
   );
 };
 
-export default RestQueriesSelectionList;
+export default QuerySelectionList;

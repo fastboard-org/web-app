@@ -44,3 +44,35 @@ export interface RestQueryData {
   connectionId: string;
   method: HTTP_METHOD;
 }
+
+export enum MONGO_METHOD {
+  AGGREGATE = "aggregate",
+  COUNT = "count",
+  DELETE_ONE = "deleteOne",
+  DELETE_MANY = "deleteMany",
+  DISTINCT = "distinct",
+  FIND = "find",
+  FIND_AND_MODIFY = "findAndModify",
+  FIND_ONE = "findOne",
+  FIND_ONE_AND_DELETE = "findOneAndDelete",
+  FIND_ONE_AND_REPLACE = "findOneAndReplace",
+  FIND_ONE_AND_UPDATE = "findOneAndUpdate",
+  INSERT_ONE = "insertOne",
+  INSERT_MANY = "insertMany",
+  UPDATE_ONE = "updateOne",
+  UPDATE_MANY = "updateMany",
+}
+
+export interface MongoQueryMetadata {
+  method: MONGO_METHOD;
+  collection: string;
+  filter_body: any;
+  update_body: any;
+}
+
+export interface RestQueryMetadata {
+  method: HTTP_METHOD;
+  path: string;
+  headers: RestHeader[];
+  body: any;
+}

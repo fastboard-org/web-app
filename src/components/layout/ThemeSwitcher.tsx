@@ -1,16 +1,18 @@
 "use client";
-import { Button } from "@nextui-org/react";
+import { Button, semanticColors } from "@nextui-org/react";
 import { Sun1, Moon } from "iconsax-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-type ThemeSwitcherProps = {
+export function ThemeSwitcher({
+  size,
+  // @ts-ignore
+  color = semanticColors.light.focus.DEFAULT,
+}: {
   size: "sm" | "md" | "lg" | undefined;
-};
-
-export function ThemeSwitcher(props: ThemeSwitcherProps) {
-  const { size } = props;
+  color?: string;
+}) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -32,9 +34,21 @@ export function ThemeSwitcher(props: ThemeSwitcherProps) {
             className={"bg-foreground bg-opacity-5"}
           >
             {theme === "dark" ? (
-              <Sun1 size="20" variant="Bold" className={"text-primary"} />
+              <Sun1
+                size="20"
+                variant="Bold"
+                style={{
+                  color: color,
+                }}
+              />
             ) : (
-              <Moon size="20" variant="Bold" className={"text-primary"} />
+              <Moon
+                size="20"
+                variant="Bold"
+                style={{
+                  color: color,
+                }}
+              />
             )}
           </Button>
         </motion.div>

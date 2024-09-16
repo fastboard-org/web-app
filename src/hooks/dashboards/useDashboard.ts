@@ -187,6 +187,17 @@ const useDashboard = (mode: "editor" | "published" = "editor") => {
     }));
   };
 
+  const changeDefaultTheme = (theme: "light" | "dark") => {
+    if (!dashboard) return;
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: {
+        ...prev.metadata,
+        defaultTheme: theme,
+      },
+    }));
+  };
+
   const updateDashboard = (
     updater: (previous: Dashboard) => Dashboard,
     save: boolean = true
@@ -230,6 +241,7 @@ const useDashboard = (mode: "editor" | "published" = "editor") => {
     changeLayout,
     addHeader,
     deleteHeader,
+    changeDefaultTheme,
   };
 };
 
