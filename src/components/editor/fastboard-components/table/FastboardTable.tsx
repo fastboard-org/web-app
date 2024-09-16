@@ -190,7 +190,6 @@ export default function FastboardTable({
     }
 
     if (columns.length === 0) {
-      //table.setPageIndex(1);
       setShouldUpdateColumns(true);
     }
   }, [sourceQueryData]);
