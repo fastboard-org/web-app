@@ -15,6 +15,7 @@ import { useAccessToken } from "@/hooks/useAccessToken";
 import { useRecoilValue } from "recoil";
 import { isAuthDrawerOpen } from "@/atoms/editor";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useTheme } from "next-themes";
 
 interface LogInForm {
   user: string;
@@ -32,6 +33,7 @@ const AuthVerifier = ({
   auth?: DashboardAuth | null;
   mode?: "editor" | "preview";
 }) => {
+  const { theme } = useTheme();
   const { accessToken, updateAccessToken } = useAccessToken({ dashboardId });
   const isAuthOpen = useRecoilValue(isAuthDrawerOpen);
 
@@ -130,6 +132,16 @@ const AuthVerifier = ({
               className={"w-full"}
               isLoading={isPending}
               type={"submit"}
+              style={{
+                backgroundColor:
+                  theme === "light"
+                    ? auth?.buttonColor.light
+                    : auth?.buttonColor.dark,
+                color:
+                  theme === "light"
+                    ? auth?.buttonTextColor.light
+                    : auth?.buttonTextColor.dark,
+              }}
             >
               {auth?.buttonText || "Login"}
             </Button>

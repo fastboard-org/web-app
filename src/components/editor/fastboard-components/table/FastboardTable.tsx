@@ -2,8 +2,8 @@ import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import {
   FastboardTableProperties,
+  FilterProperties,
   TableActionProperty,
-  TableColumnProperties,
 } from "@/types/editor/table-types";
 import {
   Button,
@@ -13,16 +13,9 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Pagination,
-  SortDescriptor,
-  Spacer,
+  Select,
+  SelectItem,
   Spinner,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  getKeyValue,
   semanticColors,
 } from "@nextui-org/react";
 import { CSSProperties, useEffect, useMemo, useState } from "react";
@@ -46,24 +39,29 @@ import CsvExporter from "@/components/shared/CsvExporter";
 import {
   Cell,
   Column,
-  ColumnDef,
+  ColumnFiltersState,
   ColumnPinningState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   Header,
+  PaginationState,
   Row,
-  SortingFn,
   SortingState,
+  Table,
   useReactTable,
 } from "@tanstack/react-table";
 import { HTTP_METHOD } from "@/types/connections";
 import {
   fillParameters,
   getExportData,
+  getFilterFunction,
   getFinalColumns,
   sortFunction,
 } from "@/lib/table.utils";
+import Filters, { NumberFilter, StringFilter } from "./Filters";
 
 export default function FastboardTable({
   id,
@@ -78,28 +76,27 @@ export default function FastboardTable({
   const { openModal } = useModalFrame();
   const {
     sourceQueryData,
+    tableTitle,
     emptyMessage,
     columns,
     actions,
+    filters,
     pinActions,
     addOns: { addRowForm, downloadData },
     hideHeader,
     headerSticky,
     isStriped,
-    rowsPerPage,
     headerColor,
+    headerTextColor,
   } = properties;
   const {
     data,
     fulldata,
     keys,
-    page,
-    setPage,
-    pages,
     isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
-  } = useData(`${ComponentType.Table}-${id}`, sourceQueryData, rowsPerPage);
+  } = useData(`${ComponentType.Table}-${id}`, sourceQueryData);
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [propertiesState, setPropertiesState] = useRecoilState(
     propertiesDrawerState,
@@ -117,20 +114,25 @@ export default function FastboardTable({
   });
   const finalColumns = getFinalColumns(columns, actions);
   const exportData = useMemo(() => {
-    return getExportData(fulldata, finalColumns);
+    return getExportData(fulldata, columns);
   }, [finalColumns]);
-
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedRowAction, setSelectedRowAction] = useState<{
     action: TableActionProperty;
     item: any;
   } | null>(null);
+  const [columnVisibility, setColumnVisibility] = useState({});
   const [columnPinning, setColumnPinning] = useState<ColumnPinningState>({
     left: [],
     right: [],
   });
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 5,
+  });
 
   const table = useReactTable({
     data,
@@ -138,23 +140,37 @@ export default function FastboardTable({
       accessorKey: c.key,
       id: c.key,
       header: c.label,
-      size: 180,
       enableSorting: c.key !== "actions",
       footer: (props) => props.column.id,
       cell: ({ cell, row }) => {
         return renderCell(cell, row);
       },
       sortingFn: sortFunction,
+      filterFn: getFilterFunction(c.key, filters),
     })),
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     state: {
+      columnVisibility,
       columnPinning,
       sorting,
+      columnFilters,
+      pagination,
     },
+    onColumnVisibilityChange: setColumnVisibility,
     onColumnPinningChange: setColumnPinning,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
   });
+
+  useEffect(() => {
+    columns.map((c) => {
+      table.getColumn(c.column.key)?.toggleVisibility(c.visible);
+    });
+  }, [columns]);
 
   useEffect(() => {
     if (pinActions) {
@@ -174,7 +190,6 @@ export default function FastboardTable({
     }
 
     if (columns.length === 0) {
-      setPage(1);
       setShouldUpdateColumns(true);
     }
   }, [sourceQueryData]);
@@ -265,12 +280,7 @@ export default function FastboardTable({
     }
     reset();
     execute({
-      //TODO: change selectedRowAction.action to type QueryData
-      queryData: {
-        queryId: selectedRowAction.action.query.id,
-        connectionId: selectedRowAction.action.query.connection_id,
-        method: selectedRowAction.action.query.metadata.method as HTTP_METHOD,
-      },
+      queryData: selectedRowAction.action.query,
       parameters: fillParameters(
         selectedRowAction.action.parameters,
         columns,
@@ -387,33 +397,12 @@ export default function FastboardTable({
       right:
         isPinned === "right" ? `${column.getAfter("right") - 21}px` : undefined,
       position: isPinned ? "sticky" : "relative",
-      width: column.getSize(),
       zIndex: isPinned ? 1 : 0,
     };
   };
 
-  function TopContent() {
-    return addRowForm && <AddRowForm properties={addRowForm} />;
-  }
-
-  function BottomContent() {
-    return (
-      <div className="flex w-full justify-center items-center gap-2">
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          page={page}
-          total={pages}
-          onChange={(page) => setPage(page)}
-        />
-        {downloadData && <CsvExporter data={exportData} />}
-      </div>
-    );
-  }
-
   return (
-    <CustomSkeleton isLoaded={true} onlyRenderOnLoad className="w-full h-full">
+    <div className="w-full h-full">
       {selectedRowAction && (
         <ViewActionModal
           isOpen={viewModalOpen}
@@ -438,17 +427,21 @@ export default function FastboardTable({
       )}
 
       <div className="flex flex-col w-full h-full gap-y-2">
-        <TopContent />
+        <TopContent
+          table={table}
+          title={tableTitle}
+          filters={filters}
+          addRowForm={addRowForm}
+        />
         <div
           className={
             "flex flex-col gap-y-2 w-full max-h-[80%] grow-0 p-5 overflow-auto shadow-lg rounded-large dark:bg-content1 border dark:border-content1  " +
             scrollbarStyles.scrollbar
           }
         >
-          <table className="w-full">
+          <table className="table-auto">
             {!hideHeader && (
               <thead
-                className="w-full"
                 style={{
                   height: "40px",
                 }}
@@ -457,18 +450,23 @@ export default function FastboardTable({
                   <tr key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
                       const { column } = header;
+                      if (column.getIsVisible() === false) return null;
 
                       return (
                         <th
                           key={header.id}
                           colSpan={header.colSpan}
-                          className="p-2 text-xs font-semibold text-default-600 dark:text-default-500 bg-content2 dark:bg-content2"
+                          className="p-2 text-xs font-semibold"
                           style={{
                             ...getCommonPinningStyles(column),
                             backgroundColor:
                               theme === "light"
                                 ? headerColor.light
                                 : headerColor.dark,
+                            color:
+                              theme === "light"
+                                ? headerTextColor.light
+                                : headerTextColor.dark,
                             borderTopRightRadius: column.getIsLastColumn()
                               ? "10px"
                               : undefined,
@@ -540,8 +538,80 @@ export default function FastboardTable({
             </div>
           )}
         </div>
-        <BottomContent />
+        <BottomContent
+          table={table}
+          dataFetching={dataFetching}
+          downloadData={downloadData}
+          exportData={exportData}
+          title={tableTitle}
+        />
       </div>
-    </CustomSkeleton>
+    </div>
+  );
+}
+
+function TopContent({
+  table,
+  title,
+  filters,
+  addRowForm,
+}: {
+  table: Table<any>;
+  title: string;
+  filters: FilterProperties[];
+  addRowForm: any;
+}) {
+  return (
+    <div className="flex flex-col">
+      <h2 className="text-[40px]">{title}</h2>
+      <div className="flex flex-row justify-between items-end gap-x-2">
+        <Filters table={table} filters={filters} />
+        {addRowForm && <AddRowForm properties={addRowForm} />}
+      </div>
+    </div>
+  );
+}
+
+function BottomContent({
+  table,
+  dataFetching,
+  downloadData,
+  exportData,
+  title,
+}: {
+  table: Table<any>;
+  dataFetching: boolean;
+  downloadData: boolean;
+  exportData: any[];
+  title: string;
+}) {
+  return (
+    <div className="flex w-full justify-center items-center gap-2">
+      {!dataFetching && (
+        <div className="flex flex-row w-full justify-center items-center gap-x-2">
+          <Pagination
+            isCompact
+            showControls
+            showShadow
+            page={table.getState().pagination.pageIndex + 1}
+            total={table.getPageCount()}
+            onChange={(page) => table.setPageIndex(page - 1)}
+          />
+          <Select
+            aria-label="Rows per page"
+            className="max-w-20"
+            selectedKeys={[table.getState().pagination.pageSize.toString()]}
+            onChange={(e) => table.setPageSize(Number(e.target.value))}
+          >
+            {[5, 20, 40, 50, 100].map((pageSize) => (
+              <SelectItem key={pageSize} value={pageSize}>
+                {pageSize.toString()}
+              </SelectItem>
+            ))}
+          </Select>
+          {downloadData && <CsvExporter data={exportData} filename={title} />}
+        </div>
+      )}
+    </div>
   );
 }

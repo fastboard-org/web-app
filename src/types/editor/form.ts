@@ -1,5 +1,6 @@
 import { ComponentId } from ".";
-import { Query, QueryData } from "../connections";
+import { QueryData } from "../connections";
+import { Color } from "./style-types";
 
 export enum InputType {
   TextInput = "text-input",
@@ -106,6 +107,8 @@ export class FormProperties {
   showShadow: boolean = true;
   initialData: Object | null = null;
   dataProvider: DataProvider | null = null;
+  submitColor: Color = Color.primary();
+  textColor: Color = new Color("#ffffff", "#ffffff");
 
   static default(): FormProperties {
     return new FormProperties();

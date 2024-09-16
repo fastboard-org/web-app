@@ -16,6 +16,7 @@ export default function TableStyle({
     headerSticky,
     isStriped,
     headerColor,
+    headerTextColor,
     addOns: { addRowForm },
   } = properties;
 
@@ -45,53 +46,136 @@ export default function TableStyle({
           }}
         />
       </div>
-      <div className="flex flex-row justify-between">
-        <span>Header color</span>
+      <ColorPicker
+        label="Header color"
+        initialColor={theme === "light" ? headerColor.light : headerColor.dark}
+        onColorChange={(color) => {
+          if (theme === "light") {
+            onValueChange({
+              ...properties,
+              headerColor: {
+                light: color,
+                dark: headerColor.dark,
+              },
+            });
+          } else {
+            onValueChange({
+              ...properties,
+              headerColor: {
+                light: headerColor.light,
+                dark: color,
+              },
+            });
+          }
+        }}
+      />
+      <ColorPicker
+        label="Header text"
+        initialColor={
+          theme === "light" ? headerTextColor.light : headerTextColor.dark
+        }
+        onColorChange={(color) => {
+          if (theme === "light") {
+            onValueChange({
+              ...properties,
+              headerTextColor: {
+                light: color,
+                dark: headerTextColor.dark,
+              },
+            });
+          } else {
+            onValueChange({
+              ...properties,
+              headerTextColor: {
+                light: headerTextColor.light,
+                dark: color,
+              },
+            });
+          }
+        }}
+      />
+
+      {addRowForm && (
         <ColorPicker
+          label="Add row color"
           initialColor={
-            theme === "light" ? headerColor.light : headerColor.dark
+            theme === "light"
+              ? addRowForm.buttonColor.light
+              : addRowForm.buttonColor.dark
           }
           onColorChange={(color) => {
             if (theme === "light") {
-              onValueChange({
-                ...properties,
-                headerColor: {
-                  light: color,
-                  dark: headerColor.dark,
-                },
-              });
-            } else {
-              onValueChange({
-                ...properties,
-                headerColor: {
-                  light: headerColor.light,
-                  dark: color,
-                },
-              });
-            }
-          }}
-        />
-      </div>
-
-      {addRowForm && (
-        <div className="flex flex-row justify-between">
-          <span>Add row color</span>
-          <ColorPicker
-            initialColor={addRowForm.buttonColor}
-            onColorChange={(color) => {
               onValueChange({
                 ...properties,
                 addOns: {
                   ...properties.addOns,
                   addRowForm: {
                     ...addRowForm,
-                    buttonColor: color,
+                    buttonColor: {
+                      light: color,
+                      dark: addRowForm.buttonColor.dark,
+                    },
                   },
                 },
               });
-            }}
-          />
-        </div>
+            } else {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonColor: {
+                      light: addRowForm.buttonColor.light,
+                      dark: color,
+                    },
+                  },
+                },
+              });
+            }
+          }}
+        />
+      )}
+      {addRowForm && (
+        <ColorPicker
+          label="Add row text"
+          initialColor={
+            theme === "light"
+              ? addRowForm.buttonTextColor.light
+              : addRowForm.buttonTextColor.dark
+          }
+          onColorChange={(color) => {
+            if (theme === "light") {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonTextColor: {
+                      light: color,
+                      dark: addRowForm.buttonTextColor.dark,
+                    },
+                  },
+                },
+              });
+            } else {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonTextColor: {
+                      light: addRowForm.buttonTextColor.light,
+                      dark: color,
+                    },
+                  },
+                },
+              });
+            }
+          }}
+        />
       )}
     </div>
   );

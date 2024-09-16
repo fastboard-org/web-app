@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { QueryMethod } from "@/types/connections";
+import { useTheme } from "next-themes";
 
 const groupData = (data: any[], groupBy: string) => {
   return data.reduce((acc, item) => {
@@ -34,6 +35,7 @@ const FastboardGroupChart = ({
   container?: string;
   properties: FastboardGroupChartProperties;
 }) => {
+  const { theme } = useTheme();
   const {
     sourceQueryData,
     title,
@@ -41,6 +43,7 @@ const FastboardGroupChart = ({
     groupBy,
     emptyMessage,
     minimizedLabels,
+    barsColor,
   } = properties;
   const setProperties = useSetRecoilState(propertiesDrawerState);
 
@@ -51,11 +54,7 @@ const FastboardGroupChart = ({
     isError: isDataError,
   } = useData(
     `${ComponentType.GroupChart}-${id}`,
-    {
-      queryId: sourceQueryData?.queryId as string,
-      connectionId: sourceQueryData?.connectionId as string,
-      method: sourceQueryData?.method as QueryMethod,
-    },
+    sourceQueryData,
     Number.MAX_VALUE,
   );
 
@@ -123,7 +122,11 @@ const FastboardGroupChart = ({
               />
 
               <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-              <Bar dataKey="count" fill="var(--color-desktop)" radius={8} />
+              <Bar
+                dataKey="count"
+                fill={theme === "light" ? barsColor.light : barsColor.dark}
+                radius={8}
+              />
             </BarChart>
           </ChartContainer>
         </CustomSkeleton>

@@ -22,9 +22,9 @@ export default function BottomSplitLayout({
         }}
         componentId={properties.component1}
         mode={mode}
-        className="px-5 pt-5 pb-2 h-1/2"
+        className="w-full px-5 pt-5 pb-2 h-1/2"
       />
-      <div className="flex flex-row h-1/2">
+      <div className="flex flex-row w-full h-1/2">
         <div className="w-1/2">
           <Container
             index={{

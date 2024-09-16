@@ -23,9 +23,9 @@ import FormNumberInputProperties from "./FormNumberInputProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import useGetQuery from "@/hooks/connections/useGetQuery";
-import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
 import QueryParameters from "./QueryParameters";
 import { QueryType } from "@/types/connections";
+import FormStyle from "./FormStyle";
 
 export default function FastboardFormProperties({
   properties,
@@ -248,6 +248,16 @@ export default function FastboardFormProperties({
                 }}
               />
             )}
+          </AccordionItem>
+          <AccordionItem
+            key="style"
+            className="pb-2"
+            title="Style"
+            classNames={{
+              title: "font-medium",
+            }}
+          >
+            <FormStyle properties={properties} onValueChange={onValueChange} />
           </AccordionItem>
         </Accordion>
       )}

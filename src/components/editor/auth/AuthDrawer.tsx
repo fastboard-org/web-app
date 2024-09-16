@@ -4,6 +4,7 @@ import {
   AccordionItem,
   Divider,
   Input,
+  semanticColors,
   Switch,
 } from "@nextui-org/react";
 import { motion } from "framer-motion";
@@ -14,10 +15,12 @@ import QuerySelection from "@/components/editor/QuerySelection";
 import QueryParameterSelection from "@/components/shared/QueryParameterSelection";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { QueryType } from "@/types/connections";
+import ColorPicker from "@/components/shared/ColorPicker";
+import { useTheme } from "next-themes";
 
 const AuthDrawer = () => {
   const { dashboard, updateDashboard } = useDashboard();
-
+  const { theme } = useTheme();
   const setPreviewAccessToken = useSetRecoilState(previewAccessTokenState);
 
   const {
@@ -31,6 +34,8 @@ const AuthDrawer = () => {
     previewAccessToken,
     title,
     buttonText,
+    buttonColor,
+    buttonTextColor,
   } = dashboard?.metadata?.auth || {};
 
   const isOpen = useRecoilValue(isAuthDrawerOpen);
@@ -226,6 +231,65 @@ const AuthDrawer = () => {
                   });
                 }}
                 isDisabled={!enabled}
+              />
+            </div>
+          </AccordionItem>
+          <AccordionItem
+            key={"style"}
+            title="Style"
+            className="pb-5 pt-3"
+            classNames={{
+              title: "font-medium",
+            }}
+          >
+            <div className="flex flex-col gap-y-2">
+              <ColorPicker
+                label="Button color"
+                initialColor={
+                  theme === "light" ? buttonColor?.light : buttonColor?.dark
+                }
+                onColorChange={(color) => {
+                  if (theme === "light") {
+                    updateAuth({
+                      buttonColor: {
+                        light: color,
+                        dark: buttonColor?.dark,
+                      },
+                    });
+                  } else {
+                    updateAuth({
+                      buttonColor: {
+                        light: buttonColor?.light,
+                        dark: color,
+                      },
+                    });
+                  }
+                }}
+              />
+              <ColorPicker
+                label="Button text"
+                initialColor={
+                  theme === "light"
+                    ? buttonTextColor?.light
+                    : buttonTextColor?.dark
+                }
+                onColorChange={(color) => {
+                  if (theme === "light") {
+                    updateAuth({
+                      buttonTextColor: {
+                        light: color,
+                        dark: buttonTextColor?.dark,
+                      },
+                    });
+                  } else {
+                    updateAuth({
+                      buttonTextColor: {
+                        light: buttonTextColor?.light,
+                        dark: color,
+                      },
+                    });
+                  }
+                }}
               />
             </div>
           </AccordionItem>
