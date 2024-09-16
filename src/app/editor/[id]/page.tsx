@@ -57,7 +57,7 @@ export default function Editor() {
           <ComponentsDrawer />
           <SettingsDrawer />
           <AuthDrawer />
-          <div className="flex justify-center items-center h-full w-full p-6">
+          <div className="flex justify-center items-center h-full w-full p-6 bg-default-100 dark:bg-content1">
             <EditorCanvas key={"EditorCanvas"} />
             <EditorModal />
           </div>

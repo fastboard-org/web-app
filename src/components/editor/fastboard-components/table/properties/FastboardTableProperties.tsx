@@ -10,6 +10,10 @@ import {
 import { useEffect, useState } from "react";
 import {
   FastboardTableProperties,
+  FilterProperties,
+  FilterType,
+  NumberFilterProperties,
+  StringFilterProperties,
   TableActionProperty,
 } from "@/types/editor/table-types";
 import QuerySelection from "@/components/editor/QuerySelection";
@@ -22,6 +26,9 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import { ComponentId } from "@/types/editor";
 import TableStyle from "./TableStyle";
 import { DeleteActionProperties } from "./DeleteActionProperties";
+import FiltersList from "./filters/FiltersList";
+import TableStringFilterProperties from "./filters/TableStringFilterProperties";
+import TableNumberFilterProperties from "./filters/TableNumberFilterProperties";
 
 const FastboardTablePropertiesComponent = ({
   componentId,
@@ -34,10 +41,11 @@ const FastboardTablePropertiesComponent = ({
 }) => {
   const {
     sourceQueryData,
-    rowsPerPage,
+    tableTitle,
     emptyMessage,
     columns,
     actions,
+    filters,
     pinActions,
     addOns,
   } = properties;
@@ -45,6 +53,9 @@ const FastboardTablePropertiesComponent = ({
   const [columnsProperties, setColumnsProperties] = useState(columns);
   const [actionSelected, setActionSelected] =
     useState<TableActionProperty | null>(null);
+  const [filterIndexSelected, setFilterIndexSelected] = useState<number | null>(
+    null
+  );
   const [addOnSelected, setAddOnSelected] = useState<string | null>(null);
 
   useEffect(() => {
@@ -54,8 +65,21 @@ const FastboardTablePropertiesComponent = ({
   useEffect(() => {
     // Reset selectinos when component is changed
     setActionSelected(null);
+    setFilterIndexSelected(null);
     setAddOnSelected(null);
   }, [selectedComponentId]);
+
+  function onFilterChange(filterProperties: FilterProperties) {
+    if (filterIndexSelected === null) {
+      return;
+    }
+    const newFilters = [...filters];
+    newFilters[filterIndexSelected] = filterProperties;
+    onValueChange({
+      ...properties,
+      filters: newFilters,
+    });
+  }
 
   return (
     <div>
@@ -64,13 +88,17 @@ const FastboardTablePropertiesComponent = ({
           key={"baseProperties"}
           onPress={() => {
             setActionSelected(null);
+            setFilterIndexSelected(null);
             setAddOnSelected(null);
           }}
         >
           Table
-        </BreadcrumbItem>{" "}
+        </BreadcrumbItem>
         {actionSelected && (
           <BreadcrumbItem key={"actionProperties"}>Row action</BreadcrumbItem>
+        )}
+        {filterIndexSelected != null && (
+          <BreadcrumbItem key={"filterProperties"}>Filter</BreadcrumbItem>
         )}
         {addOnSelected && (
           <BreadcrumbItem key={"addRowProperties"}>Add row</BreadcrumbItem>
@@ -78,12 +106,18 @@ const FastboardTablePropertiesComponent = ({
       </Breadcrumbs>
       <Spacer y={4} />
 
-      {!actionSelected && !addOnSelected && (
+      {!actionSelected && filterIndexSelected === null && !addOnSelected && (
         <Accordion
           selectionMode="multiple"
           isCompact
           fullWidth
-          defaultExpandedKeys={["basic", "row-actions", "add-ons", "style"]}
+          defaultExpandedKeys={[
+            "basic",
+            "row-actions",
+            "filters",
+            "add-ons",
+            "style",
+          ]}
           className="p-0"
         >
           <AccordionItem
@@ -109,6 +143,10 @@ const FastboardTablePropertiesComponent = ({
                       method: newQuery.metadata?.method,
                     },
                     columns: [],
+                    filters: filters.map((filter) => ({
+                      ...filter,
+                      columnKey: "",
+                    })),
                   });
                 }}
               />
@@ -131,22 +169,18 @@ const FastboardTablePropertiesComponent = ({
                 />
               )}
               <Spacer y={2} />
-              <div className="flex flex-row justify-between items-center">
-                <h1 className="w-full text-sm">Rows per page</h1>
-                <Input
-                  type="number"
-                  value={String(rowsPerPage)}
-                  min={1}
-                  max={100}
-                  onValueChange={(value) => {
-                    onValueChange({
-                      ...properties,
-                      rowsPerPage: Number(value),
-                    });
-                  }}
-                  className="w-[20%]"
-                />
-              </div>
+              <Input
+                label="Title"
+                labelPlacement="outside"
+                placeholder="Enter a title"
+                value={tableTitle}
+                onValueChange={(value) => {
+                  onValueChange({
+                    ...properties,
+                    tableTitle: value,
+                  });
+                }}
+              />
               <Spacer y={2} />
               <Input
                 label="Empty message"
@@ -199,6 +233,29 @@ const FastboardTablePropertiesComponent = ({
             </div>
           </AccordionItem>
           <AccordionItem
+            key="filters"
+            className="pb-2"
+            title="Filters"
+            classNames={{
+              title: "font-medium",
+            }}
+          >
+            <div className="flex flex-col gap-y-2">
+              <FiltersList
+                filters={filters}
+                onFilterSelect={(filter) => {
+                  setFilterIndexSelected(filters.indexOf(filter));
+                }}
+                onChange={(newFilters) => {
+                  onValueChange({
+                    ...properties,
+                    filters: newFilters,
+                  });
+                }}
+              />
+            </div>
+          </AccordionItem>
+          <AccordionItem
             key="add-ons"
             className="pb-2"
             title="Add ons"
@@ -233,6 +290,7 @@ const FastboardTablePropertiesComponent = ({
       {actionSelected && actionSelected.type == "delete" && (
         <DeleteActionProperties
           action={actionSelected}
+          columns={columnsProperties.map((c) => c.column)}
           onChange={(action) => {
             setActionSelected(action);
             onValueChange({
@@ -245,6 +303,7 @@ const FastboardTablePropertiesComponent = ({
       {actionSelected && actionSelected.type == "view" && (
         <DeleteActionProperties
           action={actionSelected}
+          columns={columnsProperties.map((c) => c.column)}
           onChange={(action) => {
             setActionSelected(action);
             onValueChange({
@@ -254,6 +313,28 @@ const FastboardTablePropertiesComponent = ({
           }}
         />
       )}
+
+      {filterIndexSelected !== null &&
+        filters[filterIndexSelected]?.type === FilterType.StringFilter && (
+          <TableStringFilterProperties
+            properties={filters[filterIndexSelected] as StringFilterProperties}
+            columns={columnsProperties}
+            onValueChange={(properties) => {
+              onFilterChange(properties);
+            }}
+          />
+        )}
+
+      {filterIndexSelected !== null &&
+        filters[filterIndexSelected]?.type === FilterType.NumberFilter && (
+          <TableNumberFilterProperties
+            properties={filters[filterIndexSelected] as NumberFilterProperties}
+            columns={columnsProperties}
+            onValueChange={(properties) => {
+              onFilterChange(properties);
+            }}
+          />
+        )}
 
       {addOnSelected &&
         addOnSelected === "add-row-form" &&

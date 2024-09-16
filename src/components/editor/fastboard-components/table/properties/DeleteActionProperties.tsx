@@ -1,13 +1,16 @@
-import { Code, Input, Tooltip } from "@nextui-org/react";
+import { Code, Input, Select, SelectItem, Tooltip } from "@nextui-org/react";
 import { RiQuestionLine } from "react-icons/ri";
-import { TableActionProperty } from "@/types/editor/table-types";
+import { Column, TableActionProperty } from "@/types/editor/table-types";
 import QuerySelection from "@/components/editor/QuerySelection";
+import { queryToRestQueryData } from "@/lib/rest-queries";
 
 export function DeleteActionProperties({
   action,
+  columns,
   onChange,
 }: {
   action: TableActionProperty;
+  columns: Column[];
   onChange: (action: TableActionProperty) => void;
 }) {
   const { label, query, parameters } = action;
@@ -15,9 +18,9 @@ export function DeleteActionProperties({
   return (
     <div className="flex flex-col w-full gap-y-2">
       <Input
-        label="Text"
+        label="Label"
         labelPlacement="outside"
-        placeholder="Set action text"
+        placeholder="Set action label"
         value={label}
         onValueChange={(newValue) => {
           onChange({
@@ -27,14 +30,15 @@ export function DeleteActionProperties({
         }}
       />
       <QuerySelection
-        selectedQueryId={query?.id || ""}
+        selectedQueryId={query?.queryId || ""}
         onQuerySelect={(query) => {
           onChange({
             ...action,
-            query: query,
+            query: queryToRestQueryData(query),
             parameters: query.metadata.parameters?.map(
               (p: { name: string; preview: string }) => ({
                 name: p.name,
+                columnKey: "",
                 value: p.preview,
               })
             ),
@@ -47,8 +51,9 @@ export function DeleteActionProperties({
           <Tooltip
             content={
               <div>
-                Use <Code className={"text-xs"}>{"{{row.columnName}}"}</Code>{" "}
-                syntax to access row values.
+                If no column is selected for a parameter we use{" "}
+                <Code className={"text-xs"}>{"preview value"}</Code> setting on
+                queries editor.
               </div>
             }
             className={"p-3 w-[275px] -translate-x-[35px] text-xs"}
@@ -64,23 +69,36 @@ export function DeleteActionProperties({
       )}
       <div className="flex flex-col gap-2 px-2 w-full">
         {parameters?.map((parameter, index) => (
-          <Input
-            key={`parameter-${index}`}
-            label={parameter.name}
-            labelPlacement="outside-left"
-            placeholder="Action label"
-            value={parameter.value}
-            onValueChange={(newValue) => {
-              const newParameters = parameters.map((p) =>
-                p.name === parameter.name ? { ...p, value: newValue } : p
-              );
-              onChange({
-                ...action,
-                parameters: newParameters,
-              });
-            }}
-            fullWidth
-          />
+          <div className="flex flex-row items-center justify-between gap-x-2">
+            <h2 className="w-full text-sm">{parameter.name}</h2>
+            <Select
+              items={columns}
+              placeholder="Select column"
+              selectedKeys={[parameter.columnKey]}
+              onSelectionChange={(key) => {
+                const columnKey = key.currentKey as string;
+                const newParameters = parameters.map((p) => {
+                  if (p.name === parameter.name) {
+                    return {
+                      ...p,
+                      columnKey: columnKey,
+                    };
+                  }
+                  return p;
+                });
+                onChange({
+                  ...action,
+                  parameters: newParameters,
+                });
+              }}
+            >
+              {(column) => (
+                <SelectItem key={column.key} value={column.key}>
+                  {column.label}
+                </SelectItem>
+              )}
+            </Select>
+          </div>
         ))}
       </div>
     </div>
