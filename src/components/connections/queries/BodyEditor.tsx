@@ -50,8 +50,7 @@ const BodyEditor = ({
         {label}
       </p>
       <Editor
-        className={scrollbarStyles.scrollbar}
-        height="90vh"
+        width={"98%"}
         language="json"
         theme={theme === "dark" ? "vs-dark" : "light"}
         options={{
@@ -61,7 +60,6 @@ const BodyEditor = ({
         }}
         value={body}
         onChange={(value, event) => {
-          console.log("here is the current model value:", value);
           if (!value) {
             return;
           }
