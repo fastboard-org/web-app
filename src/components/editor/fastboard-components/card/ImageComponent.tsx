@@ -1,0 +1,39 @@
+import { Alignment } from "@/components/shared/AlignmentProperty";
+import { ImageComponentProperties } from "@/types/editor/card-types";
+import { Image } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+
+export default function ImageComponent({
+  properties,
+  item,
+}: {
+  properties: ImageComponentProperties;
+  item: any;
+}) {
+  const { dataKey, alignment } = properties;
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [dataKey]);
+
+  return (
+    <div
+      className={
+        "flex " +
+        (alignment === Alignment.Center
+          ? "justify-center"
+          : alignment === Alignment.Right
+          ? "justify-end"
+          : "justify-start")
+      }
+    >
+      <Image
+        src={imageError ? "../ImageErrorImage.svg" : item[dataKey]}
+        alt="Card image"
+        width={100}
+        onError={() => setImageError(true)}
+      />
+    </div>
+  );
+}

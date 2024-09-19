@@ -12,6 +12,7 @@ export enum ComponentType {
   Image = "image",
   GroupChart = "group-chart",
   Form = "form",
+  Card = "card",
   Cards = "cards",
   Sidebar = "sidebar",
   Header = "header",

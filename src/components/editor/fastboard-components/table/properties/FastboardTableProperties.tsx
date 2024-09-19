@@ -29,6 +29,7 @@ import { DeleteActionProperties } from "./DeleteActionProperties";
 import FiltersList from "./filters/FiltersList";
 import TableStringFilterProperties from "./filters/TableStringFilterProperties";
 import TableNumberFilterProperties from "./filters/TableNumberFilterProperties";
+import { ViewActionProperties } from "./ViewActionProperties";
 
 const FastboardTablePropertiesComponent = ({
   componentId,
@@ -301,7 +302,7 @@ const FastboardTablePropertiesComponent = ({
         />
       )}
       {actionSelected && actionSelected.type == "view" && (
-        <DeleteActionProperties
+        <ViewActionProperties
           action={actionSelected}
           columns={columnsProperties.map((c) => c.column)}
           onChange={(action) => {

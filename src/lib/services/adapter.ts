@@ -5,14 +5,14 @@ import { isPreviewPage, isPublishPage } from "@/lib/helpers";
 const previewQuery = async (
   connectionId: string,
   queryMetadata: MongoQueryMetadata | RestQueryMetadata,
-  parameters: any,
+  parameters: any
 ) => {
   const response = await axiosInstance.post(
     `/adapter/${connectionId}/preview`,
     {
       connection_metadata: queryMetadata,
       parameters,
-    },
+    }
   );
 
   return response.data;
@@ -22,7 +22,7 @@ async function executeQuery(
   queryId: string | null,
   dashboardId: string,
   parameters?: Record<string, any>,
-  previewAccessToken?: string,
+  previewAccessToken?: string
 ) {
   try {
     if (!queryId) {
@@ -30,12 +30,11 @@ async function executeQuery(
     }
 
     const token = localStorage.getItem(`auth-${dashboardId}`);
-
-    const parametersToSend = parameters ?? {};
-
     const viewMode = isPreviewPage() || isPublishPage();
-
-    parametersToSend.token = viewMode ? token : previewAccessToken;
+    const parametersToSend = {
+      ...parameters,
+      token: viewMode ? token : previewAccessToken,
+    };
 
     const response = await axiosInstance.post(`/adapter/execute/${queryId}`, {
       parameters: parametersToSend,
@@ -51,7 +50,7 @@ async function executeQuery(
 
       const error = response.data?.body?.error;
       throw new Error(
-        `Error ${response.data.status_code}: ${error?.description ?? ""}`,
+        `Error ${response.data.status_code}: ${error?.description ?? ""}`
       );
     }
     return response.data;

@@ -1,4 +1,3 @@
-import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import {
   FastboardTableProperties,
@@ -53,15 +52,16 @@ import {
   Table,
   useReactTable,
 } from "@tanstack/react-table";
-import { HTTP_METHOD } from "@/types/connections";
 import {
   fillParameters,
   getExportData,
   getFilterFunction,
   getFinalColumns,
   sortFunction,
+  traduceQueryStrings,
 } from "@/lib/table.utils";
-import Filters, { NumberFilter, StringFilter } from "./Filters";
+import Filters from "./Filters";
+import useNavigation from "@/hooks/useNavigation";
 
 export default function FastboardTable({
   id,
@@ -73,6 +73,7 @@ export default function FastboardTable({
   const { theme } = useTheme();
   const { id: dashboardId } = useParams();
   const { updateComponentProperties } = useDashboard();
+  const { changePage } = useNavigation();
   const { openModal } = useModalFrame();
   const {
     sourceQueryData,
@@ -345,16 +346,24 @@ export default function FastboardTable({
                 }
                 onPress={() => {
                   setSelectedRowAction({ action, item });
+                  updateComponentProperties(id, {
+                    ...properties,
+                    selectedRow: item,
+                  });
                   if (action.type === "view") {
-                    executeAction({ action, item });
-                    setViewModalOpen(action.query ? true : false);
+                    if (action.mode === "modal") {
+                      executeAction({ action, item });
+                      setViewModalOpen(action.query ? true : false);
+                    } else if (action.mode === "page") {
+                      changePage(
+                        action.pageId ?? "",
+                        traduceQueryStrings(action.queryStrings, item)
+                      );
+                    }
+                    //openModal(action.modalId ?? "");
                   } else if (action.type === "delete") {
                     setDeleteModalOpen(true);
                   } else if (action.type === "edit") {
-                    updateComponentProperties(id, {
-                      ...properties,
-                      selectedRow: item,
-                    });
                     openModal(action.modalId ?? "");
                   }
                 }}

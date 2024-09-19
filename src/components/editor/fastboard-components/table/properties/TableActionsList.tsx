@@ -12,6 +12,7 @@ import { ComponentId, ComponentType } from "@/types/editor";
 import { FormProperties } from "@/types/editor/form";
 import Option from "@/components/shared/Option";
 import useDashboard from "@/hooks/dashboards/useDashboard";
+import { CardProperties } from "@/types/editor/card-types";
 
 export default function TableActionsList({
   tableId,
@@ -38,6 +39,7 @@ export default function TableActionsList({
       type,
       query: null,
       parameters: [],
+      queryStrings: [],
     };
 
     setActions((previous) => [...previous, newAction]);
@@ -66,6 +68,7 @@ export default function TableActionsList({
       query: null,
       parameters: [],
       modalId,
+      queryStrings: [],
     };
 
     setActions((previous) => [...previous, newAction]);

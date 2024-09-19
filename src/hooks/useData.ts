@@ -6,7 +6,11 @@ import { useRecoilValue } from "recoil";
 import { previewAccessTokenState } from "@/atoms/editor";
 import { useParams } from "next/navigation";
 
-const useData = (componentId: string, queryData: RestQueryData | null) => {
+const useData = (
+  componentId: string,
+  queryData: RestQueryData | null,
+  queryParameters?: Record<string, any>
+) => {
   const { queryId, connectionId } = queryData || {};
   const { id: dashboardId } = useParams();
   const previewAccessToken = useRecoilValue(previewAccessTokenState);
@@ -35,7 +39,7 @@ const useData = (componentId: string, queryData: RestQueryData | null) => {
       const response = await adapterService.executeQuery(
         queryId,
         dashboardId as string,
-        {},
+        queryParameters ?? {},
         previewAccessToken
       );
       let responseData = response?.body;

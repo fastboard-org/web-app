@@ -43,14 +43,19 @@ function deleteTableModalsFrame(
   component: FastboardComponent,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
+  const viewModalId = component.properties?.actions?.find(
+    (action: TableActionProperty) => action.type === "view"
+  )?.modalId;
   const editModalId = component.properties?.actions?.find(
     (action: TableActionProperty) => action.type === "edit"
   )?.modalId;
   const addRowModalId = component.properties?.addOns?.addRowForm?.modalId;
+  if (viewModalId) {
+    dashboardMetadata = removeModalFrame(viewModalId, dashboardMetadata);
+  }
   if (editModalId) {
     dashboardMetadata = removeModalFrame(editModalId, dashboardMetadata);
   }
-
   if (addRowModalId) {
     dashboardMetadata = removeModalFrame(addRowModalId, dashboardMetadata);
   }
