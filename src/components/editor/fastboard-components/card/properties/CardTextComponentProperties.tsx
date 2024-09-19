@@ -14,7 +14,8 @@ export default function CardTextComponentProperties({
   onValueChange: (properties: TextComponentProperties) => void;
 }) {
   const { theme } = useTheme();
-  const { dataKey, label, defaultText, alignment, textColor } = properties;
+  const { dataKey, label, defaultText, alignment, fontSize, textColor } =
+    properties;
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -52,6 +53,16 @@ export default function CardTextComponentProperties({
         value={defaultText}
         onValueChange={(value) => {
           onValueChange({ ...properties, defaultText: value });
+        }}
+      />
+      <Input
+        type="number"
+        label="Text size"
+        labelPlacement="outside-left"
+        placeholder="Enter some text"
+        value={String(fontSize)}
+        onValueChange={(value) => {
+          onValueChange({ ...properties, fontSize: Number(value) });
         }}
       />
       <AlignmentProperty

@@ -5,11 +5,11 @@ import {
   CardProperties,
   TextComponentProperties,
 } from "@/types/editor/card-types";
-import { Card, CardBody, CardHeader, Image, Spinner } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Spinner } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import useData from "@/hooks/useData";
 import { toast } from "sonner";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import useNavigation from "@/hooks/useNavigation";
 import { useSetRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
@@ -128,6 +128,11 @@ export default function FastboardCard({
       <CardBody
         className={"flex flex-col gap-y-2 " + scrollbarStyles.scrollbar}
       >
+        {components.length === 0 && (
+          <h2 className="flex w-full h-full justify-center items-center">
+            Add components
+          </h2>
+        )}
         {components.map((component) => renderComponent(component, data))}
       </CardBody>
     </Card>

@@ -16,6 +16,7 @@ export interface TextComponentProperties extends BaseCardComponentProperties {
   label: string;
   defaultText: string;
   alignment: Alignment;
+  fontSize: number;
   textColor: Color;
 }
 
@@ -40,6 +41,7 @@ export class DefaultCardComponentProperties {
           label: "",
           defaultText: "Some text",
           alignment: Alignment.Left,
+          fontSize: 20,
           textColor: new Color("#000000", "#ffffff"),
         };
       case CardComponentType.Image:

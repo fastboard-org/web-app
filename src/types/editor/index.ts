@@ -50,6 +50,11 @@ export class DashboardAuth {
   }
 }
 
+export interface Page {
+  layouts: Layout[];
+  returnPage: string | undefined;
+}
+
 export class DashboardMetadata {
   components: Record<ComponentId, FastboardComponent> = {};
   header: { componentId: ComponentId | null; isVisible: boolean } = {
@@ -58,8 +63,11 @@ export class DashboardMetadata {
   };
   sidebar: { id: ComponentId; visible: boolean } | null = null;
   modals: ModalFrame[] = [];
-  pages: Record<string, Layout[]> = {
-    home: [Layout.of(LayoutType.Full)],
+  pages: Record<string, Page> = {
+    home: {
+      layouts: [Layout.of(LayoutType.Full)],
+      returnPage: undefined,
+    },
   };
   auth: DashboardAuth = DashboardAuth.default();
   pageTitle: string = "";

@@ -28,10 +28,10 @@ export function ViewActionProperties({
 }) {
   const { label, mode, query, parameters, pageId, queryStrings } = action;
   const { addPage } = useDashboard();
-  const { changePage } = useNavigation();
+  const { currentPage } = useNavigation();
 
   function createViewPage() {
-    const pageId = addPage();
+    const pageId = addPage(currentPage);
     if (!pageId) return;
 
     onChange({
@@ -140,7 +140,11 @@ export function ViewActionProperties({
         </Tab>
 
         <Tab key="page" title="Page">
-          {!pageId && <Button onPress={createViewPage}>Create new page</Button>}
+          {!pageId && (
+            <Button className="w-full" variant="flat" onPress={createViewPage}>
+              Create new page
+            </Button>
+          )}
           {pageId && (
             <div className="flex flex-col gap-y-2">
               <div className="flex justify-end w-full">

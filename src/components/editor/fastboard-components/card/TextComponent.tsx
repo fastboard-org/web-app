@@ -10,7 +10,8 @@ export default function TextComponent({
   item: any;
 }) {
   const { theme } = useTheme();
-  const { dataKey, label, defaultText, alignment, textColor } = properties;
+  const { dataKey, label, defaultText, alignment, fontSize, textColor } =
+    properties;
 
   return (
     <h1
@@ -24,6 +25,7 @@ export default function TextComponent({
       }
       style={{
         color: theme === "dark" ? textColor.dark : textColor.light,
+        fontSize: `${fontSize}px`,
       }}
     >
       {label}
