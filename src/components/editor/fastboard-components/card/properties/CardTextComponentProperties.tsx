@@ -1,5 +1,6 @@
 import AlignmentProperty from "@/components/shared/AlignmentProperty";
 import ColorPicker from "@/components/shared/ColorPicker";
+import FontTypeProperty from "@/components/shared/FontTypeProperty";
 import { TextComponentProperties } from "@/types/editor/card-types";
 import { Input, Select, SelectItem } from "@nextui-org/react";
 import { useTheme } from "next-themes";
@@ -14,8 +15,15 @@ export default function CardTextComponentProperties({
   onValueChange: (properties: TextComponentProperties) => void;
 }) {
   const { theme } = useTheme();
-  const { dataKey, label, defaultText, alignment, fontSize, textColor } =
-    properties;
+  const {
+    dataKey,
+    label,
+    defaultText,
+    alignment,
+    fontSize,
+    fontTypes,
+    textColor,
+  } = properties;
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -55,22 +63,31 @@ export default function CardTextComponentProperties({
           onValueChange({ ...properties, defaultText: value });
         }}
       />
-      <Input
-        type="number"
-        label="Text size"
-        labelPlacement="outside-left"
-        placeholder="Enter some text"
-        value={String(fontSize)}
-        onValueChange={(value) => {
-          onValueChange({ ...properties, fontSize: Number(value) });
-        }}
-      />
+      <div className="flex flex-row justify-between items-center">
+        <h1 className="text-sm">Text size</h1>
+        <Input
+          aria-label="Text size input"
+          className="w-1/3"
+          type="number"
+          placeholder="Enter some text"
+          value={String(fontSize)}
+          onValueChange={(value) => {
+            onValueChange({ ...properties, fontSize: Number(value) });
+          }}
+        />
+      </div>
+
       <AlignmentProperty
-        label="Alignment"
         position={alignment}
         onPositionChange={(position) =>
           onValueChange({ ...properties, alignment: position })
         }
+      />
+      <FontTypeProperty
+        fontTypes={fontTypes}
+        onFontTypesChange={(newFontTypes) => {
+          onValueChange({ ...properties, fontTypes: newFontTypes });
+        }}
       />
       <ColorPicker
         label="Text color"

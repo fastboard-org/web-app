@@ -10,7 +10,7 @@ export default function ImageComponent({
   properties: ImageComponentProperties;
   item: any;
 }) {
-  const { dataKey, alignment } = properties;
+  const { dataKey, alignment, border } = properties;
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function ImageComponent({
   return (
     <div
       className={
-        "flex " +
+        "flex size-auto " +
         (alignment === Alignment.Center
           ? "justify-center"
           : alignment === Alignment.Right
@@ -31,7 +31,9 @@ export default function ImageComponent({
       <Image
         src={imageError ? "../ImageErrorImage.svg" : item[dataKey]}
         alt="Card image"
-        width={100}
+        width={"200px"}
+        height={"200px"}
+        radius={border as any}
         onError={() => setImageError(true)}
       />
     </div>

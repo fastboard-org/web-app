@@ -3,6 +3,7 @@ import {
   CardComponentProperties,
   CardComponentType,
   CardProperties,
+  ImageComponentProperties,
   TextComponentProperties,
 } from "@/types/editor/card-types";
 import { Card, CardBody, CardHeader, Spinner } from "@nextui-org/react";
@@ -116,7 +117,12 @@ export default function FastboardCard({
         );
       }
       case CardComponentType.Image:
-        return <ImageComponent properties={component} item={item} />;
+        return (
+          <ImageComponent
+            properties={component as ImageComponentProperties}
+            item={item}
+          />
+        );
       default:
         return <p>Component not found</p>;
     }

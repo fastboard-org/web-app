@@ -12,7 +12,7 @@ export default function AlignmentProperty({
   position,
   onPositionChange,
 }: {
-  label: string;
+  label?: string;
   position: Alignment;
   onPositionChange: (position: Alignment) => void;
 }) {

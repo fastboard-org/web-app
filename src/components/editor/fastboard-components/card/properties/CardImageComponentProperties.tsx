@@ -1,4 +1,5 @@
 import AlignmentProperty from "@/components/shared/AlignmentProperty";
+import ImageBoderProperty from "@/components/shared/ImageBorderProperty";
 import { ImageComponentProperties } from "@/types/editor/card-types";
 import { Select, SelectItem } from "@nextui-org/react";
 
@@ -11,7 +12,7 @@ export default function CardImageComponentProperties({
   dataKeys: string[];
   onValueChange: (properties: ImageComponentProperties) => void;
 }) {
-  const { dataKey, alignment } = properties;
+  const { dataKey, alignment, border } = properties;
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -39,6 +40,11 @@ export default function CardImageComponentProperties({
         onPositionChange={(position) =>
           onValueChange({ ...properties, alignment: position })
         }
+      />
+      <ImageBoderProperty
+        label="Photo border"
+        border={border}
+        onBorderChange={(border) => onValueChange({ ...properties, border })}
       />
     </div>
   );

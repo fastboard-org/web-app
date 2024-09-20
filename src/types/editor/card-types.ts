@@ -1,6 +1,8 @@
 import { Alignment } from "@/components/shared/AlignmentProperty";
 import { RestQueryData } from "../connections";
 import { Color } from "./style-types";
+import { FontType } from "@/components/shared/FontTypeProperty";
+import { ImageBorder } from "@/components/shared/ImageBorderProperty";
 
 export enum CardComponentType {
   Text = "Text",
@@ -17,11 +19,13 @@ export interface TextComponentProperties extends BaseCardComponentProperties {
   defaultText: string;
   alignment: Alignment;
   fontSize: number;
+  fontTypes: FontType[];
   textColor: Color;
 }
 
 export interface ImageComponentProperties extends BaseCardComponentProperties {
   alignment: Alignment;
+  border: ImageBorder;
 }
 
 export type CardComponentProperties =
@@ -41,18 +45,21 @@ export class DefaultCardComponentProperties {
           label: "",
           defaultText: "Some text",
           alignment: Alignment.Left,
-          fontSize: 20,
+          fontSize: 18,
+          fontTypes: [],
           textColor: new Color("#000000", "#ffffff"),
         };
       case CardComponentType.Image:
         return {
           ...baseProperties,
           alignment: Alignment.Left,
+          border: ImageBorder.Round,
         };
       default:
         return {
           ...baseProperties,
           alignment: Alignment.Left,
+          border: ImageBorder.Round,
         };
     }
   }
