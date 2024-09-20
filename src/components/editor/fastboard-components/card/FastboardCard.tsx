@@ -8,7 +8,7 @@ import {
   TextComponentProperties,
   VideoComponentProperties,
 } from "@/types/editor/card-types";
-import { Card, CardBody, CardHeader, Spinner } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import useData from "@/hooks/useData";
 import { toast } from "sonner";
@@ -61,7 +61,6 @@ export default function FastboardCard({
   const setPropertiesState = useSetRecoilState(propertiesDrawerState);
 
   useEffect(() => {
-    console.log("keys updated", keys);
     updateComponentProperties(id, {
       ...properties,
       dataKeys: keys,
@@ -147,19 +146,19 @@ export default function FastboardCard({
   }
 
   return isValidData(data) ? (
-    <Card className={`grow-0 h-full ${!showShadow ? "shadow-none" : ""}`}>
-      <CardHeader></CardHeader>
-      <CardBody
-        className={"flex flex-col gap-y-2 " + scrollbarStyles.scrollbar}
-      >
-        {components.length === 0 && (
-          <h2 className="flex w-full h-full justify-center items-center">
-            Add components
-          </h2>
-        )}
-        {components.map((component) => renderComponent(component, data))}
-      </CardBody>
-    </Card>
+    <div
+      className={
+        "grow-0 h-full p-5 rounded-xl shadow-xl border dark:border-content2 overflow-auto " +
+        scrollbarStyles.scrollbar
+      }
+    >
+      {components.length === 0 && (
+        <h2 className="flex w-full h-full justify-center items-center">
+          Add components
+        </h2>
+      )}
+      {components.map((component) => renderComponent(component, data))}
+    </div>
   ) : (
     <p className="flex justify-center items-center w-full h-full text-warning">
       Seems like the data is not an object or is empty.
