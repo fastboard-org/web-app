@@ -13,6 +13,7 @@ import {
   CardComponentType,
   DefaultCardComponentProperties,
 } from "@/types/editor/card-types";
+import CardComponentIcon from "./CardComponentIcon";
 
 export default function CardComponentsList({
   components,
@@ -42,6 +43,7 @@ export default function CardComponentsList({
                     DefaultCardComponentProperties.of(type),
                   ]);
                 }}
+                startContent={<CardComponentIcon type={type} size={15} />}
               >
                 {type}
               </DropdownItem>
@@ -55,6 +57,7 @@ export default function CardComponentsList({
           <Option
             key={index}
             label={component.type}
+            startIcon={<CardComponentIcon type={component.type} size={12} />}
             onPress={() => {
               onSelectComponent?.(component);
             }}

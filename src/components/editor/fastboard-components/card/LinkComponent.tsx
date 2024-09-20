@@ -1,26 +1,36 @@
 import { Alignment } from "@/components/shared/AlignmentProperty";
-import { FontType } from "@/components/shared/FontTypeProperty";
-import { TextComponentProperties } from "@/types/editor/card-types";
+import { Icon } from "@/components/shared/IconPicker";
+import { LinkComponentProperties } from "@/types/editor/card-types";
+import { Link } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 
-export default function TextComponent({
+export default function LinkComponent({
   properties,
   item,
 }: {
-  properties: TextComponentProperties;
+  properties: LinkComponentProperties;
   item: any;
 }) {
   const { theme } = useTheme();
   const {
     dataKey,
+    alignment,
     label,
     defaultText,
-    alignment,
+    isExternal,
+    externalIcon,
+    showExternalIcon,
     fontSize,
-    fontTypes,
     textColor,
     labelColor,
   } = properties;
+
+  function addPrefix(url: string) {
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      return `https://${url}`;
+    }
+    return url;
+  }
 
   return (
     <div
@@ -30,15 +40,10 @@ export default function TextComponent({
           ? "justify-center"
           : alignment === Alignment.Right
           ? "justify-end"
-          : "justify-start") +
-        (fontTypes.includes(FontType.Bold) ? " font-bold" : "")
+          : "justify-start")
       }
       style={{
         fontSize: `${fontSize}px`,
-        fontStyle: fontTypes.includes(FontType.Italic) ? "italic" : "normal",
-        textDecorationLine: fontTypes.includes(FontType.Underline)
-          ? "underline"
-          : "none",
       }}
     >
       <h1
@@ -48,13 +53,24 @@ export default function TextComponent({
       >
         {label}
       </h1>
-      <h1
+      <Link
+        href={dataKey !== "" ? addPrefix(item[dataKey]) : defaultText}
+        isExternal={isExternal}
+        showAnchorIcon={showExternalIcon}
+        anchorIcon={
+          isExternal ? (
+            <Icon icon={externalIcon} />
+          ) : (
+            <Icon icon={externalIcon} />
+          )
+        }
         style={{
           color: theme === "dark" ? textColor.dark : textColor.light,
+          fontSize: `${fontSize}px`,
         }}
       >
         {dataKey !== "" ? item[dataKey] : defaultText}
-      </h1>
+      </Link>
     </div>
   );
 }

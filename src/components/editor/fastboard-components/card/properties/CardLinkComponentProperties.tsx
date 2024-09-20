@@ -1,27 +1,29 @@
 import AlignmentProperty from "@/components/shared/AlignmentProperty";
 import ColorPicker from "@/components/shared/ColorPicker";
-import FontTypeProperty from "@/components/shared/FontTypeProperty";
-import { TextComponentProperties } from "@/types/editor/card-types";
-import { Input, Select, SelectItem } from "@nextui-org/react";
+import IconPicker from "@/components/shared/IconPicker";
+import { LinkComponentProperties } from "@/types/editor/card-types";
+import { Checkbox, Input, Select, SelectItem } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 
-export default function CardTextComponentProperties({
+export default function CardLinkComponentProperties({
   properties,
   dataKeys,
   onValueChange,
 }: {
-  properties: TextComponentProperties;
+  properties: LinkComponentProperties;
   dataKeys: string[];
-  onValueChange: (properties: TextComponentProperties) => void;
+  onValueChange: (properties: LinkComponentProperties) => void;
 }) {
   const { theme } = useTheme();
   const {
     dataKey,
     label,
     defaultText,
+    isExternal,
+    externalIcon,
+    showExternalIcon,
     alignment,
     fontSize,
-    fontTypes,
     textColor,
     labelColor,
   } = properties;
@@ -84,12 +86,44 @@ export default function CardTextComponentProperties({
           onValueChange({ ...properties, alignment: position })
         }
       />
-      <FontTypeProperty
-        fontTypes={fontTypes}
-        onFontTypesChange={(newFontTypes) => {
-          onValueChange({ ...properties, fontTypes: newFontTypes });
-        }}
-      />
+
+      <div className="flex flex-row justify-between items-center">
+        <span className="text-sm">Is external</span>
+        <Checkbox
+          isSelected={isExternal}
+          onValueChange={(value) => {
+            onValueChange({
+              ...properties,
+              isExternal: value,
+            });
+          }}
+        />
+      </div>
+      <div className="flex flex-row justify-between items-center">
+        <span className="text-sm">Show anchow icon</span>
+        <Checkbox
+          isSelected={showExternalIcon}
+          onValueChange={(value) => {
+            onValueChange({
+              ...properties,
+              showExternalIcon: value,
+            });
+          }}
+        />
+      </div>
+      <div className="flex flex-row justify-between items-center">
+        <span className="text-sm">Anchor icon</span>
+        <IconPicker
+          icon={externalIcon}
+          onIconSelect={(icon) => {
+            onValueChange({
+              ...properties,
+              externalIcon: icon,
+            });
+          }}
+        />
+      </div>
+
       <ColorPicker
         label="Text color"
         initialColor={theme === "dark" ? textColor.dark : textColor.light}

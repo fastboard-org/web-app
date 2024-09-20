@@ -4,7 +4,9 @@ import {
   CardComponentType,
   CardProperties,
   ImageComponentProperties,
+  LinkComponentProperties,
   TextComponentProperties,
+  VideoComponentProperties,
 } from "@/types/editor/card-types";
 import { Card, CardBody, CardHeader, Spinner } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
@@ -17,6 +19,8 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import TextComponent from "./TextComponent";
 import ImageComponent from "./ImageComponent";
+import VideoComponent from "./VideoComponent";
+import LinkComponent from "./LinkComponent";
 
 export default function FastboardCard({
   id,
@@ -120,6 +124,20 @@ export default function FastboardCard({
         return (
           <ImageComponent
             properties={component as ImageComponentProperties}
+            item={item}
+          />
+        );
+      case CardComponentType.Link:
+        return (
+          <LinkComponent
+            properties={component as LinkComponentProperties}
+            item={item}
+          />
+        );
+      case CardComponentType.Video:
+        return (
+          <VideoComponent
+            properties={component as VideoComponentProperties}
             item={item}
           />
         );

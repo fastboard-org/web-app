@@ -4,7 +4,9 @@ import {
   CardComponentType,
   CardProperties,
   ImageComponentProperties,
+  LinkComponentProperties,
   TextComponentProperties,
+  VideoComponentProperties,
 } from "@/types/editor/card-types";
 import {
   Accordion,
@@ -25,6 +27,8 @@ import CardTextComponentProperties from "./CardTextComponentProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import CardImageComponentProperties from "./CardImageComponentProperties";
+import CardVideoComponentProperties from "./CardVideoComponentProperties";
+import CardLinkComponentProperties from "./CardLinkComponentProperties";
 
 export default function FastboardCardProperties({
   properties,
@@ -218,6 +222,31 @@ export default function FastboardCardProperties({
           <CardImageComponentProperties
             properties={
               components[componentSelectedIndex] as ImageComponentProperties
+            }
+            dataKeys={dataKeys}
+            onValueChange={(component) => {
+              onComponentChange(component);
+            }}
+          />
+        )}
+      {componentSelectedIndex !== null &&
+        components[componentSelectedIndex]?.type === CardComponentType.Link && (
+          <CardLinkComponentProperties
+            properties={
+              components[componentSelectedIndex] as LinkComponentProperties
+            }
+            dataKeys={dataKeys}
+            onValueChange={(component) => {
+              onComponentChange(component);
+            }}
+          />
+        )}
+      {componentSelectedIndex !== null &&
+        components[componentSelectedIndex]?.type ===
+          CardComponentType.Video && (
+          <CardVideoComponentProperties
+            properties={
+              components[componentSelectedIndex] as VideoComponentProperties
             }
             dataKeys={dataKeys}
             onValueChange={(component) => {
