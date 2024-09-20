@@ -32,7 +32,7 @@ export default function ImageComponent({
         src={imageError ? "../ImageErrorImage.svg" : item[dataKey]}
         alt="Card image"
         width={"200px"}
-        height={"200px"}
+        height={"100%"}
         radius={border as any}
         onError={() => setImageError(true)}
       />

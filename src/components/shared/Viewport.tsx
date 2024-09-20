@@ -107,17 +107,19 @@ export default function Viewport({
           style={{ width: layoutsWidth }}
         >
           {selectedPage && selectedPage.returnPage && (
-            <Button
-              isIconOnly
-              variant="light"
-              className="mx-2 mt-1"
-              onPress={() => {
-                if (!selectedPage.returnPage) return;
-                changePage(selectedPage.returnPage);
-              }}
-            >
-              <Back />
-            </Button>
+            <div className="flex items-center h-12 mx-2 mt-1">
+              <Button
+                isIconOnly
+                variant="light"
+                className=""
+                onPress={() => {
+                  if (!selectedPage.returnPage) return;
+                  changePage(selectedPage.returnPage);
+                }}
+              >
+                <Back />
+              </Button>
+            </div>
           )}
           {selectedPage &&
             selectedPage.layouts.map((layout, index) =>

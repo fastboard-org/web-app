@@ -148,7 +148,7 @@ export default function FastboardCard({
   return isValidData(data) ? (
     <div
       className={
-        "grow-0 h-full p-5 rounded-xl shadow-xl border dark:border-content2 overflow-auto " +
+        "flex grow-0 h-full w-full p-5 rounded-xl shadow-xl border dark:border-content2 overflow-auto " +
         scrollbarStyles.scrollbar
       }
     >
@@ -157,7 +157,9 @@ export default function FastboardCard({
           Add components
         </h2>
       )}
-      {components.map((component) => renderComponent(component, data))}
+      <div className="h-full w-full">
+        {components.map((component) => renderComponent(component, data))}
+      </div>
     </div>
   ) : (
     <p className="flex justify-center items-center w-full h-full text-warning">
