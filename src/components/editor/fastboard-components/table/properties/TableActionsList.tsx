@@ -25,7 +25,7 @@ export default function TableActionsList({
   onActionSelect: (action: TableActionProperty) => void;
   onChange?: (actions: TableActionProperty[]) => void;
 }) {
-  const { createModalFrame, deleteModalFrame } = useDashboard();
+  const { createModalFrame, deleteModalFrame, deletePage } = useDashboard();
   const [actions, setActions] = useState(actionsProperties);
 
   useEffect(() => {
@@ -80,6 +80,9 @@ export default function TableActionsList({
   function removeAction(key: string, index: number) {
     if (actions[index].modalId) {
       deleteModalFrame(actions[index].modalId as string);
+    }
+    if (actions[index].pageId) {
+      deletePage(actions[index].pageId);
     }
     const newActions = actions.filter((action) => action.key !== key);
     setActions(newActions);

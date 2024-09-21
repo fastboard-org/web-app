@@ -11,6 +11,8 @@ import { AxiosError } from "axios";
 import { notFound } from "next/navigation";
 import { Back } from "iconsax-react";
 
+const RETURN_BUTTON_HEIGHT = 48;
+
 export default function Viewport({
   mode,
 }: {
@@ -103,15 +105,19 @@ export default function Viewport({
           </div>
         )}
         <div
-          className="flex flex-col min-w-96 h-full"
+          className="flex flex-col min-w-[400px] h-full"
           style={{ width: layoutsWidth }}
         >
           {selectedPage && selectedPage.returnPage && (
-            <div className="flex items-center h-12 mx-2 mt-1">
+            <div
+              className="flex items-center mx-2 mt-1"
+              style={{
+                height: `${RETURN_BUTTON_HEIGHT}px`,
+              }}
+            >
               <Button
                 isIconOnly
                 variant="light"
-                className=""
                 onPress={() => {
                   if (!selectedPage.returnPage) return;
                   changePage(selectedPage.returnPage);
@@ -121,15 +127,25 @@ export default function Viewport({
               </Button>
             </div>
           )}
-          {selectedPage &&
-            selectedPage.layouts.map((layout, index) =>
-              getLayout(
-                layout,
-                currentPage,
-                index,
-                mode === "editor" ? "editable" : "view"
-              )
-            )}
+          <div
+            style={{
+              height: `calc(100% - ${
+                selectedPage && selectedPage.returnPage
+                  ? `${RETURN_BUTTON_HEIGHT}px`
+                  : "0px"
+              })`,
+            }}
+          >
+            {selectedPage &&
+              selectedPage.layouts.map((layout, index) =>
+                getLayout(
+                  layout,
+                  currentPage,
+                  index,
+                  mode === "editor" ? "editable" : "view"
+                )
+              )}
+          </div>
         </div>
       </div>
     </AuthVerifier>

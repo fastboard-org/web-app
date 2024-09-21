@@ -63,6 +63,20 @@ function deleteTableModalsFrame(
   return dashboardMetadata;
 }
 
+function deleteTablePageView(
+  component: FastboardComponent,
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  const pageId = component.properties?.actions?.find(
+    (action: TableActionProperty) => action.type === "view"
+  )?.pageId;
+
+  if (pageId) {
+    dashboardMetadata = deletePage(pageId, dashboardMetadata);
+  }
+  return dashboardMetadata;
+}
+
 export function deleteComponent(
   id: ComponentId,
   dashboardMetadata: DashboardMetadata
@@ -72,8 +86,9 @@ export function deleteComponent(
     return dashboardMetadata;
   }
   if (component.type === ComponentType.Table) {
-    //If the component is a table, then we need to remove the modal frame that is associated with it
+    //If the component is a table, then we need to remove the modal frame that is associated with it and view pages also
     dashboardMetadata = deleteTableModalsFrame(component, dashboardMetadata);
+    dashboardMetadata = deleteTablePageView(component, dashboardMetadata);
   }
   const { [id]: removedComponent, ...newComponents } =
     dashboardMetadata.components;
