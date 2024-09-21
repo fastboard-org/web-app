@@ -56,7 +56,7 @@ export default function FastboardHeader({
             }`}
           >
             <Image
-              src={imageError ? "../ImageErrorImage.svg" : photo.url}
+              src={imageError ? "/ImageErrorImage.svg" : photo.url}
               alt="Header"
               radius={photo.border as any}
               height={photo.size}

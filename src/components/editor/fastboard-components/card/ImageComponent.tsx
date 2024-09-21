@@ -29,7 +29,14 @@ export default function ImageComponent({
       }
     >
       <Image
-        src={imageError ? "../ImageErrorImage.svg" : item[dataKey]}
+        src={
+          imageError
+            ? "/ImageErrorImage.svg"
+            : dataKey !== ""
+            ? item[dataKey]
+            : "/ImageErrorImage.svg"
+        }
+        className={"object-contain " + (imageError ? "dark:invert " : "")}
         alt="Card image"
         width={"200px"}
         height={"100%"}

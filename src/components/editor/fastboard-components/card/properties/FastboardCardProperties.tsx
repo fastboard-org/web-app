@@ -29,6 +29,7 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import CardImageComponentProperties from "./CardImageComponentProperties";
 import CardVideoComponentProperties from "./CardVideoComponentProperties";
 import CardLinkComponentProperties from "./CardLinkComponentProperties";
+import CardComponent from "./CardComponent";
 
 export default function FastboardCardProperties({
   properties,
@@ -204,56 +205,13 @@ export default function FastboardCardProperties({
         </Accordion>
       )}
 
-      {componentSelectedIndex !== null &&
-        components[componentSelectedIndex]?.type === CardComponentType.Text && (
-          <CardTextComponentProperties
-            properties={
-              components[componentSelectedIndex] as TextComponentProperties
-            }
-            dataKeys={dataKeys}
-            onValueChange={(component) => {
-              onComponentChange(component);
-            }}
-          />
-        )}
-      {componentSelectedIndex !== null &&
-        components[componentSelectedIndex]?.type ===
-          CardComponentType.Image && (
-          <CardImageComponentProperties
-            properties={
-              components[componentSelectedIndex] as ImageComponentProperties
-            }
-            dataKeys={dataKeys}
-            onValueChange={(component) => {
-              onComponentChange(component);
-            }}
-          />
-        )}
-      {componentSelectedIndex !== null &&
-        components[componentSelectedIndex]?.type === CardComponentType.Link && (
-          <CardLinkComponentProperties
-            properties={
-              components[componentSelectedIndex] as LinkComponentProperties
-            }
-            dataKeys={dataKeys}
-            onValueChange={(component) => {
-              onComponentChange(component);
-            }}
-          />
-        )}
-      {componentSelectedIndex !== null &&
-        components[componentSelectedIndex]?.type ===
-          CardComponentType.Video && (
-          <CardVideoComponentProperties
-            properties={
-              components[componentSelectedIndex] as VideoComponentProperties
-            }
-            dataKeys={dataKeys}
-            onValueChange={(component) => {
-              onComponentChange(component);
-            }}
-          />
-        )}
+      {componentSelectedIndex !== null && (
+        <CardComponent
+          component={components[componentSelectedIndex]}
+          dataKeys={dataKeys}
+          onComponentChange={onComponentChange}
+        />
+      )}
     </div>
   );
 }

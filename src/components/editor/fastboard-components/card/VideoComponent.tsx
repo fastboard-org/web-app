@@ -12,7 +12,7 @@ export default function VideoComponent({
   const { dataKey } = properties;
 
   return (
-    <div className="border h-full max-h-96">
+    <div className="border border-content2 h-full">
       <ReactPlayer
         className="react-player"
         url={
