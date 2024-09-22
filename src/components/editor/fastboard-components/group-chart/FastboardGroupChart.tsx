@@ -12,7 +12,7 @@ import { ComponentId, ComponentType } from "@/types/editor";
 import { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
-import { HTTP_METHOD } from "@/types/connections";
+import { QueryMethod } from "@/types/connections";
 import { useTheme } from "next-themes";
 
 const groupData = (data: any[], groupBy: string) => {
@@ -28,8 +28,6 @@ const groupData = (data: any[], groupBy: string) => {
 
 const FastboardGroupChart = ({
   id,
-  layoutIndex,
-  container,
   properties,
 }: {
   id: ComponentId;
@@ -38,9 +36,8 @@ const FastboardGroupChart = ({
   properties: FastboardGroupChartProperties;
 }) => {
   const { theme } = useTheme();
-  //TODO: change sourceQuery to type RestQueryData
   const {
-    sourceQuery,
+    sourceQueryData,
     title,
     subtitle,
     groupBy,
@@ -55,11 +52,7 @@ const FastboardGroupChart = ({
     keys,
     isFetching: dataFetching,
     isError: isDataError,
-  } = useData(`${ComponentType.GroupChart}-${id}`, {
-    queryId: sourceQuery?.id as string,
-    connectionId: sourceQuery?.connection_id as string,
-    method: sourceQuery?.metadata?.method as HTTP_METHOD,
-  });
+  } = useData(`${ComponentType.GroupChart}-${id}`, sourceQueryData);
 
   useEffect(() => {
     if (keys) {

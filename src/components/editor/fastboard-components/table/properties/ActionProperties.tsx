@@ -2,9 +2,19 @@ import { Code, Input, Select, SelectItem, Tooltip } from "@nextui-org/react";
 import { RiQuestionLine } from "react-icons/ri";
 import { Column, TableActionProperty } from "@/types/editor/table-types";
 import QuerySelection from "@/components/editor/QuerySelection";
-import { queryToRestQueryData } from "@/lib/rest-queries";
+import { QueryType } from "@/types/connections";
+import { queryToQueryData } from "@/lib/rest-queries";
 
-export function DeleteActionProperties({
+const actionToQueryType = (action: TableActionProperty) => {
+  switch (action.type) {
+    case "view":
+      return QueryType.GET;
+    default:
+      return QueryType.UPDATE;
+  }
+};
+
+export function ActionProperties({
   action,
   columns,
   onChange,
@@ -34,16 +44,17 @@ export function DeleteActionProperties({
         onQuerySelect={(query) => {
           onChange({
             ...action,
-            query: queryToRestQueryData(query),
+            query: queryToQueryData(query),
             parameters: query.metadata.parameters?.map(
               (p: { name: string; preview: string }) => ({
                 name: p.name,
                 columnKey: "",
                 value: p.preview,
-              })
+              }),
             ),
           });
         }}
+        type={actionToQueryType(action)}
       />
       {parameters?.length > 0 && (
         <div className="flex justify-between">

@@ -23,8 +23,8 @@ import FormNumberInputProperties from "./FormNumberInputProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import useGetQuery from "@/hooks/connections/useGetQuery";
-import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
 import QueryParameters from "./QueryParameters";
+import { QueryType } from "@/types/connections";
 import FormStyle from "./FormStyle";
 
 export default function FastboardFormProperties({
@@ -46,7 +46,7 @@ export default function FastboardFormProperties({
   const { query: submitQuery } = useGetQuery(submitQueryId);
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
-    null
+    null,
   );
   const disabledKeys = inputs.map((input) => input.formDataKey);
 
@@ -73,7 +73,7 @@ export default function FastboardFormProperties({
           [key]: value,
         };
       },
-      {}
+      {},
     );
 
     //Clear all default values from inputs
@@ -196,6 +196,7 @@ export default function FastboardFormProperties({
                     inputs: newInputs,
                   });
                 }}
+                type={QueryType.UPDATE}
               />
               <Spacer y={2} />
               {initialData &&

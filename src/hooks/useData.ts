@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { RestQueryData } from "@/types/connections";
+import { QueryData } from "@/types/connections";
 import { adapterService } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { previewAccessTokenState } from "@/atoms/editor";
 import { useParams } from "next/navigation";
 
-const useData = (componentId: string, queryData: RestQueryData | null) => {
+const useData = (componentId: string, queryData: QueryData | null) => {
   const { queryId, connectionId } = queryData || {};
   const { id: dashboardId } = useParams();
   const previewAccessToken = useRecoilValue(previewAccessTokenState);
@@ -36,7 +36,7 @@ const useData = (componentId: string, queryData: RestQueryData | null) => {
         queryId,
         dashboardId as string,
         {},
-        previewAccessToken
+        previewAccessToken,
       );
       let responseData = response?.body;
 
