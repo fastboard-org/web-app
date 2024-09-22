@@ -1,9 +1,9 @@
 import { Alignment } from "@/components/shared/AlignmentProperty";
-import { RestQueryData } from "../connections";
 import { Color } from "./style-types";
 import { FontType } from "@/components/shared/FontTypeProperty";
 import { ImageBorder } from "@/components/shared/ImageBorderProperty";
 import { IconType } from "./icon-types";
+import { QueryData } from "../connections";
 
 export enum CardComponentType {
   Text = "Text",
@@ -104,7 +104,7 @@ export class DefaultCardComponentProperties {
 }
 
 export class CardProperties {
-  sourceQueryData: RestQueryData | null = null;
+  sourceQueryData: QueryData | null = null;
   queryParameters: Record<string, string> = {};
   components: CardComponentProperties[] = [];
   dataKeys: string[] = [];

@@ -12,7 +12,6 @@ import { ComponentId, ComponentType } from "@/types/editor";
 import { FormProperties } from "@/types/editor/form";
 import Option from "@/components/shared/Option";
 import useDashboard from "@/hooks/dashboards/useDashboard";
-import { CardProperties } from "@/types/editor/card-types";
 
 export default function TableActionsList({
   tableId,

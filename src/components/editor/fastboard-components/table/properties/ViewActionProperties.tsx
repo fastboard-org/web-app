@@ -11,11 +11,12 @@ import {
 import { RiQuestionLine } from "react-icons/ri";
 import { Column, TableActionProperty } from "@/types/editor/table-types";
 import QuerySelection from "@/components/editor/QuerySelection";
-import { queryToRestQueryData } from "@/lib/rest-queries";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { Add } from "iconsax-react";
 import useNavigation from "@/hooks/useNavigation";
 import { IoIosClose } from "react-icons/io";
+import { QueryType } from "@/types/connections";
+import { queryToQueryData } from "@/lib/rest-queries";
 
 export function ViewActionProperties({
   action,
@@ -66,11 +67,12 @@ export function ViewActionProperties({
       >
         <Tab key="modal" title="Modal">
           <QuerySelection
+            type={QueryType.GET}
             selectedQueryId={query?.queryId || ""}
             onQuerySelect={(query) => {
               onChange({
                 ...action,
-                query: queryToRestQueryData(query),
+                query: queryToQueryData(query),
                 parameters: query.metadata.parameters?.map(
                   (p: { name: string; preview: string }) => ({
                     name: p.name,

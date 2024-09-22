@@ -1,12 +1,7 @@
 import QuerySelection from "@/components/editor/QuerySelection";
 import {
   CardComponentProperties,
-  CardComponentType,
   CardProperties,
-  ImageComponentProperties,
-  LinkComponentProperties,
-  TextComponentProperties,
-  VideoComponentProperties,
 } from "@/types/editor/card-types";
 import {
   Accordion,
@@ -15,21 +10,16 @@ import {
   Breadcrumbs,
   Code,
   Input,
-  Select,
-  SelectItem,
   Spacer,
   Tooltip,
 } from "@nextui-org/react";
 import { RiQuestionLine } from "react-icons/ri";
 import CardComponentsList from "./CardComponentsList";
 import { useEffect, useState } from "react";
-import CardTextComponentProperties from "./CardTextComponentProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
-import CardImageComponentProperties from "./CardImageComponentProperties";
-import CardVideoComponentProperties from "./CardVideoComponentProperties";
-import CardLinkComponentProperties from "./CardLinkComponentProperties";
 import CardComponent from "./CardComponent";
+import { QueryType } from "@/types/connections";
 
 export default function FastboardCardProperties({
   properties,
@@ -97,6 +87,7 @@ export default function FastboardCardProperties({
             }}
           >
             <QuerySelection
+              type={QueryType.GET}
               selectedQueryId={sourceQueryData?.queryId || ""}
               onQuerySelect={(newQuery) => {
                 console.log(newQuery);
@@ -185,12 +176,12 @@ export default function FastboardCardProperties({
               title: "font-medium",
             }}
           >
-            {!sourceQueryData && (
+            {(!sourceQueryData || dataKeys.length === 0) && (
               <div className="flex justify-center text-sm">
                 Select a query to enable components
               </div>
             )}
-            {sourceQueryData && (
+            {sourceQueryData && dataKeys.length > 0 && (
               <CardComponentsList
                 components={components}
                 onSelectComponent={(component) => {

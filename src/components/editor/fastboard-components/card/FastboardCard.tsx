@@ -95,18 +95,6 @@ export default function FastboardCard({
     return typeof data[0] === "object";
   }
 
-  if (dataFetching) {
-    return <Spinner className="w-full h-full" />;
-  }
-
-  if (isDataError) {
-    return (
-      <p className="flex justify-center items-center w-full h-full text-danger">
-        Error: {dataError?.message}
-      </p>
-    );
-  }
-
   function renderComponent(component: CardComponentProperties, data: any[]) {
     const item = data[0];
 
@@ -145,25 +133,51 @@ export default function FastboardCard({
     }
   }
 
-  return isValidData(data) ? (
+  return (
     <div
       className={
         "flex grow-0 h-full w-full p-5 rounded-xl shadow-xl border dark:border-content2 overflow-auto " +
         scrollbarStyles.scrollbar
       }
     >
-      {components.length === 0 && (
-        <h2 className="flex w-full h-full justify-center items-center">
-          Add components
-        </h2>
+      {dataFetching && <Spinner className="w-full h-full" />}
+      {isDataError && (
+        <p className="flex justify-center items-center w-full h-full text-danger">
+          {dataError?.message}
+        </p>
       )}
-      <div className="h-full w-full">
-        {components.map((component) => renderComponent(component, data))}
-      </div>
+
+      {!dataFetching && !isDataError && (
+        <>
+          {!sourceQueryData && (
+            <h2 className="flex w-full h-full justify-center items-center">
+              Nothing to show. There is no query selected
+            </h2>
+          )}
+          {sourceQueryData && isValidData(data) && (
+            <>
+              {components.length === 0 && (
+                <h2 className="flex w-full h-full justify-center items-center">
+                  Add components
+                </h2>
+              )}
+
+              {components.length > 0 && (
+                <div className="h-full w-full">
+                  {components.map((component) =>
+                    renderComponent(component, data)
+                  )}
+                </div>
+              )}
+            </>
+          )}
+          {sourceQueryData && !isValidData(data) && (
+            <p className="flex justify-center items-center w-full h-full text-warning">
+              Seems like the data is not an object or is empty.
+            </p>
+          )}
+        </>
+      )}
     </div>
-  ) : (
-    <p className="flex justify-center items-center w-full h-full text-warning">
-      Seems like the data is not an object or is empty.
-    </p>
   );
 }
