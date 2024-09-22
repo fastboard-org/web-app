@@ -12,7 +12,6 @@ import {
 import { Select, SelectItem } from "@nextui-org/react";
 import InputIcon from "./InputIcon";
 import FormTextInputProperties from "./FormTextInputProperties";
-import { RestQueryData } from "@/types/connections";
 import FormCheckboxProperties from "./FormCheckboxProperties";
 import FormNumberInputProperties from "./FormNumberInputProperties";
 import FormDatePickerProperties from "./FormDatePickerProperties";
@@ -20,6 +19,7 @@ import FormSelectProperties from "./FormSelectProperties";
 import { useState } from "react";
 import FormSelectOption from "./FormSelectOption";
 import FormFileInputProperties from "./FormFileInputProperties";
+import { QueryData } from "@/types/connections";
 
 export default function FormInput({
   input,
@@ -29,7 +29,7 @@ export default function FormInput({
   onInputChange,
 }: {
   input: InputProperties;
-  submitQueryData: RestQueryData | null;
+  submitQueryData: QueryData | null;
   disabledKeys: string[];
   initialData: Object | null;
   onInputChange: (inputProperties: InputProperties) => void;
