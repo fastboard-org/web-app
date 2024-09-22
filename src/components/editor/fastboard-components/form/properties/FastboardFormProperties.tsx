@@ -23,6 +23,8 @@ import useGetQuery from "@/hooks/connections/useGetQuery";
 import QueryParameters from "./QueryParameters";
 import FormInput from "./FormInput";
 import { HTTP_CONTENT_TYPE } from "@/types/connections";
+import { QueryType } from "@/types/connections";
+import FormStyle from "./FormStyle";
 
 export default function FastboardFormProperties({
   properties,
@@ -210,6 +212,7 @@ export default function FastboardFormProperties({
                     inputs: createInputs(query.metadata?.parameters),
                   });
                 }}
+                type={QueryType.UPDATE}
               />
               <Select
                 label="Content type"
@@ -278,6 +281,16 @@ export default function FastboardFormProperties({
                 }}
               />
             )}
+          </AccordionItem>
+          <AccordionItem
+            key="style"
+            className="pb-2"
+            title="Style"
+            classNames={{
+              title: "font-medium",
+            }}
+          >
+            <FormStyle properties={properties} onValueChange={onValueChange} />
           </AccordionItem>
         </Accordion>
       )}

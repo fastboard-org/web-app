@@ -12,7 +12,8 @@ import { ComponentId, ComponentType } from "@/types/editor";
 import { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
-import { HTTP_METHOD } from "@/types/connections";
+import { QueryMethod } from "@/types/connections";
+import { useTheme } from "next-themes";
 
 const groupData = (data: any[], groupBy: string) => {
   return data.reduce((acc, item) => {
@@ -27,8 +28,6 @@ const groupData = (data: any[], groupBy: string) => {
 
 const FastboardGroupChart = ({
   id,
-  layoutIndex,
-  container,
   properties,
 }: {
   id: ComponentId;
@@ -36,14 +35,15 @@ const FastboardGroupChart = ({
   container?: string;
   properties: FastboardGroupChartProperties;
 }) => {
-  //TODO: change sourceQuery to type RestQueryData
+  const { theme } = useTheme();
   const {
-    sourceQuery,
+    sourceQueryData,
     title,
     subtitle,
     groupBy,
     emptyMessage,
     minimizedLabels,
+    barsColor,
   } = properties;
   const setProperties = useSetRecoilState(propertiesDrawerState);
 
@@ -52,15 +52,7 @@ const FastboardGroupChart = ({
     keys,
     isFetching: dataFetching,
     isError: isDataError,
-  } = useData(
-    `${ComponentType.GroupChart}-${id}`,
-    {
-      queryId: sourceQuery?.id as string,
-      connectionId: sourceQuery?.connection_id as string,
-      method: sourceQuery?.metadata?.method as HTTP_METHOD,
-    },
-    Number.MAX_VALUE,
-  );
+  } = useData(`${ComponentType.GroupChart}-${id}`, sourceQueryData);
 
   useEffect(() => {
     if (keys) {
@@ -126,7 +118,11 @@ const FastboardGroupChart = ({
               />
 
               <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-              <Bar dataKey="count" fill="var(--color-desktop)" radius={8} />
+              <Bar
+                dataKey="count"
+                fill={theme === "light" ? barsColor.light : barsColor.dark}
+                radius={8}
+              />
             </BarChart>
           </ChartContainer>
         </CustomSkeleton>

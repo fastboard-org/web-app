@@ -1,5 +1,7 @@
 import { ComponentId } from ".";
-import { HTTP_CONTENT_TYPE, Query, RestQueryData } from "../connections";
+import { HTTP_CONTENT_TYPE } from "../connections";
+import { QueryData } from "../connections";
+import { Color } from "./style-types";
 
 export enum InputType {
   TextInput = "text-input",
@@ -132,7 +134,7 @@ export interface DataProvider {
 
 export class FormProperties {
   title: string = "Form title";
-  submitQueryData: RestQueryData | null = null;
+  submitQueryData: QueryData | null = null;
   contentType: HTTP_CONTENT_TYPE = HTTP_CONTENT_TYPE.JSON;
   queryParameters: Record<string, any> = {};
   submitButtonLabel: string = "Submit";
@@ -140,6 +142,8 @@ export class FormProperties {
   showShadow: boolean = true;
   initialData: Object | null = null;
   dataProvider: DataProvider | null = null;
+  submitColor: Color = Color.primary();
+  textColor: Color = new Color("#ffffff", "#ffffff");
 
   static default(): FormProperties {
     return new FormProperties();

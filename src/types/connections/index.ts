@@ -44,10 +44,12 @@ export enum HTTP_CONTENT_TYPE {
   MULTIPART = "multipart/form-data",
 }
 
-export interface RestQueryData {
+export type QueryMethod = HTTP_METHOD | MONGO_METHOD;
+
+export interface QueryData {
   queryId: string;
   connectionId: string;
-  method: HTTP_METHOD;
+  method: QueryMethod;
 }
 
 export enum MONGO_METHOD {
@@ -80,4 +82,10 @@ export interface RestQueryMetadata {
   path: string;
   headers: RestHeader[];
   body: any;
+}
+
+export enum QueryType {
+  GET = "GET",
+  UPDATE = "UPDATE",
+  AI = "AI",
 }

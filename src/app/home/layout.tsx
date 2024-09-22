@@ -1,6 +1,11 @@
 import HomeNavbarLayout from "@/components/layout/HomeNavbarLayout";
 import { ThemeSwitcher } from "@/components/layout/ThemeSwitcher";
 import SessionVerifier from "@/components/session/SessionVerifier";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Home",
+};
 
 export default function HomeLayout({
   children,

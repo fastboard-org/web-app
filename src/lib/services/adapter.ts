@@ -47,8 +47,8 @@ async function executeQuery(
       config
     );
 
-    if (response.data?.status_code !== 200) {
-      if (response.data?.status_code === 401) {
+    if (response?.data.status_code && response?.data.status_code !== 200) {
+      if (response?.data?.status_code === 401) {
         localStorage.removeItem(`auth-${dashboardId}`);
         if (viewMode) {
           window.location.reload();

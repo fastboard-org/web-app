@@ -8,11 +8,21 @@ import {
   Spacer,
 } from "@nextui-org/react";
 import ConnectionIcon from "../shared/ConnectionIcon";
-import { Connection, HTTP_METHOD, Query } from "@/types/connections";
+import {
+  Connection,
+  ConnectionType,
+  HTTP_METHOD,
+  MONGO_METHOD,
+  Query,
+  QueryMethod,
+  QueryType,
+} from "@/types/connections";
 import CustomSkeleton from "../shared/CustomSkeleton";
 import useMyQueries from "@/hooks/connections/useMyQueries";
 import { useMemo } from "react";
-import { methodColor } from "@/lib/rest-methods";
+import { methodColor as restMethodColor } from "@/lib/rest-methods";
+import { methodColor as mongoMethodColor } from "@/lib/mongo-methods";
+import { getQueryType } from "@/lib/queries";
 
 function CreateQuery() {
   return (
@@ -41,18 +51,31 @@ function EmptyContent() {
   );
 }
 
+const methodColor = (connectionType: ConnectionType, method: QueryMethod) => {
+  switch (connectionType) {
+    case ConnectionType.REST:
+      return restMethodColor(method as HTTP_METHOD);
+    case ConnectionType.MONGO:
+      return mongoMethodColor(method as MONGO_METHOD);
+    default:
+      return "gray";
+  }
+};
+
 export default function QuerySelection({
   selectedQueryId,
   onQuerySelect,
   label = "Query",
   placeholder = "Select query",
   isDisabled = false,
+  type = null,
 }: {
   selectedQueryId: string;
   onQuerySelect: (query: Query) => void;
   label?: string;
   placeholder?: string;
   isDisabled?: boolean;
+  type?: QueryType | null;
 }) {
   const { queries, loading, isError, error } = useMyQueries();
 
@@ -76,13 +99,16 @@ export default function QuerySelection({
   }, [queries]);
   const groupedQueries = useMemo(() => {
     return (
-      queries?.reduce((acc, query) => {
-        if (!acc[query.connection_id]) {
-          acc[query.connection_id] = [];
-        }
-        acc[query.connection_id].push(query);
-        return acc;
-      }, {} as Record<string, Query[]>) || {}
+      queries?.reduce(
+        (acc, query) => {
+          if (!acc[query.connection_id]) {
+            acc[query.connection_id] = [];
+          }
+          acc[query.connection_id].push(query);
+          return acc;
+        },
+        {} as Record<string, Query[]>,
+      ) || {}
     );
   }, [queries]);
 
@@ -125,9 +151,23 @@ export default function QuerySelection({
         isInvalid={isError}
       >
         {connections.map((connection) => {
+          const filteredQueries = groupedQueries[connection.id]?.filter(
+            (query) => {
+              if (type) {
+                return query?.metadata?.method && getQueryType(query) === type;
+              }
+              return true;
+            },
+          );
           return (
-            <AutocompleteSection key={connection.id} title={connection.name}>
-              {groupedQueries[connection.id]?.map((query) => (
+            <AutocompleteSection
+              key={connection.id}
+              title={connection.name}
+              style={{
+                display: filteredQueries.length > 0 ? "block" : "none",
+              }}
+            >
+              {filteredQueries.map((query) => (
                 <AutocompleteItem
                   key={query.id}
                   value={query.id}
@@ -135,7 +175,8 @@ export default function QuerySelection({
                     <div className="flex flex-row gap-x-1">
                       <span
                         className={`text-${methodColor(
-                          query?.metadata?.method as HTTP_METHOD
+                          query.connection?.type as ConnectionType,
+                          query?.metadata?.method as QueryMethod,
                         )}`}
                       >
                         {query?.metadata?.method}

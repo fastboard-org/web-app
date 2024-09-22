@@ -1,5 +1,6 @@
-import { Layout } from "./layout-types";
-import { Query, RestQueryData } from "@/types/connections";
+import { Layout, LayoutType } from "./layout-types";
+import { Color } from "./style-types";
+import { QueryData } from "@/types/connections";
 
 export default interface PublishOption {
   label: string;
@@ -29,26 +30,44 @@ export interface ModalFrame {
   body: ComponentId;
 }
 
-export interface DashboardAuth {
-  enabled: boolean;
-  loginQueryData: RestQueryData;
-  accessTokenField: string;
-  userInputLabel: string;
-  passwordInputLabel: string;
-  userQueryParameter: string;
-  passwordQueryParameter: string;
-  previewAccessToken: string;
-  title: string;
-  buttonText: string;
+export class DashboardAuth {
+  enabled: boolean = false;
+  loginQueryData: QueryData | null = null;
+  accessTokenField: string = "";
+  userInputLabel: string = "username";
+  passwordInputLabel: string = "password";
+  userQueryParameter: string = "";
+  passwordQueryParameter: string = "";
+  previewAccessToken: string = "";
+  title: string = "Welcome!";
+  buttonText: string = "Login";
+  buttonColor: Color = Color.primary();
+  buttonTextColor: Color = new Color("#ffffff", "#ffffff");
+
+  static default(): DashboardAuth {
+    return new DashboardAuth();
+  }
 }
 
-export interface DashboardMetadata {
-  components: Record<ComponentId, FastboardComponent>;
-  sidebar: { id: ComponentId; visible: boolean } | null;
-  modals: ModalFrame[];
-  pages: Record<string, Layout[]>;
-  auth: DashboardAuth | null;
-  header: { componentId: ComponentId | null; isVisible: boolean };
+export class DashboardMetadata {
+  components: Record<ComponentId, FastboardComponent> = {};
+  header: { componentId: ComponentId | null; isVisible: boolean } = {
+    componentId: null,
+    isVisible: false,
+  };
+  sidebar: { id: ComponentId; visible: boolean } | null = null;
+  modals: ModalFrame[] = [];
+  pages: Record<string, Layout[]> = {
+    home: [Layout.of(LayoutType.Full)],
+  };
+  auth: DashboardAuth = DashboardAuth.default();
+  pageTitle: string = "";
+  pageIcon: string = "";
+  defaultTheme: "light" | "dark" = "light";
+
+  static default(): DashboardMetadata {
+    return new DashboardMetadata();
+  }
 }
 
 export interface Index {

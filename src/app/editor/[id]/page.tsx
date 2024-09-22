@@ -13,11 +13,10 @@ import SettingsDrawer from "@/components/editor/settings/SettingsDrawer";
 import EditorModal from "@/components/editor/EditorModal";
 import AuthDrawer from "@/components/editor/auth/AuthDrawer";
 import useSave from "@/hooks/editor/useSave";
-import { Spinner } from "@nextui-org/react";
 import { AxiosError } from "axios";
 
 export default function Editor() {
-  const { loading, isError, error, addComponentToLayout } = useDashboard();
+  const { isError, error, addComponentToLayout } = useDashboard();
   useSave();
 
   function updateDashboardMetadata(event: DragEndEvent) {
@@ -30,14 +29,6 @@ export default function Editor() {
     const defaultProperties: Object = active.data.current?.defaultProperties;
 
     addComponentToLayout(index, componentType, defaultProperties);
-  }
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen w-full">
-        <Spinner />
-      </div>
-    );
   }
 
   if (isError) {
@@ -66,7 +57,7 @@ export default function Editor() {
           <ComponentsDrawer />
           <SettingsDrawer />
           <AuthDrawer />
-          <div className="flex justify-center items-center h-full w-full p-6">
+          <div className="flex justify-center items-center h-full w-full p-6 bg-default-100 dark:bg-content1">
             <EditorCanvas key={"EditorCanvas"} />
             <EditorModal />
           </div>

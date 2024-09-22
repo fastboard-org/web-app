@@ -1,16 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { RestQueryData } from "@/types/connections";
+import { QueryData } from "@/types/connections";
 import { adapterService } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { previewAccessTokenState } from "@/atoms/editor";
 import { useParams } from "next/navigation";
 
-const useData = (
-  componentId: string,
-  queryData: RestQueryData | null,
-  rowsPerPage: number
-) => {
+const useData = (componentId: string, queryData: QueryData | null) => {
   const { queryId, connectionId } = queryData || {};
   const { id: dashboardId } = useParams();
   const previewAccessToken = useRecoilValue(previewAccessTokenState);
@@ -40,7 +36,7 @@ const useData = (
         queryId,
         dashboardId as string,
         {},
-        previewAccessToken
+        previewAccessToken,
       );
       let responseData = response?.body;
 
@@ -70,28 +66,10 @@ const useData = (
     }
   };
 
-  const items = useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    return data?.slice(start, end);
-  }, [page, data, rowsPerPage]);
-
-  const pages = useMemo(() => {
-    const pages = data ? Math.ceil(data.length / rowsPerPage) : 0;
-    if (page > pages) {
-      setPage(1);
-    }
-    return pages;
-  }, [data, rowsPerPage]);
-
   return {
-    data: items || [],
+    data: data || [],
     fulldata: data || [],
     keys,
-    page,
-    setPage,
-    pages,
     refetch,
     isLoading,
     isFetching,

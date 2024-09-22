@@ -1,4 +1,9 @@
-import { HTTP_METHOD, Query, RestQueryData } from "@/types/connections";
+import {
+  HTTP_METHOD,
+  MONGO_METHOD,
+  Query,
+  QueryData,
+} from "@/types/connections";
 import { InvalidateQueryFilters, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/app/providers";
 import { adapterService } from "@/lib/services/adapter";
@@ -34,7 +39,7 @@ const useExecuteQuery = ({
       invalidateQueries,
       config,
     }: {
-      queryData: RestQueryData | null;
+      queryData: QueryData | null;
       parameters: Record<string, any>;
       invalidateQueries?: InvalidateQueryFilters;
       config?: AxiosRequestConfig;
@@ -59,15 +64,16 @@ const useExecuteQuery = ({
     onError,
   });
 
-  const refreshData = (queryData: RestQueryData | null) => {
+  const refreshData = (queryData: QueryData | null) => {
     if (!queryData) return;
-    const updateMethods = [
-      HTTP_METHOD.POST,
-      HTTP_METHOD.PUT,
-      HTTP_METHOD.PATCH,
-      HTTP_METHOD.DELETE,
+    const getMethods = [
+      HTTP_METHOD.GET,
+      MONGO_METHOD.FIND,
+      MONGO_METHOD.FIND_ONE,
+      MONGO_METHOD.AGGREGATE,
+      MONGO_METHOD.COUNT,
     ];
-    if (queryData && updateMethods.includes(queryData.method)) {
+    if (queryData && !getMethods.includes(queryData.method)) {
       //Invalidate all querys that gets data from this connection
       queryClient.invalidateQueries({
         queryKey: ["get_data", queryData.connectionId],

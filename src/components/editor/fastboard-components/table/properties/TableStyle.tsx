@@ -17,78 +17,166 @@ export default function TableStyle({
     headerSticky,
     isStriped,
     headerColor,
+    headerTextColor,
     addOns: { addRowForm },
   } = properties;
 
   return (
     <div className="flex flex-col gap-2">
-      <CheckBoxProperty
-        label="Hide header"
-        isSelected={hideHeader}
-        onValueChange={(value) => {
-          onValueChange({
-            ...properties,
-            hideHeader: value,
-          });
-        }}
-      />
-      <CheckBoxProperty
-        label="Stripped"
-        isSelected={isStriped}
-        onValueChange={(value) => {
-          onValueChange({
-            ...properties,
-            isStriped: value,
-          });
-        }}
-      />
       <div className="flex flex-row justify-between">
-        <span>Header color</span>
-        <ColorPicker
-          initialColor={
-            theme === "light" ? headerColor.light : headerColor.dark
-          }
-          onColorChange={(color) => {
-            if (theme === "light") {
-              onValueChange({
-                ...properties,
-                headerColor: {
-                  light: color,
-                  dark: headerColor.dark,
-                },
-              });
-            } else {
-              onValueChange({
-                ...properties,
-                headerColor: {
-                  light: headerColor.light,
-                  dark: color,
-                },
-              });
-            }
+        <span>Hide header</span>
+        <Checkbox
+          isSelected={hideHeader}
+          onValueChange={(isSelected) => {
+            onValueChange({
+              ...properties,
+              hideHeader: isSelected,
+            });
           }}
         />
       </div>
+      <div className="flex flex-row justify-between">
+        <span>Stripped</span>
+        <Checkbox
+          isSelected={isStriped}
+          onValueChange={(isSelected) => {
+            onValueChange({
+              ...properties,
+              isStriped: isSelected,
+            });
+          }}
+        />
+      </div>
+      <ColorPicker
+        label="Header color"
+        initialColor={theme === "light" ? headerColor.light : headerColor.dark}
+        onColorChange={(color) => {
+          if (theme === "light") {
+            onValueChange({
+              ...properties,
+              headerColor: {
+                light: color,
+                dark: headerColor.dark,
+              },
+            });
+          } else {
+            onValueChange({
+              ...properties,
+              headerColor: {
+                light: headerColor.light,
+                dark: color,
+              },
+            });
+          }
+        }}
+      />
+      <ColorPicker
+        label="Header text"
+        initialColor={
+          theme === "light" ? headerTextColor.light : headerTextColor.dark
+        }
+        onColorChange={(color) => {
+          if (theme === "light") {
+            onValueChange({
+              ...properties,
+              headerTextColor: {
+                light: color,
+                dark: headerTextColor.dark,
+              },
+            });
+          } else {
+            onValueChange({
+              ...properties,
+              headerTextColor: {
+                light: headerTextColor.light,
+                dark: color,
+              },
+            });
+          }
+        }}
+      />
 
       {addRowForm && (
-        <div className="flex flex-row justify-between">
-          <span>Add row color</span>
-          <ColorPicker
-            initialColor={addRowForm.buttonColor}
-            onColorChange={(color) => {
+        <ColorPicker
+          label="Add row color"
+          initialColor={
+            theme === "light"
+              ? addRowForm.buttonColor.light
+              : addRowForm.buttonColor.dark
+          }
+          onColorChange={(color) => {
+            if (theme === "light") {
               onValueChange({
                 ...properties,
                 addOns: {
                   ...properties.addOns,
                   addRowForm: {
                     ...addRowForm,
-                    buttonColor: color,
+                    buttonColor: {
+                      light: color,
+                      dark: addRowForm.buttonColor.dark,
+                    },
                   },
                 },
               });
-            }}
-          />
-        </div>
+            } else {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonColor: {
+                      light: addRowForm.buttonColor.light,
+                      dark: color,
+                    },
+                  },
+                },
+              });
+            }
+          }}
+        />
+      )}
+      {addRowForm && (
+        <ColorPicker
+          label="Add row text"
+          initialColor={
+            theme === "light"
+              ? addRowForm.buttonTextColor.light
+              : addRowForm.buttonTextColor.dark
+          }
+          onColorChange={(color) => {
+            if (theme === "light") {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonTextColor: {
+                      light: color,
+                      dark: addRowForm.buttonTextColor.dark,
+                    },
+                  },
+                },
+              });
+            } else {
+              onValueChange({
+                ...properties,
+                addOns: {
+                  ...properties.addOns,
+                  addRowForm: {
+                    ...addRowForm,
+                    buttonTextColor: {
+                      light: addRowForm.buttonTextColor.light,
+                      dark: color,
+                    },
+                  },
+                },
+              });
+            }
+          }}
+        />
       )}
     </div>
   );
