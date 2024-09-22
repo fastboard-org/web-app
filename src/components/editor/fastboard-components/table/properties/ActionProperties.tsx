@@ -3,7 +3,7 @@ import { RiQuestionLine } from "react-icons/ri";
 import { Column, TableActionProperty } from "@/types/editor/table-types";
 import QuerySelection from "@/components/editor/QuerySelection";
 import { QueryType } from "@/types/connections";
-import { queryToRestQueryData } from "@/lib/rest-queries";
+import { queryToQueryData } from "@/lib/rest-queries";
 
 const actionToQueryType = (action: TableActionProperty) => {
   switch (action.type) {
@@ -44,7 +44,7 @@ export function ActionProperties({
         onQuerySelect={(query) => {
           onChange({
             ...action,
-            query: queryToRestQueryData(query),
+            query: queryToQueryData(query),
             parameters: query.metadata.parameters?.map(
               (p: { name: string; preview: string }) => ({
                 name: p.name,

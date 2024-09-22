@@ -52,11 +52,7 @@ const FastboardGroupChart = ({
     keys,
     isFetching: dataFetching,
     isError: isDataError,
-  } = useData(
-    `${ComponentType.GroupChart}-${id}`,
-    sourceQueryData,
-    Number.MAX_VALUE,
-  );
+  } = useData(`${ComponentType.GroupChart}-${id}`, sourceQueryData);
 
   useEffect(() => {
     if (keys) {
