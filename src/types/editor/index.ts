@@ -1,6 +1,6 @@
 import { Layout, LayoutType } from "./layout-types";
-import { Query, RestQueryData } from "@/types/connections";
 import { Color } from "./style-types";
+import { QueryData } from "@/types/connections";
 
 export default interface PublishOption {
   label: string;
@@ -33,7 +33,7 @@ export interface ModalFrame {
 
 export class DashboardAuth {
   enabled: boolean = false;
-  loginQueryData: RestQueryData | null = null;
+  loginQueryData: QueryData | null = null;
   accessTokenField: string = "";
   userInputLabel: string = "username";
   passwordInputLabel: string = "password";

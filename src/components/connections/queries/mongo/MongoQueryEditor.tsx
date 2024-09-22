@@ -66,7 +66,7 @@ const MongoQueryEditor = ({
 
   const { previewQuery, loading: previewQueryLoading } = usePreviewQuery({
     onSuccess: (response: any) => {
-      setResponse(response);
+      setResponse(response?.body);
       setSelectedTab("response");
     },
     onError: (error: any) => {
@@ -83,6 +83,9 @@ const MongoQueryEditor = ({
       getBody(query?.metadata?.update_body, query?.metadata?.method),
     );
     setCollectionName(query?.metadata?.collection ?? "");
+
+    setResponse(null);
+    setSelectedTab("body");
   }, [query]);
 
   const handleSend = () => {

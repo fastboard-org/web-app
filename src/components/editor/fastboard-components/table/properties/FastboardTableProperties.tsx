@@ -25,7 +25,8 @@ import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { ComponentId } from "@/types/editor";
 import TableStyle from "./TableStyle";
-import { DeleteActionProperties } from "./DeleteActionProperties";
+import { ActionProperties } from "./ActionProperties";
+import { QueryType } from "@/types/connections";
 import FiltersList from "./filters/FiltersList";
 import TableStringFilterProperties from "./filters/TableStringFilterProperties";
 import TableNumberFilterProperties from "./filters/TableNumberFilterProperties";
@@ -150,6 +151,7 @@ const FastboardTablePropertiesComponent = ({
                     })),
                   });
                 }}
+                type={QueryType.GET}
               />
               {!sourceQueryData && (
                 <div className="flex h-10 justify-center items-center bg-warning-100 rounded-xl">
@@ -289,7 +291,7 @@ const FastboardTablePropertiesComponent = ({
       )}
 
       {actionSelected && actionSelected.type == "delete" && (
-        <DeleteActionProperties
+        <ActionProperties
           action={actionSelected}
           columns={columnsProperties.map((c) => c.column)}
           onChange={(action) => {

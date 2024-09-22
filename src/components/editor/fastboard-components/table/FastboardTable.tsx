@@ -100,7 +100,7 @@ export default function FastboardTable({
   } = useData(`${ComponentType.Table}-${id}`, sourceQueryData);
   const [shouldUpdateColumns, setShouldUpdateColumns] = useState(false);
   const [propertiesState, setPropertiesState] = useRecoilState(
-    propertiesDrawerState
+    propertiesDrawerState,
   );
   const {
     execute,
@@ -270,7 +270,7 @@ export default function FastboardTable({
       action: TableActionProperty;
       item: any;
     } | null,
-    invalidateQueries?: InvalidateQueryFilters
+    invalidateQueries?: InvalidateQueryFilters,
   ) {
     if (!selectedRowAction) {
       return;
@@ -285,7 +285,7 @@ export default function FastboardTable({
       parameters: fillParameters(
         selectedRowAction.action.parameters,
         columns,
-        selectedRowAction.item
+        selectedRowAction.item,
       ),
       invalidateQueries,
     });
@@ -307,7 +307,7 @@ export default function FastboardTable({
           ? null
           : flexRender(
               header.column.columnDef.header?.toString().toUpperCase(),
-              header.getContext()
+              header.getContext(),
             )}
 
         {isSorted && (
@@ -385,7 +385,7 @@ export default function FastboardTable({
 
   const getCommonPinningStyles = (
     column: Column<any>,
-    isStriped: boolean = false
+    isStriped: boolean = false,
   ): CSSProperties => {
     const isPinned = column.getIsPinned();
     const isLastLeftPinnedColumn =
@@ -397,8 +397,8 @@ export default function FastboardTable({
       boxShadow: isLastLeftPinnedColumn
         ? "-2px 0 2px -2px gray inset"
         : isFirstRightPinnedColumn
-        ? "2px 0 2px -2px gray inset"
-        : undefined,
+          ? "2px 0 2px -2px gray inset"
+          : undefined,
       backgroundColor:
         isPinned && !isStriped
           ? theme === "light"
@@ -513,8 +513,8 @@ export default function FastboardTable({
                       const bgColor = !isStriped
                         ? ""
                         : index % 2
-                        ? "bg-content2"
-                        : "bg-background dark:bg-content1 ";
+                          ? "bg-content2"
+                          : "bg-background dark:bg-content1 ";
                       return (
                         <td
                           key={cell.id}
@@ -525,7 +525,7 @@ export default function FastboardTable({
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
-                            cell.getContext()
+                            cell.getContext(),
                           )}
                         </td>
                       );

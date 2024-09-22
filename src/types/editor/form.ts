@@ -1,5 +1,5 @@
 import { ComponentId } from ".";
-import { Query, RestQueryData } from "../connections";
+import { QueryData } from "../connections";
 import { Color } from "./style-types";
 
 export enum InputType {
@@ -100,7 +100,7 @@ export interface DataProvider {
 export class FormProperties {
   title: string = "Form title";
   submitQueryId: string | null = null;
-  submitQueryData: RestQueryData | null = null;
+  submitQueryData: QueryData | null = null;
   queryParameters: Record<string, any> = {};
   submitButtonLabel: string = "Submit";
   inputs: InputProperties[] = [];

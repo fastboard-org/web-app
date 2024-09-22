@@ -1,8 +1,8 @@
-import { Query } from "@/types/connections";
+import { QueryData } from "@/types/connections";
 import { Color } from "./style-types";
 
 export class FastboardGroupChartProperties {
-  sourceQuery: Query | null = null;
+  sourceQueryData: QueryData | null = null;
   title: string = "Title";
   subtitle: string = "";
   keys: string[] = [];

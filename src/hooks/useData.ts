@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { RestQueryData } from "@/types/connections";
+import { QueryData } from "@/types/connections";
 import { adapterService } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -8,7 +8,7 @@ import { useParams } from "next/navigation";
 
 const useData = (
   componentId: string,
-  queryData: RestQueryData | null,
+  queryData: QueryData | null,
   queryParameters?: Record<string, any>
 ) => {
   const { queryId, connectionId } = queryData || {};

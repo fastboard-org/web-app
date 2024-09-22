@@ -1,4 +1,4 @@
-import { Query, RestHeader, RestQueryData } from "@/types/connections";
+import { Query, QueryData, RestHeader } from "@/types/connections";
 
 export const convertToHeaders = (headers: any): RestHeader[] => {
   if (!headers) return [];
@@ -16,7 +16,7 @@ export const convertToObject = (headers: RestHeader[]): any => {
   }, {});
 };
 
-export const queryToRestQueryData = (query: Query): RestQueryData => {
+export const queryToQueryData = (query: Query): QueryData => {
   return {
     queryId: query.id,
     connectionId: query.connection_id,

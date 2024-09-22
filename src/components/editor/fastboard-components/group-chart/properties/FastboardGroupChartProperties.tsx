@@ -2,6 +2,7 @@ import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types"
 import { Accordion, AccordionItem, Checkbox, Input } from "@nextui-org/react";
 import QuerySelection from "@/components/editor/QuerySelection";
 import GroupKeySelect from "@/components/editor/fastboard-components/group-chart/properties/GroupKeySelect";
+import { QueryType } from "@/types/connections";
 import ColorPicker from "@/components/shared/ColorPicker";
 import { useTheme } from "next-themes";
 
@@ -13,8 +14,9 @@ const FastboardGroupChartPropertiesComponent = ({
   onValueChange: (properties: FastboardGroupChartProperties) => void;
 }) => {
   const { theme } = useTheme();
+
   const {
-    sourceQuery,
+    sourceQueryData,
     keys,
     groupBy,
     emptyMessage,
@@ -41,15 +43,20 @@ const FastboardGroupChartPropertiesComponent = ({
       >
         <div className="flex flex-col gap-2 overflow-x-hidden">
           <QuerySelection
-            selectedQueryId={sourceQuery?.id || ""}
+            selectedQueryId={sourceQueryData?.queryId || ""}
             onQuerySelect={(sourceQuery) => {
               onValueChange({
                 ...properties,
-                sourceQuery: sourceQuery,
+                sourceQueryData: {
+                  queryId: sourceQuery.id,
+                  connectionId: sourceQuery.connection_id,
+                  method: sourceQuery?.metadata?.method,
+                },
                 keys: [],
                 groupBy: "",
               });
             }}
+            type={QueryType.GET}
           />
           <GroupKeySelect
             keys={keys}

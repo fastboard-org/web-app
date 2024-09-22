@@ -13,6 +13,7 @@ import {
 import { FastboardCardsProperties } from "@/types/editor/cards-types";
 import QuerySelection from "../../QuerySelection";
 import ReorderableFields from "./ReorderableFields";
+import { QueryType } from "@/types/connections";
 
 const FastboardCardsPropertiesComponent = ({
   properties,
@@ -51,6 +52,7 @@ const FastboardCardsPropertiesComponent = ({
                 body: [],
               });
             }}
+            type={QueryType.GET}
           />
         </div>
       </AccordionItem>
@@ -74,7 +76,7 @@ const FastboardCardsPropertiesComponent = ({
             placeholder="Select header"
             onChange={(e) => {
               const newHeader = body.find(
-                (field) => field.key === e.target.value
+                (field) => field.key === e.target.value,
               );
               if (newHeader) {
                 onValueChange({
@@ -100,7 +102,7 @@ const FastboardCardsPropertiesComponent = ({
             placeholder="Select footer"
             onChange={(e) => {
               const newFooter = body.find(
-                (field) => field.key === e.target.value
+                (field) => field.key === e.target.value,
               );
               if (newFooter) {
                 onValueChange({
