@@ -355,12 +355,17 @@ export default function FastboardTable({
                       executeAction({ action, item });
                       setViewModalOpen(action.query ? true : false);
                     } else if (action.mode === "page") {
+                      if (!action.pageId) {
+                        toast.warning(
+                          "No page found for this action, please add one in action properties"
+                        );
+                        return;
+                      }
                       changePage(
-                        action.pageId ?? "",
+                        action.pageId,
                         traduceQueryStrings(action.queryStrings, item)
                       );
                     }
-                    //openModal(action.modalId ?? "");
                   } else if (action.type === "delete") {
                     setDeleteModalOpen(true);
                   } else if (action.type === "edit") {
