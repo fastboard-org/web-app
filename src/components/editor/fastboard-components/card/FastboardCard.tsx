@@ -5,6 +5,7 @@ import {
   CardProperties,
   ImageComponentProperties,
   LinkComponentProperties,
+  SpacerComponentProperties,
   TextComponentProperties,
   VideoComponentProperties,
 } from "@/types/editor/card-types";
@@ -21,6 +22,8 @@ import TextComponent from "./TextComponent";
 import ImageComponent from "./ImageComponent";
 import VideoComponent from "./VideoComponent";
 import LinkComponent from "./LinkComponent";
+import SpacerComponent from "./SpacerComponent";
+import { useTheme } from "next-themes";
 
 export default function FastboardCard({
   id,
@@ -29,8 +32,15 @@ export default function FastboardCard({
   id: ComponentId;
   properties: CardProperties;
 }) {
-  const { sourceQueryData, queryParameters, components, showShadow } =
-    properties;
+  const { theme } = useTheme();
+  const {
+    sourceQueryData,
+    queryParameters,
+    components,
+    spacing,
+    showShadow,
+    backgroundColor,
+  } = properties;
   const { updateComponentProperties } = useDashboard();
   const { getQueryParam } = useNavigation();
   const traducedQueryParameters = useMemo(() => {
@@ -128,6 +138,13 @@ export default function FastboardCard({
             item={item}
           />
         );
+      case CardComponentType.Spacer:
+        return (
+          <SpacerComponent
+            properties={component as SpacerComponentProperties}
+            item={item}
+          />
+        );
       default:
         return <p>Component not found</p>;
     }
@@ -136,9 +153,14 @@ export default function FastboardCard({
   return (
     <div
       className={
-        "flex grow-0 h-full w-full p-5 rounded-xl shadow-xl border dark:border-content2 overflow-auto " +
+        "flex grow-0 h-full w-full p-5 rounded-xl overflow-auto " +
+        (showShadow ? "border dark:border-content2 shadow-xl " : " ") +
         scrollbarStyles.scrollbar
       }
+      style={{
+        backgroundColor:
+          theme === "dark" ? backgroundColor.dark : backgroundColor.light,
+      }}
     >
       {dataFetching && <Spinner className="w-full h-full" />}
       {isDataError && (

@@ -4,6 +4,7 @@ import {
   DefaultCardComponentProperties,
   ImageComponentProperties,
   LinkComponentProperties,
+  SpacerComponentProperties,
   TextComponentProperties,
   VideoComponentProperties,
 } from "@/types/editor/card-types";
@@ -13,6 +14,7 @@ import CardComponentIcon from "./CardComponentIcon";
 import CardImageComponentProperties from "./CardImageComponentProperties";
 import CardLinkComponentProperties from "./CardLinkComponentProperties";
 import CardVideoComponentProperties from "./CardVideoComponentProperties";
+import CardSpacerComponentProperties from "./CardSpacerComponentProperties";
 
 export default function CardComponent({
   component,
@@ -87,6 +89,15 @@ export default function CardComponent({
       {type === CardComponentType.Video && (
         <CardVideoComponentProperties
           properties={component as VideoComponentProperties}
+          dataKeys={dataKeys}
+          onValueChange={(component) => {
+            onComponentChange(component);
+          }}
+        />
+      )}
+      {type === CardComponentType.Spacer && (
+        <CardSpacerComponentProperties
+          properties={component as SpacerComponentProperties}
           dataKeys={dataKeys}
           onValueChange={(component) => {
             onComponentChange(component);

@@ -1,5 +1,12 @@
 import { CardComponentType } from "@/types/editor/card-types";
-import { IconProps, Image, Link, Text, VideoSquare } from "iconsax-react";
+import {
+  IconProps,
+  Image,
+  Link,
+  Pharagraphspacing,
+  Text,
+  VideoSquare,
+} from "iconsax-react";
 
 export default function CardComponentIcon({
   type,
@@ -21,6 +28,8 @@ export default function CardComponentIcon({
       return <Link size={size} className={className} />;
     case CardComponentType.Video:
       return <VideoSquare size={size} className={className} />;
+    case CardComponentType.Spacer:
+      return <Pharagraphspacing size={size} className={className} />;
     default:
       return null;
   }

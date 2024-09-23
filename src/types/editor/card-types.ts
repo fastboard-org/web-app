@@ -4,12 +4,14 @@ import { FontType } from "@/components/shared/FontTypeProperty";
 import { ImageBorder } from "@/components/shared/ImageBorderProperty";
 import { IconType } from "./icon-types";
 import { QueryData } from "../connections";
+import { SpacerProps } from "@nextui-org/react";
 
 export enum CardComponentType {
   Text = "Text",
   Image = "Image",
   Link = "Link",
   Video = "Video",
+  Spacer = "Spacer",
 }
 
 interface BaseCardComponentProperties {
@@ -46,11 +48,16 @@ export interface LinkComponentProperties extends BaseCardComponentProperties {
 
 export interface VideoComponentProperties extends BaseCardComponentProperties {}
 
+export interface SpacerComponentProperties extends BaseCardComponentProperties {
+  height: number;
+}
+
 export type CardComponentProperties =
   | TextComponentProperties
   | ImageComponentProperties
   | LinkComponentProperties
-  | VideoComponentProperties;
+  | VideoComponentProperties
+  | SpacerComponentProperties;
 
 export class DefaultCardComponentProperties {
   static of(type: CardComponentType): CardComponentProperties {
@@ -93,6 +100,11 @@ export class DefaultCardComponentProperties {
         return {
           ...baseProperties,
         };
+      case CardComponentType.Spacer:
+        return {
+          ...baseProperties,
+          height: 5,
+        };
       default:
         return {
           ...baseProperties,
@@ -108,6 +120,9 @@ export class CardProperties {
   queryParameters: Record<string, string> = {};
   components: CardComponentProperties[] = [];
   dataKeys: string[] = [];
+
+  spacing: number = 2;
+  backgroundColor: Color = new Color("#ffffff", "#18181b");
   showShadow: boolean = true;
 
   static default(): CardProperties {

@@ -41,13 +41,16 @@ export default function TextComponent({
           : "none",
       }}
     >
-      <h1
-        style={{
-          color: theme === "dark" ? labelColor?.dark : labelColor?.light,
-        }}
-      >
-        {label}
-      </h1>
+      {label !== "" && (
+        <h1
+          style={{
+            color: theme === "dark" ? labelColor?.dark : labelColor?.light,
+          }}
+        >
+          {label}
+        </h1>
+      )}
+
       <h1
         style={{
           color: theme === "dark" ? textColor.dark : textColor.light,

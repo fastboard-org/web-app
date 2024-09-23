@@ -20,6 +20,7 @@ import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import CardComponent from "./CardComponent";
 import { QueryType } from "@/types/connections";
+import CardStyle from "./CardStyle";
 
 export default function FastboardCardProperties({
   properties,
@@ -192,6 +193,16 @@ export default function FastboardCardProperties({
                 }
               />
             )}
+          </AccordionItem>
+          <AccordionItem
+            key="style"
+            title="Style"
+            className="pb-2"
+            classNames={{
+              title: "font-medium",
+            }}
+          >
+            <CardStyle properties={properties} onValueChange={onValueChange} />
           </AccordionItem>
         </Accordion>
       )}
