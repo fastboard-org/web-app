@@ -4,7 +4,7 @@ import { FontType } from "@/components/shared/FontTypeProperty";
 import { ImageBorder } from "@/components/shared/ImageBorderProperty";
 import { IconType } from "./icon-types";
 import { QueryData } from "../connections";
-import { SpacerProps } from "@nextui-org/react";
+import { FastboardHeaderPhotoSize } from "./header-types";
 
 export enum CardComponentType {
   Text = "Text",
@@ -32,6 +32,7 @@ export interface TextComponentProperties extends BaseCardComponentProperties {
 export interface ImageComponentProperties extends BaseCardComponentProperties {
   alignment: Alignment;
   border: ImageBorder;
+  size: FastboardHeaderPhotoSize;
 }
 
 export interface LinkComponentProperties extends BaseCardComponentProperties {
@@ -82,6 +83,7 @@ export class DefaultCardComponentProperties {
           ...baseProperties,
           alignment: Alignment.Left,
           border: ImageBorder.Round,
+          size: FastboardHeaderPhotoSize.Medium,
         };
       case CardComponentType.Link:
         return {

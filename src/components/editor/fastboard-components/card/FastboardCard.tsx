@@ -63,6 +63,7 @@ export default function FastboardCard({
     isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
+    refetch,
   } = useData(
     `${ComponentType.Card}-${id}`,
     sourceQueryData,
@@ -88,6 +89,10 @@ export default function FastboardCard({
       };
     });
   }, [keys]);
+
+  useEffect(() => {
+    refetch();
+  }, [queryParameters]);
 
   useEffect(() => {
     if (isDataError) {
@@ -163,7 +168,7 @@ export default function FastboardCard({
       }}
     >
       {dataFetching && <Spinner className="w-full h-full" />}
-      {isDataError && (
+      {!dataFetching && isDataError && (
         <p className="flex justify-center items-center w-full h-full text-danger">
           {dataError?.message}
         </p>

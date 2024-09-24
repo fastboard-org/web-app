@@ -21,6 +21,7 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import CardComponent from "./CardComponent";
 import { QueryType } from "@/types/connections";
 import CardStyle from "./CardStyle";
+import DebounceInput from "@/components/shared/DebounceInput";
 
 export default function FastboardCardProperties({
   properties,
@@ -91,7 +92,6 @@ export default function FastboardCardProperties({
               type={QueryType.GET}
               selectedQueryId={sourceQueryData?.queryId || ""}
               onQuerySelect={(newQuery) => {
-                console.log(newQuery);
                 if (newQuery.id === sourceQueryData?.queryId) {
                   return;
                 }
@@ -147,21 +147,22 @@ export default function FastboardCardProperties({
 
                 <div className="flex flex-col gap-2 px-2 w-full">
                   {Object.entries(queryParameters).map((parameter, index) => (
-                    <div className="flex flex-row items-center justify-between gap-x-2">
+                    <div
+                      key={index}
+                      className="flex flex-row items-center justify-between gap-x-2"
+                    >
                       <h2 className="w-full text-sm">{parameter[0]}</h2>
-                      <Input
-                        key={index}
+                      <DebounceInput
                         value={parameter[1]}
-                        onChange={(e) => {
+                        onValueChange={(value) => {
                           onValueChange({
                             ...properties,
                             queryParameters: {
                               ...queryParameters,
-                              [parameter[0]]: e.target.value,
+                              [parameter[0]]: value,
                             },
                           });
                         }}
-                        width={"100%"}
                       />
                     </div>
                   ))}

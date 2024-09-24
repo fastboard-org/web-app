@@ -1,5 +1,6 @@
 import { Alignment } from "@/components/shared/AlignmentProperty";
 import { ImageComponentProperties } from "@/types/editor/card-types";
+import { FastboardHeaderPhotoSize } from "@/types/editor/header-types";
 import { Image } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
@@ -10,12 +11,23 @@ export default function ImageComponent({
   properties: ImageComponentProperties;
   item: any;
 }) {
-  const { dataKey, alignment, border } = properties;
+  const { dataKey, alignment, border, size } = properties;
   const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     setImageError(false);
   }, [dataKey]);
+
+  function getSize(size: FastboardHeaderPhotoSize) {
+    switch (size) {
+      case FastboardHeaderPhotoSize.Small:
+        return "100px";
+      case FastboardHeaderPhotoSize.Medium:
+        return "150px";
+      case FastboardHeaderPhotoSize.Large:
+        return "300px";
+    }
+  }
 
   return (
     <div
@@ -36,11 +48,17 @@ export default function ImageComponent({
             ? item[dataKey]
             : "/ImageErrorImage.svg"
         }
-        className={"object-contain " + (imageError ? "dark:invert " : "")}
+        className={
+          "object-cover " + (imageError || dataKey === "" ? "dark:invert " : "")
+        }
+        style={{
+          maxHeight: getSize(size),
+          maxWidth: getSize(size),
+        }}
         alt="Card image"
-        width={"200px"}
-        height={"100%"}
         radius={border as any}
+        width={getSize(size)}
+        height={getSize(size)}
         onError={() => setImageError(true)}
       />
     </div>
