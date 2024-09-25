@@ -63,6 +63,7 @@ export enum MONGO_METHOD {
   INSERT_MANY = "insertMany",
   UPDATE_ONE = "updateOne",
   UPDATE_MANY = "updateMany",
+  VECTOR_SEARCH = "vectorSearch",
 }
 
 export interface MongoQueryMetadata {
