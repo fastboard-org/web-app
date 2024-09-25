@@ -20,6 +20,7 @@ import { convertToObject } from "@/lib/rest-queries";
 import { usePreviewQuery } from "@/hooks/adapter/usePreviewQuery";
 import { toast } from "sonner";
 import ResponseViewer from "@/components/connections/queries/ResponseViewer";
+import VectorSearchTabs from "@/components/connections/queries/mongo/VectorSearchTabs";
 
 const methodDefaultValue = (method: MONGO_METHOD) => {
   switch (method) {
@@ -106,11 +107,25 @@ const MongoQueryEditor = ({
     });
   };
 
-  const canSave =
-    isValidBody(filterBody) &&
-    isValidBody(updateBody) &&
-    collectionName &&
-    query.metadata.method;
+  const isSavePossible = () => {
+    if (query.metadata.method === MONGO_METHOD.VECTOR_SEARCH) {
+      return (
+        collectionName &&
+        query.metadata.index_field &&
+        query.metadata.index_created &&
+        query.metadata.embeddings_created
+      );
+    } else {
+      return (
+        isValidBody(filterBody) &&
+        isValidBody(updateBody) &&
+        collectionName &&
+        query.metadata.method
+      );
+    }
+  };
+
+  const canSave = isSavePossible();
 
   return (
     <div
@@ -176,37 +191,42 @@ const MongoQueryEditor = ({
           </Button>
         </div>
         <Card className={"w-full h-full p-4"}>
-          <Tabs
-            classNames={{
-              panel:
-                "p-0 mt-2 h-full overflow-y-auto " + scrollbarStyles.scrollbar,
-            }}
-            selectedKey={selectedTab}
-            onSelectionChange={(key) => setSelectedTab(key as string)}
-          >
-            <Tab key={"body"} title={"Body"} className={"flex gap-5"}>
-              <BodyEditor
-                body={filterBody}
-                onChange={setFilterBody}
-                invalidBody={!isValidBody(filterBody)}
-                label={"Filter Body"}
-                placeholder={"Enter filter body here"}
-                defaultValue={methodDefaultValue(query?.metadata?.method)}
-              />
-              {methodHasUpdateBody(query.metadata.method) && (
+          {query?.metadata?.method !== MONGO_METHOD.VECTOR_SEARCH ? (
+            <Tabs
+              classNames={{
+                panel:
+                  "p-0 mt-2 h-full overflow-y-auto " +
+                  scrollbarStyles.scrollbar,
+              }}
+              selectedKey={selectedTab}
+              onSelectionChange={(key) => setSelectedTab(key as string)}
+            >
+              <Tab key={"body"} title={"Body"} className={"flex gap-5"}>
                 <BodyEditor
-                  body={updateBody}
-                  onChange={setUpdateBody}
-                  invalidBody={!isValidBody(updateBody)}
-                  label={"Update Body"}
-                  placeholder={"Enter update body here"}
+                  body={filterBody}
+                  onChange={setFilterBody}
+                  invalidBody={!isValidBody(filterBody)}
+                  label={"Filter Body"}
+                  placeholder={"Enter filter body here"}
+                  defaultValue={methodDefaultValue(query?.metadata?.method)}
                 />
-              )}
-            </Tab>
-            <Tab key={"response"} title={"Response"}>
-              <ResponseViewer data={response} />
-            </Tab>
-          </Tabs>
+                {methodHasUpdateBody(query.metadata.method) && (
+                  <BodyEditor
+                    body={updateBody}
+                    onChange={setUpdateBody}
+                    invalidBody={!isValidBody(updateBody)}
+                    label={"Update Body"}
+                    placeholder={"Enter update body here"}
+                  />
+                )}
+              </Tab>
+              <Tab key={"response"} title={"Response"}>
+                <ResponseViewer data={response} />
+              </Tab>
+            </Tabs>
+          ) : (
+            <VectorSearchTabs />
+          )}
         </Card>
       </div>
       <QueryParametersDrawer

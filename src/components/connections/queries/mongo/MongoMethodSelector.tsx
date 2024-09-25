@@ -33,6 +33,10 @@ const sections = [
     title: "Delete",
     methods: [MONGO_METHOD.DELETE_ONE, MONGO_METHOD.DELETE_MANY],
   },
+  {
+    title: "AI",
+    methods: [MONGO_METHOD.VECTOR_SEARCH],
+  },
 ];
 
 const MongoMethodSelector = ({
