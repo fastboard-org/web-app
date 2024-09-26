@@ -19,7 +19,12 @@ import AuthModal from "@/components/connections/queries/rest/AuthModal";
 import { useRecoilValue } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
 import BodyEditor from "@/components/connections/queries/BodyEditor";
-import { convertToHeaders, convertToObject } from "@/lib/rest-queries";
+import {
+  convertToFormData,
+  convertToHeaders,
+  convertToObject,
+  formDataToObject,
+} from "@/lib/rest-queries";
 import { toast } from "sonner";
 import { Toaster } from "@/components/shared/Toaster";
 import { usePreviewQuery } from "@/hooks/adapter/usePreviewQuery";
@@ -75,7 +80,9 @@ const RestQueryEditor = ({
     setResponse(null);
     setResponseData(null);
     setPath(query?.metadata?.path || "");
+    setContentType(query?.metadata?.contentType || ContentType.JSON);
     setBody(JSON.stringify(query?.metadata?.body, null, 4) || "{}");
+    setFormDataBody(convertToFormData(query?.metadata?.formDataBody));
     setHeaders(convertToHeaders(query?.metadata?.headers));
   }, [query.id]);
 
@@ -149,7 +156,9 @@ const RestQueryEditor = ({
                 return {
                   path,
                   headers: convertToObject(headers),
+                  contentType: contentType,
                   body: JSON.parse(body),
+                  formDataBody: formDataToObject(formDataBody),
                 };
               }}
               onSaveSuccess={(query) => onChange(query)}
