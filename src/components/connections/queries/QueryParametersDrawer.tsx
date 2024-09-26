@@ -1,5 +1,6 @@
 import { QueryParameter } from "@/types/connections";
 import {
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -10,7 +11,7 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import { RiQuestionLine } from "react-icons/ri";
-import { TickCircle } from "iconsax-react";
+import { TickCircle, Trash } from "iconsax-react";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { IoIosClose } from "react-icons/io";
@@ -23,6 +24,9 @@ const QueryParametersDrawer = ({
   queryParameters: QueryParameter[];
   setQueryParameters: (queryParameters: QueryParameter[]) => void;
 }) => {
+  const [newParameterType, setNewParameterType] = useState<"text" | "file">(
+    "text"
+  );
   const [newParameterName, setNewParameterName] = useState<string>("");
   const lastParamRef: MutableRefObject<HTMLInputElement | null> = useRef(null);
 
@@ -47,13 +51,17 @@ const QueryParametersDrawer = ({
   const handleAddParameter = () => {
     if (newParameterName.trim() === "token") {
       return toast.error(
-        "Parameter name 'token' is reserved. Please use another name.",
+        "Parameter name 'token' is reserved. Please use another name."
       );
     }
     if (canAddParameter()) {
       setQueryParameters([
         ...queryParameters,
-        { name: newParameterName, preview: "" },
+        {
+          name: newParameterName,
+          type: newParameterType,
+          preview: newParameterType === "text" ? "" : null,
+        },
       ]);
       setNewParameterName("");
     }
@@ -68,8 +76,8 @@ const QueryParametersDrawer = ({
   const handleEditParameter = (index: number, value: any) => {
     setQueryParameters(
       queryParameters.map((p, i) =>
-        i === index ? { ...p, preview: value } : p,
-      ),
+        i === index ? { ...p, preview: value } : p
+      )
     );
   };
 
@@ -102,45 +110,81 @@ const QueryParametersDrawer = ({
           }
         >
           {queryParameters.map((parameter, index) => (
-            <Input
-              key={index}
-              label={parameter.name}
-              placeholder={"Enter a parameter value"}
-              value={parameter.preview}
-              onChange={(e) => {
-                handleEditParameter(index, e.target.value);
-              }}
-              ref={index === queryParameters.length - 1 ? lastParamRef : null}
-              className={"w-[95%]"}
-              endContent={
-                <IoIosClose
-                  onClick={() => handleRemoveParameter(index)}
-                  className={
-                    "absolute right-2 top-2 cursor-pointer text-foreground-600 hover:opacity-60"
+            <div className="flex flex-row gap-x-2 items-end">
+              {parameter.type === "file" && (
+                <Input
+                  key={index}
+                  type="file"
+                  label={parameter.name}
+                  labelPlacement="outside"
+                  onChange={(e) => {
+                    handleEditParameter(index, e.target.files?.item(0));
+                  }}
+                  ref={
+                    index === queryParameters.length - 1 ? lastParamRef : null
                   }
+                  className={"w-[80%]"}
                 />
-              }
-            />
+              )}
+              {parameter.type === "text" && (
+                <Input
+                  key={index}
+                  type="text"
+                  label={parameter.name}
+                  labelPlacement="outside"
+                  placeholder={"Enter a parameter value"}
+                  value={parameter.preview as string}
+                  onChange={(e) => {
+                    handleEditParameter(index, e.target.value);
+                  }}
+                  ref={
+                    index === queryParameters.length - 1 ? lastParamRef : null
+                  }
+                  className={"w-[95%]"}
+                />
+              )}
+              <Button
+                isIconOnly
+                variant={"flat"}
+                onPress={() => handleRemoveParameter(index)}
+              >
+                <Trash size={20} />
+              </Button>
+            </div>
           ))}
         </div>
-        <Input
-          placeholder={"Enter a parameter name"}
-          value={newParameterName}
-          onChange={(e) => setNewParameterName(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleAddParameter();
+        <div className="flex flex-row gap-x-2 w-full">
+          <Select
+            aria-label="Select parameter type"
+            defaultSelectedKeys={["text"]}
+            disallowEmptySelection
+            selectedKeys={[newParameterType]}
+            onChange={(e) => {
+              setNewParameterType(e.target.value as "text" | "file");
+            }}
+          >
+            <SelectItem key={"text"}>text</SelectItem>
+            <SelectItem key={"file"}>file</SelectItem>
+          </Select>
+          <Input
+            placeholder={"Enter a parameter name"}
+            value={newParameterName}
+            onChange={(e) => setNewParameterName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleAddParameter();
+              }
+            }}
+            endContent={
+              canAddParameter() && (
+                <TickCircle
+                  className={"text-primary cursor-pointer hover:opacity-60"}
+                  onClick={handleAddParameter}
+                />
+              )
             }
-          }}
-          endContent={
-            canAddParameter() && (
-              <TickCircle
-                className={"text-primary cursor-pointer hover:opacity-60"}
-                onClick={handleAddParameter}
-              />
-            )
-          }
-        />
+          />
+        </div>
       </CardBody>
     </Card>
   );

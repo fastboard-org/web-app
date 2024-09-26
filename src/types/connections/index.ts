@@ -4,6 +4,11 @@ export enum ConnectionType {
   SQL = "SQL",
 }
 
+export enum ContentType {
+  JSON = "application/json",
+  FORM_DATA = "multipart/form-data",
+}
+
 export interface Connection {
   id: string;
   name: string;
@@ -23,10 +28,16 @@ export interface Query {
 
 export interface QueryParameter {
   name: string;
-  preview: string;
+  type: "text" | "file";
+  preview: string | File | null;
 }
 
 export interface RestHeader {
+  key: string;
+  value: string;
+}
+
+export interface RestFormDataParameter {
   key: string;
   value: string;
 }

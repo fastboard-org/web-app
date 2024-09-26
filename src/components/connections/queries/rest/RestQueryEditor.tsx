@@ -1,7 +1,9 @@
 import {
   Connection,
+  ContentType,
   Query,
   QueryParameter,
+  RestFormDataParameter,
   RestHeader,
 } from "@/types/connections";
 import EditableTitle from "@/components/shared/EditableTitle";
@@ -23,6 +25,9 @@ import { Toaster } from "@/components/shared/Toaster";
 import { usePreviewQuery } from "@/hooks/adapter/usePreviewQuery";
 import QueryButtons from "@/components/connections/queries/QueryButtons";
 import { isValidBody } from "@/lib/queries";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import FormDataEditor from "./FormDataEditor";
+import { toBase64 } from "@/lib/file";
 
 const RestQueryEditor = ({
   connection,
@@ -39,12 +44,16 @@ const RestQueryEditor = ({
   const [previewToken, setPreviewToken] = useState<string>("");
 
   const [headers, setHeaders] = useState<RestHeader[]>(
-    convertToHeaders(query?.metadata?.headers),
+    convertToHeaders(query?.metadata?.headers)
   );
   const [path, setPath] = useState<string>(query?.metadata?.path || "");
-  const [body, setBody] = useState<string>(
-    JSON.stringify(query?.metadata?.body, null, 4) || "{}",
+  const [contentType, setContentType] = useState<ContentType>(
+    query?.metadata?.contentType || ContentType.JSON
   );
+  const [body, setBody] = useState<string>(
+    JSON.stringify(query?.metadata?.body, null, 4) || "{}"
+  );
+  const [formDataBody, setFormDataBody] = useState<RestFormDataParameter[]>([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -70,15 +79,29 @@ const RestQueryEditor = ({
     setHeaders(convertToHeaders(query?.metadata?.headers));
   }, [query.id]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const parameters =
-      query?.metadata?.parameters?.reduce((acc: any, param: QueryParameter) => {
-        return { ...acc, [param.name]: param.preview };
-      }, {}) ?? {};
+      (await query?.metadata?.parameters?.reduce(
+        async (acc: any, param: QueryParameter) => {
+          if (
+            contentType === ContentType.JSON &&
+            param.type === "file" &&
+            param.preview
+          ) {
+            return {
+              ...acc,
+              [param.name]: await toBase64(param.preview as File),
+            };
+          }
+          return { ...acc, [param.name]: param.preview };
+        },
+        {}
+      )) ?? {};
 
     if (previewToken) {
       parameters.token = previewToken;
     }
+    console.log("parameters", parameters);
 
     previewQuery({
       connectionId: connection.id,
@@ -89,6 +112,11 @@ const RestQueryEditor = ({
         body: JSON.parse(body),
       },
       parameters,
+      config: {
+        headers: {
+          "Content-Type": contentType,
+        },
+      },
     });
   };
 
@@ -161,11 +189,53 @@ const RestQueryEditor = ({
                 />
               </Tab>
               <Tab key={"body"} title={"Body"}>
-                <BodyEditor
-                  body={body || "{}"}
-                  onChange={setBody}
-                  invalidBody={!isValidBody(body)}
-                />
+                <RadioGroup
+                  className="flex flex-row items-center p-2"
+                  defaultValue={ContentType.JSON}
+                  value={contentType}
+                  onValueChange={(value) => {
+                    setContentType(value as ContentType);
+                  }}
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem
+                      value={ContentType.JSON}
+                      id={ContentType.JSON}
+                    />
+                    <h2>json</h2>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem
+                      value={ContentType.FORM_DATA}
+                      id={ContentType.FORM_DATA}
+                    />
+                    <h2>form-data</h2>
+                  </div>
+                </RadioGroup>
+                {contentType === ContentType.JSON && (
+                  <BodyEditor
+                    body={body || "{}"}
+                    onChange={setBody}
+                    invalidBody={!isValidBody(body)}
+                  />
+                )}
+                {contentType === ContentType.FORM_DATA && (
+                  <FormDataEditor
+                    formDataBody={formDataBody}
+                    onChange={(formDataBody: RestFormDataParameter[]) => {
+                      setFormDataBody(formDataBody);
+                      console.log(formDataBody);
+                      setBody(
+                        JSON.stringify(
+                          formDataBody.reduce((acc, param) => {
+                            if (param.key === "") return acc;
+                            return { ...acc, [param.key]: param.value };
+                          }, {})
+                        )
+                      );
+                    }}
+                  />
+                )}
               </Tab>
               <Tab key={"response"} title={"Response"}>
                 <ResponseViewer

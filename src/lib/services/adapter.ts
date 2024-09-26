@@ -1,11 +1,13 @@
 import { MongoQueryMetadata, RestQueryMetadata } from "@/types/connections";
 import { axiosInstance } from "@/lib/axios";
 import { isPreviewPage, isPublishPage } from "@/lib/helpers";
+import { AxiosRequestConfig } from "axios";
 
 const previewQuery = async (
   connectionId: string,
   queryMetadata: MongoQueryMetadata | RestQueryMetadata,
   parameters: any,
+  config?: AxiosRequestConfig
 ) => {
   const response = await axiosInstance.post(
     `/adapter/${connectionId}/preview`,
@@ -13,6 +15,7 @@ const previewQuery = async (
       connection_metadata: queryMetadata,
       parameters,
     },
+    config
   );
 
   return response.data;
@@ -22,7 +25,7 @@ async function executeQuery(
   queryId: string | null,
   dashboardId: string,
   parameters?: Record<string, any>,
-  previewAccessToken?: string,
+  previewAccessToken?: string
 ) {
   try {
     if (!queryId) {
@@ -51,7 +54,7 @@ async function executeQuery(
 
       const error = response.data?.body?.error;
       throw new Error(
-        `Error ${response.data.status_code}: ${error?.description ?? ""}`,
+        `Error ${response.data.status_code}: ${error?.description ?? ""}`
       );
     }
     return response.data;
