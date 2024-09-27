@@ -14,7 +14,6 @@ import { RiQuestionLine } from "react-icons/ri";
 import { TickCircle, Trash } from "iconsax-react";
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import { IoIosClose } from "react-icons/io";
 import { toast } from "sonner";
 
 const QueryParametersDrawer = ({
@@ -110,10 +109,9 @@ const QueryParametersDrawer = ({
           }
         >
           {queryParameters.map((parameter, index) => (
-            <div className="flex flex-row gap-x-2 items-end">
+            <div key={index} className="flex flex-row gap-x-2 items-end">
               {parameter.type === "file" && (
                 <Input
-                  key={index}
                   type="file"
                   label={parameter.name}
                   labelPlacement="outside"
@@ -128,7 +126,6 @@ const QueryParametersDrawer = ({
               )}
               {parameter.type === "text" && (
                 <Input
-                  key={index}
                   type="text"
                   label={parameter.name}
                   labelPlacement="outside"

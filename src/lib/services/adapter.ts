@@ -1,19 +1,52 @@
-import { MongoQueryMetadata, RestQueryMetadata } from "@/types/connections";
+import {
+  ContentType,
+  MongoQueryMetadata,
+  QueryParameter,
+  RestQueryMetadata,
+} from "@/types/connections";
 import { axiosInstance } from "@/lib/axios";
 import { isPreviewPage, isPublishPage } from "@/lib/helpers";
 import { AxiosRequestConfig } from "axios";
+import { toBase64 } from "../file";
 
 const previewQuery = async (
   connectionId: string,
   queryMetadata: MongoQueryMetadata | RestQueryMetadata,
-  parameters: any,
+  parameters: QueryParameter[],
   config?: AxiosRequestConfig
 ) => {
+  const contentType = (queryMetadata as RestQueryMetadata)?.contentType;
+
+  const transformedParameters = (
+    await Promise.all(
+      parameters.map(async (param) => {
+        if (param.type === "file") {
+          if (!param.preview || !(param.preview instanceof File)) {
+            return {
+              ...param,
+              preview: null,
+            };
+          }
+          if (contentType === ContentType.JSON || !contentType) {
+            return {
+              ...param,
+              preview: await toBase64(param.preview as File),
+            };
+          }
+        } else {
+          return param;
+        }
+      })
+    )
+  ).reduce((acc: any, param: any) => {
+    return { ...acc, [param.name]: param.preview };
+  }, {});
+
   const response = await axiosInstance.post(
     `/adapter/${connectionId}/preview`,
     {
       connection_metadata: queryMetadata,
-      parameters,
+      parameters: transformedParameters,
     },
     config
   );

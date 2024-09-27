@@ -85,5 +85,6 @@ export interface RestQueryMetadata {
   method: HTTP_METHOD;
   path: string;
   headers: RestHeader[];
+  contentType: ContentType;
   body: any;
 }

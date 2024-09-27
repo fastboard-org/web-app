@@ -70,7 +70,8 @@ const RestQueryEditor = ({
     },
     onError: (error: any) => {
       console.error("Error previewing query", error);
-      toast.error("Failed to send request.");
+      const axiosError = error?.response?.data?.error;
+      toast.error(`Failed to send request: ${axiosError.description}`);
     },
   });
 
@@ -87,28 +88,19 @@ const RestQueryEditor = ({
   }, [query.id]);
 
   const handleSend = async () => {
-    const parameters =
-      (await query?.metadata?.parameters?.reduce(
-        async (acc: any, param: QueryParameter) => {
-          if (
-            contentType === ContentType.JSON &&
-            param.type === "file" &&
-            param.preview
-          ) {
-            return {
-              ...acc,
-              [param.name]: await toBase64(param.preview as File),
-            };
-          }
-          return { ...acc, [param.name]: param.preview };
-        },
-        {}
-      )) ?? {};
+    let parameters = query?.metadata?.parameters;
 
     if (previewToken) {
-      parameters.token = previewToken;
+      parameters = [
+        ...parameters,
+        { name: "token", type: "text", preview: previewToken },
+      ];
     }
-    console.log("parameters", parameters);
+
+    const finalBody =
+      contentType === ContentType.JSON
+        ? JSON.parse(body)
+        : formDataToObject(formDataBody);
 
     previewQuery({
       connectionId: connection.id,
@@ -116,7 +108,8 @@ const RestQueryEditor = ({
         method: query.metadata.method,
         path,
         headers: convertToObject(headers),
-        body: JSON.parse(body),
+        contentType,
+        body: finalBody,
       },
       parameters,
       config: {
@@ -233,15 +226,6 @@ const RestQueryEditor = ({
                     formDataBody={formDataBody}
                     onChange={(formDataBody: RestFormDataParameter[]) => {
                       setFormDataBody(formDataBody);
-                      console.log(formDataBody);
-                      setBody(
-                        JSON.stringify(
-                          formDataBody.reduce((acc, param) => {
-                            if (param.key === "") return acc;
-                            return { ...acc, [param.key]: param.value };
-                          }, {})
-                        )
-                      );
                     }}
                   />
                 )}
