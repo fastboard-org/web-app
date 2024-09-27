@@ -50,10 +50,12 @@ export enum HTTP_METHOD {
   PATCH = "PATCH",
 }
 
-export interface RestQueryData {
+export type QueryMethod = HTTP_METHOD | MONGO_METHOD;
+
+export interface QueryData {
   queryId: string;
   connectionId: string;
-  method: HTTP_METHOD;
+  method: QueryMethod;
 }
 
 export enum MONGO_METHOD {
@@ -87,4 +89,10 @@ export interface RestQueryMetadata {
   headers: RestHeader[];
   contentType: ContentType;
   body: any;
+}
+
+export enum QueryType {
+  GET = "GET",
+  UPDATE = "UPDATE",
+  AI = "AI",
 }

@@ -2,7 +2,7 @@ import {
   Query,
   RestFormDataParameter,
   RestHeader,
-  RestQueryData,
+  QueryData,
 } from "@/types/connections";
 
 export const convertToHeaders = (headers: any): RestHeader[] => {
@@ -40,7 +40,7 @@ export const formDataToObject = (formData: RestFormDataParameter[]): any => {
   }, {});
 };
 
-export const queryToRestQueryData = (query: Query): RestQueryData => {
+export const queryToQueryData = (query: Query): QueryData => {
   return {
     queryId: query.id,
     connectionId: query.connection_id,
