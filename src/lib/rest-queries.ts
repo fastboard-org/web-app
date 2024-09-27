@@ -3,6 +3,7 @@ import {
   RestFormDataParameter,
   RestHeader,
   QueryData,
+  ContentType,
 } from "@/types/connections";
 
 export const convertToHeaders = (headers: any): RestHeader[] => {
@@ -45,5 +46,6 @@ export const queryToQueryData = (query: Query): QueryData => {
     queryId: query.id,
     connectionId: query.connection_id,
     method: query.metadata?.method,
+    contentType: query.metadata?.contentType || ContentType.JSON,
   };
 };

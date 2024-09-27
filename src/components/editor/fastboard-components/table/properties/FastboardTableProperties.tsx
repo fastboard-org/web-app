@@ -30,6 +30,7 @@ import { QueryType } from "@/types/connections";
 import FiltersList from "./filters/FiltersList";
 import TableStringFilterProperties from "./filters/TableStringFilterProperties";
 import TableNumberFilterProperties from "./filters/TableNumberFilterProperties";
+import { queryToQueryData } from "@/lib/rest-queries";
 
 const FastboardTablePropertiesComponent = ({
   componentId,
@@ -55,7 +56,7 @@ const FastboardTablePropertiesComponent = ({
   const [actionSelected, setActionSelected] =
     useState<TableActionProperty | null>(null);
   const [filterIndexSelected, setFilterIndexSelected] = useState<number | null>(
-    null,
+    null
   );
   const [addOnSelected, setAddOnSelected] = useState<string | null>(null);
 
@@ -138,11 +139,7 @@ const FastboardTablePropertiesComponent = ({
                   }
                   onValueChange({
                     ...properties,
-                    sourceQueryData: {
-                      queryId: newQuery.id,
-                      connectionId: newQuery.connection_id,
-                      method: newQuery.metadata?.method,
-                    },
+                    sourceQueryData: queryToQueryData(newQuery),
                     columns: [],
                     filters: filters.map((filter) => ({
                       ...filter,

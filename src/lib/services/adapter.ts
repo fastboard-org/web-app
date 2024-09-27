@@ -58,7 +58,8 @@ async function executeQuery(
   queryId: string | null,
   dashboardId: string,
   parameters?: Record<string, any>,
-  previewAccessToken?: string
+  previewAccessToken?: string,
+  config?: AxiosRequestConfig
 ) {
   try {
     if (!queryId) {
@@ -73,9 +74,13 @@ async function executeQuery(
 
     parametersToSend.token = viewMode ? token : previewAccessToken;
 
-    const response = await axiosInstance.post(`/adapter/execute/${queryId}`, {
-      parameters: parametersToSend,
-    });
+    const response = await axiosInstance.post(
+      `/adapter/execute/${queryId}`,
+      {
+        parameters: parametersToSend,
+      },
+      config
+    );
 
     if (response?.data.status_code && response?.data.status_code !== 200) {
       if (response?.data?.status_code === 401) {
