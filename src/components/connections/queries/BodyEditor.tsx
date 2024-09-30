@@ -8,6 +8,7 @@ const BodyEditor = ({
   onChange,
   invalidBody,
   label,
+  width,
 }: {
   body: string;
   onChange: (body: string) => void;
@@ -15,6 +16,7 @@ const BodyEditor = ({
   label?: string;
   placeholder?: string;
   defaultValue?: string;
+  width?: string;
 }) => {
   const { theme } = useTheme();
   const beautify = () => {
@@ -29,6 +31,9 @@ const BodyEditor = ({
         "flex flex-col gap-2 h-full w-full relative " +
         scrollbarStyles.scrollbar
       }
+      style={{
+        width: width || "100%",
+      }}
     >
       <Button
         size={"sm"}
@@ -48,7 +53,7 @@ const BodyEditor = ({
         {label}
       </p>
       <Editor
-        width={"98%"}
+        width={"100%"}
         language="json"
         theme={theme === "dark" ? "vs-dark" : "light"}
         options={{
