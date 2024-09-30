@@ -7,6 +7,7 @@ import {
 import "react-json-view-lite/dist/index.css";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { useTheme } from "next-themes";
+import { Editor } from "@monaco-editor/react";
 
 const ResponseViewer = ({
   status = "",
@@ -23,15 +24,12 @@ const ResponseViewer = ({
           Status: {status}
         </p>
       )}
-      <JsonView
-        data={data}
-        shouldExpandNode={collapseAllNested}
-        style={{
-          ...(theme === "dark" ? darkStyles : defaultStyles),
-          container:
-            "bg-transparent overflow-y-auto text-md " +
-            scrollbarStyles.scrollbar,
-        }}
+      <Editor
+        height="90vh"
+        language="json"
+        theme={theme === "dark" ? "vs-dark" : "light"}
+        options={{ readOnly: true, minimap: { enabled: false } }}
+        value={JSON.stringify(data, null, 4)}
       />
     </>
   ) : (

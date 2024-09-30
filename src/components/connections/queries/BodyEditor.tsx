@@ -1,13 +1,14 @@
 import { Button, Textarea } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
+import Editor from "@monaco-editor/react";
+import { useTheme } from "next-themes";
 
 const BodyEditor = ({
   body,
   onChange,
   invalidBody,
   label,
-  placeholder = "Enter request body here",
-  defaultValue = "{}",
+  width,
 }: {
   body: string;
   onChange: (body: string) => void;
@@ -15,7 +16,9 @@ const BodyEditor = ({
   label?: string;
   placeholder?: string;
   defaultValue?: string;
+  width?: string;
 }) => {
+  const { theme } = useTheme();
   const beautify = () => {
     if (!invalidBody) {
       onChange(JSON.stringify(JSON.parse(body), null, 4));
@@ -28,6 +31,9 @@ const BodyEditor = ({
         "flex flex-col gap-2 h-full w-full relative " +
         scrollbarStyles.scrollbar
       }
+      style={{
+        width: width || "100%",
+      }}
     >
       <Button
         size={"sm"}
@@ -46,39 +52,23 @@ const BodyEditor = ({
       >
         {label}
       </p>
-      <Textarea
+      <Editor
+        width={"100%"}
+        language="json"
+        theme={theme === "dark" ? "vs-dark" : "light"}
+        options={{
+          minimap: {
+            enabled: false,
+          },
+        }}
         value={body}
-        onChange={(e) => {
-          const newBody = e.target.value;
-          if (!body) {
-            onChange(defaultValue);
-          } else {
-            onChange(newBody);
+        onChange={(value, event) => {
+          if (!value) {
+            return;
           }
-        }}
-        className={"h-full w-full"}
-        size={"lg"}
-        placeholder={placeholder}
-        classNames={{
-          inputWrapper: "!h-full",
-          input: "h-full " + scrollbarStyles.scrollbar,
-        }}
-        disableAutosize
-        onKeyDown={(e) => {
-          if (e.key === "Tab") {
-            e.preventDefault();
-            const start = e.currentTarget.selectionStart;
-            const end = e.currentTarget.selectionEnd;
-            e.currentTarget.value =
-              e.currentTarget.value.substring(0, start) +
-              "    " +
-              e.currentTarget.value.substring(end);
-            e.currentTarget.selectionStart = e.currentTarget.selectionEnd =
-              start + 4;
-          }
+          onChange(value);
         }}
       />
-      {invalidBody && <p className={"text-danger text-sm"}>Invalid JSON</p>}
     </div>
   );
 };
