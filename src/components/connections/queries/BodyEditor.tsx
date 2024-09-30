@@ -8,8 +8,6 @@ const BodyEditor = ({
   onChange,
   invalidBody,
   label,
-  placeholder = "Enter request body here",
-  defaultValue = "{}",
 }: {
   body: string;
   onChange: (body: string) => void;
