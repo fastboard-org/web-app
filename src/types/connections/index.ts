@@ -73,6 +73,16 @@ export interface MongoQueryMetadata {
   update_body: any;
 }
 
+export interface MongoVectorSearchMetadata {
+  method: MONGO_METHOD.VECTOR_SEARCH;
+  collection: string;
+  index_created: boolean;
+  embeddings_created: boolean;
+  query: string;
+  limit: number;
+  num_candidates: number;
+}
+
 export interface RestQueryMetadata {
   method: HTTP_METHOD;
   path: string;
