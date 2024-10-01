@@ -1,10 +1,18 @@
-import { MongoQueryMetadata, RestQueryMetadata } from "@/types/connections";
+import {
+  MongoQueryMetadata,
+  MongoVectorSearchMetadata,
+  RestQueryMetadata,
+} from "@/types/connections";
 import { axiosInstance } from "@/lib/axios";
 import { isPreviewPage, isPublishPage } from "@/lib/helpers";
+import { mapQuery } from "@/lib/services/connections";
 
 const previewQuery = async (
   connectionId: string,
-  queryMetadata: MongoQueryMetadata | RestQueryMetadata,
+  queryMetadata:
+    | MongoQueryMetadata
+    | RestQueryMetadata
+    | MongoVectorSearchMetadata,
   parameters: any,
 ) => {
   const response = await axiosInstance.post(
@@ -60,7 +68,16 @@ async function executeQuery(
   }
 }
 
+async function createEmbeddings(queryId: string, indexField: string) {
+  const response = await axiosInstance.post(
+    `/embeddings/${queryId}?index_field=${indexField}`,
+  );
+
+  return mapQuery(response?.data?.body);
+}
+
 export const adapterService = {
   previewQuery,
   executeQuery,
+  createEmbeddings,
 };
