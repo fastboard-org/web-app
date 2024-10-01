@@ -227,12 +227,15 @@ const MongoQueryEditor = ({
             >
               <Tab key={"body"} title={"Body"} className={"flex gap-5"}>
                 <BodyEditor
-                  body={filterBody}
+                  body={
+                    filterBody || methodDefaultValue(query?.metadata?.method)
+                  }
                   onChange={setFilterBody}
                   invalidBody={!isValidBody(filterBody)}
                   label={"Filter Body"}
-                  placeholder={"Enter filter body here"}
-                  defaultValue={methodDefaultValue(query?.metadata?.method)}
+                  width={
+                    methodHasUpdateBody(query.metadata.method) ? "50%" : "100%"
+                  }
                 />
                 {methodHasUpdateBody(query.metadata.method) && (
                   <BodyEditor
@@ -240,7 +243,11 @@ const MongoQueryEditor = ({
                     onChange={setUpdateBody}
                     invalidBody={!isValidBody(updateBody)}
                     label={"Update Body"}
-                    placeholder={"Enter update body here"}
+                    width={
+                      methodHasUpdateBody(query.metadata.method)
+                        ? "50%"
+                        : "100%"
+                    }
                   />
                 )}
               </Tab>
