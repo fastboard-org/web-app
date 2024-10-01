@@ -1,6 +1,8 @@
 import {
   Connection,
   MONGO_METHOD,
+  MongoQueryMetadata,
+  MongoVectorSearchMetadata,
   Query,
   QueryParameter,
 } from "@/types/connections";
@@ -67,6 +69,8 @@ const MongoQueryEditor = ({
 
   const { previewQuery, loading: previewQueryLoading } = usePreviewQuery({
     onSuccess: (response: any) => {
+      console.log("Response", response);
+
       setResponse(response?.body);
       setSelectedTab("response");
     },
@@ -95,14 +99,33 @@ const MongoQueryEditor = ({
         return { ...acc, [param.name]: param.preview };
       }, {}) ?? {};
 
-    previewQuery({
-      connectionId: connection.id,
-      queryMetadata: {
+    let metadata: MongoQueryMetadata | MongoVectorSearchMetadata;
+
+    if (query.metadata.method === MONGO_METHOD.VECTOR_SEARCH) {
+      metadata = {
+        method: query.metadata.method,
+        collection: collectionName,
+        index_created: query.metadata.index_created,
+        embeddings_created: query.metadata.embeddings_created,
+        query: query.metadata.query,
+        limit: query.metadata.limit || 5,
+        num_candidates: query.metadata.num_candidates || 100,
+      };
+    } else {
+      metadata = {
         method: query.metadata.method,
         collection: collectionName,
         filter_body: JSON.parse(filterBody),
         update_body: JSON.parse(updateBody),
-      },
+        limit: query.metadata.limit,
+        num_candidates: query.metadata.num_candidates,
+        query: query.metadata.query,
+      };
+    }
+
+    previewQuery({
+      connectionId: connection.id,
+      queryMetadata: metadata,
       parameters,
     });
   };
@@ -173,6 +196,7 @@ const MongoQueryEditor = ({
             onMethodChange={(method: string) =>
               onChange({ ...query, metadata: { ...query.metadata, method } })
             }
+            hasAiMethods={connection?.credentials?.openai_api_key?.length > 0}
           />
           <Input
             placeholder={"Collection Name"}
@@ -225,7 +249,13 @@ const MongoQueryEditor = ({
               </Tab>
             </Tabs>
           ) : (
-            <VectorSearchTabs />
+            <VectorSearchTabs
+              query={query}
+              onQueryChange={onChange}
+              connection={connection}
+              collectionName={collectionName}
+              response={response}
+            />
           )}
         </Card>
       </div>

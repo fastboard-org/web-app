@@ -64,7 +64,10 @@ const CreateConnectionModal = ({
     createConnection({
       name: connectionName,
       type: connectionType!,
-      credentials: { main_url: connectionUrl },
+      credentials: {
+        main_url: connectionUrl,
+        openai_api_key: openAiApiKey || undefined,
+      },
     });
   };
 

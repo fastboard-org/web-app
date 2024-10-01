@@ -1,6 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { adapterService } from "@/lib/services/adapter";
-import { MongoQueryMetadata, RestQueryMetadata } from "@/types/connections";
+import {
+  MongoQueryMetadata,
+  MongoVectorSearchMetadata,
+  RestQueryMetadata,
+} from "@/types/connections";
 
 export const usePreviewQuery = ({
   onSuccess,
@@ -16,7 +20,10 @@ export const usePreviewQuery = ({
       parameters,
     }: {
       connectionId: string;
-      queryMetadata: MongoQueryMetadata | RestQueryMetadata;
+      queryMetadata:
+        | MongoQueryMetadata
+        | RestQueryMetadata
+        | MongoVectorSearchMetadata;
       parameters: any;
     }) => adapterService.previewQuery(connectionId, queryMetadata, parameters),
     onSuccess,

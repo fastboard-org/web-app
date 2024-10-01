@@ -6,19 +6,123 @@ import {
   Code,
   Input,
   Slider,
+  Spinner,
   Tab,
   Tabs,
   Textarea,
 } from "@nextui-org/react";
-import BodyEditor from "@/components/connections/queries/BodyEditor";
-import { isValidBody } from "@/lib/queries";
-import { methodHasUpdateBody } from "@/lib/mongo-methods";
 import ResponseViewer from "@/components/connections/queries/ResponseViewer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TickCircle } from "iconsax-react";
+import { Connection, Query } from "@/types/connections";
+import { toast } from "sonner";
+import { useUpdateQuery } from "@/hooks/connections/useUpdateQuery";
+import { useCreateQuery } from "@/hooks/connections/useCreateQuery";
+import { useCreateEmbeddings } from "@/hooks/adapter/useCreateEmbeddings";
 
-const VectorSearchTabs = () => {
+const AccordionTick = ({
+  completed = false,
+  loading = false,
+}: {
+  completed: boolean;
+  loading: boolean;
+}) => {
+  return loading ? (
+    <Spinner size={"sm"} />
+  ) : (
+    <TickCircle
+      size={20}
+      opacity={completed ? 1 : 0.25}
+      className={"transition-all duration-300"}
+      style={{
+        color: completed ? "#00b341" : "",
+      }}
+    />
+  );
+};
+
+const VectorSearchTabs = ({
+  connection,
+  query,
+  onQueryChange,
+  collectionName,
+  response,
+}: {
+  connection: Connection;
+  query: Query;
+  onQueryChange: (query: Query) => void;
+  collectionName: string;
+  response: any;
+}) => {
+  const queryExists = !query?.id?.includes(" new");
+
   const [selectedTab, setSelectedTab] = useState("config");
+  const [accordionItemOpen, setAccordionItemOpen] = useState(
+    new Set<string>(["1"]),
+  );
+
+  const [firstStepLoading, setFirstStepLoading] = useState(false);
+  const [secondStepLoading, setSecondStepLoading] = useState(false);
+
+  const handleSuccess = (query: Query) => {
+    onQueryChange(query);
+    setFirstStepLoading(false);
+    setSecondStepLoading(false);
+  };
+
+  const { createQuery } = useCreateQuery({
+    onSuccess: handleSuccess,
+    onError: (error: any) => {
+      console.error("Error creating query", error);
+      toast.error("Error creating query, try again later.");
+    },
+  });
+
+  const { updateQuery } = useUpdateQuery({
+    onSuccess: handleSuccess,
+    onError: (error: any) => {
+      console.error("Error updating query", error);
+      toast.error("Error updating query, try again later.");
+    },
+  });
+
+  const { createEmbeddings } = useCreateEmbeddings({
+    onSuccess: handleSuccess,
+    onError: (error: any) => {
+      console.error("Error creating embeddings", error);
+      toast.error("Error creating embeddings, try again later.");
+    },
+  });
+
+  const handleSave = (newMetadata: any) => {
+    const shouldCreate = !queryExists;
+
+    if (shouldCreate) {
+      createQuery({
+        name: query.name,
+        connectionId: connection.id,
+        metadata: {
+          ...query.metadata,
+          ...newMetadata,
+          collection: collectionName,
+        },
+      });
+    } else {
+      updateQuery({
+        id: query.id,
+        name: query.name,
+        metadata: {
+          ...query.metadata,
+          ...newMetadata,
+          collection: collectionName,
+        },
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (response) setSelectedTab("response");
+  }, [response]);
 
   return (
     <Tabs
@@ -29,13 +133,22 @@ const VectorSearchTabs = () => {
       onSelectionChange={(key) => setSelectedTab(key as string)}
     >
       <Tab key={"config"} title={"Config"} className={"flex gap-5"}>
-        <Accordion>
+        <Accordion
+          selectedKeys={accordionItemOpen}
+          onSelectionChange={(keys) =>
+            setAccordionItemOpen(keys as Set<string>)
+          }
+        >
           <AccordionItem
             key="1"
             aria-label="Create Index in Atlas"
             title={
               <span className={"flex items-center w-[215px] justify-between"}>
-                Create Index in Atlas <TickCircle size={20} opacity={0.25} />
+                Create Index in Atlas{" "}
+                <AccordionTick
+                  completed={query?.metadata?.index_created}
+                  loading={firstStepLoading}
+                />
               </span>
             }
           >
@@ -57,7 +170,18 @@ const VectorSearchTabs = () => {
                 <p>
                   Index name must be <Code>fastboard_index</Code>.
                 </p>
-                <Button color={"primary"} className={"w-[fit-content] p-4"}>
+                <Button
+                  color={"primary"}
+                  className={"w-[fit-content] p-4"}
+                  onClick={() => {
+                    setAccordionItemOpen(new Set(["2"]));
+                    setFirstStepLoading(true);
+                    handleSave({
+                      index_created: true,
+                    });
+                  }}
+                  isLoading={firstStepLoading}
+                >
                   I have created the index in Atlas
                 </Button>
               </div>
@@ -82,7 +206,11 @@ const VectorSearchTabs = () => {
             aria-label="Create Embeddings"
             title={
               <span className={"flex items-center w-[215px] justify-between"}>
-                Create Embeddings <TickCircle size={20} opacity={0.25} />
+                Create Embeddings{" "}
+                <AccordionTick
+                  completed={query?.metadata?.embeddings_created}
+                  loading={secondStepLoading}
+                />
               </span>
             }
           >
@@ -97,8 +225,30 @@ const VectorSearchTabs = () => {
                 label={"Index Field"}
                 placeholder={"Enter a field name"}
                 className={"w-full"}
+                value={query?.metadata?.index_field}
+                onChange={(e) => {
+                  onQueryChange({
+                    ...query,
+                    metadata: {
+                      ...query.metadata,
+                      index_field: e.target.value,
+                    },
+                  });
+                }}
               />
-              <Button color={"primary"} className={"w-[fit-content]"}>
+              <Button
+                color={"primary"}
+                className={"w-[fit-content]"}
+                onClick={() => {
+                  setSecondStepLoading(true);
+                  createEmbeddings({
+                    queryId: query.id,
+                    index_field: query?.metadata?.index_field,
+                  });
+                }}
+                isLoading={secondStepLoading}
+                isDisabled={!query?.metadata?.index_field || !collectionName}
+              >
                 Create Embeddings
               </Button>
             </div>
@@ -117,6 +267,16 @@ const VectorSearchTabs = () => {
               inputWrapper: "!h-full",
               input: "h-full " + scrollbarStyles.scrollbar,
             }}
+            value={query?.metadata?.query}
+            onChange={(e) => {
+              onQueryChange({
+                ...query,
+                metadata: {
+                  ...query.metadata,
+                  query: e.target.value,
+                },
+              });
+            }}
           />
           <div className={"w-1/2 flex flex-col gap-5"}>
             <Slider
@@ -125,6 +285,16 @@ const VectorSearchTabs = () => {
               minValue={1}
               maxValue={20}
               defaultValue={5}
+              value={query?.metadata?.limit || 5}
+              onChange={(value) => {
+                onQueryChange({
+                  ...query,
+                  metadata: {
+                    ...query.metadata,
+                    limit: value,
+                  },
+                });
+              }}
             />
             <Input
               label={"Number of Candidates"}
@@ -132,12 +302,22 @@ const VectorSearchTabs = () => {
               placeholder={"Enter a number"}
               size={"lg"}
               type={"number"}
+              value={query?.metadata?.num_candidates || 100}
+              onChange={(e) => {
+                onQueryChange({
+                  ...query,
+                  metadata: {
+                    ...query.metadata,
+                    num_candidates: parseInt(e.target.value),
+                  },
+                });
+              }}
             />
           </div>
         </div>
       </Tab>
       <Tab key={"response"} title={"Response"}>
-        <ResponseViewer data={null} />
+        <ResponseViewer data={response} />
       </Tab>
     </Tabs>
   );
