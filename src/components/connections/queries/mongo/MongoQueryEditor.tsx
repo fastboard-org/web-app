@@ -213,6 +213,7 @@ const MongoQueryEditor = ({
         </Card>
       </div>
       <QueryParametersDrawer
+        onlyTextParameters={true}
         queryParameters={query?.metadata?.parameters ?? []}
         setQueryParameters={(queryParameters: QueryParameter[]) =>
           onChange({

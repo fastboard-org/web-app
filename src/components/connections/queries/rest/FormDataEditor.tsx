@@ -34,7 +34,7 @@ export default function FormDataEditor({
           const isLast = index === formDataBody.length - 1;
           return (
             <TableRow key={index}>
-              <TableCell className={"w-1/2"}>
+              <TableCell className={"w-1/2 pl-0"}>
                 <Input
                   value={key}
                   placeholder={"key"}
@@ -49,7 +49,7 @@ export default function FormDataEditor({
                   }}
                 />
               </TableCell>
-              <TableCell className={"w-1/2"}>
+              <TableCell className={"w-1/2 pl-0"}>
                 <Input
                   value={value as string}
                   placeholder={"value"}

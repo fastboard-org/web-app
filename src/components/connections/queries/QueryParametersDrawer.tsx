@@ -19,9 +19,11 @@ import { toast } from "sonner";
 const QueryParametersDrawer = ({
   queryParameters,
   setQueryParameters,
+  onlyTextParameters = false,
 }: {
   queryParameters: QueryParameter[];
   setQueryParameters: (queryParameters: QueryParameter[]) => void;
+  onlyTextParameters?: boolean;
 }) => {
   const [newParameterType, setNewParameterType] = useState<"text" | "file">(
     "text"
@@ -122,6 +124,9 @@ const QueryParametersDrawer = ({
                     index === queryParameters.length - 1 ? lastParamRef : null
                   }
                   className={"w-[80%]"}
+                  classNames={{
+                    label: "pl-1",
+                  }}
                 />
               )}
               {parameter.type === "text" && (
@@ -155,6 +160,7 @@ const QueryParametersDrawer = ({
             aria-label="Select parameter type"
             defaultSelectedKeys={["text"]}
             disallowEmptySelection
+            disabledKeys={onlyTextParameters ? ["file"] : []}
             selectedKeys={[newParameterType]}
             onChange={(e) => {
               setNewParameterType(e.target.value as "text" | "file");
@@ -164,7 +170,7 @@ const QueryParametersDrawer = ({
             <SelectItem key={"file"}>file</SelectItem>
           </Select>
           <Input
-            placeholder={"Enter a parameter name"}
+            placeholder={"Enter a name"}
             value={newParameterName}
             onChange={(e) => setNewParameterName(e.target.value)}
             onKeyDown={(e) => {
