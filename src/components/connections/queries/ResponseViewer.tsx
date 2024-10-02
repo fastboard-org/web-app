@@ -25,7 +25,6 @@ const ResponseViewer = ({
         </p>
       )}
       <Editor
-        height="90vh"
         language="json"
         theme={theme === "dark" ? "vs-dark" : "light"}
         options={{ readOnly: true, minimap: { enabled: false } }}
