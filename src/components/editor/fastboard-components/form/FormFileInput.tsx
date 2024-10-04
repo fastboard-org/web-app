@@ -21,8 +21,7 @@ export default function FormFileInput({
   setFormValue: UseFormSetValue<any>;
   errors: any;
 }) {
-  const { required, formDataKey, label, placeHolder, multiple, accept } =
-    properties;
+  const { required, formDataKey, label, placeHolder, accept } = properties;
   const [formKey, setFormKey] = useState("");
 
   useEffect(() => {
@@ -39,7 +38,6 @@ export default function FormFileInput({
   return (
     <Input
       type="file"
-      multiple={multiple}
       accept={accept?.join(",")}
       aria-label="File input"
       isRequired={formDataKey !== "" ? required : false}
