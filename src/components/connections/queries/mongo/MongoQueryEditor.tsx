@@ -50,15 +50,15 @@ const MongoQueryEditor = ({
   const isMethodListClosed = useRecoilValue(isMethodListClosedState);
 
   const [filterBody, setFilterBody] = useState<string>(
-    getBody(query?.metadata?.filter_body, query?.metadata?.method),
+    getBody(query?.metadata?.filter_body, query?.metadata?.method)
   );
 
   const [updateBody, setUpdateBody] = useState<string>(
-    getBody(query?.metadata?.update_body, query?.metadata?.method),
+    getBody(query?.metadata?.update_body, query?.metadata?.method)
   );
 
   const [collectionName, setCollectionName] = useState<string>(
-    query?.metadata?.collection ?? "",
+    query?.metadata?.collection ?? ""
   );
 
   const [response, setResponse] = useState<any>(null);
@@ -71,16 +71,19 @@ const MongoQueryEditor = ({
     },
     onError: (error: any) => {
       console.error("Error previewing query", error);
-      toast.error("Failed to send request.");
+      const axiosError = error?.response?.data?.error;
+      toast.error(
+        `Failed to send request: ${axiosError?.description || error}`
+      );
     },
   });
 
   useEffect(() => {
     setFilterBody(
-      getBody(query?.metadata?.filter_body, query?.metadata?.method),
+      getBody(query?.metadata?.filter_body, query?.metadata?.method)
     );
     setUpdateBody(
-      getBody(query?.metadata?.update_body, query?.metadata?.method),
+      getBody(query?.metadata?.update_body, query?.metadata?.method)
     );
     setCollectionName(query?.metadata?.collection ?? "");
 
@@ -89,10 +92,7 @@ const MongoQueryEditor = ({
   }, [query]);
 
   const handleSend = () => {
-    const parameters =
-      query?.metadata?.parameters?.reduce((acc: any, param: QueryParameter) => {
-        return { ...acc, [param.name]: param.preview };
-      }, {}) ?? {};
+    const parameters = query?.metadata?.parameters ?? [];
 
     previewQuery({
       connectionId: connection.id,
@@ -186,12 +186,13 @@ const MongoQueryEditor = ({
           >
             <Tab key={"body"} title={"Body"} className={"flex gap-5"}>
               <BodyEditor
-                body={filterBody}
+                body={filterBody || methodDefaultValue(query?.metadata?.method)}
                 onChange={setFilterBody}
                 invalidBody={!isValidBody(filterBody)}
                 label={"Filter Body"}
-                placeholder={"Enter filter body here"}
-                defaultValue={methodDefaultValue(query?.metadata?.method)}
+                width={
+                  methodHasUpdateBody(query.metadata.method) ? "50%" : "100%"
+                }
               />
               {methodHasUpdateBody(query.metadata.method) && (
                 <BodyEditor
@@ -199,7 +200,9 @@ const MongoQueryEditor = ({
                   onChange={setUpdateBody}
                   invalidBody={!isValidBody(updateBody)}
                   label={"Update Body"}
-                  placeholder={"Enter update body here"}
+                  width={
+                    methodHasUpdateBody(query.metadata.method) ? "50%" : "100%"
+                  }
                 />
               )}
             </Tab>
@@ -210,6 +213,7 @@ const MongoQueryEditor = ({
         </Card>
       </div>
       <QueryParametersDrawer
+        onlyTextParameters={true}
         queryParameters={query?.metadata?.parameters ?? []}
         setQueryParameters={(queryParameters: QueryParameter[]) =>
           onChange({

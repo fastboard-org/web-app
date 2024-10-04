@@ -1,5 +1,4 @@
-import { Key } from "react";
-import { Query } from "../connections";
+import { QueryData } from "../connections";
 
 export interface BodyFieldProperties {
   key: string;
@@ -7,7 +6,7 @@ export interface BodyFieldProperties {
   visible: boolean;
 }
 export class FastboardCardsProperties {
-  sourceQuery: Query | null = null;
+  sourceQuery: QueryData | null = null;
   emptyMessage: string = "No cards to display";
   header: string | null = null;
   footer: string | null = null;

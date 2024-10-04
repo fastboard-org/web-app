@@ -5,6 +5,7 @@ import GroupKeySelect from "@/components/editor/fastboard-components/group-chart
 import { QueryType } from "@/types/connections";
 import ColorPicker from "@/components/shared/ColorPicker";
 import { useTheme } from "next-themes";
+import { queryToQueryData } from "@/lib/rest-queries";
 
 const FastboardGroupChartPropertiesComponent = ({
   properties,
@@ -47,11 +48,7 @@ const FastboardGroupChartPropertiesComponent = ({
             onQuerySelect={(sourceQuery) => {
               onValueChange({
                 ...properties,
-                sourceQueryData: {
-                  queryId: sourceQuery.id,
-                  connectionId: sourceQuery.connection_id,
-                  method: sourceQuery?.metadata?.method,
-                },
+                sourceQueryData: queryToQueryData(sourceQuery),
                 keys: [],
                 groupBy: "",
               });

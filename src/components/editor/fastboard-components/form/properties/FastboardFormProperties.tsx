@@ -25,6 +25,7 @@ import FormInput from "./FormInput";
 import { HTTP_CONTENT_TYPE } from "@/types/connections";
 import { QueryType } from "@/types/connections";
 import FormStyle from "./FormStyle";
+import { queryToQueryData } from "@/lib/rest-queries";
 
 export default function FastboardFormProperties({
   properties,
@@ -203,11 +204,7 @@ export default function FastboardFormProperties({
                 onQuerySelect={(query) => {
                   onValueChange({
                     ...properties,
-                    submitQueryData: {
-                      queryId: query.id,
-                      connectionId: query.connection_id,
-                      method: query.metadata.method,
-                    },
+                    submitQueryData: queryToQueryData(query),
                     queryParameters: {},
                     inputs: createInputs(query.metadata?.parameters),
                   });
