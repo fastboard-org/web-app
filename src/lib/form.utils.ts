@@ -1,3 +1,5 @@
+import { toBase64 } from "./file";
+
 export function fillQueryParameters(
   queryParameters: Record<string, string>,
   initialData: Object | null
@@ -13,23 +15,24 @@ export function fillQueryParameters(
   return newQueryParameters;
 }
 
-const toBase64 = (file: File) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
-  });
-
-export function transformFiles(formData: any) {
-  formData = Object.entries(formData).reduce((acc, [key, value]) => {
-    if (value instanceof FileList) {
-      value = value.item(0);
-    }
-    return {
-      ...acc,
-      [key]: value,
-    };
+export async function transformFiles(formData: any) {
+  const transformedFormData = (
+    await Promise.all(
+      Object.entries(formData).map(async ([key, value]) => {
+        if (value instanceof FileList) {
+          const file = value.item(0);
+          if (!file) return { name: key, value: null };
+          return {
+            name: key,
+            value: await toBase64(file),
+          };
+        }
+        return { name: key, value: value };
+      })
+    )
+  ).reduce((acc: any, input: any) => {
+    return { ...acc, [input.name]: input.value };
   }, {});
-  return formData;
+
+  return transformedFormData;
 }

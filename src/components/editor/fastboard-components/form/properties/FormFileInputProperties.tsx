@@ -14,7 +14,7 @@ export default function FormFileInputProperties({
   onValueChange: (properties: FileInputProperties) => void;
   disabledKeys?: string[];
 }) {
-  const { label, required, formDataKey, multiple, accept } = properties;
+  const { label, required, formDataKey, accept } = properties;
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -43,16 +43,6 @@ export default function FormFileInputProperties({
           />
         </div>
       )}
-      <CheckBoxProperty
-        label="Multiple"
-        isSelected={multiple}
-        onValueChange={(value) => {
-          onValueChange({
-            ...properties,
-            multiple: value,
-          });
-        }}
-      />
       <Select
         label="File type"
         labelPlacement="outside"

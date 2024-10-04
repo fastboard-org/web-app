@@ -22,7 +22,6 @@ import { propertiesDrawerState } from "@/atoms/editor";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import QueryParameters from "./QueryParameters";
 import FormInput from "./FormInput";
-import { HTTP_CONTENT_TYPE } from "@/types/connections";
 import { QueryType } from "@/types/connections";
 import FormStyle from "./FormStyle";
 import { queryToQueryData } from "@/lib/rest-queries";
@@ -37,7 +36,6 @@ export default function FastboardFormProperties({
   const {
     title,
     submitQueryData,
-    contentType,
     queryParameters,
     submitButtonLabel,
     inputs,
@@ -211,26 +209,6 @@ export default function FastboardFormProperties({
                 }}
                 type={QueryType.UPDATE}
               />
-              <Select
-                label="Content type"
-                labelPlacement="outside"
-                placeholder="Select content type"
-                disallowEmptySelection
-                selectedKeys={[contentType]}
-                onChange={(e) => {
-                  onValueChange({
-                    ...properties,
-                    contentType: e.target.value as HTTP_CONTENT_TYPE,
-                  });
-                }}
-              >
-                <SelectItem key={HTTP_CONTENT_TYPE.JSON}>
-                  {HTTP_CONTENT_TYPE.JSON}
-                </SelectItem>
-                <SelectItem key={HTTP_CONTENT_TYPE.MULTIPART}>
-                  {HTTP_CONTENT_TYPE.MULTIPART}
-                </SelectItem>
-              </Select>
               {initialData &&
                 submitQuery &&
                 submitQuery.metadata.parameters?.length > 0 && (

@@ -50,7 +50,6 @@ export default function FastboardForm({
     title,
     inputs,
     submitQueryData,
-    contentType,
     queryParameters,
     submitButtonLabel,
     showShadow,
@@ -123,17 +122,12 @@ export default function FastboardForm({
       initialData
     );
 
-    formData = transformFiles(formData);
+    formData = await transformFiles(formData);
     execute({
       queryData: submitQueryData,
       parameters: {
         ...newQueryParameters,
         ...formData,
-      },
-      config: {
-        headers: {
-          "Content-Type": contentType,
-        },
       },
     });
     reset();

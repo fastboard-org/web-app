@@ -1,5 +1,4 @@
 import { ComponentId } from ".";
-import { HTTP_CONTENT_TYPE } from "../connections";
 import { QueryData } from "../connections";
 import { Color } from "./style-types";
 
@@ -42,7 +41,6 @@ export interface DatePickerProperties extends BaseInputProperties {}
 
 export interface FileInputProperties extends BaseInputProperties {
   accept: string[];
-  multiple: boolean;
 }
 
 export type InputProperties =
@@ -111,7 +109,6 @@ export class DefaultInputProperties {
           label: "File input",
           placeHolder: "Select a file",
           accept: ["all"],
-          multiple: false,
           defaultValueKey: "",
         };
       default:
@@ -135,7 +132,6 @@ export interface DataProvider {
 export class FormProperties {
   title: string = "Form title";
   submitQueryData: QueryData | null = null;
-  contentType: HTTP_CONTENT_TYPE = HTTP_CONTENT_TYPE.JSON;
   queryParameters: Record<string, any> = {};
   submitButtonLabel: string = "Submit";
   inputs: InputProperties[] = [];

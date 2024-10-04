@@ -50,11 +50,6 @@ export enum HTTP_METHOD {
   PATCH = "PATCH",
 }
 
-export enum HTTP_CONTENT_TYPE {
-  JSON = "application/json",
-  MULTIPART = "multipart/form-data",
-}
-
 export type QueryMethod = HTTP_METHOD | MONGO_METHOD;
 
 export interface QueryData {
