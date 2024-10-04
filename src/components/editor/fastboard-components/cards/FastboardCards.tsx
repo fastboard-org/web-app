@@ -20,7 +20,6 @@ export default function FastboardCards({
   properties: FastboardCardsProperties;
 }) {
   const { updateComponentProperties } = useDashboard();
-  //TODO: change sourceQuery to type QueryData
   const { sourceQuery, emptyMessage, header, footer, body, cardsPerRow } =
     properties;
   const {
@@ -29,11 +28,7 @@ export default function FastboardCards({
     isFetching: dataFetching,
     isError: isDataError,
     error: dataError,
-  } = useData(`${ComponentType.Cards}-${id}`, {
-    queryId: sourceQuery?.id as string,
-    connectionId: sourceQuery?.connection_id as string,
-    method: sourceQuery?.metadata?.method as HTTP_METHOD,
-  });
+  } = useData(`${ComponentType.Cards}-${id}`, sourceQuery);
 
   const [shouldUpdateCards, setShouldUpdateCards] = useState(false);
 

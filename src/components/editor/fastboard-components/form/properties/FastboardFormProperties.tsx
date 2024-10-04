@@ -26,6 +26,7 @@ import useGetQuery from "@/hooks/connections/useGetQuery";
 import QueryParameters from "./QueryParameters";
 import { QueryType } from "@/types/connections";
 import FormStyle from "./FormStyle";
+import { queryToQueryData } from "@/lib/rest-queries";
 
 export default function FastboardFormProperties({
   properties,
@@ -46,7 +47,7 @@ export default function FastboardFormProperties({
   const { query: submitQuery } = useGetQuery(submitQueryId);
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
-    null,
+    null
   );
   const disabledKeys = inputs.map((input) => input.formDataKey);
 
@@ -73,7 +74,7 @@ export default function FastboardFormProperties({
           [key]: value,
         };
       },
-      {},
+      {}
     );
 
     //Clear all default values from inputs
@@ -187,11 +188,7 @@ export default function FastboardFormProperties({
                   onValueChange({
                     ...properties,
                     submitQueryId: query.id,
-                    submitQueryData: {
-                      queryId: query.id,
-                      connectionId: query.connection_id,
-                      method: query.metadata.method,
-                    },
+                    submitQueryData: queryToQueryData(query),
                     queryParameters: {},
                     inputs: newInputs,
                   });
