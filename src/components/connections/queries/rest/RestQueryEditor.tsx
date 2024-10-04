@@ -3,7 +3,6 @@ import {
   ContentType,
   Query,
   QueryParameter,
-  RestFormDataParameter,
   RestHeader,
 } from "@/types/connections";
 import EditableTitle from "@/components/shared/EditableTitle";
@@ -19,20 +18,12 @@ import AuthModal from "@/components/connections/queries/rest/AuthModal";
 import { useRecoilValue } from "recoil";
 import { isMethodListClosedState } from "@/atoms/rest-query-editor";
 import BodyEditor from "@/components/connections/queries/BodyEditor";
-import {
-  convertToFormData,
-  convertToHeaders,
-  convertToObject,
-  formDataToObject,
-} from "@/lib/rest-queries";
+import { convertToHeaders, convertToObject } from "@/lib/rest-queries";
 import { toast } from "sonner";
 import { Toaster } from "@/components/shared/Toaster";
 import { usePreviewQuery } from "@/hooks/adapter/usePreviewQuery";
 import QueryButtons from "@/components/connections/queries/QueryButtons";
 import { isValidBody } from "@/lib/queries";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import FormDataEditor from "./FormDataEditor";
-import { toBase64 } from "@/lib/file";
 
 const RestQueryEditor = ({
   connection,
@@ -58,7 +49,6 @@ const RestQueryEditor = ({
   const [body, setBody] = useState<string>(
     JSON.stringify(query?.metadata?.body, null, 4) || "{}"
   );
-  const [formDataBody, setFormDataBody] = useState<RestFormDataParameter[]>([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -71,7 +61,9 @@ const RestQueryEditor = ({
     onError: (error: any) => {
       console.error("Error previewing query", error);
       const axiosError = error?.response?.data?.error;
-      toast.error(`Failed to send request: ${axiosError.description}`);
+      toast.error(
+        `Failed to send request: ${axiosError?.description || error}`
+      );
     },
   });
 
@@ -83,12 +75,11 @@ const RestQueryEditor = ({
     setPath(query?.metadata?.path || "");
     setContentType(query?.metadata?.contentType || ContentType.JSON);
     setBody(JSON.stringify(query?.metadata?.body, null, 4) || "{}");
-    setFormDataBody(convertToFormData(query?.metadata?.formDataBody));
     setHeaders(convertToHeaders(query?.metadata?.headers));
   }, [query.id]);
 
   const handleSend = async () => {
-    let parameters = query?.metadata?.parameters;
+    let parameters = query?.metadata?.parameters ?? [];
 
     if (previewToken) {
       parameters = [
@@ -97,10 +88,7 @@ const RestQueryEditor = ({
       ];
     }
 
-    const finalBody =
-      contentType === ContentType.JSON
-        ? JSON.parse(body)
-        : formDataToObject(formDataBody);
+    const finalBody = JSON.parse(body);
 
     previewQuery({
       connectionId: connection.id,
@@ -151,7 +139,6 @@ const RestQueryEditor = ({
                   headers: convertToObject(headers),
                   contentType: contentType,
                   body: JSON.parse(body),
-                  formDataBody: formDataToObject(formDataBody),
                 };
               }}
               onSaveSuccess={(query) => onChange(query)}
@@ -191,44 +178,11 @@ const RestQueryEditor = ({
                 />
               </Tab>
               <Tab key={"body"} title={"Body"}>
-                <RadioGroup
-                  className="flex flex-row items-center p-2"
-                  defaultValue={ContentType.JSON}
-                  value={contentType}
-                  onValueChange={(value) => {
-                    setContentType(value as ContentType);
-                  }}
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value={ContentType.JSON}
-                      id={ContentType.JSON}
-                    />
-                    <h2>json</h2>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value={ContentType.FORM_DATA}
-                      id={ContentType.FORM_DATA}
-                    />
-                    <h2>form-data</h2>
-                  </div>
-                </RadioGroup>
-                {contentType === ContentType.JSON && (
-                  <BodyEditor
-                    body={body || "{}"}
-                    onChange={setBody}
-                    invalidBody={!isValidBody(body)}
-                  />
-                )}
-                {contentType === ContentType.FORM_DATA && (
-                  <FormDataEditor
-                    formDataBody={formDataBody}
-                    onChange={(formDataBody: RestFormDataParameter[]) => {
-                      setFormDataBody(formDataBody);
-                    }}
-                  />
-                )}
+                <BodyEditor
+                  body={body || "{}"}
+                  onChange={setBody}
+                  invalidBody={!isValidBody(body)}
+                />
               </Tab>
               <Tab key={"response"} title={"Response"}>
                 <ResponseViewer

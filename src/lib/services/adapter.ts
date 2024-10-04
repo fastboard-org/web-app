@@ -17,30 +17,31 @@ const previewQuery = async (
 ) => {
   const contentType = (queryMetadata as RestQueryMetadata)?.contentType;
 
-  const transformedParameters = (
-    await Promise.all(
-      parameters.map(async (param) => {
-        if (param.type === "file") {
-          if (!param.preview || !(param.preview instanceof File)) {
-            return {
-              ...param,
-              preview: null,
-            };
-          }
-          if (contentType === ContentType.JSON || !contentType) {
-            return {
-              ...param,
-              preview: await toBase64(param.preview as File),
-            };
-          }
-        } else {
-          return param;
-        }
-      })
-    )
-  ).reduce((acc: any, param: any) => {
-    return { ...acc, [param.name]: param.preview };
-  }, {});
+  const transformedParameters = parameters
+    ? (
+        await Promise.all(
+          parameters.map(async (param) => {
+            if (param.type === "file") {
+              if (!param.preview || !(param.preview instanceof File)) {
+                return {
+                  ...param,
+                  preview: null,
+                };
+              }
+              if (contentType === ContentType.JSON || !contentType) {
+                return {
+                  ...param,
+                  preview: await toBase64(param.preview as File),
+                };
+              }
+            }
+            return param;
+          })
+        )
+      ).reduce((acc: any, param: any) => {
+        return { ...acc, [param.name]: param.preview };
+      }, {})
+    : {};
 
   const response = await axiosInstance.post(
     `/adapter/${connectionId}/preview`,
