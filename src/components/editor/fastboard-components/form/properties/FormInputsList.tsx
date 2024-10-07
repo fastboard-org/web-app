@@ -12,7 +12,6 @@ import {
   InputType,
 } from "@/types/editor/form";
 import InputIcon from "./InputIcon";
-import FormInput from "./FormInput";
 import Option from "@/components/shared/Option";
 
 export default function FormInputsList({
@@ -30,10 +29,10 @@ export default function FormInputsList({
         <Dropdown placement={"bottom"}>
           <DropdownTrigger>
             <Button startContent={<Add size={20} />} variant={"flat"}>
-              Add Input
+              Add
             </Button>
           </DropdownTrigger>
-          <DropdownMenu disabledKeys={[InputType.Select, InputType.DatePicker]}>
+          <DropdownMenu>
             {Object.values(InputType).map((type) => (
               <DropdownItem
                 key={type}

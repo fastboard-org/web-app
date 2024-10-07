@@ -1,5 +1,5 @@
-import { TextInputProperties } from "@/types/editor/form";
-import { Input } from "@nextui-org/react";
+import { SelectProperties } from "@/types/editor/form";
+import { Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import {
   UseFormRegister,
@@ -7,7 +7,7 @@ import {
   UseFormUnregister,
 } from "react-hook-form";
 
-export default function FormTextInput({
+export default function FormSelect({
   properties,
   register,
   unregister,
@@ -15,22 +15,30 @@ export default function FormTextInput({
   errors,
   initialData,
 }: {
-  properties: TextInputProperties;
+  properties: SelectProperties;
   register: UseFormRegister<any>;
   unregister: UseFormUnregister<any>;
   setFormValue: UseFormSetValue<any>;
   errors: any;
   initialData?: any;
 }) {
-  const { required, formDataKey, label, placeHolder, defaultValueKey } =
-    properties;
+  const {
+    required,
+    formDataKey,
+    label,
+    placeHolder,
+    options,
+    defaultValueKey,
+  } = properties;
   const [formKey, setFormKey] = useState("");
   const [value, setValue] = useState("");
 
   useEffect(() => {
     if (!formDataKey) return;
     const data = initialData ? initialData[defaultValueKey] : "";
-    setValue(data);
+    //get the first option that its label is equal to the data
+    const option = options.find((option) => option.label === data);
+    setValue(option ? `${option.key}/${option.label}` : "");
     setFormValue(formDataKey, data);
   }, [initialData, defaultValueKey]);
 
@@ -46,8 +54,8 @@ export default function FormTextInput({
   }, [formDataKey]);
 
   return (
-    <Input
-      aria-label="Text input"
+    <Select
+      aria-label="Select input"
       isRequired={formDataKey !== "" ? required : false}
       {...(formDataKey !== ""
         ? {
@@ -56,17 +64,28 @@ export default function FormTextInput({
                 value: required,
                 message: "This field is required",
               },
+              onChange: (e) => {
+                const value = e.target.value as string;
+                setValue(value);
+                setFormValue(formDataKey, value.split("/")[1]);
+              },
             }),
           }
         : {})}
       label={label}
       labelPlacement="outside"
       placeholder={placeHolder}
-      value={value}
-      onValueChange={setValue}
-      isClearable
-      errorMessage={errors[formDataKey]?.message as string}
-      isInvalid={!!errors[formDataKey]}
-    />
+      selectedKeys={[value]}
+    >
+      {options
+        .filter((option) => option.label !== "")
+        .map((option, index) => {
+          return (
+            <SelectItem key={`${option.key}/${option.label}`}>
+              {option.label}
+            </SelectItem>
+          );
+        })}
+    </Select>
   );
 }

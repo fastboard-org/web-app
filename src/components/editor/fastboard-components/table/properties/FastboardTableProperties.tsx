@@ -25,6 +25,7 @@ import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { ComponentId } from "@/types/editor";
 import TableStyle from "./TableStyle";
+import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 import { ActionProperties } from "./ActionProperties";
 import { QueryType } from "@/types/connections";
 import FiltersList from "./filters/FiltersList";
@@ -217,18 +218,16 @@ const FastboardTablePropertiesComponent = ({
                   });
                 }}
               />
-              <div className="flex flex-row justify-between pl-2">
-                <span className="text-md">Pin action column</span>
-                <Checkbox
-                  isSelected={pinActions}
-                  onValueChange={(value) => {
-                    onValueChange({
-                      ...properties,
-                      pinActions: value,
-                    });
-                  }}
-                />
-              </div>
+              <CheckBoxProperty
+                label="Pin action column"
+                isSelected={pinActions}
+                onValueChange={(value) => {
+                  onValueChange({
+                    ...properties,
+                    pinActions: value,
+                  });
+                }}
+              />
             </div>
           </AccordionItem>
           <AccordionItem

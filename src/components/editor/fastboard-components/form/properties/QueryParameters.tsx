@@ -26,6 +26,7 @@ export default function QueryParameters({
       loadingClassName="h-10 w-full rounded-lg"
     >
       <div className="flex flex-col gap-2 px-2 w-full">
+        <div className="text-sm">Query parameters</div>
         {query.metadata?.parameters?.map((parameter: any, index: number) => {
           if (disabledParameters.includes(parameter.name)) {
             return null;

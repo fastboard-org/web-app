@@ -1,10 +1,8 @@
 import {
-  CheckboxProperties,
+  DefaultInputProperties,
   FormProperties,
   InputProperties,
   InputType,
-  NumberInputProperties,
-  TextInputProperties,
 } from "@/types/editor/form";
 import {
   Accordion,
@@ -12,18 +10,18 @@ import {
   BreadcrumbItem,
   Breadcrumbs,
   Input,
+  Select,
+  SelectItem,
   Spacer,
 } from "@nextui-org/react";
 import QuerySelection from "../../../QuerySelection";
 import { useEffect, useState } from "react";
 import FormInputsList from "./FormInputsList";
-import FormTextInputProperties from "./FormTextInputProperties";
-import FormCheckboxProperties from "./FormCheckboxProperties";
-import FormNumberInputProperties from "./FormNumberInputProperties";
 import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import useGetQuery from "@/hooks/connections/useGetQuery";
 import QueryParameters from "./QueryParameters";
+import FormInput from "./FormInput";
 import { QueryType } from "@/types/connections";
 import FormStyle from "./FormStyle";
 import { queryToQueryData } from "@/lib/rest-queries";
@@ -37,14 +35,14 @@ export default function FastboardFormProperties({
 }) {
   const {
     title,
-    submitQueryId,
+    submitQueryData,
     queryParameters,
     submitButtonLabel,
     inputs,
     dataProvider,
     initialData,
   } = properties;
-  const { query: submitQuery } = useGetQuery(submitQueryId);
+  const { query: submitQuery } = useGetQuery(submitQueryData?.queryId || "");
   const { selectedComponentId } = useRecoilValue(propertiesDrawerState);
   const [inputSelectedIndex, setInputSelectedIndex] = useState<number | null>(
     null
@@ -59,6 +57,31 @@ export default function FastboardFormProperties({
     //The selected component has changed, reset the input selected index
     setInputSelectedIndex(null);
   }, [selectedComponentId]);
+
+  function createInputs(
+    parameters: any[] | undefined | null
+  ): InputProperties[] {
+    if (!parameters) {
+      return [];
+    }
+
+    return parameters.map((parameter) => {
+      let inputProperties = DefaultInputProperties.of(InputType.TextInput);
+      if (!isNaN(Number(parameter.preview))) {
+        inputProperties = DefaultInputProperties.of(InputType.NumberInput);
+      } else if (
+        parameter.preview === "true" ||
+        parameter.preview === "false"
+      ) {
+        inputProperties = DefaultInputProperties.of(InputType.Checkbox);
+      }
+      return {
+        ...inputProperties,
+        label: parameter.name,
+        formDataKey: parameter.name,
+      };
+    });
+  }
 
   function resetDefaultValues() {
     const dataKeys = Object.keys(initialData || {});
@@ -150,7 +173,7 @@ export default function FastboardFormProperties({
               title: "font-medium",
             }}
           >
-            <div className="overflow-x-hidden">
+            <div className="flex flex-col gap-y-2 overflow-hidden">
               <Input
                 label="Title"
                 labelPlacement="outside"
@@ -163,7 +186,6 @@ export default function FastboardFormProperties({
                   });
                 }}
               />
-              <Spacer y={2} />
               <Input
                 label="Submit button label"
                 labelPlacement="outside"
@@ -175,34 +197,24 @@ export default function FastboardFormProperties({
                   });
                 }}
               />
-              <Spacer y={2} />
               <QuerySelection
-                selectedQueryId={submitQueryId || ""}
+                selectedQueryId={submitQueryData?.queryId || ""}
                 onQuerySelect={(query) => {
-                  //Replace formdatakey fiel from inputs to empty string
-                  const newInputs = inputs.map((input) => ({
-                    ...input,
-                    formDataKey: "",
-                    defaultValueKey: "",
-                  }));
                   onValueChange({
                     ...properties,
-                    submitQueryId: query.id,
                     submitQueryData: queryToQueryData(query),
                     queryParameters: {},
-                    inputs: newInputs,
+                    inputs: createInputs(query.metadata?.parameters),
                   });
                 }}
                 type={QueryType.UPDATE}
               />
-              <Spacer y={2} />
               {initialData &&
                 submitQuery &&
                 submitQuery.metadata.parameters?.length > 0 && (
                   <div>
-                    <div className="text-sm">Query parameters</div>
                     <QueryParameters
-                      queryId={submitQueryId}
+                      queryId={submitQueryData?.queryId || ""}
                       queryParameters={queryParameters}
                       initialData={initialData}
                       disabledParameters={disabledKeys}
@@ -215,7 +227,6 @@ export default function FastboardFormProperties({
                     />
                   </div>
                 )}
-              <Spacer y={2} />
             </div>
           </AccordionItem>
           <AccordionItem
@@ -226,12 +237,12 @@ export default function FastboardFormProperties({
               title: "font-medium",
             }}
           >
-            {!submitQueryId && (
+            {!submitQueryData && (
               <div className="flex justify-center text-sm">
                 Select a query to enable inputs
               </div>
             )}
-            {submitQueryId && (
+            {submitQueryData && (
               <FormInputsList
                 inputs={inputs}
                 onSelectInput={(inputProperties) => {
@@ -259,42 +270,15 @@ export default function FastboardFormProperties({
         </Accordion>
       )}
 
-      {inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex]?.type === InputType.TextInput && (
-          <FormTextInputProperties
-            properties={inputs[inputSelectedIndex] as TextInputProperties}
-            queryId={submitQueryId}
-            onValueChange={(inputProperties) => {
-              onInputChange(inputProperties);
-            }}
-            disabledKeys={disabledKeys}
-            initialData={initialData}
-          />
-        )}
-      {inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex]?.type === InputType.Checkbox && (
-          <FormCheckboxProperties
-            properties={inputs[inputSelectedIndex] as CheckboxProperties}
-            queryId={submitQueryId}
-            onValueChange={(inputProperties) => {
-              onInputChange(inputProperties);
-            }}
-            disabledKeys={disabledKeys}
-            initialData={initialData}
-          />
-        )}
-      {inputSelectedIndex !== null &&
-        inputs[inputSelectedIndex]?.type === InputType.NumberInput && (
-          <FormNumberInputProperties
-            properties={inputs[inputSelectedIndex] as NumberInputProperties}
-            queryId={submitQueryId}
-            onValueChange={(inputProperties) => {
-              onInputChange(inputProperties);
-            }}
-            disabledKeys={disabledKeys}
-            initialData={initialData}
-          />
-        )}
+      {inputSelectedIndex !== null && (
+        <FormInput
+          input={inputs[inputSelectedIndex]}
+          submitQueryData={submitQueryData}
+          disabledKeys={disabledKeys}
+          initialData={initialData}
+          onInputChange={onInputChange}
+        />
+      )}
     </div>
   );
 }

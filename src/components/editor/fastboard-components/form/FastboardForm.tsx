@@ -1,5 +1,7 @@
 import {
   CheckboxProperties,
+  DatePickerProperties,
+  FileInputProperties,
   FormProperties,
   InputProperties,
   InputType,
@@ -29,6 +31,10 @@ import useDashboard from "@/hooks/dashboards/useDashboard";
 import { ComponentId } from "@/types/editor";
 import FormNumberInput from "./FormNumberInput";
 import FormCheckbox from "./FormCheckbox";
+import FormSelect from "./FormSelect";
+import FormDatePicker from "./FormDatePicker";
+import FormFileInput from "./FormFileInput";
+import { fillQueryParameters, transformFiles } from "@/lib/form.utils";
 import { useTheme } from "next-themes";
 
 export default function FastboardForm({
@@ -43,7 +49,6 @@ export default function FastboardForm({
   const {
     title,
     inputs,
-    submitQueryId,
     submitQueryData,
     queryParameters,
     submitButtonLabel,
@@ -103,24 +108,21 @@ export default function FastboardForm({
 
   useEffect(() => {
     reset();
-  }, [submitQueryId]);
+  }, [submitQueryData]);
 
   const onSubmit = async (formData: any) => {
-    if (!submitQueryId) {
-      toast.warning("Query is not defined");
+    if (!submitQueryData) {
+      toast.warning("No query found");
       return;
     }
 
     //Fill the query parameters with data
-    let newQueryParameters = { ...queryParameters };
-    if (initialData) {
-      Object.keys(queryParameters).map((key) => {
-        const dataKey = queryParameters[key];
-        // @ts-ignore
-        newQueryParameters[key] = initialData[dataKey];
-      });
-    }
+    const newQueryParameters = fillQueryParameters(
+      queryParameters,
+      initialData
+    );
 
+    formData = await transformFiles(formData);
     execute({
       queryData: submitQueryData,
       parameters: {
@@ -158,13 +160,45 @@ export default function FastboardForm({
           />
         );
       case InputType.Select:
-        const selectInput = input as SelectProperties;
-        return null;
+        return (
+          <FormSelect
+            key={index}
+            properties={input as SelectProperties}
+            register={register}
+            unregister={unregister}
+            setFormValue={setValue}
+            errors={errors}
+            initialData={initialData}
+          />
+        );
       case InputType.Checkbox:
         return (
           <FormCheckbox
             key={index}
             properties={input as CheckboxProperties}
+            register={register}
+            unregister={unregister}
+            setFormValue={setValue}
+            errors={errors}
+          />
+        );
+      case InputType.DatePicker:
+        return (
+          <FormDatePicker
+            key={index}
+            properties={input as DatePickerProperties}
+            register={register}
+            unregister={unregister}
+            setFormValue={setValue}
+            errors={errors}
+            initialData={initialData}
+          />
+        );
+      case InputType.FileInput:
+        return (
+          <FormFileInput
+            key={index}
+            properties={input as FileInputProperties}
             register={register}
             unregister={unregister}
             setFormValue={setValue}
@@ -181,7 +215,7 @@ export default function FastboardForm({
       <Card className={`grow-0 h-full ${!showShadow ? "shadow-none" : ""}`}>
         <CardHeader>{title}</CardHeader>
         <Divider />
-        <CardBody className={"space-y-8 " + scrollbarStyles.scrollbar}>
+        <CardBody className={"gap-y-2 " + scrollbarStyles.scrollbar}>
           {isLoading && <Spinner className="h-full" />}
           {!isLoading &&
             inputs.map((input, index) => renderInput(index, input))}

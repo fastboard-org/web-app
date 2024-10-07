@@ -30,6 +30,7 @@ const EditableTitle = ({
 
   return isEditing || !value ? (
     <input
+      aria-label="Editable title"
       value={inputValue}
       onChange={(e) => setInputValue(e.target.value)}
       onKeyDown={handleKeyDown}

@@ -2,6 +2,7 @@ import { TextInputProperties } from "@/types/editor/form";
 import { Checkbox, Input, Select, SelectItem, Spacer } from "@nextui-org/react";
 import QueryParameterSelection from "../../../../shared/QueryParameterSelection";
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
+import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 
 export default function FormTextInputProperties({
   properties,
@@ -63,7 +64,8 @@ export default function FormTextInputProperties({
       <Spacer y={2} />
       {formDataKey !== "" && (
         <div>
-          <Checkbox
+          <CheckBoxProperty
+            label="Required"
             isSelected={required}
             onValueChange={(value) => {
               onValueChange({
@@ -71,9 +73,7 @@ export default function FormTextInputProperties({
                 required: value,
               });
             }}
-          >
-            Required
-          </Checkbox>
+          />
           <Spacer y={2} />
           {initialData && (
             <FormDefaultValueKeySelection
