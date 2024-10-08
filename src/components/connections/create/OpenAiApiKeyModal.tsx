@@ -9,6 +9,7 @@ import {
 } from "@nextui-org/react";
 import React from "react";
 import { BsStars } from "react-icons/bs";
+import { SiOpenai } from "react-icons/si";
 
 const OpenAiApiKeyModal = ({
   isOpen,
@@ -41,7 +42,10 @@ const OpenAiApiKeyModal = ({
               rel={"noreferrer"}
               className={"text-blue-500"}
             >
-              OpenAI
+              <span>
+                OpenAI
+                <SiOpenai className={"inline ml-1"} />
+              </span>
             </a>
           </p>
           <Input

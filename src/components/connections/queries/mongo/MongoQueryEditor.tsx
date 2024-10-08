@@ -69,8 +69,6 @@ const MongoQueryEditor = ({
 
   const { previewQuery, loading: previewQueryLoading } = usePreviewQuery({
     onSuccess: (response: any) => {
-      console.log("Response", response);
-
       setResponse(response?.body);
       setSelectedTab("response");
     },

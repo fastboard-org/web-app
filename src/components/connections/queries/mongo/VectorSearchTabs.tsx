@@ -6,6 +6,7 @@ import {
   Code,
   Input,
   Slider,
+  Snippet,
   Spinner,
   Tab,
   Tabs,
@@ -155,13 +156,33 @@ const VectorSearchTabs = ({
             <div className={"flex flex-col gap-4"}>
               <div className={"flex flex-col gap-4 w-full"}>
                 <p>
-                  Create a new Atlas Search index in your Atlas cluster to
-                  enable vector search.
+                  Create a new{" "}
+                  <a
+                    href="https://cloud.mongodb.com/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Atlas
+                  </a>{" "}
+                  Search index in your Atlas cluster to enable vector search.
                 </p>
                 <p>
                   You can create an Atlas Search Index by navigating to <br />
                   "Atlas Search" {">"} "Create Search Index" {">"} "Atlas Vector
                   Search - JSON Editor"
+                </p>
+                <p>
+                  You can also watch this{" "}
+                  <a
+                    href="https://youtu.be/o2ss2LJNZVE?si=OeekpWsRj-Yrn7Cy"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    video
+                  </a>{" "}
+                  to learn how to create an Atlas Search Index.
                 </p>
                 <p>
                   Select the collection you want to create the index for and
@@ -186,7 +207,13 @@ const VectorSearchTabs = ({
                 </Button>
               </div>
               <div className={"h-full"}>
-                <Code className={"flex flex-col pr-5"}>
+                <Snippet
+                  className={"w-full"}
+                  symbol={""}
+                  classNames={{
+                    copyButton: "self-start",
+                  }}
+                >
                   <span>{"{"}</span>
                   <span className={"ml-4"}>"fields": {"["}</span>
                   <span className={"ml-8"}>{"{"}</span>
@@ -197,7 +224,7 @@ const VectorSearchTabs = ({
                   <span className={"ml-8"}>{"}"}</span>
                   <span className={"ml-4"}>]</span>
                   <span>{"}"}</span>
-                </Code>
+                </Snippet>
               </div>
             </div>
           </AccordionItem>
@@ -213,6 +240,7 @@ const VectorSearchTabs = ({
                 />
               </span>
             }
+            isDisabled={!query?.metadata?.index_created}
           >
             <div className={"flex flex-col gap-4"}>
               <div className={"flex gap-4 w-full items-center"}>
