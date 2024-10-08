@@ -1,5 +1,6 @@
 import {
   Connection,
+  ContentType,
   Query,
   QueryParameter,
   RestHeader,
@@ -39,11 +40,14 @@ const RestQueryEditor = ({
   const [previewToken, setPreviewToken] = useState<string>("");
 
   const [headers, setHeaders] = useState<RestHeader[]>(
-    convertToHeaders(query?.metadata?.headers),
+    convertToHeaders(query?.metadata?.headers)
   );
   const [path, setPath] = useState<string>(query?.metadata?.path || "");
+  const [contentType, setContentType] = useState<ContentType>(
+    query?.metadata?.contentType || ContentType.JSON
+  );
   const [body, setBody] = useState<string>(
-    JSON.stringify(query?.metadata?.body, null, 4) || "{}",
+    JSON.stringify(query?.metadata?.body, null, 4) || "{}"
   );
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -56,7 +60,10 @@ const RestQueryEditor = ({
     },
     onError: (error: any) => {
       console.error("Error previewing query", error);
-      toast.error("Failed to send request.");
+      const axiosError = error?.response?.data?.error;
+      toast.error(
+        `Failed to send request: ${axiosError?.description || error}`
+      );
     },
   });
 
@@ -66,19 +73,22 @@ const RestQueryEditor = ({
     setResponse(null);
     setResponseData(null);
     setPath(query?.metadata?.path || "");
+    setContentType(query?.metadata?.contentType || ContentType.JSON);
     setBody(JSON.stringify(query?.metadata?.body, null, 4) || "{}");
     setHeaders(convertToHeaders(query?.metadata?.headers));
   }, [query.id]);
 
-  const handleSend = () => {
-    const parameters =
-      query?.metadata?.parameters?.reduce((acc: any, param: QueryParameter) => {
-        return { ...acc, [param.name]: param.preview };
-      }, {}) ?? {};
+  const handleSend = async () => {
+    let parameters = query?.metadata?.parameters ?? [];
 
     if (previewToken) {
-      parameters.token = previewToken;
+      parameters = [
+        ...parameters,
+        { name: "token", type: "text", preview: previewToken },
+      ];
     }
+
+    const finalBody = JSON.parse(body);
 
     previewQuery({
       connectionId: connection.id,
@@ -86,9 +96,15 @@ const RestQueryEditor = ({
         method: query.metadata.method,
         path,
         headers: convertToObject(headers),
-        body: JSON.parse(body),
+        contentType,
+        body: finalBody,
       },
       parameters,
+      config: {
+        headers: {
+          "Content-Type": contentType,
+        },
+      },
     });
   };
 
@@ -121,6 +137,7 @@ const RestQueryEditor = ({
                 return {
                   path,
                   headers: convertToObject(headers),
+                  contentType: contentType,
                   body: JSON.parse(body),
                 };
               }}

@@ -74,7 +74,10 @@ const MongoQueryEditor = ({
     },
     onError: (error: any) => {
       console.error("Error previewing query", error);
-      toast.error("Failed to send request.");
+      const axiosError = error?.response?.data?.error;
+      toast.error(
+        `Failed to send request: ${axiosError?.description || error}`
+      );
     },
   });
 
@@ -92,10 +95,7 @@ const MongoQueryEditor = ({
   }, [query]);
 
   const handleSend = () => {
-    const parameters =
-      query?.metadata?.parameters?.reduce((acc: any, param: QueryParameter) => {
-        return { ...acc, [param.name]: param.preview };
-      }, {}) ?? {};
+    const parameters = query?.metadata?.parameters ?? [];
 
     let metadata: MongoQueryMetadata | MongoVectorSearchMetadata;
 
@@ -265,6 +265,7 @@ const MongoQueryEditor = ({
         </Card>
       </div>
       <QueryParametersDrawer
+        onlyTextParameters={true}
         queryParameters={query?.metadata?.parameters ?? []}
         setQueryParameters={(queryParameters: QueryParameter[]) =>
           onChange({

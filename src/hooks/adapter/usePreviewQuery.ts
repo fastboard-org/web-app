@@ -5,6 +5,7 @@ import {
   MongoVectorSearchMetadata,
   RestQueryMetadata,
 } from "@/types/connections";
+import { AxiosRequestConfig } from "axios";
 
 export const usePreviewQuery = ({
   onSuccess,
@@ -18,6 +19,7 @@ export const usePreviewQuery = ({
       connectionId,
       queryMetadata,
       parameters,
+      config,
     }: {
       connectionId: string;
       queryMetadata:
@@ -25,7 +27,14 @@ export const usePreviewQuery = ({
         | RestQueryMetadata
         | MongoVectorSearchMetadata;
       parameters: any;
-    }) => adapterService.previewQuery(connectionId, queryMetadata, parameters),
+      config?: AxiosRequestConfig;
+    }) =>
+      adapterService.previewQuery(
+        connectionId,
+        queryMetadata,
+        parameters,
+        config,
+      ),
     onSuccess,
     onError,
   });

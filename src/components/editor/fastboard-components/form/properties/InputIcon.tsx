@@ -1,5 +1,11 @@
 import { InputType } from "@/types/editor/form";
-import { Calendar, Hashtag, IconProps, Text } from "iconsax-react";
+import {
+  Calendar,
+  DocumentUpload,
+  Hashtag,
+  IconProps,
+  Text,
+} from "iconsax-react";
 import { IoCheckbox, IoList } from "react-icons/io5";
 
 export default function InputIcon({
@@ -24,6 +30,8 @@ export default function InputIcon({
       return <IoCheckbox size={size + 5} className={className} />;
     case InputType.DatePicker:
       return <Calendar size={size} className={className} />;
+    case InputType.FileInput:
+      return <DocumentUpload size={size} className={className} />;
     default:
       return null;
   }

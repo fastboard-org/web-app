@@ -25,11 +25,13 @@ import { useRecoilValue } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { ComponentId } from "@/types/editor";
 import TableStyle from "./TableStyle";
+import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 import { ActionProperties } from "./ActionProperties";
 import { QueryType } from "@/types/connections";
 import FiltersList from "./filters/FiltersList";
 import TableStringFilterProperties from "./filters/TableStringFilterProperties";
 import TableNumberFilterProperties from "./filters/TableNumberFilterProperties";
+import { queryToQueryData } from "@/lib/rest-queries";
 
 const FastboardTablePropertiesComponent = ({
   componentId,
@@ -55,7 +57,7 @@ const FastboardTablePropertiesComponent = ({
   const [actionSelected, setActionSelected] =
     useState<TableActionProperty | null>(null);
   const [filterIndexSelected, setFilterIndexSelected] = useState<number | null>(
-    null,
+    null
   );
   const [addOnSelected, setAddOnSelected] = useState<string | null>(null);
 
@@ -138,11 +140,7 @@ const FastboardTablePropertiesComponent = ({
                   }
                   onValueChange({
                     ...properties,
-                    sourceQueryData: {
-                      queryId: newQuery.id,
-                      connectionId: newQuery.connection_id,
-                      method: newQuery.metadata?.method,
-                    },
+                    sourceQueryData: queryToQueryData(newQuery),
                     columns: [],
                     filters: filters.map((filter) => ({
                       ...filter,
@@ -220,18 +218,16 @@ const FastboardTablePropertiesComponent = ({
                   });
                 }}
               />
-              <div className="flex flex-row justify-between pl-2">
-                <span className="text-md">Pin action column</span>
-                <Checkbox
-                  isSelected={pinActions}
-                  onValueChange={(value) => {
-                    onValueChange({
-                      ...properties,
-                      pinActions: value,
-                    });
-                  }}
-                />
-              </div>
+              <CheckBoxProperty
+                label="Pin action column"
+                isSelected={pinActions}
+                onValueChange={(value) => {
+                  onValueChange({
+                    ...properties,
+                    pinActions: value,
+                  });
+                }}
+              />
             </div>
           </AccordionItem>
           <AccordionItem

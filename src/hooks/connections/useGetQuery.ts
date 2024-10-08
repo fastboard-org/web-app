@@ -14,6 +14,7 @@ const useGetQuery = (id: string | null) => {
       return id ? connectionsService.getQuery(id) : null;
     },
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   return {

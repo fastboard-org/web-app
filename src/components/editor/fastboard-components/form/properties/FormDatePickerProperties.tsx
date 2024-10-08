@@ -1,20 +1,20 @@
-import { NumberInputProperties } from "@/types/editor/form";
-import QueryParameterSelection from "../../../../shared/QueryParameterSelection";
-import { Query } from "@/types/connections";
+import { DatePickerProperties, TextInputProperties } from "@/types/editor/form";
 import { Checkbox, Input, Spacer } from "@nextui-org/react";
+
 import FormDefaultValueKeySelection from "./FormDefaultValueKeySelection";
+import QueryParameterSelection from "@/components/shared/QueryParameterSelection";
 import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 
-export default function FormNumberInputProperties({
+export default function FormDatePickerProperties({
   properties,
   queryId,
   onValueChange,
   disabledKeys = [],
   initialData,
 }: {
-  properties: NumberInputProperties;
+  properties: DatePickerProperties;
   queryId: string | null;
-  onValueChange: (properties: NumberInputProperties) => void;
+  onValueChange: (properties: DatePickerProperties) => void;
   disabledKeys?: string[];
   initialData?: any;
 }) {
@@ -22,9 +22,9 @@ export default function FormNumberInputProperties({
     properties;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-y-2">
       <Input
-        aria-label="Number input label property"
+        aria-label="Text input label property"
         label="Label"
         labelPlacement="outside"
         placeholder="Label"
@@ -36,21 +36,6 @@ export default function FormNumberInputProperties({
           });
         }}
       />
-      <Spacer y={2} />
-      <Input
-        aria-label="Text input placeholder property"
-        label="Placeholder"
-        labelPlacement="outside"
-        placeholder="Placeholder"
-        value={placeHolder}
-        onValueChange={(value) => {
-          onValueChange({
-            ...properties,
-            placeHolder: value,
-          });
-        }}
-      />
-      <Spacer y={2} />
       <QueryParameterSelection
         selectedKey={formDataKey}
         disabledKeys={disabledKeys}
@@ -62,7 +47,6 @@ export default function FormNumberInputProperties({
           });
         }}
       />
-      <Spacer y={2} />
       {formDataKey !== "" && (
         <div>
           <CheckBoxProperty

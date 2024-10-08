@@ -139,7 +139,7 @@ export default function QuerySelection({
         }
         onSelectionChange={(key) => {
           const query = queries?.find((q) => q.id === key);
-          if (query) {
+          if (query && selectedQueryId !== query.id) {
             onQuerySelect(query);
           }
         }}

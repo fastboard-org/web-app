@@ -1,13 +1,15 @@
-import { TextInputProperties } from "@/types/editor/form";
-import { Input } from "@nextui-org/react";
+import { DatePickerProperties } from "@/types/editor/form";
+import { DatePicker } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import {
   UseFormRegister,
   UseFormSetValue,
   UseFormUnregister,
 } from "react-hook-form";
+import { DateValue, parseDate } from "@internationalized/date";
+import { toast } from "sonner";
 
-export default function FormTextInput({
+export default function FormDatePicker({
   properties,
   register,
   unregister,
@@ -15,23 +17,29 @@ export default function FormTextInput({
   errors,
   initialData,
 }: {
-  properties: TextInputProperties;
+  properties: DatePickerProperties;
   register: UseFormRegister<any>;
   unregister: UseFormUnregister<any>;
   setFormValue: UseFormSetValue<any>;
   errors: any;
   initialData?: any;
 }) {
-  const { required, formDataKey, label, placeHolder, defaultValueKey } =
+  const { formDataKey, required, label, placeHolder, defaultValueKey } =
     properties;
   const [formKey, setFormKey] = useState("");
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState<DateValue | null>(null);
 
   useEffect(() => {
     if (!formDataKey) return;
-    const data = initialData ? initialData[defaultValueKey] : "";
-    setValue(data);
-    setFormValue(formDataKey, data);
+    const data = initialData ? initialData[defaultValueKey] : null;
+    let date = null;
+    try {
+      date = data ? parseDate(data) : null;
+    } catch (error: any) {
+      toast.error(`Error parsing date, ${error?.message}`);
+    }
+    setValue(date);
+    setFormValue(formDataKey, date?.toString());
   }, [initialData, defaultValueKey]);
 
   useEffect(() => {
@@ -46,8 +54,8 @@ export default function FormTextInput({
   }, [formDataKey]);
 
   return (
-    <Input
-      aria-label="Text input"
+    <DatePicker
+      aria-label="Date picker"
       isRequired={formDataKey !== "" ? required : false}
       {...(formDataKey !== ""
         ? {
@@ -61,10 +69,17 @@ export default function FormTextInput({
         : {})}
       label={label}
       labelPlacement="outside"
-      placeholder={placeHolder}
+      showMonthAndYearPickers
       value={value}
-      onValueChange={setValue}
-      isClearable
+      onChange={(date) => {
+        if (!date) {
+          return;
+        }
+        setValue(date);
+        setFormValue(formDataKey, date.toString(), {
+          shouldValidate: true,
+        });
+      }}
       errorMessage={errors[formDataKey]?.message as string}
       isInvalid={!!errors[formDataKey]}
     />
