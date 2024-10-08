@@ -31,7 +31,7 @@ const useData = (componentId: string, queryData: QueryData | null) => {
   };
 
   const fetchData = async (queryData: QueryData | null) => {
-    const { queryId, contentType } = queryData || {};
+    const { queryId, contentType, field } = queryData || {};
 
     try {
       const response = await adapterService.executeQuery(
@@ -55,6 +55,14 @@ const useData = (componentId: string, queryData: QueryData | null) => {
       if (Array.isArray(responseData) && responseData.length === 0) {
         setKeys([]);
         return [];
+      }
+
+      const path =
+        !field || field === "" ? "responseData" : `responseData.${field}`;
+      eval("responseData = " + path);
+
+      if (Array.isArray(responseData) && typeof responseData[0] !== "object") {
+        throw new Error("Data is not an object or array of objects");
       }
 
       //This is a temporary fix to handle different data types

@@ -12,11 +12,26 @@ import { Editor } from "@monaco-editor/react";
 const ResponseViewer = ({
   status = "",
   data,
+  field,
 }: {
   status?: string;
   data: any;
+  field: string;
 }) => {
   const { theme } = useTheme();
+
+  function getDeepValue(data: any, path: string) {
+    let value = data;
+    const finalPath = path === "" ? "data" : `data.${path}`;
+    try {
+      eval("value = " + finalPath);
+    } catch (error) {
+      console.error("Error getting value from path", error);
+      return "Error getting value";
+    }
+    return value;
+  }
+
   return data ? (
     <>
       {status && (
@@ -28,7 +43,7 @@ const ResponseViewer = ({
         language="json"
         theme={theme === "dark" ? "vs-dark" : "light"}
         options={{ readOnly: true, minimap: { enabled: false } }}
-        value={JSON.stringify(data, null, 4)}
+        value={JSON.stringify(getDeepValue(data, field), null, 4)}
       />
     </>
   ) : (

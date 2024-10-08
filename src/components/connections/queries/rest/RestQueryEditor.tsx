@@ -24,6 +24,7 @@ import { Toaster } from "@/components/shared/Toaster";
 import { usePreviewQuery } from "@/hooks/adapter/usePreviewQuery";
 import QueryButtons from "@/components/connections/queries/QueryButtons";
 import { isValidBody } from "@/lib/queries";
+import FieldValue from "./FieldValue";
 
 const RestQueryEditor = ({
   connection,
@@ -159,6 +160,12 @@ const RestQueryEditor = ({
             loading={previewQueryLoading}
             disabled={!isValidBody(body)}
           />
+          <FieldValue
+            field={query?.metadata?.field ?? ""}
+            onFieldChange={(field) => {
+              onChange({ ...query, metadata: { ...query.metadata, field } });
+            }}
+          />
           <Card className={"w-full h-full p-4"}>
             <Tabs
               classNames={{
@@ -188,6 +195,7 @@ const RestQueryEditor = ({
                 <ResponseViewer
                   status={response?.status_code}
                   data={responseData}
+                  field={query?.metadata?.field ?? ""}
                 />
               </Tab>
             </Tabs>

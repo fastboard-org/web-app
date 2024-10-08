@@ -57,6 +57,7 @@ export interface QueryData {
   connectionId: string;
   method: QueryMethod;
   contentType: ContentType;
+  field: string;
 }
 
 export enum MONGO_METHOD {

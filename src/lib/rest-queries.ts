@@ -47,5 +47,6 @@ export const queryToQueryData = (query: Query): QueryData => {
     connectionId: query.connection_id,
     method: query.metadata?.method,
     contentType: query.metadata?.contentType || ContentType.JSON,
+    field: query.metadata?.field,
   };
 };

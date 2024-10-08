@@ -207,7 +207,7 @@ const MongoQueryEditor = ({
               )}
             </Tab>
             <Tab key={"response"} title={"Response"}>
-              <ResponseViewer data={response} />
+              <ResponseViewer data={response} field="" />
             </Tab>
           </Tabs>
         </Card>

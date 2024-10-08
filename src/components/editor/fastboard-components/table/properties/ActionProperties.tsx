@@ -50,7 +50,7 @@ export function ActionProperties({
                 name: p.name,
                 columnKey: "",
                 value: p.preview,
-              }),
+              })
             ),
           });
         }}
@@ -83,6 +83,7 @@ export function ActionProperties({
           <div className="flex flex-row items-center justify-between gap-x-2">
             <h2 className="w-full text-sm">{parameter.name}</h2>
             <Select
+              aria-label="Select column"
               items={columns}
               placeholder="Select column"
               selectedKeys={[parameter.columnKey]}
