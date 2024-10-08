@@ -59,7 +59,7 @@ const VectorSearchTabs = ({
 
   const [selectedTab, setSelectedTab] = useState("config");
   const [accordionItemOpen, setAccordionItemOpen] = useState(
-    new Set<string>(["1"]),
+    new Set<string>(["1"])
   );
 
   const [firstStepLoading, setFirstStepLoading] = useState(false);
@@ -156,7 +156,7 @@ const VectorSearchTabs = ({
             <div className={"flex flex-col gap-4"}>
               <div className={"flex flex-col gap-4 w-full"}>
                 <p>
-                  Create a new{" "}
+                  1. Create a new{" "}
                   <a
                     href="https://cloud.mongodb.com/"
                     target="_blank"
@@ -173,7 +173,7 @@ const VectorSearchTabs = ({
                   Search - JSON Editor"
                 </p>
                 <p>
-                  You can also watch this{" "}
+                  {"("}You can also watch this{" "}
                   <a
                     href="https://youtu.be/o2ss2LJNZVE?si=OeekpWsRj-Yrn7Cy"
                     target="_blank"
@@ -182,29 +182,15 @@ const VectorSearchTabs = ({
                   >
                     video
                   </a>{" "}
-                  to learn how to create an Atlas Search Index.
+                  to learn how to create an Atlas Search Index{")"}
                 </p>
                 <p>
-                  Select the collection you want to create the index for and
+                  2. Select the collection you want to create the index for and
                   paste the following index definition in the JSON editor.
                 </p>
                 <p>
                   Index name must be <Code>fastboard_index</Code>.
                 </p>
-                <Button
-                  color={"primary"}
-                  className={"w-[fit-content] p-4"}
-                  onClick={() => {
-                    setAccordionItemOpen(new Set(["2"]));
-                    setFirstStepLoading(true);
-                    handleSave({
-                      index_created: true,
-                    });
-                  }}
-                  isLoading={firstStepLoading}
-                >
-                  I have created the index in Atlas
-                </Button>
               </div>
               <div className={"h-full"}>
                 <Snippet
@@ -226,6 +212,20 @@ const VectorSearchTabs = ({
                   <span>{"}"}</span>
                 </Snippet>
               </div>
+              <Button
+                color={"primary"}
+                className={"w-[fit-content] p-4"}
+                onClick={() => {
+                  setAccordionItemOpen(new Set(["2"]));
+                  setFirstStepLoading(true);
+                  handleSave({
+                    index_created: true,
+                  });
+                }}
+                isLoading={firstStepLoading}
+              >
+                I have created the index in Atlas
+              </Button>
             </div>
           </AccordionItem>
           <AccordionItem
