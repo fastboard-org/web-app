@@ -1,4 +1,5 @@
 import {
+  MongoVectorSearchMetadata,
   ContentType,
   MongoQueryMetadata,
   QueryParameter,
@@ -6,14 +7,18 @@ import {
 } from "@/types/connections";
 import { axiosInstance } from "@/lib/axios";
 import { isPreviewPage, isPublishPage } from "@/lib/helpers";
+import { mapQuery } from "@/lib/services/connections";
 import { AxiosRequestConfig } from "axios";
-import { toBase64 } from "../file";
+import { toBase64 } from "@/lib/file";
 
 const previewQuery = async (
   connectionId: string,
-  queryMetadata: MongoQueryMetadata | RestQueryMetadata,
+  queryMetadata:
+    | MongoQueryMetadata
+    | RestQueryMetadata
+    | MongoVectorSearchMetadata,
   parameters: QueryParameter[],
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) => {
   const contentType = (queryMetadata as RestQueryMetadata)?.contentType;
 
@@ -36,7 +41,7 @@ const previewQuery = async (
               }
             }
             return param;
-          })
+          }),
         )
       ).reduce((acc: any, param: any) => {
         return { ...acc, [param.name]: param.preview };
@@ -49,7 +54,7 @@ const previewQuery = async (
       connection_metadata: queryMetadata,
       parameters: transformedParameters,
     },
-    config
+    config,
   );
 
   return response.data;
@@ -60,7 +65,7 @@ async function executeQuery(
   dashboardId: string,
   parameters?: Record<string, any>,
   previewAccessToken?: string,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ) {
   try {
     if (!queryId) {
@@ -80,7 +85,7 @@ async function executeQuery(
       {
         parameters: parametersToSend,
       },
-      config
+      config,
     );
 
     if (response?.data.status_code && response?.data.status_code !== 200) {
@@ -93,7 +98,7 @@ async function executeQuery(
 
       const error = response.data?.body?.error;
       throw new Error(
-        `Error ${response.data.status_code}: ${error?.description ?? ""}`
+        `Error ${response.data.status_code}: ${error?.description ?? ""}`,
       );
     }
     return response.data;
@@ -102,7 +107,16 @@ async function executeQuery(
   }
 }
 
+async function createEmbeddings(queryId: string, indexField: string) {
+  const response = await axiosInstance.post(
+    `/embeddings/${queryId}?index_field=${indexField}`,
+  );
+
+  return mapQuery(response?.data?.body);
+}
+
 export const adapterService = {
   previewQuery,
   executeQuery,
+  createEmbeddings,
 };

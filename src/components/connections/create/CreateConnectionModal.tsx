@@ -6,6 +6,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  useDisclosure,
 } from "@nextui-org/react";
 import { Connection, ConnectionType } from "@/types/connections";
 import ConnectionTypeButton from "@/components/connections/create/ConnectionTypeButton";
@@ -13,6 +14,8 @@ import { useState } from "react";
 import { useCreateConnection } from "@/hooks/connections/useCreateConnection";
 import { toast } from "sonner";
 import UrlInput from "@/components/shared/UrlInput";
+import { BsStars } from "react-icons/bs";
+import OpenAiApiKeyModal from "@/components/connections/create/OpenAiApiKeyModal";
 
 const CreateConnectionModal = ({
   isOpen,
@@ -61,7 +64,10 @@ const CreateConnectionModal = ({
     createConnection({
       name: connectionName,
       type: connectionType!,
-      credentials: { main_url: connectionUrl },
+      credentials: {
+        main_url: connectionUrl,
+        openai_api_key: openAiApiKey || undefined,
+      },
     });
   };
 
@@ -70,6 +76,14 @@ const CreateConnectionModal = ({
     [ConnectionType.MONGO]: "mongodb://<user>:<pass>@<host>/<db>",
     [ConnectionType.SQL]: "mysql://",
   };
+
+  const {
+    isOpen: isOpenAiModalOpen,
+    onOpen: onOpenAiModalOpen,
+    onClose: onOpenAiModalClose,
+  } = useDisclosure();
+
+  const [openAiApiKey, setOpenAiApiKey] = useState("");
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
@@ -113,7 +127,19 @@ const CreateConnectionModal = ({
                   </div>
                 </div>
                 <div className={"flex flex-col gap-1.5"}>
-                  <p className={"text-xl mt-8 mb-3"}>Credentials</p>
+                  <div className={"flex items-center mt-8 mb-3 gap-5"}>
+                    <p className={"text-xl"}>Credentials</p>
+                    {connectionType === ConnectionType.MONGO && (
+                      <Button
+                        size={"sm"}
+                        color={"primary"}
+                        onPress={onOpenAiModalOpen}
+                      >
+                        <BsStars />
+                        Add AI
+                      </Button>
+                    )}
+                  </div>
                   <UrlInput
                     value={mainUrl}
                     onChange={setMainUrl}
@@ -145,6 +171,12 @@ const CreateConnectionModal = ({
           </>
         )}
       </ModalContent>
+      <OpenAiApiKeyModal
+        isOpen={isOpenAiModalOpen}
+        onClose={onOpenAiModalClose}
+        apiKeyValue={openAiApiKey}
+        onApiKeyChange={setOpenAiApiKey}
+      />
     </Modal>
   );
 };

@@ -75,6 +75,7 @@ export enum MONGO_METHOD {
   INSERT_MANY = "insertMany",
   UPDATE_ONE = "updateOne",
   UPDATE_MANY = "updateMany",
+  VECTOR_SEARCH = "vectorSearch",
 }
 
 export interface MongoQueryMetadata {
@@ -82,6 +83,16 @@ export interface MongoQueryMetadata {
   collection: string;
   filter_body: any;
   update_body: any;
+}
+
+export interface MongoVectorSearchMetadata {
+  method: MONGO_METHOD.VECTOR_SEARCH;
+  collection: string;
+  index_created: boolean;
+  embeddings_created: boolean;
+  query: string;
+  limit: number;
+  num_candidates: number;
 }
 
 export interface RestQueryMetadata {

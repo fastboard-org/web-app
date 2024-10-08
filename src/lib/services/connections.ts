@@ -11,7 +11,7 @@ const mapConnection = (connection: any): Connection => {
   };
 };
 
-const mapQuery = (query: any): Query => {
+export const mapQuery = (query: any): Query => {
   return {
     id: query._id,
     name: query.name,
