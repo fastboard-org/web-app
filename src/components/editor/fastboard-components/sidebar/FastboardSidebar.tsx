@@ -13,7 +13,6 @@ export default function FastboardSidebar({
   const { theme } = useTheme();
   const { currentPage, changePage } = useNavigation();
   const { menuItems, backgroundColor, textColor, selectedColor } = properties;
-  const cursorClassName = `bg-[${selectedColor.light}]`;
 
   function handleSelectionChange(key: Key) {
     changePage(key.toString());

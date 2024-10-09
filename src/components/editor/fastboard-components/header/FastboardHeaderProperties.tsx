@@ -1,6 +1,5 @@
 import {
   FastboardHeaderProperties,
-  FastboardHeaderPosition,
   FastboardHeaderFontSize,
   FastboardHeaderPhotoBorder,
   FastboardHeaderPhotoSize,
@@ -14,9 +13,9 @@ import {
   Button,
   Slider,
 } from "@nextui-org/react";
-import AlignIcon from "@/components/shared/icons/AlignIcon";
 import ColorPicker from "@/components/shared/ColorPicker";
 import { useTheme } from "next-themes";
+import AlignmentProperty from "@/components/shared/AlignmentProperty";
 
 const FastboardHeaderPropertiesComponent = ({
   properties,
@@ -111,34 +110,16 @@ const FastboardHeaderPropertiesComponent = ({
       >
         <div className="flex flex-col gap-y-2">
           <div>
-            <p className="text-small pb-1">Position</p>
-            <ButtonGroup className="w-full">
-              {Object.entries(FastboardHeaderPosition).map(([key, value]) => (
-                <Button
-                  className={
-                    position === value
-                      ? "bg-foreground bg-opacity-[0.07] w-full"
-                      : "bg-foreground bg-opacity-5 opacity-60 w-full"
-                  }
-                  key={value}
-                  startContent={
-                    <AlignIcon
-                      align={key as string}
-                      selected={position === value ? true : false}
-                      size={24}
-                    />
-                  }
-                  onClick={() => {
-                    onValueChange({
-                      ...properties,
-                      position: value,
-                    });
-                  }}
-                >
-                  {key}
-                </Button>
-              ))}
-            </ButtonGroup>
+            <AlignmentProperty
+              label="Position"
+              position={position}
+              onPositionChange={(position) =>
+                onValueChange({
+                  ...properties,
+                  position: position,
+                })
+              }
+            />
 
             <p className="pt-4 text-small pb-1">Photo Border Radius</p>
             <ButtonGroup className="w-full">

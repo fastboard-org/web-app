@@ -44,6 +44,10 @@ import { SidebarProperties } from "@/types/editor/sidebar-types";
 import FastboardHeader from "./header/FastboardHeader";
 import FastboardHeaderPropertiesComponent from "./header/FastboardHeaderProperties";
 import { FastboardHeaderProperties } from "@/types/editor/header-types";
+import FastboardCard from "./card/FastboardCard";
+import { CardProperties } from "@/types/editor/card-types";
+import FastboardCardProperties from "./card/properties/FastboardCardProperties";
+import FastboardCardDraggable from "./card/FastboardCardDraggable";
 
 export function getDraggableComponent(id: ComponentType) {
   const components = {
@@ -54,6 +58,7 @@ export function getDraggableComponent(id: ComponentType) {
       <FastboardGroupChartDraggable key={"GroupChartDraggable"} />
     ),
     [ComponentType.Cards]: <FastboardCardsDraggable key={"CardsDraggable"} />,
+    [ComponentType.Card]: <FastboardCardDraggable key={"CardDraggable"} />,
     [ComponentType.Sidebar]: null,
     [ComponentType.Header]: null,
   };
@@ -104,7 +109,20 @@ export function getComponent(
       editable: null,
       view: null,
     },
-
+    [ComponentType.Card]: {
+      editable: (
+        <FastboardCard
+          id={componentId}
+          properties={properties as CardProperties}
+        />
+      ),
+      view: (
+        <FastboardCard
+          id={componentId}
+          properties={properties as CardProperties}
+        />
+      ),
+    },
     [ComponentType.Cards]: {
       editable: (
         <FastboardCards
@@ -196,6 +214,16 @@ export function getPropertiesComponent(
     [ComponentType.GroupChart]: (
       <FastboardGroupChartPropertiesComponent
         properties={properties as FastboardGroupChartProperties}
+        onValueChange={(properties) => {
+          if (onValueChange) {
+            onValueChange(properties);
+          }
+        }}
+      />
+    ),
+    [ComponentType.Card]: (
+      <FastboardCardProperties
+        properties={properties as CardProperties}
         onValueChange={(properties) => {
           if (onValueChange) {
             onValueChange(properties);

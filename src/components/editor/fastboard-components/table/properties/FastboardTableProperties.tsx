@@ -31,6 +31,7 @@ import { QueryType } from "@/types/connections";
 import FiltersList from "./filters/FiltersList";
 import TableStringFilterProperties from "./filters/TableStringFilterProperties";
 import TableNumberFilterProperties from "./filters/TableNumberFilterProperties";
+import { ViewActionProperties } from "./ViewActionProperties";
 import { queryToQueryData } from "@/lib/rest-queries";
 
 const FastboardTablePropertiesComponent = ({
@@ -285,8 +286,21 @@ const FastboardTablePropertiesComponent = ({
         </Accordion>
       )}
 
-      {actionSelected && (
+      {actionSelected && actionSelected.type == "delete" && (
         <ActionProperties
+          action={actionSelected}
+          columns={columnsProperties.map((c) => c.column)}
+          onChange={(action) => {
+            setActionSelected(action);
+            onValueChange({
+              ...properties,
+              actions: actions.map((a) => (a.key === action.key ? action : a)),
+            });
+          }}
+        />
+      )}
+      {actionSelected && actionSelected.type == "view" && (
+        <ViewActionProperties
           action={actionSelected}
           columns={columnsProperties.map((c) => c.column)}
           onChange={(action) => {

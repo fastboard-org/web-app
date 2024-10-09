@@ -30,7 +30,9 @@ export default function SettingsDrawer() {
       <div className="flex flex-col gap-5 mt-5">
         {!(hasSidebar && sidebarVisible) && (
           <LayoutSelection
-            selectedLayout={dashboard?.metadata?.pages["home"][0].type ?? null}
+            selectedLayout={
+              dashboard?.metadata?.pages["home"].layouts[0].type ?? null
+            }
             onLayoutSelect={(layoutType) => {
               changeLayout("home", 0, layoutType);
             }}

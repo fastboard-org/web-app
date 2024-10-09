@@ -84,6 +84,19 @@ export function fillParameters(
   }, {});
 }
 
+export function traduceQueryStrings(
+  queryStrings: { name: string; columnKey: string }[],
+  item: any
+) {
+  return queryStrings.reduce((acc, queryString) => {
+    const value = getKeyValue(item, queryString.columnKey);
+    if (queryString.name === "" || value === undefined) {
+      return [...acc];
+    }
+    return [...acc, { name: queryString.name, value }];
+  }, [] as { name: string; value: any }[]);
+}
+
 export function getFilterFunction(
   columnKey: string,
   filters: FilterProperties[]

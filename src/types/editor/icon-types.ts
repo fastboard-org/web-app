@@ -44,6 +44,7 @@ export enum IconType {
   Heart = "Heart",
   Hierarchy = "Hierarchy",
   Home = "Home",
+  Link = "Link",
   Folder = "Folder",
   Trash = "Trash",
   User = "User",

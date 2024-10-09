@@ -18,7 +18,7 @@ const previewQuery = async (
     | RestQueryMetadata
     | MongoVectorSearchMetadata,
   parameters: QueryParameter[],
-  config?: AxiosRequestConfig,
+  config?: AxiosRequestConfig
 ) => {
   const contentType = (queryMetadata as RestQueryMetadata)?.contentType;
 
@@ -41,7 +41,7 @@ const previewQuery = async (
               }
             }
             return param;
-          }),
+          })
         )
       ).reduce((acc: any, param: any) => {
         return { ...acc, [param.name]: param.preview };
@@ -54,7 +54,7 @@ const previewQuery = async (
       connection_metadata: queryMetadata,
       parameters: transformedParameters,
     },
-    config,
+    config
   );
 
   return response.data;
@@ -65,7 +65,7 @@ async function executeQuery(
   dashboardId: string,
   parameters?: Record<string, any>,
   previewAccessToken?: string,
-  config?: AxiosRequestConfig,
+  config?: AxiosRequestConfig
 ) {
   try {
     if (!queryId) {
@@ -73,19 +73,18 @@ async function executeQuery(
     }
 
     const token = localStorage.getItem(`auth-${dashboardId}`);
-
-    const parametersToSend = parameters ?? {};
-
     const viewMode = isPreviewPage() || isPublishPage();
-
-    parametersToSend.token = viewMode ? token : previewAccessToken;
+    const parametersToSend = {
+      ...parameters,
+      token: viewMode ? token : previewAccessToken,
+    };
 
     const response = await axiosInstance.post(
       `/adapter/execute/${queryId}`,
       {
         parameters: parametersToSend,
       },
-      config,
+      config
     );
 
     if (response?.data.status_code && response?.data.status_code !== 200) {
@@ -98,7 +97,7 @@ async function executeQuery(
 
       const error = response.data?.body?.error;
       throw new Error(
-        `Error ${response.data.status_code}: ${error?.description ?? ""}`,
+        `Error ${response.data.status_code}: ${error?.description ?? ""}`
       );
     }
     return response.data;
@@ -109,7 +108,7 @@ async function executeQuery(
 
 async function createEmbeddings(queryId: string, indexField: string) {
   const response = await axiosInstance.post(
-    `/embeddings/${queryId}?index_field=${indexField}`,
+    `/embeddings/${queryId}?index_field=${indexField}`
   );
 
   return mapQuery(response?.data?.body);

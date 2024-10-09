@@ -1,10 +1,5 @@
+import { Alignment } from "@/components/shared/AlignmentProperty";
 import { Color } from "./style-types";
-
-export enum FastboardHeaderPosition {
-  Left = "start",
-  Center = "center",
-  Right = "end",
-}
 
 export enum FastboardHeaderFontSize {
   Small = "x-large",
@@ -39,7 +34,7 @@ export class FastboardHeaderProperties {
     size: FastboardHeaderPhotoSize.Medium,
   };
   showThemeSwitcher: boolean = false;
-  position: FastboardHeaderPosition = FastboardHeaderPosition.Center;
+  position: Alignment = Alignment.Center;
   divider: boolean = false;
   backgroundColor: Color = new Color("#ffffff", "#000000");
   textColor: Color = new Color("#11181C", "#ECEDEE");

@@ -6,9 +6,12 @@ import { previewAccessTokenState } from "@/atoms/editor";
 import useNavigation from "@/hooks/useNavigation";
 import { useEffect } from "react";
 import { getLayout } from "../editor/fastboard-components/utils";
-import { Spinner } from "@nextui-org/react";
+import { Button, Spinner } from "@nextui-org/react";
 import { AxiosError } from "axios";
 import { notFound } from "next/navigation";
+import { Back } from "iconsax-react";
+
+const RETURN_BUTTON_HEIGHT = 48;
 
 export default function Viewport({
   mode,
@@ -19,7 +22,7 @@ export default function Viewport({
     mode === "editor" || mode === "preview" ? "editor" : "published"
   );
   const setPreviewAccessToken = useSetRecoilState(previewAccessTokenState);
-  const { currentPage } = useNavigation();
+  const { currentPage, changePage } = useNavigation();
 
   useEffect(() => {
     if (mode === "editor" && dashboard?.metadata?.auth?.previewAccessToken) {
@@ -39,9 +42,7 @@ export default function Viewport({
   const sidebar = dashboard?.metadata?.sidebar?.id
     ? getComponent(dashboard.metadata.sidebar?.id)
     : null;
-  const selectedPage = dashboard?.metadata?.pages[currentPage]
-    ? currentPage
-    : "home";
+  const selectedPage = dashboard?.metadata?.pages[currentPage];
 
   if (loading) {
     return (
@@ -103,15 +104,48 @@ export default function Viewport({
             />
           </div>
         )}
-        <div className="min-w-96 h-full" style={{ width: layoutsWidth }}>
-          {dashboard?.metadata?.pages[selectedPage].map((layout, index) =>
-            getLayout(
-              layout,
-              currentPage,
-              index,
-              mode === "editor" ? "editable" : "view"
-            )
+        <div
+          className="flex flex-col min-w-[400px] h-full"
+          style={{ width: layoutsWidth }}
+        >
+          {selectedPage && selectedPage.returnPage && (
+            <div
+              className="flex items-center mx-2 mt-1"
+              style={{
+                height: `${RETURN_BUTTON_HEIGHT}px`,
+              }}
+            >
+              <Button
+                isIconOnly
+                variant="light"
+                onPress={() => {
+                  if (!selectedPage.returnPage) return;
+                  changePage(selectedPage.returnPage);
+                }}
+              >
+                <Back />
+              </Button>
+            </div>
           )}
+          <div
+            style={{
+              height: `calc(100% - ${
+                selectedPage && selectedPage.returnPage
+                  ? `${RETURN_BUTTON_HEIGHT}px`
+                  : "0px"
+              })`,
+            }}
+          >
+            {selectedPage &&
+              selectedPage.layouts.map((layout, index) =>
+                getLayout(
+                  layout,
+                  currentPage,
+                  index,
+                  mode === "editor" ? "editable" : "view"
+                )
+              )}
+          </div>
         </div>
       </div>
     </AuthVerifier>

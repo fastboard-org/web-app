@@ -15,9 +15,12 @@ export interface TableActionProperty {
   key: string;
   label: string;
   type: "view" | "edit" | "delete";
+  mode?: "modal" | "page";
   query: QueryData | null;
   parameters: { name: string; columnKey: string; value: string }[];
   modalId?: string;
+  pageId?: string;
+  queryStrings: { name: string; columnKey: string }[];
 }
 
 export interface AddRowFormProperties {

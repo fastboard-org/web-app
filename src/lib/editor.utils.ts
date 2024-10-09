@@ -43,18 +43,37 @@ function deleteTableModalsFrame(
   component: FastboardComponent,
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
+  const viewModalId = component.properties?.actions?.find(
+    (action: TableActionProperty) => action.type === "view"
+  )?.modalId;
   const editModalId = component.properties?.actions?.find(
     (action: TableActionProperty) => action.type === "edit"
   )?.modalId;
   const addRowModalId = component.properties?.addOns?.addRowForm?.modalId;
+  if (viewModalId) {
+    dashboardMetadata = removeModalFrame(viewModalId, dashboardMetadata);
+  }
   if (editModalId) {
     dashboardMetadata = removeModalFrame(editModalId, dashboardMetadata);
   }
-
   if (addRowModalId) {
     dashboardMetadata = removeModalFrame(addRowModalId, dashboardMetadata);
   }
 
+  return dashboardMetadata;
+}
+
+function deleteTablePageView(
+  component: FastboardComponent,
+  dashboardMetadata: DashboardMetadata
+): DashboardMetadata {
+  const pageId = component.properties?.actions?.find(
+    (action: TableActionProperty) => action.type === "view"
+  )?.pageId;
+
+  if (pageId) {
+    dashboardMetadata = deletePage(pageId, dashboardMetadata);
+  }
   return dashboardMetadata;
 }
 
@@ -67,8 +86,9 @@ export function deleteComponent(
     return dashboardMetadata;
   }
   if (component.type === ComponentType.Table) {
-    //If the component is a table, then we need to remove the modal frame that is associated with it
+    //If the component is a table, then we need to remove the modal frame that is associated with it and view pages also
     dashboardMetadata = deleteTableModalsFrame(component, dashboardMetadata);
+    dashboardMetadata = deleteTablePageView(component, dashboardMetadata);
   }
   const { [id]: removedComponent, ...newComponents } =
     dashboardMetadata.components;
@@ -111,7 +131,7 @@ export function addComponentToLayout(
     container: containerIndex,
   } = index;
   // If there is already a component in the container, delete it
-  const layout = dashboardMetadata.pages[pageIndex][layoutIndex];
+  const layout = dashboardMetadata.pages[pageIndex].layouts[layoutIndex];
   const curretnComponentId: ComponentId | null =
     layout[containerIndex as keyof Layout];
   if (curretnComponentId) {
@@ -127,15 +147,18 @@ export function addComponentToLayout(
     ...newMetadata,
     pages: {
       ...newMetadata.pages,
-      [pageIndex]: newMetadata.pages[pageIndex].map((layout, index) => {
-        if (index === layoutIndex) {
-          return {
-            ...layout,
-            [containerIndex]: componentId,
-          };
-        }
-        return layout;
-      }),
+      [pageIndex]: {
+        ...newMetadata.pages[pageIndex],
+        layouts: newMetadata.pages[pageIndex].layouts.map((layout, index) => {
+          if (index === layoutIndex) {
+            return {
+              ...layout,
+              [containerIndex]: componentId,
+            };
+          }
+          return layout;
+        }),
+      },
     },
   };
 }
@@ -145,7 +168,7 @@ export function deleteComponentFromLayout(
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
   const { page, layout: layoutIndex, container } = index;
-  const layout = dashboardMetadata.pages[page][layoutIndex];
+  const layout = dashboardMetadata.pages[page].layouts[layoutIndex];
   const componentId: ComponentId = layout[container as keyof Layout];
   if (!componentId) {
     return dashboardMetadata;
@@ -156,15 +179,18 @@ export function deleteComponentFromLayout(
     ...newMetadata,
     pages: {
       ...newMetadata.pages,
-      [page]: newMetadata.pages[page].map((layout, index) => {
-        if (index === layoutIndex) {
-          return {
-            ...layout,
-            [container]: null,
-          };
-        }
-        return layout;
-      }),
+      [page]: {
+        ...newMetadata.pages[page],
+        layouts: newMetadata.pages[page].layouts.map((layout, index) => {
+          if (index === layoutIndex) {
+            return {
+              ...layout,
+              [container]: null,
+            };
+          }
+          return layout;
+        }),
+      },
     },
   };
 }
@@ -176,7 +202,7 @@ function changeLayout(
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
   let to = Layout.of(to_type);
-  const from = dashboardMetadata.pages[pageIndex][layoutIndex];
+  const from = dashboardMetadata.pages[pageIndex].layouts[layoutIndex];
 
   const keysFrom = Object.keys(from);
   const keysTo = Object.keys(to);
@@ -192,12 +218,17 @@ function changeLayout(
     ...dashboardMetadata,
     pages: {
       ...dashboardMetadata.pages,
-      [pageIndex]: dashboardMetadata.pages[pageIndex].map((layout, index) => {
-        if (index === layoutIndex) {
-          return convertLayout(from, to_type);
-        }
-        return layout;
-      }),
+      [pageIndex]: {
+        ...dashboardMetadata.pages[pageIndex],
+        layouts: dashboardMetadata.pages[pageIndex].layouts.map(
+          (layout, index) => {
+            if (index === layoutIndex) {
+              return convertLayout(from, to_type);
+            }
+            return layout;
+          }
+        ),
+      },
     },
   };
 }
@@ -333,7 +364,8 @@ function deleteSidebar(
 }
 
 function addPage(
-  dashboardMetadata: DashboardMetadata
+  dashboardMetadata: DashboardMetadata,
+  returnPage?: string
 ): [DashboardMetadata, string] {
   const pageId = uuidv4();
   return [
@@ -341,7 +373,10 @@ function addPage(
       ...dashboardMetadata,
       pages: {
         ...dashboardMetadata.pages,
-        [pageId]: [Layout.of(LayoutType.Full)],
+        [pageId]: {
+          layouts: [Layout.of(LayoutType.Full)],
+          returnPage: returnPage,
+        },
       },
     },
     pageId,
@@ -353,7 +388,7 @@ function deletePage(
   dashboardMetadata: DashboardMetadata
 ): DashboardMetadata {
   //Remove all components in the page
-  const layouts = dashboardMetadata.pages[pageId];
+  const layouts = dashboardMetadata.pages[pageId].layouts;
   layouts.forEach((layout) => {
     Object.keys(layout).forEach((key) => {
       if (key === "type") {

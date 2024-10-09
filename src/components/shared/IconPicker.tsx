@@ -51,11 +51,11 @@ import {
   Heart,
   Hierarchy,
   Home,
+  Link,
   Folder,
   Trash,
   User,
 } from "iconsax-react";
-import { IoIosClose } from "react-icons/io";
 
 export function Icon({
   icon,
@@ -113,6 +113,7 @@ export function Icon({
     [IconType.Heart]: <Heart size={size} />,
     [IconType.Hierarchy]: <Hierarchy size={size} />,
     [IconType.Home]: <Home size={size} />,
+    [IconType.Link]: <Link size={size} />,
     [IconType.Folder]: <Folder size={size} />,
     [IconType.Trash]: <Trash size={size} />,
     [IconType.User]: <User size={size} />,

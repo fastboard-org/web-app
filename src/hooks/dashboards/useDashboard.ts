@@ -146,10 +146,13 @@ const useDashboard = (mode: "editor" | "published" = "editor") => {
     changePage("home");
   };
 
-  const addPage = (): string | null => {
+  const addPage = (returnPage?: string): string | null => {
     if (!dashboard) return null;
 
-    const [newMetadata, pageId] = editorUtils.addPage(dashboard.metadata);
+    const [newMetadata, pageId] = editorUtils.addPage(
+      dashboard.metadata,
+      returnPage
+    );
     updateDashboard((prev) => ({
       ...prev,
       metadata: newMetadata,
@@ -167,7 +170,7 @@ const useDashboard = (mode: "editor" | "published" = "editor") => {
 
   const getBaseLayout = (): LayoutType | null => {
     if (!dashboard) return null;
-    return dashboard.metadata.pages["home"][0].type;
+    return dashboard.metadata.pages["home"].layouts[0].type;
   };
 
   const changeLayout = (
