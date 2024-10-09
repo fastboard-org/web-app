@@ -1,3 +1,4 @@
+import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 import ColorPicker from "@/components/shared/ColorPicker";
 import { FastboardTableProperties } from "@/types/editor/table-types";
 import { Checkbox } from "@nextui-org/react";

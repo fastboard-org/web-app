@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { QueryData } from "@/types/connections";
+import { ContentType, QueryData } from "@/types/connections";
 import { adapterService } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
 import { useRecoilValue } from "recoil";
@@ -16,7 +16,7 @@ const useData = (
   const previewAccessToken = useRecoilValue(previewAccessTokenState);
   const { data, refetch, isLoading, isFetching, isError, error } = useQuery({
     queryKey: ["get_data", connectionId, { queryId, componentId }],
-    queryFn: () => fetchData(queryId || ""),
+    queryFn: () => fetchData(queryData),
     refetchOnWindowFocus: false,
   });
   const [keys, setKeys] = useState<string[]>([]);
@@ -34,13 +34,20 @@ const useData = (
     });
   };
 
-  const fetchData = async (queryId: string | null) => {
+  const fetchData = async (queryData: QueryData | null) => {
+    const { queryId, contentType } = queryData || {};
+
     try {
       const response = await adapterService.executeQuery(
-        queryId,
+        queryId ?? null,
         dashboardId as string,
         queryParameters ?? {},
-        previewAccessToken
+        previewAccessToken,
+        {
+          headers: {
+            "Content-Type": contentType || ContentType.JSON,
+          },
+        }
       );
       let responseData = response?.body;
 

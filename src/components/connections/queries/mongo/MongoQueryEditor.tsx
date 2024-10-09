@@ -1,6 +1,8 @@
 import {
   Connection,
   MONGO_METHOD,
+  MongoQueryMetadata,
+  MongoVectorSearchMetadata,
   Query,
   QueryParameter,
 } from "@/types/connections";
@@ -20,6 +22,7 @@ import { convertToObject } from "@/lib/rest-queries";
 import { usePreviewQuery } from "@/hooks/adapter/usePreviewQuery";
 import { toast } from "sonner";
 import ResponseViewer from "@/components/connections/queries/ResponseViewer";
+import VectorSearchTabs from "@/components/connections/queries/mongo/VectorSearchTabs";
 
 const methodDefaultValue = (method: MONGO_METHOD) => {
   switch (method) {
@@ -71,7 +74,10 @@ const MongoQueryEditor = ({
     },
     onError: (error: any) => {
       console.error("Error previewing query", error);
-      toast.error("Failed to send request.");
+      const axiosError = error?.response?.data?.error;
+      toast.error(
+        `Failed to send request: ${axiosError?.description || error}`
+      );
     },
   });
 
@@ -89,28 +95,58 @@ const MongoQueryEditor = ({
   }, [query]);
 
   const handleSend = () => {
-    const parameters =
-      query?.metadata?.parameters?.reduce((acc: any, param: QueryParameter) => {
-        return { ...acc, [param.name]: param.preview };
-      }, {}) ?? {};
+    const parameters = query?.metadata?.parameters ?? [];
 
-    previewQuery({
-      connectionId: connection.id,
-      queryMetadata: {
+    let metadata: MongoQueryMetadata | MongoVectorSearchMetadata;
+
+    if (query.metadata.method === MONGO_METHOD.VECTOR_SEARCH) {
+      metadata = {
+        method: query.metadata.method,
+        collection: collectionName,
+        index_created: query.metadata.index_created,
+        embeddings_created: query.metadata.embeddings_created,
+        query: query.metadata.query,
+        limit: query.metadata.limit || 5,
+        num_candidates: query.metadata.num_candidates || 100,
+      };
+    } else {
+      metadata = {
         method: query.metadata.method,
         collection: collectionName,
         filter_body: JSON.parse(filterBody),
         update_body: JSON.parse(updateBody),
-      },
+        limit: query.metadata.limit,
+        num_candidates: query.metadata.num_candidates,
+        query: query.metadata.query,
+      };
+    }
+
+    previewQuery({
+      connectionId: connection.id,
+      queryMetadata: metadata,
       parameters,
     });
   };
 
-  const canSave =
-    isValidBody(filterBody) &&
-    isValidBody(updateBody) &&
-    collectionName &&
-    query.metadata.method;
+  const isSavePossible = () => {
+    if (query.metadata.method === MONGO_METHOD.VECTOR_SEARCH) {
+      return (
+        collectionName &&
+        query.metadata.index_field &&
+        query.metadata.index_created &&
+        query.metadata.embeddings_created
+      );
+    } else {
+      return (
+        isValidBody(filterBody) &&
+        isValidBody(updateBody) &&
+        collectionName &&
+        query.metadata.method
+      );
+    }
+  };
+
+  const canSave = isSavePossible();
 
   return (
     <div
@@ -158,6 +194,7 @@ const MongoQueryEditor = ({
             onMethodChange={(method: string) =>
               onChange({ ...query, metadata: { ...query.metadata, method } })
             }
+            hasAiMethods={connection?.credentials?.openai_api_key?.length > 0}
           />
           <Input
             placeholder={"Collection Name"}
@@ -176,40 +213,59 @@ const MongoQueryEditor = ({
           </Button>
         </div>
         <Card className={"w-full h-full p-4"}>
-          <Tabs
-            classNames={{
-              panel:
-                "p-0 mt-2 h-full overflow-y-auto " + scrollbarStyles.scrollbar,
-            }}
-            selectedKey={selectedTab}
-            onSelectionChange={(key) => setSelectedTab(key as string)}
-          >
-            <Tab key={"body"} title={"Body"} className={"flex gap-5"}>
-              <BodyEditor
-                body={filterBody}
-                onChange={setFilterBody}
-                invalidBody={!isValidBody(filterBody)}
-                label={"Filter Body"}
-                placeholder={"Enter filter body here"}
-                defaultValue={methodDefaultValue(query?.metadata?.method)}
-              />
-              {methodHasUpdateBody(query.metadata.method) && (
+          {query?.metadata?.method !== MONGO_METHOD.VECTOR_SEARCH ? (
+            <Tabs
+              classNames={{
+                panel:
+                  "p-0 mt-2 h-full overflow-y-auto " +
+                  scrollbarStyles.scrollbar,
+              }}
+              selectedKey={selectedTab}
+              onSelectionChange={(key) => setSelectedTab(key as string)}
+            >
+              <Tab key={"body"} title={"Body"} className={"flex gap-5"}>
                 <BodyEditor
-                  body={updateBody}
-                  onChange={setUpdateBody}
-                  invalidBody={!isValidBody(updateBody)}
-                  label={"Update Body"}
-                  placeholder={"Enter update body here"}
+                  body={
+                    filterBody || methodDefaultValue(query?.metadata?.method)
+                  }
+                  onChange={setFilterBody}
+                  invalidBody={!isValidBody(filterBody)}
+                  label={"Filter Body"}
+                  width={
+                    methodHasUpdateBody(query.metadata.method) ? "50%" : "100%"
+                  }
                 />
-              )}
-            </Tab>
-            <Tab key={"response"} title={"Response"}>
-              <ResponseViewer data={response} />
-            </Tab>
-          </Tabs>
+                {methodHasUpdateBody(query.metadata.method) && (
+                  <BodyEditor
+                    body={updateBody}
+                    onChange={setUpdateBody}
+                    invalidBody={!isValidBody(updateBody)}
+                    label={"Update Body"}
+                    width={
+                      methodHasUpdateBody(query.metadata.method)
+                        ? "50%"
+                        : "100%"
+                    }
+                  />
+                )}
+              </Tab>
+              <Tab key={"response"} title={"Response"}>
+                <ResponseViewer data={response} />
+              </Tab>
+            </Tabs>
+          ) : (
+            <VectorSearchTabs
+              query={query}
+              onQueryChange={onChange}
+              connection={connection}
+              collectionName={collectionName}
+              response={response}
+            />
+          )}
         </Card>
       </div>
       <QueryParametersDrawer
+        onlyTextParameters={true}
         queryParameters={query?.metadata?.parameters ?? []}
         setQueryParameters={(queryParameters: QueryParameter[]) =>
           onChange({

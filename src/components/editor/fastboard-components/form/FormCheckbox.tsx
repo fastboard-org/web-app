@@ -45,13 +45,14 @@ export default function FormCheckbox({
   }, [formDataKey]);
 
   return (
-    <Checkbox
-      aria-label="Checkbox input"
-      {...(formDataKey !== "" ? { ...register(formDataKey) } : {})}
-      isSelected={value}
-      onValueChange={setValue}
-    >
-      {label}
-    </Checkbox>
+    <div className="flex flex-row justify-between items-center">
+      <h2>{label}</h2>
+      <Checkbox
+        aria-label="Checkbox input"
+        {...(formDataKey !== "" ? { ...register(formDataKey) } : {})}
+        isSelected={value}
+        onValueChange={setValue}
+      />
+    </div>
   );
 }

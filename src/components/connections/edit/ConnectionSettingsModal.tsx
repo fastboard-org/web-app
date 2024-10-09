@@ -8,11 +8,14 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  useDisclosure,
 } from "@nextui-org/react";
 import ConnectionVariablesTable from "@/components/connections/edit/ConnectionVariablesTable";
 import { useUpdateConnection } from "@/hooks/connections/useUpdateConnection";
 import { toast } from "sonner";
 import UrlInput from "@/components/shared/UrlInput";
+import { BsStars } from "react-icons/bs";
+import OpenAiApiKeyModal from "@/components/connections/create/OpenAiApiKeyModal";
 
 const ConnectionSettingsModal = ({
   isOpen,
@@ -30,6 +33,9 @@ const ConnectionSettingsModal = ({
     Object.entries(connection?.variables || {}),
   );
   const [name, setName] = useState<string>(connection?.name || "");
+  const [newOpenAiApiKey, setNewOpenAiApiKey] = useState<string>(
+    connection?.credentials?.openai_api_key_preview || "",
+  );
 
   const { updateConnection, loading } = useUpdateConnection({
     onSuccess: (connection: Connection) => {
@@ -46,16 +52,29 @@ const ConnectionSettingsModal = ({
     setCredentials(connection?.credentials);
     setVariableEntries(Object.entries(connection?.variables || {}));
     setName(connection?.name);
+    setNewOpenAiApiKey(connection?.credentials?.openai_api_key_preview);
   }, [connection, isOpen]);
+
+  const openAiApiKeyModified =
+    newOpenAiApiKey !== connection?.credentials?.openai_api_key_preview;
 
   const handleSave = () => {
     updateConnection({
       id: connection.id,
       name,
-      credentials,
+      credentials: {
+        ...credentials,
+        openai_api_key: openAiApiKeyModified ? newOpenAiApiKey : undefined,
+      },
       variables: Object.fromEntries(variableEntries),
     });
   };
+
+  const {
+    isOpen: isOpenAiModalOpen,
+    onOpen: onOpenAiModalOpen,
+    onClose: onOpenAiModalClose,
+  } = useDisclosure();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
@@ -78,7 +97,19 @@ const ConnectionSettingsModal = ({
                   />
                 </div>
                 <div className={"flex flex-col gap-1.5"}>
-                  <p className={"text-lg mt-8"}>Credentials</p>
+                  <div className={"flex items-center mt-8 mb-3 gap-5"}>
+                    <p className={"text-lg"}>Credentials</p>
+                    {connection.type === ConnectionType.MONGO && (
+                      <Button
+                        size={"sm"}
+                        color={"primary"}
+                        onClick={onOpenAiModalOpen}
+                      >
+                        <BsStars />
+                        AI settings
+                      </Button>
+                    )}
+                  </div>
                   <UrlInput
                     label={""}
                     placeholder={"Main URL"}
@@ -117,6 +148,12 @@ const ConnectionSettingsModal = ({
           </>
         )}
       </ModalContent>
+      <OpenAiApiKeyModal
+        isOpen={isOpenAiModalOpen}
+        onClose={onOpenAiModalClose}
+        apiKeyValue={newOpenAiApiKey}
+        onApiKeyChange={setNewOpenAiApiKey}
+      />
     </Modal>
   );
 };

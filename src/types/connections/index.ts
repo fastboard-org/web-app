@@ -4,6 +4,11 @@ export enum ConnectionType {
   SQL = "SQL",
 }
 
+export enum ContentType {
+  JSON = "application/json",
+  FORM_DATA = "multipart/form-data",
+}
+
 export interface Connection {
   id: string;
   name: string;
@@ -23,10 +28,16 @@ export interface Query {
 
 export interface QueryParameter {
   name: string;
-  preview: string;
+  type: "text" | "file";
+  preview: string | File | null;
 }
 
 export interface RestHeader {
+  key: string;
+  value: string;
+}
+
+export interface RestFormDataParameter {
   key: string;
   value: string;
 }
@@ -45,6 +56,7 @@ export interface QueryData {
   queryId: string;
   connectionId: string;
   method: QueryMethod;
+  contentType: ContentType;
 }
 
 export enum MONGO_METHOD {
@@ -63,6 +75,7 @@ export enum MONGO_METHOD {
   INSERT_MANY = "insertMany",
   UPDATE_ONE = "updateOne",
   UPDATE_MANY = "updateMany",
+  VECTOR_SEARCH = "vectorSearch",
 }
 
 export interface MongoQueryMetadata {
@@ -72,10 +85,21 @@ export interface MongoQueryMetadata {
   update_body: any;
 }
 
+export interface MongoVectorSearchMetadata {
+  method: MONGO_METHOD.VECTOR_SEARCH;
+  collection: string;
+  index_created: boolean;
+  embeddings_created: boolean;
+  query: string;
+  limit: number;
+  num_candidates: number;
+}
+
 export interface RestQueryMetadata {
   method: HTTP_METHOD;
   path: string;
   headers: RestHeader[];
+  contentType: ContentType;
   body: any;
 }
 

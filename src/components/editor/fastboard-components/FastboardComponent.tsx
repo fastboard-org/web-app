@@ -45,7 +45,6 @@ const FastboardComponent = ({
   const [isHovered, setIsHovered] = useState(false);
 
   function onClickComponent(e: React.MouseEvent<HTMLDivElement>) {
-    e.preventDefault();
     setIsComponentsDrawerOpen(false);
     setIsSettingsDrawerOpen(false);
     setIsAuthDrawerOpen(false);

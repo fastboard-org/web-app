@@ -71,7 +71,7 @@ export default function Login() {
               signIn("google");
             }}
           >
-            Log in with Google
+            Continue with Google
           </Button>
           <Spacer y={2}></Spacer>
           <Button
@@ -80,7 +80,7 @@ export default function Login() {
               signIn("github");
             }}
           >
-            Log in with Github
+            Continue with Github
           </Button>
           <Divider className="my-4" />
           <form onSubmit={handleSubmit(onSubmit)}>

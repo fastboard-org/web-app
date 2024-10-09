@@ -33,15 +33,31 @@ const sections = [
     title: "Delete",
     methods: [MONGO_METHOD.DELETE_ONE, MONGO_METHOD.DELETE_MANY],
   },
+  {
+    title: "AI",
+    methods: [MONGO_METHOD.VECTOR_SEARCH],
+  },
 ];
+
+const getSections = (hasAiMethods: boolean) => {
+  if (hasAiMethods) {
+    return sections;
+  }
+
+  return sections.filter((section) => section.title !== "AI");
+};
 
 const MongoMethodSelector = ({
   method,
   onMethodChange,
+  hasAiMethods = false,
 }: {
   method: MONGO_METHOD;
   onMethodChange: (method: MONGO_METHOD) => void;
+  hasAiMethods?: boolean;
 }) => {
+  const methodSections = getSections(hasAiMethods);
+
   return (
     <Select
       className={`w-1/4 min-w-[250px]`}
@@ -54,7 +70,7 @@ const MongoMethodSelector = ({
         value: `text-${methodColor(method)} group-data-[has-value=true]:text-${methodColor(method)}`,
       }}
     >
-      {sections.map((section) => (
+      {methodSections.map((section) => (
         <SelectSection key={section.title} title={section.title}>
           {section.methods.map((method) => (
             <SelectItem

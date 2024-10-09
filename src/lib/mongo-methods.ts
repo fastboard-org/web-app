@@ -17,6 +17,7 @@ export const methodColor = (method: MONGO_METHOD) => {
     [MONGO_METHOD.INSERT_MANY]: "warning",
     [MONGO_METHOD.UPDATE_ONE]: "primary",
     [MONGO_METHOD.UPDATE_MANY]: "primary",
+    [MONGO_METHOD.VECTOR_SEARCH]: "primary-700",
   };
 
   return colors[method];

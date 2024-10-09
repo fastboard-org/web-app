@@ -1,6 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { adapterService } from "@/lib/services/adapter";
-import { MongoQueryMetadata, RestQueryMetadata } from "@/types/connections";
+import {
+  MongoQueryMetadata,
+  MongoVectorSearchMetadata,
+  RestQueryMetadata,
+} from "@/types/connections";
+import { AxiosRequestConfig } from "axios";
 
 export const usePreviewQuery = ({
   onSuccess,
@@ -14,11 +19,22 @@ export const usePreviewQuery = ({
       connectionId,
       queryMetadata,
       parameters,
+      config,
     }: {
       connectionId: string;
-      queryMetadata: MongoQueryMetadata | RestQueryMetadata;
+      queryMetadata:
+        | MongoQueryMetadata
+        | RestQueryMetadata
+        | MongoVectorSearchMetadata;
       parameters: any;
-    }) => adapterService.previewQuery(connectionId, queryMetadata, parameters),
+      config?: AxiosRequestConfig;
+    }) =>
+      adapterService.previewQuery(
+        connectionId,
+        queryMetadata,
+        parameters,
+        config,
+      ),
     onSuccess,
     onError,
   });
