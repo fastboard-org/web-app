@@ -1,10 +1,4 @@
-import {
-  ContentType,
-  HTTP_METHOD,
-  MONGO_METHOD,
-  Query,
-  QueryData,
-} from "@/types/connections";
+import { HTTP_METHOD, MONGO_METHOD, QueryData } from "@/types/connections";
 import { InvalidateQueryFilters, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/app/providers";
 import { adapterService } from "@/lib/services/adapter";
@@ -51,7 +45,7 @@ const useExecuteQuery = ({
         dashboardId,
         parameters,
         previewAccessToken,
-        config
+        config,
       );
     },
     onSuccess: (data, variables) => {

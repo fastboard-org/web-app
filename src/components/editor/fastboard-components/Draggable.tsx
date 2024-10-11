@@ -8,12 +8,14 @@ const Draggable = ({
   data,
   dragSnapToOrigin,
   name,
+  customClassName = "",
 }: {
   children: ReactNode;
   id: string;
   data?: Object;
   dragSnapToOrigin?: boolean;
   name?: string;
+  customClassName?: string;
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
     id: id,
@@ -26,7 +28,11 @@ const Draggable = ({
     : undefined;
 
   return (
-    <div className="flex flex-col justify-center w-[46%] gap-2">
+    <div
+      className={
+        "flex flex-col justify-center w-[46%] gap-2 " + customClassName
+      }
+    >
       <motion.div
         drag
         ref={setNodeRef}

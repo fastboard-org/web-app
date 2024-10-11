@@ -44,6 +44,10 @@ import { SidebarProperties } from "@/types/editor/sidebar-types";
 import FastboardHeader from "./header/FastboardHeader";
 import FastboardHeaderPropertiesComponent from "./header/FastboardHeaderProperties";
 import { FastboardHeaderProperties } from "@/types/editor/header-types";
+import FastboardAICardsDraggable from "@/components/editor/fastboard-components/ai-cards/FastboardAICardsDraggable";
+import FastboardAICards from "@/components/editor/fastboard-components/ai-cards/FastboardAICards";
+import { FastboardAICardsProperties } from "@/types/editor/ai-cards-types";
+import FastboardAICardsPropertiesComponent from "@/components/editor/fastboard-components/ai-cards/FastboardAICardsProperties";
 
 export function getDraggableComponent(id: ComponentType) {
   const components = {
@@ -54,6 +58,9 @@ export function getDraggableComponent(id: ComponentType) {
       <FastboardGroupChartDraggable key={"GroupChartDraggable"} />
     ),
     [ComponentType.Cards]: <FastboardCardsDraggable key={"CardsDraggable"} />,
+    [ComponentType.AiCards]: (
+      <FastboardAICardsDraggable key={"AiCardsDraggable"} />
+    ),
     [ComponentType.Sidebar]: null,
     [ComponentType.Header]: null,
   };
@@ -65,7 +72,7 @@ export function getComponent(
   id: ComponentType,
   componentId: ComponentId,
   type: "editable" | "view",
-  properties?: Record<string, any>
+  properties?: Record<string, any>,
 ) {
   if (!id) {
     return null;
@@ -119,6 +126,20 @@ export function getComponent(
         />
       ),
     },
+    [ComponentType.AiCards]: {
+      editable: (
+        <FastboardAICards
+          id={componentId}
+          properties={properties as FastboardAICardsProperties}
+        />
+      ),
+      view: (
+        <FastboardAICards
+          id={componentId}
+          properties={properties as FastboardAICardsProperties}
+        />
+      ),
+    },
     [ComponentType.GroupChart]: {
       editable: (
         <FastboardGroupChart
@@ -163,7 +184,7 @@ export function getComponent(
 
 export function getPropertiesComponent(
   state: PropertiesDrawerState,
-  onValueChange?: (properties: Record<string, any>) => void
+  onValueChange?: (properties: Record<string, any>) => void,
 ) {
   const { selectedComponentId, type, properties } = state;
   if (!selectedComponentId) {
@@ -213,6 +234,16 @@ export function getPropertiesComponent(
         }}
       />
     ),
+    [ComponentType.AiCards]: (
+      <FastboardAICardsPropertiesComponent
+        properties={properties as FastboardAICardsProperties}
+        onValueChange={(properties) => {
+          if (onValueChange) {
+            onValueChange(properties);
+          }
+        }}
+      />
+    ),
     [ComponentType.Sidebar]: (
       <FastboardSidebarProperties
         properties={properties as SidebarProperties}
@@ -245,7 +276,7 @@ export function getLayout(
   layout: Layout,
   pageIndex: string,
   index: number,
-  mode: "editable" | "view"
+  mode: "editable" | "view",
 ) {
   switch (layout.type) {
     case LayoutType.Full:
