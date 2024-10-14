@@ -1,5 +1,6 @@
 import {
   Button,
+  Image,
   Link,
   Modal,
   ModalBody,
@@ -78,8 +79,13 @@ export default function ViewActionModal({
       return <p className="text-success-700">{item}</p>;
     }
 
-    //check if item is an url
+    //check if item is an image
     if (item.match(/^https?:\/\/.*\.(?:png|jpg|jpeg|gif)$/)) {
+      return <Image src={item} height={100} />;
+    }
+
+    //check if item is an url
+    if (item.match(/^https?:\/\/[^\s/$.?#].[^\s]*$/)) {
       return (
         <Link href={item} isExternal showAnchorIcon>
           {item}
@@ -95,7 +101,7 @@ export default function ViewActionModal({
 
     return Object.keys(data).map((key) => {
       return (
-        <div key={key} className={"flex flex-row justify-between"}>
+        <div key={key} className={"flex flex-row justify-between items-center"}>
           <p className="font-medium">{key}</p>
           {mapfield(data[key])}
         </div>
@@ -112,7 +118,7 @@ export default function ViewActionModal({
     >
       <ModalContent className={"py-4 px-2"}>
         <ModalHeader className={"font-normal"}></ModalHeader>
-        <ModalBody>
+        <ModalBody className={scrollbarStyles.scrollbar}>
           {isLoading && <Spinner />}
           <div className={"flex flex-col gap-4"}>{renderData(data)}</div>
         </ModalBody>

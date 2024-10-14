@@ -17,6 +17,8 @@ export interface TableActionProperty {
   type: "view" | "edit" | "delete";
   query: QueryData | null;
   parameters: { name: string; columnKey: string; value: string }[];
+  titleText?: string;
+  questionText?: string;
   modalId?: string;
 }
 
