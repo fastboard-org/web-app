@@ -143,10 +143,12 @@ const FastboardAICardsPropertiesComponent = ({
               className={"p-3"}
               placement={"bottom"}
             >
-              <RiQuestionLine
-                className={"text-foreground-500 mb-1"}
-                size={15}
-              />
+              <div>
+                <RiQuestionLine
+                  className={"text-foreground-500 mb-1"}
+                  size={15}
+                />
+              </div>
             </Tooltip>
           </div>
         }
