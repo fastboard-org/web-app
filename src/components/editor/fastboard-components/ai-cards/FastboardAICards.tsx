@@ -1,6 +1,4 @@
-import useData from "@/hooks/useData";
 import { ComponentId, ComponentType } from "@/types/editor";
-import useDashboard from "@/hooks/dashboards/useDashboard";
 import { FastboardAICardsProperties } from "@/types/editor/ai-cards-types";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import {
@@ -16,6 +14,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { CiSearch } from "react-icons/ci";
+import { toast } from "sonner";
 
 const CustomCard = ({
   title,
@@ -109,16 +108,12 @@ export default function FastboardAICards({
     cardsPerRow,
   } = properties;
 
-  const {
-    execute,
-    reset,
-    data,
-    isPending,
-    isSuccess: isExecuteQuerySuccess,
-    isError: isExecuteQueryError,
-    error: executeQueryError,
-  } = useExecuteQuery({
+  const { execute, data, isPending } = useExecuteQuery({
     dashboardId: dashboardId as string,
+    onError: (error) => {
+      console.error("Error executing query", error);
+      toast.error("Error fetching data, try again later.");
+    },
   });
 
   const handleSearch = () => {

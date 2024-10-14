@@ -6,11 +6,13 @@ import {
   Code,
   Input,
   Slider,
+  Tooltip,
 } from "@nextui-org/react";
 import { FastboardAICardsProperties } from "@/types/editor/ai-cards-types";
 import { queryToQueryData } from "@/lib/rest-queries";
 import { QueryType } from "@/types/connections";
 import QuerySelection from "@/components/editor/QuerySelection";
+import { RiQuestionLine } from "react-icons/ri";
 
 const FastboardAICardsPropertiesComponent = ({
   properties,
@@ -128,17 +130,32 @@ const FastboardAICardsPropertiesComponent = ({
 
       <AccordionItem
         key="fields"
-        title="Fields"
+        title={
+          <div className={"flex items-center gap-2"}>
+            Fields
+            <Tooltip
+              content={
+                <p className={""}>
+                  You can access inner fields by using <Code>"."</Code> <br />
+                  E.g. <Code>user.name</Code>
+                </p>
+              }
+              className={"p-3"}
+              placement={"bottom"}
+            >
+              <RiQuestionLine
+                className={"text-foreground-500 mb-1"}
+                size={15}
+              />
+            </Tooltip>
+          </div>
+        }
         className="pb-2"
         classNames={{
           title: "font-medium",
         }}
       >
         <div className="flex flex-col gap-5">
-          <p className={""}>
-            You can access inner fields by using <Code>"."</Code> <br />
-            E.g. <Code>user.name</Code>
-          </p>
           <Input
             label="Card Title"
             labelPlacement="outside"
@@ -205,7 +222,7 @@ const FastboardAICardsPropertiesComponent = ({
         <div className="flex flex-col gap-3 overflow-hidden">
           <div>
             <p className="text-small mb-2">Card Layout</p>
-            <ButtonGroup className="w-full">
+            <ButtonGroup className="w-full" size={"sm"}>
               <Button
                 onClick={() => {
                   onValueChange({
