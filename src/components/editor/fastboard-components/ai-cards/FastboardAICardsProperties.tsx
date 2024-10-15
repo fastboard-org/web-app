@@ -31,7 +31,9 @@ const FastboardAICardsPropertiesComponent = ({
     cardSubtitleField,
     cardImageField,
     cardLinkField,
+    cardTooltipField,
     cardsPerRow,
+    cardsHeight,
   } = properties;
 
   return (
@@ -206,11 +208,19 @@ const FastboardAICardsPropertiesComponent = ({
               });
             }}
           />
+          <Input
+            label="Card Tooltip"
+            labelPlacement="outside"
+            placeholder="Enter a field"
+            value={cardTooltipField}
+            onValueChange={(value) => {
+              onValueChange({
+                ...properties,
+                cardTooltipField: value,
+              });
+            }}
+          />
         </div>
-
-        <div className="flex flex-col gap-5"></div>
-
-        <div className="flex flex-col gap-5  overflow-x-hidden"></div>
       </AccordionItem>
 
       <AccordionItem
@@ -268,6 +278,21 @@ const FastboardAICardsPropertiesComponent = ({
               onValueChange({
                 ...properties,
                 cardsPerRow: selectedValue,
+              });
+            }}
+          />
+          <Slider
+            label="Cards height"
+            step={100}
+            minValue={100}
+            maxValue={700}
+            defaultValue={200}
+            value={cardsHeight}
+            onChange={(e) => {
+              const selectedValue = e as number;
+              onValueChange({
+                ...properties,
+                cardsHeight: selectedValue,
               });
             }}
           />

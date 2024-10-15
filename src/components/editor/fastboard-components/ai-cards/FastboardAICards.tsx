@@ -8,6 +8,8 @@ import {
   CardHeader,
   Input,
   Image,
+  Code,
+  Tooltip,
 } from "@nextui-org/react";
 import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import { useParams } from "next/navigation";
@@ -15,27 +17,32 @@ import { useState } from "react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { CiSearch } from "react-icons/ci";
 import { toast } from "sonner";
+import { RiQuestionLine } from "react-icons/ri";
 
 const CustomCard = ({
   title,
   subtitle,
   image,
   link,
+  tooltip,
   layout,
   cardsPerRow,
+  cardHeight = 200,
 }: {
   title: string;
   subtitle: string;
   image: string;
   link: string;
+  tooltip?: string;
   layout: "regular" | "irregular";
   cardsPerRow: number;
+  cardHeight?: number;
 }) => {
   const cardWidth = 100 / cardsPerRow - 1 + "%";
 
   return (
     <Card
-      className="py-4"
+      className="py-4 relative card"
       style={{
         width: layout === "irregular" ? "fit-content" : cardWidth,
         maxWidth: layout === "irregular" ? "45%" : "unset",
@@ -47,6 +54,17 @@ const CustomCard = ({
         }
       }}
     >
+      {tooltip && (
+        <Tooltip
+          content={<p className={"max-w-[250px]"}>{tooltip}</p>}
+          className={"p-5"}
+          placement={"bottom"}
+        >
+          <div className={"absolute right-4 z-[1000]"}>
+            <RiQuestionLine className={"text-foreground-500 mb-1"} size={20} />
+          </div>
+        </Tooltip>
+      )}
       <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
         <p className="text-tiny uppercase font-bold text-default-500">
           {subtitle}
@@ -62,7 +80,7 @@ const CustomCard = ({
             className="object-cover rounded-xl"
             src={image}
             width={"100%"}
-            height={200}
+            height={cardHeight}
           />
         )}
       </CardBody>
@@ -104,8 +122,10 @@ export default function FastboardAICards({
     cardSubtitleField,
     cardImageField,
     cardLinkField,
+    cardTooltipField,
     cardLayout,
     cardsPerRow,
+    cardsHeight,
   } = properties;
 
   const { execute, data, isPending } = useExecuteQuery({
@@ -192,8 +212,10 @@ export default function FastboardAICards({
                 subtitle={getItemValue(item, cardSubtitleField)}
                 image={getItemValue(item, cardImageField)}
                 link={getItemValue(item, cardLinkField)}
+                tooltip={getItemValue(item, cardTooltipField)}
                 layout={cardLayout}
                 cardsPerRow={cardsPerRow}
+                cardHeight={cardsHeight}
               />
             ))}
             {(!data?.body || data?.body?.length === 0) && (
