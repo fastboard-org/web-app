@@ -59,7 +59,7 @@ const VectorSearchTabs = ({
 
   const [selectedTab, setSelectedTab] = useState("config");
   const [accordionItemOpen, setAccordionItemOpen] = useState(
-    new Set<string>(["1"])
+    new Set<string>(["1"]),
   );
 
   const [firstStepLoading, setFirstStepLoading] = useState(false);
@@ -220,6 +220,7 @@ const VectorSearchTabs = ({
                   setFirstStepLoading(true);
                   handleSave({
                     index_created: true,
+                    num_candidates: 100,
                   });
                 }}
                 isLoading={firstStepLoading}

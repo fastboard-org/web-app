@@ -45,8 +45,11 @@ export const getQueryType = (query: Query) => {
     MONGO_METHOD.FIND_ONE_AND_UPDATE,
   ];
 
+  const AI_METHODS: QueryMethod[] = [MONGO_METHOD.VECTOR_SEARCH];
+
   if (GET_METHODS.includes(method)) return QueryType.GET;
   if (UPDATE_METHODS.includes(method)) return QueryType.UPDATE;
+  if (AI_METHODS.includes(method)) return QueryType.AI;
 
   return null;
 };
