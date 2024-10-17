@@ -3,59 +3,82 @@ import {
   CardHeader,
   CardBody,
   CardFooter,
-  Divider,
+  Tooltip,
+  Image,
 } from "@nextui-org/react";
-import CardEntry from "./CardEntry";
-import scrollbarStyles from "@/styles/scrollbar.module.css";
+import { RiQuestionLine } from "react-icons/ri";
 
 const CustomCard = ({
-  data,
+  title,
+  subtitle,
+  image,
+  footer,
+  layout,
   cardsPerRow,
-  className,
-  height,
+  cardHeight = 200,
+  link,
+  tooltip,
 }: {
-  data: {
-    header: string;
-    footer: string;
-    body: { key: string; value: string }[];
-  };
+  title: string;
+  subtitle: string;
+  image: string;
+  footer: string;
+  layout: "regular" | "irregular";
   cardsPerRow: number;
-  className?: string;
-  height?: string;
+  cardHeight?: number;
+  link?: string;
+  tooltip?: string;
 }) => {
-  const { header: headerText, footer: footerText, body: bodyData } = data;
-  const cardWidth = Math.floor(100 / cardsPerRow);
+  const cardWidth = 100 / cardsPerRow - 1 + "%";
 
   return (
-    <div
-      className={`flex px-2 py-2`}
-      style={{ width: `${cardWidth - 1}%`, height: height }}
+    <Card
+      className="py-4 relative card"
+      style={{
+        width: layout === "irregular" ? "fit-content" : cardWidth,
+        maxWidth: layout === "irregular" ? "45%" : "unset",
+      }}
+      isPressable={Boolean(link)}
+      onClick={() => {
+        if (link) {
+          window.open(link, "_blank");
+        }
+      }}
     >
-      <Card
-        aria-label="Fastboard card component"
-        className="grow-0 h-full w-full max-h-full"
-      >
-        <CardHeader className="h-1/5 w-full flex justify-center items-center">
-          <p className="text-medium text-ellipsis overflow-hidden whitespace-nowrap">
-            {headerText}
-          </p>
-        </CardHeader>
-        <Divider />
-        <CardBody
-          className={`shrink h-4/6 text-small ${scrollbarStyles.scrollbar}`}
+      {tooltip && (
+        <Tooltip
+          content={<p className={"max-w-[250px]"}>{tooltip}</p>}
+          className={"p-5"}
+          placement={"bottom"}
         >
-          <div className="flex flex-col">
-            {bodyData.map((item, index) => (
-              <CardEntry key={index} entry={item} />
-            ))}
+          <div className={"absolute right-4 z-[1000]"}>
+            <RiQuestionLine className={"text-foreground-500 mb-1"} size={20} />
           </div>
-        </CardBody>
-        <Divider />
-        <CardFooter className="shrink h-1/6 flex justify-start items-center text-tiny">
-          {footerText}
-        </CardFooter>
-      </Card>
-    </div>
+        </Tooltip>
+      )}
+      <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+        <p className="text-tiny uppercase font-bold text-default-500">
+          {subtitle}
+        </p>
+        <h4 className="font-bold text-large truncate w-full text-start">
+          {title}
+        </h4>
+      </CardHeader>
+      <CardBody className="overflow-visible py-2">
+        {image && (
+          <Image
+            alt="Image"
+            className="object-cover rounded-xl"
+            src={image}
+            width={"100%"}
+            height={cardHeight}
+          />
+        )}
+      </CardBody>
+      <CardFooter className="shrink h-1/6 flex justify-start items-center text-tiny">
+        {footer}
+      </CardFooter>
+    </Card>
   );
 };
 

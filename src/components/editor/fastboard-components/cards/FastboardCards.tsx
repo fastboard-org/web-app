@@ -10,7 +10,6 @@ import { useRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import { HTTP_METHOD } from "@/types/connections";
 
 export default function FastboardCards({
   id,
@@ -20,8 +19,20 @@ export default function FastboardCards({
   properties: FastboardCardsProperties;
 }) {
   const { updateComponentProperties } = useDashboard();
-  const { sourceQuery, emptyMessage, header, footer, body, cardsPerRow } =
-    properties;
+  const {
+    sourceQuery,
+    emptyMessage,
+    cardTitleField,
+    cardSubtitleField,
+    cardImageField,
+    cardFooterField,
+    cardLinkField,
+    cardTooltipField,
+    cardLayout,
+    cardsPerRow,
+    cardsHeight,
+    queryFields,
+  } = properties;
   const {
     data,
     keys,
@@ -41,7 +52,7 @@ export default function FastboardCards({
       return;
     }
 
-    if (body.length === 0) {
+    if (keys.length === 0) {
       setShouldUpdateCards(true);
     }
   }, [sourceQuery]);
@@ -52,11 +63,10 @@ export default function FastboardCards({
     }
     updateComponentProperties(id, {
       ...properties,
-      body: keys.map((key) => {
+      queryFields: keys.map((key) => {
         return {
-          key: key,
+          key,
           label: key,
-          visible: false,
         };
       }),
     });
@@ -69,11 +79,10 @@ export default function FastboardCards({
         ...previous,
         properties: {
           ...previous.properties,
-          body: keys.map((key) => {
+          queryFields: keys.map((key) => {
             return {
-              key: key,
+              key,
               label: key,
-              visible: false,
             };
           }),
         },
@@ -108,24 +117,13 @@ export default function FastboardCards({
   }
 
   function mapItem(item: any) {
-    const finalBody = body
-      .filter((field) => field.visible)
-      .map((field) => {
-        return {
-          key: field.label,
-          value: item[field.key],
-        };
-      });
     return {
-      header: header ? item[header] : "Header",
-      footer: footer ? item[footer] : "Footer",
-      body:
-        finalBody.length !== 0
-          ? finalBody
-          : [
-              { key: "key1", value: "value1" },
-              { key: "key2", value: "value2" },
-            ],
+      title: cardTitleField ? item[cardTitleField] : "Title",
+      subtitle: cardSubtitleField ? item[cardSubtitleField] : "Subtitle",
+      image: cardImageField ? item[cardImageField] : null,
+      footer: cardFooterField ? item[cardFooterField] : "Footer",
+      link: cardLinkField ? item[cardLinkField] : null,
+      tooltip: cardTooltipField ? item[cardTooltipField] : null,
     };
   }
 
@@ -136,14 +134,20 @@ export default function FastboardCards({
       className={`w-full h-full ${scrollbarStyles.scrollbar}`}
     >
       <div
-        className={`flex flex-wrap justify-between pr-2 overflow-auto h-full w-full ${scrollbarStyles.scrollbar}`}
+        className={`flex flex-wrap justify-between gap-y-5 pr-2 overflow-auto h-full w-full ${scrollbarStyles.scrollbar}`}
       >
         {data.map((item: any, index: number) => (
           <CustomCard
             key={index}
+            title={mapItem(item).title}
+            subtitle={mapItem(item).subtitle}
+            image={mapItem(item).image}
+            footer={mapItem(item).footer}
+            layout={cardLayout}
             cardsPerRow={cardsPerRow || 3}
-            data={mapItem(item)}
-            height="320px"
+            cardHeight={cardsHeight || 200}
+            link={mapItem(item).link}
+            tooltip={mapItem(item).tooltip}
           />
         ))}
       </div>
