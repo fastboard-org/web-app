@@ -18,6 +18,13 @@ export enum ComponentType {
   Header = "header",
 }
 
+export const DraggableSections = {
+  "Data visualization": [ComponentType.Table, ComponentType.Cards],
+  Form: [ComponentType.Form],
+  Graphs: [ComponentType.GroupChart],
+  AI: [ComponentType.AiCards],
+};
+
 export type ComponentId = string;
 
 export interface FastboardComponent {
