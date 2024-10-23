@@ -10,6 +10,7 @@ export class FastboardGroupChartProperties {
   emptyMessage: string = "No data to display.";
   minimizedLabels: boolean = false;
   barsColor: Color = Color.primary();
+  layout: "bar" | "pie" = "bar";
 
   static default(): FastboardGroupChartProperties {
     return new FastboardGroupChartProperties();

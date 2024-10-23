@@ -4,7 +4,15 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Label,
+  Pie,
+  PieChart,
+  XAxis,
+} from "recharts";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
 import useData from "@/hooks/useData";
@@ -12,8 +20,9 @@ import { ComponentId, ComponentType } from "@/types/editor";
 import { useEffect } from "react";
 import { useSetRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
-import { QueryMethod } from "@/types/connections";
 import { useTheme } from "next-themes";
+import { generatePalette } from "@/lib/colors";
+import { Card } from "@nextui-org/react";
 
 const groupData = (data: any[], groupBy: string) => {
   return data.reduce((acc, item) => {
@@ -24,6 +33,163 @@ const groupData = (data: any[], groupBy: string) => {
     acc[key].push(item);
     return acc;
   }, {});
+};
+
+const BarChartComponent = ({
+  chartConfig,
+  groupBy,
+  countedData,
+  minimizedLabels,
+  theme,
+  barsColor,
+}: {
+  chartConfig: ChartConfig;
+  groupBy: string;
+  countedData: any[];
+  minimizedLabels: boolean;
+  theme: string | undefined;
+  barsColor: { light: string; dark: string };
+}) => {
+  return (
+    <ChartContainer config={chartConfig} className={"w-full h-full"}>
+      <BarChart accessibilityLayer data={groupBy ? countedData : []}>
+        <CartesianGrid
+          vertical={false}
+          stroke={"hsl(var(--nextui-foreground-400))"}
+          strokeOpacity={0.2}
+        />
+        <XAxis
+          dataKey={"label"}
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          tickFormatter={
+            minimizedLabels ? (value) => value.slice(0, 5) + "..." : undefined
+          }
+        />
+
+        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+        <Bar
+          dataKey="count"
+          fill={theme === "light" ? barsColor.light : barsColor.dark}
+          radius={8}
+        />
+      </BarChart>
+    </ChartContainer>
+  );
+};
+
+const PieChartComponent = ({
+  countedData,
+  groupBy,
+  minimizedLabels,
+  theme,
+  barsColor,
+}: {
+  countedData: any[];
+  groupBy: string;
+  minimizedLabels: boolean;
+  theme: string | undefined;
+  barsColor: { light: string; dark: string };
+}) => {
+  const pieChartConfig = Object.values(countedData).reduce((acc, item) => {
+    return {
+      ...acc,
+      [item.label]: {
+        label: item.label,
+        color: "hsl(var(--chart-1))",
+      },
+    };
+  }, {}) satisfies ChartConfig;
+
+  const baseColor = theme === "light" ? barsColor.light : barsColor.dark;
+
+  const paletteSize = Object.keys(countedData).length;
+
+  const palette = generatePalette(baseColor, paletteSize);
+
+  return (
+    <Card className={"w-full h-full"}>
+      <ChartContainer config={pieChartConfig} className={"w-full h-full"}>
+        <PieChart>
+          <Pie
+            className={"w-1/2"}
+            data={
+              groupBy
+                ? countedData.map((data, index) => {
+                    return {
+                      ...data,
+                      fill: palette[index],
+                    };
+                  })
+                : []
+            }
+            paddingAngle={1}
+            label={
+              !minimizedLabels
+                ? ({ cx, cy, midAngle, outerRadius, index }) => {
+                    const RADIAN = Math.PI / 180;
+                    const radius = outerRadius * 1.15;
+                    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+                    return (
+                      <text
+                        x={x}
+                        y={y}
+                        fontSize={16}
+                        fill="currentColor"
+                        textAnchor={x > cx ? "start" : "end"}
+                        dominantBaseline="central"
+                      >
+                        {countedData[index].count}
+                      </text>
+                    );
+                  }
+                : undefined
+            }
+            dataKey="count"
+            nameKey={"label"}
+            innerRadius={"50%"}
+          >
+            <Label
+              content={({ viewBox }) => {
+                if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                  return (
+                    <text
+                      x={viewBox.cx}
+                      y={viewBox.cy}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      <tspan
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        className="fill-foreground text-5xl"
+                      >
+                        {countedData.reduce((acc, item) => acc + item.count, 0)}
+                      </tspan>
+                      <tspan
+                        x={viewBox.cx}
+                        y={(viewBox.cy || 0) + 35}
+                        className="fill-foreground text-lg"
+                      >
+                        Total
+                      </tspan>
+                    </text>
+                  );
+                }
+              }}
+            />
+          </Pie>
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent nameKey={"label"} />}
+          />
+        </PieChart>
+      </ChartContainer>
+    </Card>
+  );
 };
 
 const FastboardGroupChart = ({
@@ -44,6 +210,7 @@ const FastboardGroupChart = ({
     emptyMessage,
     minimizedLabels,
     barsColor,
+    layout,
   } = properties;
   const setProperties = useSetRecoilState(propertiesDrawerState);
 
@@ -69,7 +236,7 @@ const FastboardGroupChart = ({
   }, [keys]);
 
   const chartConfig = {
-    desktop: {
+    [groupBy]: {
       label: groupBy,
       color: "hsl(var(--chart-1))",
     },
@@ -98,33 +265,25 @@ const FastboardGroupChart = ({
           className={"w-full h-[calc(100%-65px)] rounded-xl"}
           onlyRenderOnLoad
         >
-          <ChartContainer config={chartConfig} className={"w-full h-full"}>
-            <BarChart accessibilityLayer data={groupBy ? countedData : []}>
-              <CartesianGrid
-                vertical={false}
-                stroke={"hsl(var(--nextui-foreground-400))"}
-                strokeOpacity={0.2}
-              />
-              <XAxis
-                dataKey={"label"}
-                tickLine={false}
-                tickMargin={10}
-                axisLine={false}
-                tickFormatter={
-                  minimizedLabels
-                    ? (value) => value.slice(0, 5) + "..."
-                    : undefined
-                }
-              />
-
-              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-              <Bar
-                dataKey="count"
-                fill={theme === "light" ? barsColor.light : barsColor.dark}
-                radius={8}
-              />
-            </BarChart>
-          </ChartContainer>
+          {layout === "bar" && (
+            <BarChartComponent
+              chartConfig={chartConfig}
+              groupBy={groupBy}
+              countedData={countedData}
+              minimizedLabels={minimizedLabels}
+              theme={theme}
+              barsColor={barsColor}
+            />
+          )}
+          {layout === "pie" && (
+            <PieChartComponent
+              groupBy={groupBy}
+              countedData={countedData}
+              minimizedLabels={minimizedLabels}
+              theme={theme}
+              barsColor={barsColor}
+            />
+          )}
         </CustomSkeleton>
 
         {!dataFetching && data.length === 0 && (

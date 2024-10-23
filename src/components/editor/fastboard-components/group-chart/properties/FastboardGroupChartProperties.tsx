@@ -1,5 +1,12 @@
 import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
-import { Accordion, AccordionItem, Checkbox, Input } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  ButtonGroup,
+  Checkbox,
+  Input,
+} from "@nextui-org/react";
 import QuerySelection from "@/components/editor/QuerySelection";
 import GroupKeySelect from "@/components/editor/fastboard-components/group-chart/properties/GroupKeySelect";
 import { QueryType } from "@/types/connections";
@@ -25,6 +32,7 @@ const FastboardGroupChartPropertiesComponent = ({
     subtitle,
     minimizedLabels,
     barsColor,
+    layout,
   } = properties;
 
   return (
@@ -118,7 +126,37 @@ const FastboardGroupChartPropertiesComponent = ({
         </div>
       </AccordionItem>
       <AccordionItem key="style" title="Style" className="pb-2">
+        <div>
+          <p className="text-small mb-2">Layout</p>
+          <ButtonGroup className="w-full" size={"sm"}>
+            <Button
+              onClick={() => {
+                onValueChange({
+                  ...properties,
+                  layout: "bar",
+                });
+              }}
+              className={"w-full"}
+              color={layout === "bar" ? "primary" : "default"}
+            >
+              Bar
+            </Button>
+            <Button
+              onClick={() => {
+                onValueChange({
+                  ...properties,
+                  layout: "pie",
+                });
+              }}
+              className={"w-full"}
+              color={layout === "pie" ? "primary" : "default"}
+            >
+              Pie
+            </Button>
+          </ButtonGroup>
+        </div>
         <Checkbox
+          className="my-2"
           defaultSelected={minimizedLabels}
           onChange={(e) => {
             onValueChange({
@@ -130,7 +168,7 @@ const FastboardGroupChartPropertiesComponent = ({
           Minimized labels
         </Checkbox>
         <ColorPicker
-          label="Bar color"
+          label="Color"
           initialColor={theme === "light" ? barsColor.light : barsColor.dark}
           onColorChange={(color) => {
             if (theme === "light") {
