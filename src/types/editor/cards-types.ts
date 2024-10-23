@@ -3,6 +3,7 @@ import { QueryData } from "../connections";
 export class FastboardCardsProperties {
   sourceQuery: QueryData | null = null;
   emptyMessage: string = "No cards to display";
+  cardsTitle: string = "";
   cardTitleField: string = "";
   cardSubtitleField: string = "";
   cardImageField: string = "";

@@ -6,6 +6,7 @@ import {
   Tooltip,
   Image,
 } from "@nextui-org/react";
+import { useEffect, useState } from "react";
 import { RiQuestionLine } from "react-icons/ri";
 
 const CustomCard = ({
@@ -30,6 +31,12 @@ const CustomCard = ({
   tooltip?: string;
 }) => {
   const cardWidth = 100 / cardsPerRow - 1 + "%";
+
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [image]);
 
   return (
     <Card
@@ -57,21 +64,25 @@ const CustomCard = ({
         </Tooltip>
       )}
       <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-        <p className="text-tiny uppercase font-bold text-default-500">
-          {subtitle}
-        </p>
         <h4 className="font-bold text-large truncate w-full text-start">
           {title}
         </h4>
+        <p className="text-tiny uppercase font-bold text-default-500">
+          {subtitle}
+        </p>
       </CardHeader>
       <CardBody className="overflow-visible py-2">
         {image && (
           <Image
             alt="Image"
-            className="object-cover rounded-xl"
-            src={image}
+            // className="object-cover rounded-xl"
+            className={`rounded-xl ${
+              imageError ? "object-contain dark:invert" : "object-cover"
+            }`}
+            src={imageError ? "/ImageErrorImage.svg" : image}
             width={"100%"}
             height={cardHeight}
+            onError={() => setImageError(true)}
           />
         )}
       </CardBody>

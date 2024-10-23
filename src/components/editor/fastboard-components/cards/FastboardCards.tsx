@@ -22,6 +22,7 @@ export default function FastboardCards({
   const {
     sourceQuery,
     emptyMessage,
+    cardsTitle,
     cardTitleField,
     cardSubtitleField,
     cardImageField,
@@ -52,9 +53,7 @@ export default function FastboardCards({
       return;
     }
 
-    if (keys.length === 0) {
-      setShouldUpdateCards(true);
-    }
+    setShouldUpdateCards(true);
   }, [sourceQuery]);
 
   useEffect(() => {
@@ -118,10 +117,10 @@ export default function FastboardCards({
 
   function mapItem(item: any) {
     return {
-      title: cardTitleField ? item[cardTitleField] : "Title",
-      subtitle: cardSubtitleField ? item[cardSubtitleField] : "Subtitle",
+      title: cardTitleField ? item[cardTitleField] : "",
+      subtitle: cardSubtitleField ? item[cardSubtitleField] : "",
       image: cardImageField ? item[cardImageField] : null,
-      footer: cardFooterField ? item[cardFooterField] : "Footer",
+      footer: cardFooterField ? item[cardFooterField] : "",
       link: cardLinkField ? item[cardLinkField] : null,
       tooltip: cardTooltipField ? item[cardTooltipField] : null,
     };
@@ -133,6 +132,7 @@ export default function FastboardCards({
       onlyRenderOnLoad
       className={`w-full h-full ${scrollbarStyles.scrollbar}`}
     >
+      <h2 className="text-[40px]">{cardsTitle}</h2>
       <div
         className={`flex flex-wrap justify-between gap-y-5 pr-2 overflow-auto h-full w-full ${scrollbarStyles.scrollbar}`}
       >

@@ -6,6 +6,8 @@ import {
   Select,
   SelectItem,
   Slider,
+  Spacer,
+  Input,
 } from "@nextui-org/react";
 import { FastboardCardsProperties } from "@/types/editor/cards-types";
 import QuerySelection from "../../QuerySelection";
@@ -22,6 +24,7 @@ const FastboardCardsPropertiesComponent = ({
   const {
     sourceQuery,
     emptyMessage,
+    cardsTitle,
     cardTitleField,
     cardSubtitleField,
     cardImageField,
@@ -60,6 +63,20 @@ const FastboardCardsPropertiesComponent = ({
             type={QueryType.GET}
           />
         </div>
+
+        <Spacer y={2} />
+        <Input
+          label="Title"
+          labelPlacement="outside"
+          placeholder="Enter title"
+          value={cardsTitle}
+          onValueChange={(value) => {
+            onValueChange({
+              ...properties,
+              cardsTitle: value,
+            });
+          }}
+        />
       </AccordionItem>
 
       <AccordionItem
