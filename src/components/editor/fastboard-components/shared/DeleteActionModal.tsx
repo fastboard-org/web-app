@@ -5,16 +5,24 @@ export default function DeleteActionModal({
   onClose,
   onConfirm,
   onCancel,
+  titleText,
+  questionText,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
   onCancel?: () => void;
+  titleText?: string;
+  questionText?: string;
 }) {
   return (
     <QuestionModal
-      titleText="Delete item"
-      questionText="Are you sure you want to delete this item?"
+      titleText={titleText !== undefined ? titleText : "Delete item"}
+      questionText={
+        questionText !== undefined
+          ? questionText
+          : "Are you sure you want to delete this item?"
+      }
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={onConfirm}

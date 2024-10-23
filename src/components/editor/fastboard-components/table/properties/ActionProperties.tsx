@@ -23,7 +23,7 @@ export function ActionProperties({
   columns: Column[];
   onChange: (action: TableActionProperty) => void;
 }) {
-  const { label, query, parameters } = action;
+  const { label, titleText, questionText, query, parameters } = action;
 
   return (
     <div className="flex flex-col w-full gap-y-2">
@@ -39,6 +39,35 @@ export function ActionProperties({
           });
         }}
       />
+      {action.type === "delete" && (
+        <div className="flex flex-col gap-y-2">
+          <Input
+            label="Title text"
+            labelPlacement="outside"
+            placeholder="Set modal title text"
+            value={titleText}
+            onValueChange={(newValue) => {
+              onChange({
+                ...action,
+                titleText: newValue,
+              });
+            }}
+          />
+          <Input
+            label="Question text"
+            labelPlacement="outside"
+            placeholder="Set question text"
+            value={questionText}
+            onValueChange={(newValue) => {
+              onChange({
+                ...action,
+                questionText: newValue,
+              });
+            }}
+          />
+        </div>
+      )}
+
       <QuerySelection
         selectedQueryId={query?.queryId || ""}
         onQuerySelect={(query) => {
@@ -50,7 +79,7 @@ export function ActionProperties({
                 name: p.name,
                 columnKey: "",
                 value: p.preview,
-              }),
+              })
             ),
           });
         }}

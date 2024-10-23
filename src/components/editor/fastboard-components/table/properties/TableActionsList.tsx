@@ -35,6 +35,11 @@ export default function TableActionsList({
     const newAction: TableActionProperty = {
       key: `${type}-action`,
       label: name,
+      titleText: type === "delete" ? "Delete item" : undefined,
+      questionText:
+        type === "delete"
+          ? "Are you sure you want to delete this item?"
+          : undefined,
       type,
       query: null,
       parameters: [],
