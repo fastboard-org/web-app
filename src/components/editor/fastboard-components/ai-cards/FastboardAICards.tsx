@@ -156,11 +156,11 @@ export default function FastboardAICards({
   };
 
   return (
-    <div className={"w-full h-full"}>
+    <div className={"w-full h-full overflow-hidden"}>
       <div
         className={"w-full h-full flex flex-col p-3 relative justify-between"}
       >
-        <div className={"flex gap-3 flex-col h-[20%]"}>
+        <div className={"flex gap-3 flex-col h-[auto] mb-2"}>
           {title && <h3 className={"text-4xl"}>{title}</h3>}
           <div className={"flex items-end justify-between"}>
             <Input
@@ -219,10 +219,8 @@ export default function FastboardAICards({
               />
             ))}
             {(!data?.body || data?.body?.length === 0) && (
-              <div className={"w-full h-full flex justify-center"}>
-                <p className={"mt-[15%] text-3xl h-[fit-content]"}>
-                  {emptyMessage}
-                </p>
+              <div className={"w-full h-full flex justify-center items-center"}>
+                <p className={"text-3xl h-[fit-content]"}>{emptyMessage}</p>
               </div>
             )}
           </div>
