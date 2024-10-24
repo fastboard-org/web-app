@@ -109,7 +109,7 @@ const PieChartComponent = ({
   const palette = generatePalette(baseColor, paletteSize);
 
   return (
-    <Card className={"w-full h-full"}>
+    <div className={"w-full h-full"}>
       <ChartContainer config={pieChartConfig} className={"w-full h-full"}>
         <PieChart>
           <Pie
@@ -188,7 +188,7 @@ const PieChartComponent = ({
           />
         </PieChart>
       </ChartContainer>
-    </Card>
+    </div>
   );
 };
 
