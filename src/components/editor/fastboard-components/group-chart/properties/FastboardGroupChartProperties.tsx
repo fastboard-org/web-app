@@ -13,6 +13,7 @@ import { QueryType } from "@/types/connections";
 import ColorPicker from "@/components/shared/ColorPicker";
 import { useTheme } from "next-themes";
 import { queryToQueryData } from "@/lib/rest-queries";
+import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
 
 const FastboardGroupChartPropertiesComponent = ({
   properties,
@@ -155,18 +156,18 @@ const FastboardGroupChartPropertiesComponent = ({
             </Button>
           </ButtonGroup>
         </div>
-        <Checkbox
-          className="my-2"
-          defaultSelected={minimizedLabels}
-          onChange={(e) => {
-            onValueChange({
-              ...properties,
-              minimizedLabels: e.target.checked,
-            });
-          }}
-        >
-          Minimized labels
-        </Checkbox>
+        <div className={"my-3"}>
+          <CheckBoxProperty
+            label={"Minimized labels"}
+            isSelected={minimizedLabels}
+            onValueChange={(value) => {
+              onValueChange({
+                ...properties,
+                minimizedLabels: value,
+              });
+            }}
+          />
+        </div>
         <ColorPicker
           label="Color"
           initialColor={theme === "light" ? barsColor.light : barsColor.dark}
