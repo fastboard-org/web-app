@@ -126,15 +126,22 @@ export default function FastboardCards({
     };
   }
 
+  const cardsContainerHeight = cardsTitle ? "90%" : "100%";
+
   return (
     <CustomSkeleton
       isLoaded={!dataFetching}
       onlyRenderOnLoad
       className={`w-full h-full ${scrollbarStyles.scrollbar}`}
     >
-      <h2 className="text-[40px]">{cardsTitle}</h2>
+      {cardsTitle && (
+        <h2 className="text-[40px]" style={{ height: "10%" }}>
+          {cardsTitle}
+        </h2>
+      )}
       <div
         className={`flex flex-wrap justify-between gap-y-5 pr-2 overflow-auto h-full w-full ${scrollbarStyles.scrollbar}`}
+        style={{ height: cardsContainerHeight }}
       >
         {data.map((item: any, index: number) => (
           <CustomCard

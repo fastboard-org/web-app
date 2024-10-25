@@ -58,6 +58,12 @@ const FastboardCardsPropertiesComponent = ({
               onValueChange({
                 ...properties,
                 sourceQuery: queryToQueryData(sourceQuery),
+                cardTitleField: "",
+                cardSubtitleField: "",
+                cardImageField: "",
+                cardFooterField: "",
+                cardLinkField: "",
+                cardTooltipField: "",
               });
             }}
             type={QueryType.GET}
