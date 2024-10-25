@@ -221,6 +221,7 @@ const VectorSearchTabs = ({
                   handleSave({
                     index_created: true,
                     num_candidates: 100,
+                    limit: 5,
                   });
                 }}
                 isLoading={firstStepLoading}
