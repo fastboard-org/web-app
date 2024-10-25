@@ -10,7 +10,6 @@ import { useRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import { HTTP_METHOD } from "@/types/connections";
 
 export default function FastboardCards({
   id,
@@ -20,8 +19,21 @@ export default function FastboardCards({
   properties: FastboardCardsProperties;
 }) {
   const { updateComponentProperties } = useDashboard();
-  const { sourceQuery, emptyMessage, header, footer, body, cardsPerRow } =
-    properties;
+  const {
+    sourceQuery,
+    emptyMessage,
+    cardsTitle,
+    cardTitleField,
+    cardSubtitleField,
+    cardImageField,
+    cardFooterField,
+    cardLinkField,
+    cardTooltipField,
+    cardLayout,
+    cardsPerRow,
+    cardsHeight,
+    queryFields,
+  } = properties;
   const {
     data,
     keys,
@@ -41,9 +53,7 @@ export default function FastboardCards({
       return;
     }
 
-    if (body.length === 0) {
-      setShouldUpdateCards(true);
-    }
+    setShouldUpdateCards(true);
   }, [sourceQuery]);
 
   useEffect(() => {
@@ -52,11 +62,10 @@ export default function FastboardCards({
     }
     updateComponentProperties(id, {
       ...properties,
-      body: keys.map((key) => {
+      queryFields: keys.map((key) => {
         return {
-          key: key,
+          key,
           label: key,
-          visible: false,
         };
       }),
     });
@@ -69,11 +78,10 @@ export default function FastboardCards({
         ...previous,
         properties: {
           ...previous.properties,
-          body: keys.map((key) => {
+          queryFields: keys.map((key) => {
             return {
-              key: key,
+              key,
               label: key,
-              visible: false,
             };
           }),
         },
@@ -108,26 +116,17 @@ export default function FastboardCards({
   }
 
   function mapItem(item: any) {
-    const finalBody = body
-      .filter((field) => field.visible)
-      .map((field) => {
-        return {
-          key: field.label,
-          value: item[field.key],
-        };
-      });
     return {
-      header: header ? item[header] : "Header",
-      footer: footer ? item[footer] : "Footer",
-      body:
-        finalBody.length !== 0
-          ? finalBody
-          : [
-              { key: "key1", value: "value1" },
-              { key: "key2", value: "value2" },
-            ],
+      title: cardTitleField ? item[cardTitleField] : "",
+      subtitle: cardSubtitleField ? item[cardSubtitleField] : "",
+      image: cardImageField ? item[cardImageField] : null,
+      footer: cardFooterField ? item[cardFooterField] : "",
+      link: cardLinkField ? item[cardLinkField] : null,
+      tooltip: cardTooltipField ? item[cardTooltipField] : null,
     };
   }
+
+  const cardsContainerHeight = cardsTitle ? "90%" : "100%";
 
   return (
     <CustomSkeleton
@@ -135,15 +134,27 @@ export default function FastboardCards({
       onlyRenderOnLoad
       className={`w-full h-full ${scrollbarStyles.scrollbar}`}
     >
+      {cardsTitle && (
+        <h2 className="text-[40px]" style={{ height: "10%" }}>
+          {cardsTitle}
+        </h2>
+      )}
       <div
-        className={`flex flex-wrap justify-between pr-2 overflow-auto h-full w-full ${scrollbarStyles.scrollbar}`}
+        className={`flex flex-wrap justify-between gap-y-5 pr-2 overflow-auto h-full w-full ${scrollbarStyles.scrollbar}`}
+        style={{ height: cardsContainerHeight }}
       >
         {data.map((item: any, index: number) => (
           <CustomCard
             key={index}
+            title={mapItem(item).title}
+            subtitle={mapItem(item).subtitle}
+            image={mapItem(item).image}
+            footer={mapItem(item).footer}
+            layout={cardLayout}
             cardsPerRow={cardsPerRow || 3}
-            data={mapItem(item)}
-            height="320px"
+            cardHeight={cardsHeight || 200}
+            link={mapItem(item).link}
+            tooltip={mapItem(item).tooltip}
           />
         ))}
       </div>
