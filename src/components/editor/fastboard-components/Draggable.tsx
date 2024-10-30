@@ -34,7 +34,9 @@ const Draggable = ({
       {...listeners}
       {...attributes}
       className={
-        "flex flex-col justify-center w-[46%] gap-2 " + customClassName
+        "flex flex-col justify-center w-[46%] gap-2  " +
+        (isDragging ? "opacity-50 " : "cursor-grab ") +
+        customClassName
       }
     >
       {children}

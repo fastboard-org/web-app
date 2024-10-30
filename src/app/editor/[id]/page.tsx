@@ -74,7 +74,7 @@ export default function Editor() {
           onDragStart={handleDragStart}
           onDragEnd={updateDashboardMetadata}
         >
-          <DragOverlay>
+          <DragOverlay className="cursor-grabbing ">
             {activeComponent && (
               <DraggableImage name={activeComponent} alt={activeComponent} />
             )}
