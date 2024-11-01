@@ -161,9 +161,7 @@ const CreateConnectionModal = ({
                 color="primary"
                 onPress={handleCreateConnection}
                 isLoading={loading}
-                isDisabled={
-                  !connectionType || !connectionName || !mainUrl.split("://")[1]
-                }
+                isDisabled={!connectionType || !connectionName || !mainUrl}
               >
                 Create
               </Button>
