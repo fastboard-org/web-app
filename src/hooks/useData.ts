@@ -16,7 +16,6 @@ const useData = (componentId: string, queryData: QueryData | null) => {
     refetchOnWindowFocus: false,
   });
   const [keys, setKeys] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
 
   const mapItem = (item: any) => {
     Object.keys(item).forEach((key) => {
