@@ -18,11 +18,10 @@ import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types"
 import useData from "@/hooks/useData";
 import { ComponentId, ComponentType } from "@/types/editor";
 import { useEffect } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { useTheme } from "next-themes";
 import { generatePalette } from "@/lib/colors";
-import { Card } from "@nextui-org/react";
 
 const groupData = (data: any[], groupBy: string) => {
   return data.reduce((acc, item) => {
@@ -197,8 +196,6 @@ const FastboardGroupChart = ({
   properties,
 }: {
   id: ComponentId;
-  layoutIndex?: number;
-  container?: string;
   properties: FastboardGroupChartProperties;
 }) => {
   const { theme } = useTheme();
@@ -213,6 +210,9 @@ const FastboardGroupChart = ({
     layout,
   } = properties;
   const setProperties = useSetRecoilState(propertiesDrawerState);
+  const propertiesDrawer = useRecoilValue(propertiesDrawerState);
+
+  const isSelected = propertiesDrawer.selectedComponentId === id;
 
   const {
     data,
@@ -222,7 +222,7 @@ const FastboardGroupChart = ({
   } = useData(`${ComponentType.GroupChart}-${id}`, sourceQueryData);
 
   useEffect(() => {
-    if (keys) {
+    if (keys && isSelected) {
       setProperties((prev) => {
         return {
           ...prev,
@@ -233,7 +233,7 @@ const FastboardGroupChart = ({
         };
       });
     }
-  }, [keys]);
+  }, [keys, isSelected]);
 
   const chartConfig = {
     [groupBy]: {
