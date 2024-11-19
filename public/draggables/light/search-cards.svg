@@ -2,9 +2,11 @@
 <rect x="0.25" y="0.25" width="199.5" height="118.5" rx="9.75" fill="white" stroke="url(#paint0_linear_19_2)" stroke-width="0.5"/>
 <rect x="10" y="33" width="56" height="70" rx="5" fill="#E2E2E5"/>
 <rect x="10" y="15" width="82" height="10" rx="3" fill="#E2E2E5"/>
-<rect x="155" y="15" width="33" height="10" rx="3" fill="#E2E2E5"/>
 <rect x="72" y="33" width="56" height="70" rx="5" fill="#E2E2E5"/>
 <rect x="134" y="33" width="56" height="70" rx="5" fill="#E2E2E5"/>
+<path d="M184.5 9L183.505 6.13703L181 5L183.505 3.86297L184.5 1L185.495 3.86297L188 5L185.495 6.13703L184.5 9Z" fill="#B8B8B9"/>
+<path d="M173.5 15L171.937 10.7055L168 9L171.937 7.29446L173.5 3L175.063 7.29446L179 9L175.063 10.7055L173.5 15Z" fill="#B8B8B9"/>
+<path d="M181 30L178.442 22.8426L172 20L178.442 17.1574L181 10L183.558 17.1574L190 20L183.558 22.8426L181 30Z" fill="#B8B8B9"/>
 <defs>
 <linearGradient id="paint0_linear_19_2" x1="206" y1="-4.50001" x2="2.49999" y2="116" gradientUnits="userSpaceOnUse">
 <stop stop-color="#EAEAEA"/>

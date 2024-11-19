@@ -15,9 +15,7 @@ export default function FastboardAICardsDraggable() {
       }}
       dragSnapToOrigin
       name={"Search Cards"}
-      customClassName={"relative"}
     >
-      <BsStars className={"absolute -right-3 -top-2 text-default"} size={25} />
       <DraggableImage name={"search-cards"} alt={"Search Cards"} />
     </Draggable>
   );
