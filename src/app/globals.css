@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+    html{
+        scroll-behavior: smooth !important;
+    }
+
     :root {
         --chart-1: var(--nextui-primary);
         --chart-2: 173 58% 39%;

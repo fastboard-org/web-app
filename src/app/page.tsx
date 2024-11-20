@@ -1,11 +1,18 @@
 "use client";
-import { motion } from "framer-motion";
-import { ArrowRight } from "iconsax-react";
-import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowDown2, ArrowRight } from "iconsax-react";
+import React, { useState } from "react";
+import Image from "next/image";
+import FadeUp from "@/components/shared/FadeUp";
+import { Button } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [firstDelay, setFirstDelay] = useState(0.4);
   const [secondDelay, setSecondDelay] = useState(0.8);
+  const [showArrow, setShowArrow] = useState(false);
+
+  const router = useRouter();
 
   return (
     <main
@@ -13,9 +20,35 @@ export default function Home() {
         background:
           "linear-gradient(0deg, rgba(135,190,252,0.7) 0%, rgba(255,255,255,1) 80%)",
       }}
-      className="flex flex-col min-h-screen items-center justify-center p-24 bg-background overflow-hidden"
+      className="flex flex-col min-h-screen items-center justify-center bg-background overflow-x-hidden !scroll-smooth"
     >
-      <div className={"flex gap-20 justify-center items-center"}>
+      <div
+        className={"flex gap-20 justify-center items-center w-full h-screen"}
+      >
+        <AnimatePresence>
+          {showArrow && (
+            <motion.a
+              href={"#about"}
+              initial={{ opacity: 0, y: 0 }}
+              animate={{
+                opacity: [0, 1],
+                y: [0, 10],
+              }}
+              transition={{
+                opacity: { duration: 1 },
+                y: {
+                  repeat: Infinity,
+                  repeatType: "mirror",
+                  duration: 1,
+                  ease: "easeInOut",
+                },
+              }}
+              className={"absolute bottom-10"}
+            >
+              <ArrowDown2 size={40} className={"text-black cursor-pointer"} />
+            </motion.a>
+          )}
+        </AnimatePresence>
         <p className={"absolute top-20 text-white z-20 cursor-default"}>
           Made by @JulianBiancardi, @TGRodriguez & @stein257
         </p>
@@ -85,12 +118,68 @@ export default function Home() {
             className={
               "text-xl text-black flex gap-1 items-center self-end hover:underline"
             }
+            onAnimationComplete={() => setShowArrow(true)}
           >
             Start now
             <ArrowRight size={20} />
           </motion.a>
         </div>
       </div>
+      <div className={"flex flex-col items-center pt-24"} id={"about"}>
+        <FadeUp delay={0.25}>
+          <h2
+            className={"text-black text-center text-5xl max-w-[1000px] mb-12"}
+          >
+            An easy and intuitive solution for developing dashboards
+          </h2>
+        </FadeUp>
+        <FadeUp delay={0.5}>
+          <p className={"max-w-[700px] text-center mb-10"}>
+            Connect your data sources and start creating your own dashboards
+            with Fastboard. Just as simple as drag and dropping.
+          </p>
+        </FadeUp>
+        <FadeUp delay={0.6}>
+          <Button
+            className={"bg-black text-white rounded-3xl mb-12"}
+            variant={"shadow"}
+            onClick={() => router.push("/auth/login")}
+          >
+            Get started for free
+          </Button>
+        </FadeUp>
+        <FadeUp delay={0.75}>
+          <div
+            className={"w-[100%] rounded-lg shadow-2xl overflow-hidden mb-12"}
+          >
+            <Image
+              src={"/screenshot.png"}
+              alt={"image"}
+              width={1000}
+              height={400}
+              quality={100}
+            />
+          </div>
+        </FadeUp>
+      </div>
+      <footer
+        className={
+          "flex items-center justify-center w-full text-center p-5 gap-5 mt-12"
+        }
+      >
+        <p className={"text-black"}>
+          Star us on{" "}
+          <a
+            href={"https://github.com/fastboard-org"}
+            target={"_blank"}
+            className={"hover:underline"}
+          >
+            <b>Github</b>
+          </a>
+        </p>
+        <p>|</p>
+        <p className={"text-black"}>© 2024 Fastboard</p>
+      </footer>
     </main>
   );
 }
