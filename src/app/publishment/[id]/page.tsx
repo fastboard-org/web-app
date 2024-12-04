@@ -1,5 +1,6 @@
 "use client";
 import EditorModal from "@/components/editor/EditorModal";
+import { Toaster } from "@/components/shared/Toaster";
 import Viewport from "@/components/shared/Viewport";
 import useDashboard from "@/hooks/dashboards/useDashboard";
 import { useTheme } from "next-themes";
@@ -20,6 +21,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen w-full bg-background">
+      <Toaster position="bottom-right" richColors />
       <EditorModal mode="view" />
       <Viewport mode="published" />
     </div>
