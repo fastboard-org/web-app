@@ -31,7 +31,7 @@ export default function CsvExporter({
       }}
       startContent={<DocumentDownload className="text-default-600" />}
     >
-      Download
+      Download all
     </Button>
   );
 }

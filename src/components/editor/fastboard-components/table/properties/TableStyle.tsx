@@ -23,30 +23,26 @@ export default function TableStyle({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-row justify-between">
-        <span>Hide header</span>
-        <Checkbox
-          isSelected={hideHeader}
-          onValueChange={(isSelected) => {
-            onValueChange({
-              ...properties,
-              hideHeader: isSelected,
-            });
-          }}
-        />
-      </div>
-      <div className="flex flex-row justify-between">
-        <span>Stripped</span>
-        <Checkbox
-          isSelected={isStriped}
-          onValueChange={(isSelected) => {
-            onValueChange({
-              ...properties,
-              isStriped: isSelected,
-            });
-          }}
-        />
-      </div>
+      <CheckBoxProperty
+        label="Hide header"
+        isSelected={hideHeader}
+        onValueChange={(isSelected) => {
+          onValueChange({
+            ...properties,
+            hideHeader: isSelected,
+          });
+        }}
+      />
+      <CheckBoxProperty
+        label="Stripped"
+        isSelected={isStriped}
+        onValueChange={(isSelected) => {
+          onValueChange({
+            ...properties,
+            isStriped: isSelected,
+          });
+        }}
+      />
       <ColorPicker
         label="Header color"
         initialColor={theme === "light" ? headerColor.light : headerColor.dark}
