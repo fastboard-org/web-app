@@ -13,7 +13,7 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
-import React from "react";
+import React, { useState } from "react";
 import {
   collapseAllNested,
   JsonView,
@@ -67,6 +67,8 @@ export default function ViewActionModal({
   onClose: () => void;
 }) {
   function mapfield(item: any): React.ReactElement {
+    const [imageFailLoad, setImageFailLoad] = useState(false);
+
     if (Array.isArray(item) || typeof item === "object") {
       return <ObjectFieldView data={item} />;
     } else if (typeof item === "boolean") {
@@ -80,16 +82,34 @@ export default function ViewActionModal({
     }
 
     //check if item is an image
-    if (item.match(/^https?:\/\/.*\.(?:png|jpg|jpeg|gif)$/)) {
-      return <Image src={item} height={100} />;
+    if (
+      item.match(/^https?:\/\/.*\.(?:png|jpg|jpeg|gif)$/) ||
+      item.match(/^data:image\/.*;base64/)
+    ) {
+      return (
+        <Image src={item} height={100} fallbackSrc={"/ImageErrorImage.svg"} />
+      );
     }
 
     //check if item is an url
     if (item.match(/^https?:\/\/[^\s/$.?#].[^\s]*$/)) {
-      return (
+      return imageFailLoad ? (
         <Link href={item} isExternal showAnchorIcon>
-          {item}
+          Link
         </Link>
+      ) : (
+        <Image
+          src={item}
+          height={100}
+          fallbackSrc={
+            <Link href={item} isExternal showAnchorIcon>
+              Link
+            </Link>
+          }
+          onError={() => {
+            setImageFailLoad(true);
+          }}
+        />
       );
     }
 
