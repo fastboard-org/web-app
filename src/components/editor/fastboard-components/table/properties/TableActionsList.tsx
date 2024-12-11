@@ -179,6 +179,7 @@ export default function TableActionsList({
                   key={action.key}
                   label={action.label}
                   startIcon={<Edit size={15} />}
+                  onPress={() => onActionSelect(action)}
                   onDelete={() => removeAction(action.key, index)}
                 />
               );

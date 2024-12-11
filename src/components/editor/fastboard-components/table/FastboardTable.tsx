@@ -506,7 +506,10 @@ export default function FastboardTable({
                       return (
                         <td
                           key={cell.id}
-                          className={"p-2 text-center text-xs " + bgColor}
+                          className={
+                            "p-2 text-center text-xs truncate max-w-28 " +
+                            bgColor
+                          }
                           style={{
                             ...getCommonPinningStyles(column, isStriped),
                           }}

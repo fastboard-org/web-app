@@ -54,6 +54,7 @@ import {
   Folder,
   Trash,
   User,
+  SearchNormal,
 } from "iconsax-react";
 import { IoIosClose } from "react-icons/io";
 
@@ -104,6 +105,7 @@ export function Icon({
     [IconType.Edit]: <Edit size={size} />,
     [IconType.Element]: <Element size={size} />,
     [IconType.Eye]: <Eye size={size} />,
+    [IconType.Search]: <SearchNormal size={size} />,
     [IconType.Flag]: <Flag size={size} />,
     [IconType.Flash]: <Flash size={size} />,
     [IconType.Game]: <Game size={size} />,
