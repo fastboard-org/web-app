@@ -12,9 +12,10 @@ export class FastboardAICardsProperties {
   cardImageField: string = "";
   cardLinkField: string = "";
   cardTooltipField: string = "";
-  cardLayout: "irregular" | "regular" = "irregular";
+  cardLayout: "irregular" | "regular" = "regular";
   cardsPerRow: number = 2;
   cardsHeight: number = 200;
+  keys: string[] = [];
 
   static default(): FastboardAICardsProperties {
     return new FastboardAICardsProperties();

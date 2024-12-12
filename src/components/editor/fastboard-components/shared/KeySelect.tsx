@@ -2,16 +2,18 @@ import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 
 const KeySelect = ({
   keys,
-  groupKey,
+  selectedKey,
   onChange,
   label = "Group by",
   placeholder = "Select group key",
+  emptyContent = "Select a query to see available keys",
 }: {
   keys: string[];
   onChange: (key: string) => void;
-  groupKey: string;
+  selectedKey: string;
   label?: string;
   placeholder?: string;
+  emptyContent?: string;
 }) => {
   const items = keys.map((key) => ({ label: key, id: key }));
 
@@ -21,12 +23,12 @@ const KeySelect = ({
       aria-label="Key selector"
       defaultItems={items}
       disabledKeys={[]}
-      selectedKey={groupKey}
+      selectedKey={selectedKey}
       label={label}
       labelPlacement="outside"
       placeholder={placeholder}
       listboxProps={{
-        emptyContent: "Select a query to see available keys",
+        emptyContent,
       }}
       onSelectionChange={(key) => {
         const newKey = items.find((item) => item.id === key)?.label;

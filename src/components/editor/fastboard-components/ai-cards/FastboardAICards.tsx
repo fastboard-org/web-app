@@ -13,11 +13,13 @@ import {
 } from "@nextui-org/react";
 import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { CiSearch } from "react-icons/ci";
 import { toast } from "sonner";
 import { RiQuestionLine } from "react-icons/ri";
+import { useSetRecoilState } from "recoil";
+import { propertiesDrawerState } from "@/atoms/editor";
 
 const CustomCard = ({
   title,
@@ -111,6 +113,8 @@ export default function FastboardAICards({
 
   const [search, setSearch] = useState("");
 
+  const setProperties = useSetRecoilState(propertiesDrawerState);
+
   const {
     sourceQueryData,
     searchLabel,
@@ -154,6 +158,20 @@ export default function FastboardAICards({
       parameters: parametersToSend,
     });
   };
+
+  useEffect(() => {
+    if (data) {
+      setProperties((prev) => {
+        return {
+          ...prev,
+          properties: {
+            ...prev.properties,
+            keys: Object.keys(data.body?.[0] || {}),
+          },
+        };
+      });
+    }
+  }, [data]);
 
   return (
     <div className={"w-full h-full overflow-hidden"}>
