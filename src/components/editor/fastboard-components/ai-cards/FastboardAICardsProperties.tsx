@@ -13,6 +13,7 @@ import { queryToQueryData } from "@/lib/rest-queries";
 import { QueryType } from "@/types/connections";
 import QuerySelection from "@/components/editor/QuerySelection";
 import { RiQuestionLine } from "react-icons/ri";
+import KeySelect from "@/components/editor/fastboard-components/shared/KeySelect";
 
 const FastboardAICardsPropertiesComponent = ({
   properties,
@@ -34,6 +35,7 @@ const FastboardAICardsPropertiesComponent = ({
     cardTooltipField,
     cardsPerRow,
     cardsHeight,
+    keys,
   } = properties;
 
   return (
@@ -160,65 +162,71 @@ const FastboardAICardsPropertiesComponent = ({
         }}
       >
         <div className="flex flex-col gap-5">
-          <Input
-            label="Card Title"
-            labelPlacement="outside"
-            placeholder="Enter a field"
-            value={cardTitleField}
-            onValueChange={(value) => {
+          <KeySelect
+            keys={keys || []}
+            onChange={(value) => {
               onValueChange({
                 ...properties,
                 cardTitleField: value,
               });
             }}
+            selectedKey={cardTitleField}
+            label={"Card Title"}
+            placeholder={"Select a field"}
+            emptyContent={"Run your search to see available fields"}
           />
-          <Input
-            label="Card Subtitle"
-            labelPlacement="outside"
-            placeholder="Enter a field"
-            value={cardSubtitleField}
-            onValueChange={(value) => {
+          <KeySelect
+            keys={keys || []}
+            onChange={(value) => {
               onValueChange({
                 ...properties,
                 cardSubtitleField: value,
               });
             }}
+            selectedKey={cardSubtitleField}
+            label={"Card Subtitle"}
+            placeholder={"Select a field"}
+            emptyContent={"Run your search to see available fields"}
           />
-          <Input
-            label="Card Image"
-            labelPlacement="outside"
-            placeholder="Enter a field"
-            value={cardImageField}
-            onValueChange={(value) => {
+          <KeySelect
+            keys={keys || []}
+            onChange={(value) => {
               onValueChange({
                 ...properties,
                 cardImageField: value,
               });
             }}
+            selectedKey={cardImageField}
+            label={"Card Image"}
+            placeholder={"Select a field"}
+            emptyContent={"Run your search to see available fields"}
           />
-          <Input
-            label="Card Link"
-            labelPlacement="outside"
-            placeholder="Enter a field"
-            value={cardLinkField}
-            onValueChange={(value) => {
+          <KeySelect
+            keys={keys || []}
+            onChange={(value) => {
               onValueChange({
                 ...properties,
                 cardLinkField: value,
               });
             }}
+            selectedKey={cardLinkField}
+            label={"Card Link"}
+            placeholder={"Select a field"}
+            emptyContent={"Run your search to see available fields"}
           />
-          <Input
-            label="Card Tooltip"
-            labelPlacement="outside"
-            placeholder="Enter a field"
-            value={cardTooltipField}
-            onValueChange={(value) => {
+
+          <KeySelect
+            keys={keys || []}
+            onChange={(value) => {
               onValueChange({
                 ...properties,
                 cardTooltipField: value,
               });
             }}
+            selectedKey={cardTooltipField}
+            label={"Card Tooltip"}
+            placeholder={"Select a field"}
+            emptyContent={"Run your search to see available fields"}
           />
         </div>
       </AccordionItem>

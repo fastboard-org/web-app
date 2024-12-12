@@ -1,28 +1,34 @@
 import { Autocomplete, AutocompleteItem } from "@nextui-org/react";
 
-const GroupKeySelect = ({
+const KeySelect = ({
   keys,
-  groupKey,
+  selectedKey,
   onChange,
+  label = "Group by",
+  placeholder = "Select group key",
+  emptyContent = "Select a query to see available keys",
 }: {
   keys: string[];
   onChange: (key: string) => void;
-  groupKey: string;
+  selectedKey: string;
+  label?: string;
+  placeholder?: string;
+  emptyContent?: string;
 }) => {
   const items = keys.map((key) => ({ label: key, id: key }));
 
   return (
     <Autocomplete
       className={"overflow-hidden"}
-      aria-label="Group key selector"
+      aria-label="Key selector"
       defaultItems={items}
       disabledKeys={[]}
-      selectedKey={groupKey}
-      label="Group by"
+      selectedKey={selectedKey}
+      label={label}
       labelPlacement="outside"
-      placeholder="Select group key"
+      placeholder={placeholder}
       listboxProps={{
-        emptyContent: "Select a query to see available keys",
+        emptyContent,
       }}
       onSelectionChange={(key) => {
         const newKey = items.find((item) => item.id === key)?.label;
@@ -38,4 +44,4 @@ const GroupKeySelect = ({
   );
 };
 
-export default GroupKeySelect;
+export default KeySelect;

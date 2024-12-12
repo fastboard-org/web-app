@@ -4,11 +4,10 @@ import {
   AccordionItem,
   Button,
   ButtonGroup,
-  Checkbox,
   Input,
 } from "@nextui-org/react";
 import QuerySelection from "@/components/editor/QuerySelection";
-import GroupKeySelect from "@/components/editor/fastboard-components/group-chart/properties/GroupKeySelect";
+import KeySelect from "@/components/editor/fastboard-components/shared/KeySelect";
 import { QueryType } from "@/types/connections";
 import ColorPicker from "@/components/shared/ColorPicker";
 import { useTheme } from "next-themes";
@@ -64,7 +63,7 @@ const FastboardGroupChartPropertiesComponent = ({
             }}
             type={QueryType.GET}
           />
-          <GroupKeySelect
+          <KeySelect
             keys={keys}
             onChange={(groupKey) => {
               onValueChange({
@@ -72,7 +71,7 @@ const FastboardGroupChartPropertiesComponent = ({
                 groupBy: groupKey,
               });
             }}
-            groupKey={groupBy || ""}
+            selectedKey={groupBy || ""}
           />
         </div>
       </AccordionItem>
