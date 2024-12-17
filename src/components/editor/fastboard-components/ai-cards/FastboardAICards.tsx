@@ -13,11 +13,13 @@ import {
 } from "@nextui-org/react";
 import useExecuteQuery from "@/hooks/adapter/useExecuteQuery";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import scrollbarStyles from "@/styles/scrollbar.module.css";
 import { CiSearch } from "react-icons/ci";
 import { toast } from "sonner";
 import { RiQuestionLine } from "react-icons/ri";
+import { useSetRecoilState } from "recoil";
+import { propertiesDrawerState } from "@/atoms/editor";
 
 const CustomCard = ({
   title,
@@ -66,12 +68,12 @@ const CustomCard = ({
         </Tooltip>
       )}
       <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-        <p className="text-tiny uppercase font-bold text-default-500">
-          {subtitle}
-        </p>
         <h4 className="font-bold text-large truncate w-full text-start">
           {title}
         </h4>
+        <p className="text-tiny uppercase font-bold text-default-500">
+          {subtitle}
+        </p>
       </CardHeader>
       <CardBody className="overflow-visible py-2">
         {image && (
@@ -110,6 +112,8 @@ export default function FastboardAICards({
   const { id: dashboardId } = useParams();
 
   const [search, setSearch] = useState("");
+
+  const setProperties = useSetRecoilState(propertiesDrawerState);
 
   const {
     sourceQueryData,
@@ -154,6 +158,20 @@ export default function FastboardAICards({
       parameters: parametersToSend,
     });
   };
+
+  useEffect(() => {
+    if (data) {
+      setProperties((prev) => {
+        return {
+          ...prev,
+          properties: {
+            ...prev.properties,
+            keys: Object.keys(data.body?.[0] || {}),
+          },
+        };
+      });
+    }
+  }, [data]);
 
   return (
     <div className={"w-full h-full overflow-hidden"}>
