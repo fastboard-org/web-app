@@ -68,12 +68,12 @@ const CustomCard = ({
         </Tooltip>
       )}
       <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-        <p className="text-tiny uppercase font-bold text-default-500">
-          {subtitle}
-        </p>
         <h4 className="font-bold text-large truncate w-full text-start">
           {title}
         </h4>
+        <p className="text-tiny uppercase font-bold text-default-500">
+          {subtitle}
+        </p>
       </CardHeader>
       <CardBody className="overflow-visible py-2">
         {image && (
