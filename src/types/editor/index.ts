@@ -41,12 +41,17 @@ export interface ModalFrame {
 export class DashboardAuth {
   enabled: boolean = false;
   loginQueryData: QueryData | null = null;
+  refreshQueryData: QueryData | null = null;
   accessTokenField: string = "";
+  refreshTokenField: string = "";
+  refreshResponseTokenField: string = "";
   userInputLabel: string = "username";
   passwordInputLabel: string = "password";
   userQueryParameter: string = "";
   passwordQueryParameter: string = "";
   previewAccessToken: string = "";
+  previewRefreshToken: string = "";
+  refreshQueryParameter: string = "";
   title: string = "Welcome!";
   buttonText: string = "Login";
   buttonColor: Color = Color.primary();
