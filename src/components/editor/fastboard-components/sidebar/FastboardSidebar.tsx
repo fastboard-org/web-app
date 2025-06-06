@@ -1,9 +1,13 @@
 import { Icon } from "@/components/shared/IconPicker";
 import useNavigation from "@/hooks/useNavigation";
 import { SidebarProperties } from "@/types/editor/sidebar-types";
-import { extendVariants, Tab, Tabs } from "@nextui-org/react";
+import { Button, extendVariants, Tab, Tabs } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 import { Key } from "react";
+import { Logout } from "iconsax-react";
+import { useParams } from "next/navigation";
+import useDashboard from "@/hooks/dashboards/useDashboard";
+import { isPublishPage, isPreviewPage } from "@/lib/helpers";
 
 export default function FastboardSidebar({
   properties,
@@ -12,16 +16,29 @@ export default function FastboardSidebar({
 }) {
   const { theme } = useTheme();
   const { currentPage, changePage } = useNavigation();
-  const { menuItems, backgroundColor, textColor, selectedColor } = properties;
-  const cursorClassName = `bg-[${selectedColor.light}]`;
+
+  const { id: dashboardId } = useParams();
+
+  const { dashboard } = useDashboard(isPublishPage() ? "published" : "editor");
+
+  const { menuItems, backgroundColor, textColor } = properties;
 
   function handleSelectionChange(key: Key) {
     changePage(key.toString());
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem(`auth-${dashboardId}`);
+    localStorage.removeItem(`refresh-${dashboardId}`);
+
+    window.location.reload();
+  };
+
+  const isEditorPage = !isPreviewPage() && !isPublishPage();
+
   return (
     <div
-      className="h-full"
+      className="h-full relative"
       style={{
         backgroundColor:
           theme === "light" ? backgroundColor.light : backgroundColor.dark,
@@ -61,6 +78,16 @@ export default function FastboardSidebar({
             ></Tab>
           ))}
         </Tabs>
+        {/*  logout button*/}
+        {dashboard?.metadata?.auth?.enabled && !isEditorPage && (
+          <Button
+            className={`absolute bottom-5 left-5 text-danger bg-transparent`}
+            onPress={handleLogout}
+          >
+            <Logout />
+            <span>Log out</span>
+          </Button>
+        )}
       </div>
     </div>
   );

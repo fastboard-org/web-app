@@ -16,6 +16,8 @@ import { useRecoilValue } from "recoil";
 import { isAuthDrawerOpen } from "@/atoms/editor";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useTheme } from "next-themes";
+import { useRefreshToken } from "@/hooks/useRefreshToken";
+import useDashboard from "@/hooks/dashboards/useDashboard";
 
 interface LogInForm {
   user: string;
@@ -35,7 +37,23 @@ const AuthVerifier = ({
 }) => {
   const { theme } = useTheme();
   const { accessToken, updateAccessToken } = useAccessToken({ dashboardId });
+  const { updateDashboard } = useDashboard();
+
+  const { updateRefreshToken } = useRefreshToken({ dashboardId });
   const isAuthOpen = useRecoilValue(isAuthDrawerOpen);
+
+  const updateAuth = (auth: any) => {
+    updateDashboard((prev) => ({
+      ...prev,
+      metadata: {
+        ...prev.metadata,
+        auth: {
+          ...prev.metadata.auth,
+          ...auth,
+        },
+      },
+    }));
+  };
 
   const { execute, isPending } = useExecuteQuery({
     dashboardId,
@@ -50,8 +68,28 @@ const AuthVerifier = ({
       if (auth && response.body[auth?.accessTokenField] !== undefined) {
         if (mode === "editor") {
           toast.success("Logged in successfully");
+          if (
+            auth?.refreshTokenField &&
+            response.body[auth?.refreshTokenField] !== undefined
+          ) {
+            updateAuth({
+              previewAccessToken: response.body[auth?.accessTokenField],
+              previewRefreshToken: response.body[auth?.refreshTokenField],
+            });
+          } else {
+            updateAuth({
+              previewAccessToken: response.body[auth?.accessTokenField],
+            });
+          }
         } else {
           updateAccessToken(response.body[auth?.accessTokenField]);
+
+          if (
+            auth?.refreshTokenField &&
+            response.body[auth?.refreshTokenField] !== undefined
+          ) {
+            updateRefreshToken(response.body[auth?.refreshTokenField]);
+          }
         }
       } else {
         toast.error("No access token found in response");

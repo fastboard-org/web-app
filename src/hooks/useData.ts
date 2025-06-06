@@ -3,13 +3,23 @@ import { ContentType, QueryData } from "@/types/connections";
 import { adapterService } from "@/lib/services/adapter";
 import { useMemo, useState } from "react";
 import { useRecoilValue } from "recoil";
-import { previewAccessTokenState } from "@/atoms/editor";
+import {
+  previewAccessTokenState,
+  previewRefreshTokenState,
+} from "@/atoms/editor";
 import { useParams } from "next/navigation";
+import useDashboard from "@/hooks/dashboards/useDashboard";
+import { isPublishPage } from "@/lib/helpers";
+import { DashboardAuth } from "@/types/editor";
 
 const useData = (componentId: string, queryData: QueryData | null) => {
   const { queryId, connectionId } = queryData || {};
   const { id: dashboardId } = useParams();
   const previewAccessToken = useRecoilValue(previewAccessTokenState);
+  const previewRefreshToken = useRecoilValue(previewRefreshTokenState);
+
+  const { dashboard } = useDashboard(isPublishPage() ? "published" : "editor");
+
   const { data, refetch, isLoading, isFetching, isError, error } = useQuery({
     queryKey: ["get_data", connectionId, { queryId, componentId }],
     queryFn: () => fetchData(queryData),
@@ -42,7 +52,9 @@ const useData = (componentId: string, queryData: QueryData | null) => {
           headers: {
             "Content-Type": contentType || ContentType.JSON,
           },
-        }
+        },
+        previewRefreshToken,
+        dashboard?.metadata?.auth as DashboardAuth | undefined,
       );
       let responseData = response?.body;
 

@@ -2,7 +2,10 @@ import useDashboard from "@/hooks/dashboards/useDashboard";
 import AuthVerifier from "../editor/auth/AuthVerifier";
 import FastboardComponent from "../editor/fastboard-components/FastboardComponent";
 import { useSetRecoilState } from "recoil";
-import { previewAccessTokenState } from "@/atoms/editor";
+import {
+  previewAccessTokenState,
+  previewRefreshTokenState,
+} from "@/atoms/editor";
 import useNavigation from "@/hooks/useNavigation";
 import { useEffect } from "react";
 import { getLayout } from "../editor/fastboard-components/utils";
@@ -16,14 +19,19 @@ export default function Viewport({
   mode: "editor" | "preview" | "published";
 }) {
   const { dashboard, loading, isError, error, getComponent } = useDashboard(
-    mode === "editor" || mode === "preview" ? "editor" : "published"
+    mode === "editor" || mode === "preview" ? "editor" : "published",
   );
   const setPreviewAccessToken = useSetRecoilState(previewAccessTokenState);
+  const setPreviewRefreshToken = useSetRecoilState(previewRefreshTokenState);
   const { currentPage } = useNavigation();
 
   useEffect(() => {
     if (mode === "editor" && dashboard?.metadata?.auth?.previewAccessToken) {
       setPreviewAccessToken(dashboard.metadata.auth.previewAccessToken);
+    }
+
+    if (mode === "editor" && dashboard?.metadata?.auth?.previewRefreshToken) {
+      setPreviewRefreshToken(dashboard.metadata.auth.previewRefreshToken);
     }
   }, [dashboard]);
 
@@ -34,7 +42,7 @@ export default function Viewport({
     : "100%";
   const layoutsHeight = isHeaderVisible ? "90%" : "100%";
   const header = getComponent(
-    dashboard?.metadata?.header?.componentId as string
+    dashboard?.metadata?.header?.componentId as string,
   );
   const sidebar = dashboard?.metadata?.sidebar?.id
     ? getComponent(dashboard.metadata.sidebar?.id)
@@ -109,8 +117,8 @@ export default function Viewport({
               layout,
               currentPage,
               index,
-              mode === "editor" ? "editable" : "view"
-            )
+              mode === "editor" ? "editable" : "view",
+            ),
           )}
         </div>
       </div>

@@ -46,6 +46,11 @@ export const previewAccessTokenState = atom<string>({
   default: "",
 });
 
+export const previewRefreshTokenState = atom<string>({
+  key: "previewRefreshTokenState",
+  default: "",
+});
+
 export const lastDashboardMetadata = atom<Dashboard | null>({
   key: "lastDashboardMetadata",
   default: null,

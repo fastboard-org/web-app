@@ -10,6 +10,7 @@ import { isPreviewPage, isPublishPage } from "@/lib/helpers";
 import { mapQuery } from "@/lib/services/connections";
 import { AxiosRequestConfig } from "axios";
 import { toBase64 } from "@/lib/file";
+import { DashboardAuth } from "@/types/editor";
 
 const previewQuery = async (
   connectionId: string,
@@ -66,6 +67,9 @@ async function executeQuery(
   parameters?: Record<string, any>,
   previewAccessToken?: string,
   config?: AxiosRequestConfig,
+  previewRefreshToken?: string,
+  dashboardAuth?: DashboardAuth | null,
+  shouldRefresh = true,
 ) {
   try {
     if (!queryId) {
@@ -73,12 +77,15 @@ async function executeQuery(
     }
 
     const token = localStorage.getItem(`auth-${dashboardId}`);
+    const refreshToken = localStorage.getItem(`refresh-${dashboardId}`);
 
     const parametersToSend = parameters ?? {};
 
     const viewMode = isPreviewPage() || isPublishPage();
 
     parametersToSend.token = viewMode ? token : previewAccessToken;
+
+    const refreshTokenToSend = viewMode ? refreshToken : previewRefreshToken;
 
     const response = await axiosInstance.post(
       `/adapter/execute/${queryId}`,
@@ -90,7 +97,46 @@ async function executeQuery(
 
     if (response?.data.status_code && response?.data.status_code !== 200) {
       if (response?.data?.status_code === 401) {
+        if (refreshTokenToSend && dashboardAuth && shouldRefresh) {
+          const refreshQueryId = dashboardAuth.refreshQueryData?.queryId;
+          const refreshParameter = dashboardAuth.refreshQueryParameter;
+          const refreshResponse = await axiosInstance.post(
+            `/adapter/execute/${refreshQueryId}`,
+            {
+              parameters: {
+                [refreshParameter]: refreshTokenToSend,
+              },
+            },
+          );
+
+          if (
+            refreshResponse?.data?.body?.[
+              dashboardAuth.refreshResponseTokenField
+            ]
+          ) {
+            const newAccessToken =
+              refreshResponse.data.body[
+                dashboardAuth.refreshResponseTokenField
+              ];
+
+            localStorage.setItem(`auth-${dashboardId}`, newAccessToken);
+
+            return await executeQuery(
+              queryId,
+              dashboardId,
+              parameters,
+              newAccessToken,
+              config,
+              previewRefreshToken,
+              dashboardAuth,
+              false, // Prevent further refresh attempts
+            );
+          }
+        }
+
         localStorage.removeItem(`auth-${dashboardId}`);
+        localStorage.removeItem(`refresh-${dashboardId}`);
+
         if (viewMode) {
           window.location.reload();
         }
