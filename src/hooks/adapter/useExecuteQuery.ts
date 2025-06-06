@@ -4,8 +4,14 @@ import { queryClient } from "@/app/providers";
 import { adapterService } from "@/lib/services/adapter";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
-import { previewAccessTokenState } from "@/atoms/editor";
+import {
+  previewAccessTokenState,
+  previewRefreshTokenState,
+} from "@/atoms/editor";
 import { AxiosRequestConfig } from "axios";
+import { DashboardAuth } from "@/types/editor";
+import useDashboard from "@/hooks/dashboards/useDashboard";
+import { isPublishPage } from "@/lib/helpers";
 
 const useExecuteQuery = ({
   onSuccess,
@@ -17,6 +23,10 @@ const useExecuteQuery = ({
   dashboardId: string;
 }) => {
   const previewAccessToken = useRecoilValue(previewAccessTokenState);
+  const previewRefreshToken = useRecoilValue(previewRefreshTokenState);
+
+  const { dashboard } = useDashboard(isPublishPage() ? "published" : "editor");
+
   const [invalidateQueries, setInvalidateQueries] =
     useState<InvalidateQueryFilters>();
   const {
@@ -46,6 +56,8 @@ const useExecuteQuery = ({
         parameters,
         previewAccessToken,
         config,
+        previewRefreshToken,
+        dashboard?.metadata?.auth as DashboardAuth | null,
       );
     },
     onSuccess: (data, variables) => {
