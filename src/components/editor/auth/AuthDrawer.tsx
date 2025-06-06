@@ -1,10 +1,13 @@
-import { isAuthDrawerOpen, previewAccessTokenState } from "@/atoms/editor";
+import {
+  isAuthDrawerOpen,
+  previewAccessTokenState,
+  previewRefreshTokenState,
+} from "@/atoms/editor";
 import {
   Accordion,
   AccordionItem,
   Divider,
   Input,
-  semanticColors,
   Switch,
 } from "@nextui-org/react";
 import { motion } from "framer-motion";
@@ -22,16 +25,22 @@ const AuthDrawer = () => {
   const { dashboard, updateDashboard } = useDashboard();
   const { theme } = useTheme();
   const setPreviewAccessToken = useSetRecoilState(previewAccessTokenState);
+  const setPreviewRefreshToken = useSetRecoilState(previewRefreshTokenState);
 
   const {
     enabled,
     loginQueryData,
+    refreshQueryData,
     accessTokenField,
+    refreshTokenField,
+    refreshResponseTokenField,
     passwordInputLabel,
     userInputLabel,
     userQueryParameter,
     passwordQueryParameter,
     previewAccessToken,
+    previewRefreshToken,
+    refreshQueryParameter,
     title,
     buttonText,
     buttonColor,
@@ -126,6 +135,18 @@ const AuthDrawer = () => {
                 isDisabled={!enabled}
               />
               <Input
+                label="Refresh Token Field"
+                placeholder={"Example: refresh_token"}
+                labelPlacement="outside"
+                value={refreshTokenField || ""}
+                onValueChange={(value) => {
+                  updateAuth({
+                    refreshTokenField: value,
+                  });
+                }}
+                isDisabled={!enabled}
+              />
+              <Input
                 label="Preview Access Token"
                 placeholder={"Access token used in editor queries"}
                 labelPlacement="outside"
@@ -136,6 +157,70 @@ const AuthDrawer = () => {
                     previewAccessToken: value,
                   });
                 }}
+                isDisabled={!enabled}
+              />
+            </div>
+          </AccordionItem>
+          <AccordionItem
+            key="refresh"
+            title="Refresh"
+            className="pb-5 pt-3"
+            classNames={{
+              title: "font-medium",
+            }}
+          >
+            <div className={"flex flex-col gap-3 mt-3"}>
+              <QuerySelection
+                selectedQueryId={refreshQueryData?.queryId || ""}
+                onQuerySelect={(refreshQuery) => {
+                  updateAuth({
+                    refreshQueryData: {
+                      queryId: refreshQuery.id,
+                      connectionId: refreshQuery.connection_id,
+                      method: refreshQuery.metadata.method,
+                    },
+                  });
+                }}
+                label={"Refresh Query"}
+                placeholder={"Select refresh query"}
+                isDisabled={!enabled}
+                type={QueryType.UPDATE}
+              />
+              <Input
+                label="Access Token Field"
+                placeholder={"Example: access_token"}
+                labelPlacement="outside"
+                value={refreshResponseTokenField || ""}
+                onValueChange={(value) => {
+                  updateAuth({
+                    refreshResponseTokenField: value,
+                  });
+                }}
+                isDisabled={!enabled}
+              />
+              <Input
+                label="Preview Refresh Token"
+                placeholder={"Refresh token used in editor queries"}
+                labelPlacement="outside"
+                value={previewRefreshToken || ""}
+                onValueChange={(value) => {
+                  setPreviewRefreshToken(value);
+                  updateAuth({
+                    previewRefreshToken: value,
+                  });
+                }}
+                isDisabled={!enabled}
+              />
+              <QueryParameterSelection
+                queryId={refreshQueryData?.queryId || ""}
+                selectedKey={refreshQueryParameter || ""}
+                onSelectionChange={(value) => {
+                  updateAuth({
+                    refreshQueryParameter: value,
+                  });
+                }}
+                label={"Refresh Query Parameter"}
+                disabledKeys={[refreshQueryParameter || ""]}
                 isDisabled={!enabled}
               />
             </div>
