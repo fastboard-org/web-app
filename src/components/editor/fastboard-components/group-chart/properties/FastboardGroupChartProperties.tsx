@@ -33,6 +33,9 @@ const FastboardGroupChartPropertiesComponent = ({
     minimizedLabels,
     barsColor,
     layout,
+    customDisplayKey,
+    customDisplayKeyLabel,
+    showBarYAxis,
   } = properties;
 
   return (
@@ -73,6 +76,32 @@ const FastboardGroupChartPropertiesComponent = ({
             }}
             selectedKey={groupBy || ""}
           />
+          <KeySelect
+            keys={keys}
+            onChange={(customDisplayKey) => {
+              onValueChange({
+                ...properties,
+                customDisplayKey: customDisplayKey,
+              });
+            }}
+            selectedKey={customDisplayKey || ""}
+            label="Custom display key"
+            placeholder="Select a custom display key"
+            emptyContent="Select a query to see available keys"
+          />
+          {customDisplayKey && <Input
+            label="Custom display key label"
+            labelPlacement="outside"
+            placeholder="Enter a custom display key label"
+            value={customDisplayKeyLabel || ""}
+            onValueChange={(value) => {
+              onValueChange({
+                ...properties,
+                customDisplayKeyLabel: value,
+              });
+            }}
+          />}
+          
         </div>
       </AccordionItem>
       <AccordionItem
@@ -155,6 +184,15 @@ const FastboardGroupChartPropertiesComponent = ({
             </Button>
           </ButtonGroup>
         </div>
+        {layout === "bar" && <div className={"my-3"}>
+          <CheckBoxProperty
+            label="Show Y axis"
+            isSelected={showBarYAxis}
+            onValueChange={(value) => {
+              onValueChange({ ...properties, showBarYAxis: value });
+            }}
+          />
+        </div>}
         <div className={"my-3"}>
           <CheckBoxProperty
             label={"Minimized labels"}
@@ -167,6 +205,7 @@ const FastboardGroupChartPropertiesComponent = ({
             }}
           />
         </div>
+
         <ColorPicker
           label="Color"
           initialColor={theme === "light" ? barsColor.light : barsColor.dark}

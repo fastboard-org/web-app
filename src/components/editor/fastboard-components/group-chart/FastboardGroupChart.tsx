@@ -12,6 +12,7 @@ import {
   Pie,
   PieChart,
   XAxis,
+  YAxis,
 } from "recharts";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
 import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
@@ -34,6 +35,27 @@ const groupData = (data: any[], groupBy: string) => {
   }, {});
 };
 
+const prepareData = (groupChartData: any, customDisplayKey: string | null, customDisplayKeyLabel: string | null) => {
+  if(!customDisplayKey) {
+    return Object.keys(groupChartData).map((key) => {
+      return {
+        count: groupChartData[key].length,
+        label: key,
+      };
+    })
+  } else {
+    return Object.keys(groupChartData).map((key) => {
+      
+      return {
+        [customDisplayKeyLabel || customDisplayKey]: groupChartData[key].reduce((acc: any, item: any) => {
+          return acc + item[customDisplayKey];
+        }, 0),
+        label: key,
+      };
+    })
+  }
+}
+
 const BarChartComponent = ({
   chartConfig,
   groupBy,
@@ -41,6 +63,9 @@ const BarChartComponent = ({
   minimizedLabels,
   theme,
   barsColor,
+  customDisplayKey,
+  customDisplayKeyLabel,
+  showBarYAxis,
 }: {
   chartConfig: ChartConfig;
   groupBy: string;
@@ -48,6 +73,9 @@ const BarChartComponent = ({
   minimizedLabels: boolean;
   theme: string | undefined;
   barsColor: { light: string; dark: string };
+  customDisplayKey: string | null;
+  customDisplayKeyLabel: string | null;
+  showBarYAxis: boolean;
 }) => {
   return (
     <ChartContainer config={chartConfig} className={"w-full h-full"}>
@@ -66,10 +94,17 @@ const BarChartComponent = ({
             minimizedLabels ? (value) => value.slice(0, 5) + "..." : undefined
           }
         />
+        {showBarYAxis && <YAxis
+          dataKey={customDisplayKeyLabel || customDisplayKey || "count"}
+          tickLine={false}
+          tickMargin={20}
+          width={50}
+          axisLine={false}
+        />}
 
         <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
         <Bar
-          dataKey="count"
+          dataKey={customDisplayKeyLabel || customDisplayKey || "count"}
           fill={theme === "light" ? barsColor.light : barsColor.dark}
           radius={8}
         />
@@ -84,14 +119,19 @@ const PieChartComponent = ({
   minimizedLabels,
   theme,
   barsColor,
+  customDisplayKey,
+  customDisplayKeyLabel,
 }: {
   countedData: any[];
   groupBy: string;
   minimizedLabels: boolean;
   theme: string | undefined;
   barsColor: { light: string; dark: string };
+  customDisplayKey: string | null;
+  customDisplayKeyLabel: string | null;
 }) => {
-  const pieChartConfig = Object.values(countedData).reduce((acc, item) => {
+  const filteredCountedData = countedData.filter((data) => data[customDisplayKeyLabel || customDisplayKey || "count"] > 0);
+  const pieChartConfig = Object.values(filteredCountedData).reduce((acc, item) => {
     return {
       ...acc,
       [item.label]: {
@@ -103,8 +143,8 @@ const PieChartComponent = ({
 
   const baseColor = theme === "light" ? barsColor.light : barsColor.dark;
 
-  const paletteSize = Object.keys(countedData).length;
-
+  const paletteSize = Object.keys(filteredCountedData).length;
+  
   const palette = generatePalette(baseColor, paletteSize);
 
   return (
@@ -115,7 +155,7 @@ const PieChartComponent = ({
             className={"w-1/2"}
             data={
               groupBy
-                ? countedData.map((data, index) => {
+                ? filteredCountedData.map((data, index) => {
                     return {
                       ...data,
                       fill: palette[index],
@@ -141,13 +181,13 @@ const PieChartComponent = ({
                         textAnchor={x > cx ? "start" : "end"}
                         dominantBaseline="central"
                       >
-                        {countedData[index].count}
-                      </text>
+                          {Math.round(filteredCountedData[index][customDisplayKeyLabel || customDisplayKey || "count"])}
+                        </text>
                     );
                   }
                 : undefined
             }
-            dataKey="count"
+            dataKey={customDisplayKeyLabel || customDisplayKey || "count"}
             nameKey={"label"}
             innerRadius={"50%"}
           >
@@ -166,7 +206,7 @@ const PieChartComponent = ({
                         y={viewBox.cy}
                         className="fill-foreground text-5xl"
                       >
-                        {countedData.reduce((acc, item) => acc + item.count, 0)}
+                        {filteredCountedData.reduce((acc, item) => acc + item[customDisplayKeyLabel || customDisplayKey || "count"], 0).toFixed(2)}
                       </tspan>
                       <tspan
                         x={viewBox.cx}
@@ -208,6 +248,9 @@ const FastboardGroupChart = ({
     minimizedLabels,
     barsColor,
     layout,
+    customDisplayKey,
+    customDisplayKeyLabel,
+    showBarYAxis,
   } = properties;
   const setProperties = useSetRecoilState(propertiesDrawerState);
   const propertiesDrawer = useRecoilValue(propertiesDrawerState);
@@ -244,12 +287,8 @@ const FastboardGroupChart = ({
 
   const groupChartData = groupData(data, groupBy);
 
-  const countedData = Object.keys(groupChartData).map((key) => {
-    return {
-      count: groupChartData[key].length,
-      label: key,
-    };
-  });
+  const countedData = prepareData(groupChartData, customDisplayKey, customDisplayKeyLabel);
+  
 
   return (
     <div className={"w-full h-full"}>
@@ -273,6 +312,9 @@ const FastboardGroupChart = ({
               minimizedLabels={minimizedLabels}
               theme={theme}
               barsColor={barsColor}
+              customDisplayKey={customDisplayKey}
+              customDisplayKeyLabel={customDisplayKeyLabel}
+              showBarYAxis={showBarYAxis}
             />
           )}
           {layout === "pie" && (
@@ -282,6 +324,8 @@ const FastboardGroupChart = ({
               minimizedLabels={minimizedLabels}
               theme={theme}
               barsColor={barsColor}
+              customDisplayKey={customDisplayKey}
+              customDisplayKeyLabel={customDisplayKeyLabel}
             />
           )}
         </CustomSkeleton>

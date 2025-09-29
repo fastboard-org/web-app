@@ -1,18 +1,26 @@
 "use client";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDown2, ArrowRight } from "iconsax-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import FadeUp from "@/components/shared/FadeUp";
 import { Button } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 
 export default function Home() {
   const [firstDelay, setFirstDelay] = useState(0.4);
   const [secondDelay, setSecondDelay] = useState(0.8);
   const [showArrow, setShowArrow] = useState(false);
 
+  const { setTheme } = useTheme();
+
   const router = useRouter();
+
+  //set theme to light
+  useEffect(() => {
+    setTheme("light");
+  }, [setTheme]);
 
   return (
     <main
