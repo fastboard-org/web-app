@@ -1,6 +1,12 @@
 import { QueryData } from "@/types/connections";
 import { Color } from "./style-types";
 
+export interface DisplayKey {
+  key: string;
+  label: string;
+  color?: Color;
+}
+
 export class FastboardGroupChartProperties {
   sourceQueryData: QueryData | null = null;
   title: string = "Title";
@@ -9,6 +15,7 @@ export class FastboardGroupChartProperties {
   groupBy: string = "";
   customDisplayKey: string | null = null;
   customDisplayKeyLabel: string | null = null;
+  displayKeys: DisplayKey[] = []; // Nueva propiedad para múltiples barras
   emptyMessage: string = "No data to display.";
   minimizedLabels: boolean = false;
   barsColor: Color = Color.primary();

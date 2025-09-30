@@ -13,6 +13,7 @@ import ColorPicker from "@/components/shared/ColorPicker";
 import { useTheme } from "next-themes";
 import { queryToQueryData } from "@/lib/rest-queries";
 import CheckBoxProperty from "@/components/shared/CheckBoxProperty";
+import DisplayKeysList from "./DisplayKeysList";
 
 const FastboardGroupChartPropertiesComponent = ({
   properties,
@@ -36,6 +37,7 @@ const FastboardGroupChartPropertiesComponent = ({
     customDisplayKey,
     customDisplayKeyLabel,
     showBarYAxis,
+    displayKeys = [],
   } = properties;
 
   return (
@@ -102,6 +104,27 @@ const FastboardGroupChartPropertiesComponent = ({
             }}
           />}
           
+        </div>
+      </AccordionItem>
+      <AccordionItem
+        key="display-keys"
+        title="Multiple Bars"
+        className="pb-2"
+        classNames={{
+          title: "font-medium",
+        }}
+      >
+        <div className="flex flex-col gap-3 overflow-x-hidden">
+          <DisplayKeysList
+            displayKeys={displayKeys}
+            availableKeys={keys}
+            onChange={(newDisplayKeys) => {
+              onValueChange({
+                ...properties,
+                displayKeys: newDisplayKeys,
+              });
+            }}
+          />
         </div>
       </AccordionItem>
       <AccordionItem

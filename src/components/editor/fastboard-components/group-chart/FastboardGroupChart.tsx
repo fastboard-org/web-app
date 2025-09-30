@@ -15,7 +15,7 @@ import {
   YAxis,
 } from "recharts";
 import CustomSkeleton from "@/components/shared/CustomSkeleton";
-import { FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
+import { DisplayKey, FastboardGroupChartProperties } from "@/types/editor/group-chart-types";
 import useData from "@/hooks/useData";
 import { ComponentId, ComponentType } from "@/types/editor";
 import { useEffect } from "react";
@@ -35,24 +35,43 @@ const groupData = (data: any[], groupBy: string) => {
   }, {});
 };
 
-const prepareData = (groupChartData: any, customDisplayKey: string | null, customDisplayKeyLabel: string | null) => {
-  if(!customDisplayKey) {
+const prepareData = (
+  groupChartData: any,
+  customDisplayKey: string | null,
+  customDisplayKeyLabel: string | null,
+  displayKeys: DisplayKey[] = []
+) => {
+  // Si hay múltiples displayKeys configurados, usar esos
+  if (displayKeys && displayKeys.length > 0) {
     return Object.keys(groupChartData).map((key) => {
-      return {
-        count: groupChartData[key].length,
-        label: key,
-      };
-    })
-  } else {
+      const result: any = { label: key };
+      displayKeys.forEach((dk) => {
+        result[dk.label] = groupChartData[key].reduce((acc: any, item: any) => {
+          return acc + (item[dk.key] || 0);
+        }, 0);
+      });
+      return result;
+    });
+  }
+  // Mantener retrocompatibilidad con customDisplayKey
+  else if (customDisplayKey) {
     return Object.keys(groupChartData).map((key) => {
-      
       return {
         [customDisplayKeyLabel || customDisplayKey]: groupChartData[key].reduce((acc: any, item: any) => {
           return acc + item[customDisplayKey];
         }, 0),
         label: key,
       };
-    })
+    });
+  }
+  // Fallback a count
+  else {
+    return Object.keys(groupChartData).map((key) => {
+      return {
+        count: groupChartData[key].length,
+        label: key,
+      };
+    });
   }
 }
 
@@ -66,6 +85,7 @@ const BarChartComponent = ({
   customDisplayKey,
   customDisplayKeyLabel,
   showBarYAxis,
+  displayKeys,
 }: {
   chartConfig: ChartConfig;
   groupBy: string;
@@ -76,7 +96,17 @@ const BarChartComponent = ({
   customDisplayKey: string | null;
   customDisplayKeyLabel: string | null;
   showBarYAxis: boolean;
+  displayKeys: DisplayKey[];
 }) => {
+  // Determinar qué barras renderizar
+  const barsToRender = displayKeys.length > 0
+    ? displayKeys
+    : [{
+        key: customDisplayKey || "count",
+        label: customDisplayKeyLabel || customDisplayKey || "count",
+        color: barsColor,
+      }];
+
   return (
     <ChartContainer config={chartConfig} className={"w-full h-full"}>
       <BarChart accessibilityLayer data={groupBy ? countedData : []}>
@@ -94,20 +124,34 @@ const BarChartComponent = ({
             minimizedLabels ? (value) => value.slice(0, 5) + "..." : undefined
           }
         />
-        {showBarYAxis && <YAxis
-          dataKey={customDisplayKeyLabel || customDisplayKey || "count"}
-          tickLine={false}
-          tickMargin={20}
-          width={50}
-          axisLine={false}
-        />}
+        {showBarYAxis && (
+          <YAxis
+            tickLine={false}
+            tickMargin={20}
+            width={50}
+            axisLine={false}
+          />
+        )}
 
         <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-        <Bar
-          dataKey={customDisplayKeyLabel || customDisplayKey || "count"}
-          fill={theme === "light" ? barsColor.light : barsColor.dark}
-          radius={8}
-        />
+        {barsToRender.map((bar, index) => {
+          const barColor = bar.color
+            ? theme === "light"
+              ? bar.color.light
+              : bar.color.dark
+            : theme === "light"
+            ? barsColor.light
+            : barsColor.dark;
+
+          return (
+            <Bar
+              key={bar.label + index}
+              dataKey={bar.label}
+              fill={barColor}
+              radius={8}
+            />
+          );
+        })}
       </BarChart>
     </ChartContainer>
   );
@@ -251,6 +295,7 @@ const FastboardGroupChart = ({
     customDisplayKey,
     customDisplayKeyLabel,
     showBarYAxis,
+    displayKeys = [],
   } = properties;
   const setProperties = useSetRecoilState(propertiesDrawerState);
   const propertiesDrawer = useRecoilValue(propertiesDrawerState);
@@ -287,7 +332,12 @@ const FastboardGroupChart = ({
 
   const groupChartData = groupData(data, groupBy);
 
-  const countedData = prepareData(groupChartData, customDisplayKey, customDisplayKeyLabel);
+  const countedData = prepareData(
+    groupChartData,
+    customDisplayKey,
+    customDisplayKeyLabel,
+    displayKeys
+  );
   
 
   return (
@@ -315,6 +365,7 @@ const FastboardGroupChart = ({
               customDisplayKey={customDisplayKey}
               customDisplayKeyLabel={customDisplayKeyLabel}
               showBarYAxis={showBarYAxis}
+              displayKeys={displayKeys}
             />
           )}
           {layout === "pie" && (
