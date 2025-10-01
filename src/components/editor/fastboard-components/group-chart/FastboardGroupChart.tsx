@@ -296,6 +296,8 @@ const FastboardGroupChart = ({
     customDisplayKeyLabel,
     showBarYAxis,
     displayKeys = [],
+    pollable = false,
+    pollInterval = 1,
   } = properties;
   const setProperties = useSetRecoilState(propertiesDrawerState);
   const propertiesDrawer = useRecoilValue(propertiesDrawerState);
@@ -305,8 +307,9 @@ const FastboardGroupChart = ({
   const {
     data,
     keys,
-    isFetching: dataFetching,
+    isLoading: dataLoading,
     isError: isDataError,
+    refetch,
   } = useData(`${ComponentType.GroupChart}-${id}`, sourceQueryData);
 
   useEffect(() => {
@@ -322,6 +325,17 @@ const FastboardGroupChart = ({
       });
     }
   }, [keys, isSelected]);
+
+  useEffect(() => {
+    if (pollable && pollInterval && sourceQueryData) {
+      const intervalMs = pollInterval * 60 * 1000; // Convert minutes to milliseconds
+      const intervalId = setInterval(() => {
+        refetch();
+      }, intervalMs);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [pollable, pollInterval, sourceQueryData, refetch]);
 
   const chartConfig = {
     [groupBy]: {
@@ -350,7 +364,7 @@ const FastboardGroupChart = ({
           <h4 className={"opacity-40 italic"}>{subtitle}</h4>
         </div>
         <CustomSkeleton
-          isLoaded={!dataFetching}
+          isLoaded={!dataLoading}
           className={"w-full h-[calc(100%-65px)] rounded-xl"}
           onlyRenderOnLoad
         >
@@ -381,7 +395,7 @@ const FastboardGroupChart = ({
           )}
         </CustomSkeleton>
 
-        {!dataFetching && data.length === 0 && (
+        {!dataLoading && data.length === 0 && (
           <div
             className={
               "absolute self-center top-0 bottom-0 text-2xl text-center"
@@ -393,7 +407,7 @@ const FastboardGroupChart = ({
             )}
           </div>
         )}
-        {!dataFetching && data.length > 0 && !groupBy && (
+        {!dataLoading && data.length > 0 && !groupBy && (
           <p className={"absolute self-center top-0 bottom-0 text-2xl"}>
             Please select a group key
           </p>

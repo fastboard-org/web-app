@@ -5,6 +5,8 @@ import {
   Button,
   ButtonGroup,
   Input,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import QuerySelection from "@/components/editor/QuerySelection";
 import KeySelect from "@/components/editor/fastboard-components/shared/KeySelect";
@@ -38,6 +40,8 @@ const FastboardGroupChartPropertiesComponent = ({
     customDisplayKeyLabel,
     showBarYAxis,
     displayKeys = [],
+    pollable = false,
+    pollInterval = 1,
   } = properties;
 
   return (
@@ -104,6 +108,49 @@ const FastboardGroupChartPropertiesComponent = ({
             }}
           />}
           
+        </div>
+      </AccordionItem>
+      <AccordionItem
+        key="data-refresh"
+        title="Data Refresh"
+        className="pb-2"
+        classNames={{
+          title: "font-medium",
+        }}
+      >
+        <div className="flex flex-col gap-3 overflow-x-hidden">
+          <CheckBoxProperty
+            label="Auto-refresh data"
+            isSelected={pollable}
+            onValueChange={(value) => {
+              onValueChange({ ...properties, pollable: value });
+            }}
+          />
+          {pollable && (
+            <Select
+              label="Refresh interval"
+              labelPlacement="outside"
+              placeholder="Select interval"
+              selectedKeys={[pollInterval.toString()]}
+              onChange={(e) => {
+                const value = parseInt(e.target.value);
+                onValueChange({ ...properties, pollInterval: value });
+              }}
+            >
+              <SelectItem key="1" value="1">
+                1 minute
+              </SelectItem>
+              <SelectItem key="3" value="3">
+                3 minutes
+              </SelectItem>
+              <SelectItem key="5" value="5">
+                5 minutes
+              </SelectItem>
+              <SelectItem key="10" value="10">
+                10 minutes
+              </SelectItem>
+            </Select>
+          )}
         </div>
       </AccordionItem>
       <AccordionItem

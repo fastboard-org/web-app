@@ -21,6 +21,8 @@ export class FastboardGroupChartProperties {
   barsColor: Color = Color.primary();
   layout: "bar" | "pie" = "bar";
   showBarYAxis: boolean = false;
+  pollable: boolean = false;
+  pollInterval: number = 1; // en minutos
 
   static default(): FastboardGroupChartProperties {
     return new FastboardGroupChartProperties();
