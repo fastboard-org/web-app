@@ -13,8 +13,8 @@ export default function RightSplitLayout({
   mode?: "editable" | "view";
 }) {
   return (
-    <div className="flex flex-row h-full w-full">
-      <div className="w-1/2 h-full">
+    <div className="flex flex-col md:flex-row h-full w-full">
+      <div className="w-full md:w-1/2 h-full">
         <Container
           index={{
             page: pageIndex,
@@ -26,7 +26,7 @@ export default function RightSplitLayout({
           className="h-full p-5"
         />
       </div>
-      <div className="flex flex-col w-1/2 h-full">
+      <div className="flex flex-col w-full md:w-1/2 h-full">
         <Container
           index={{
             page: pageIndex,
@@ -35,7 +35,7 @@ export default function RightSplitLayout({
           }}
           componentId={properties.component2}
           mode={mode}
-          className="pl-1 pr-5 pt-5 pb-1 h-1/2"
+          className="p-5 md:pl-1 md:pr-5 md:pt-5 md:pb-1 h-full md:h-1/2"
         />
         <Container
           index={{
@@ -45,7 +45,7 @@ export default function RightSplitLayout({
           }}
           componentId={properties.component3}
           mode={mode}
-          className="pl-1 pr-5 pt-1 pb-5 h-1/2"
+          className="p-5 md:pl-1 md:pr-5 md:pt-1 md:pb-5 h-full md:h-1/2"
         />
       </div>
     </div>

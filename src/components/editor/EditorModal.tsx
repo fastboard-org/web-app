@@ -104,7 +104,7 @@ export default function EditorModal({
                   <m.div
                     animate="enter"
                     className={
-                      "bg-background dark:bg-content1 min-w-[40%] max-h-[90%] max-w-[90%] py-4 px-5 rounded-xl shadow-xl absolute overflow-auto " +
+                      "bg-background dark:bg-content1 w-[95%] max-h-[85vh] md:w-auto md:h-auto md:min-w-[40%] md:max-h-[90%] md:max-w-[90%] py-4 px-5 rounded-xl shadow-xl absolute overflow-auto " +
                       scrollbarStyles.scrollbar
                     }
                     data-slot="wrapper"

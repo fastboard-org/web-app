@@ -22,10 +22,10 @@ export default function BottomSplitLayout({
         }}
         componentId={properties.component1}
         mode={mode}
-        className="w-full px-5 pt-5 pb-2 h-1/2"
+        className="w-full px-5 pt-5 pb-2 md:pb-2 h-full md:h-1/2"
       />
-      <div className="flex flex-row w-full h-1/2">
-        <div className="w-1/2">
+      <div className="flex flex-col md:flex-row w-full h-full md:h-1/2">
+        <div className="w-full md:w-1/2">
           <Container
             index={{
               page: pageIndex,
@@ -34,10 +34,10 @@ export default function BottomSplitLayout({
             }}
             componentId={properties.component2}
             mode={mode}
-            className="pl-5 pr-1 pt-1 pb-5 h-full"
+            className="p-5 md:pl-5 md:pr-1 md:pt-1 md:pb-5 h-full"
           />
         </div>
-        <div className="w-1/2">
+        <div className="w-full md:w-1/2">
           <Container
             index={{
               page: pageIndex,
@@ -46,7 +46,7 @@ export default function BottomSplitLayout({
             }}
             componentId={properties.component3}
             mode={mode}
-            className="pr-5 pl-1 pt-1 pb-5 h-full"
+            className="p-5 md:pr-5 md:pl-1 md:pt-1 md:pb-5 h-full"
           />
         </div>
       </div>

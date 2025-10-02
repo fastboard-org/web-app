@@ -567,9 +567,9 @@ function TopContent({
   addRowForm: any;
 }) {
   return (
-    <div className="flex flex-col">
-      <h2 className="text-[40px]">{title}</h2>
-      <div className="flex flex-row justify-between items-end gap-x-2">
+    <div className="flex flex-col gap-y-4">
+      <h2 className="text-2xl md:text-[40px]">{title}</h2>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-2">
         <Filters table={table} filters={filters} />
         {addRowForm && <AddRowForm properties={addRowForm} />}
       </div>
@@ -593,7 +593,7 @@ function BottomContent({
   return (
     <div className="flex w-full justify-center items-center gap-2">
       {!dataFetching && (
-        <div className="flex flex-row w-full justify-center items-center gap-x-2">
+        <div className="flex flex-col md:flex-row w-full justify-center items-center gap-2">
           <Pagination
             isCompact
             showControls

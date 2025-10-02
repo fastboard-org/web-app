@@ -33,7 +33,7 @@ export default function FastboardHeader({
   return (
     <Navbar
       maxWidth="full"
-      className="flex flex-row h-full w-full px-2 shadow"
+      className="flex flex-row h-full w-full px-2 md:px-2 pl-16 md:pl-2 shadow"
       classNames={{
         wrapper: "flex flex-row h-full w-full",
       }}
@@ -48,8 +48,8 @@ export default function FastboardHeader({
           <NavbarItem
             className={`flex h-full ${
               position === FastboardHeaderPosition.Right
-                ? "order-2 pl-5"
-                : "order-1 pr-5"
+                ? "order-2 pl-2 md:pl-5"
+                : "order-1 pr-2 md:pr-5"
             }`}
           >
             <Image
@@ -57,7 +57,7 @@ export default function FastboardHeader({
               alt="Header"
               radius={photo.border as any}
               height={photo.size}
-              className={"object-contain " + (imageError ? "dark:invert" : "")}
+              className={"object-contain max-h-8 md:max-h-none " + (imageError ? "dark:invert" : "")}
               classNames={{
                 wrapper: "flex items-center justify-center h-full w-auto",
               }}
@@ -69,7 +69,7 @@ export default function FastboardHeader({
         <NavbarItem
           className={`${
             position === FastboardHeaderPosition.Right ? "order-1" : "order-2"
-          }`}
+          } truncate`}
         >
           {title.size && (
             <div
@@ -85,28 +85,32 @@ export default function FastboardHeader({
 
         {showThemeSwitcher && position === FastboardHeaderPosition.Right && (
           <NavbarItem className="order-3">
-            <ThemeSwitcher
-              size="md"
-              color={
-                theme === "light"
-                  ? themeSwitcherColor.light
-                  : themeSwitcherColor.dark
-              }
-            />
+            <div className="scale-75 md:scale-100">
+              <ThemeSwitcher
+                size="md"
+                color={
+                  theme === "light"
+                    ? themeSwitcherColor.light
+                    : themeSwitcherColor.dark
+                }
+              />
+            </div>
           </NavbarItem>
         )}
       </NavbarContent>
       {showThemeSwitcher && position !== FastboardHeaderPosition.Right && (
         <NavbarContent className="py-1" justify="end">
           <NavbarItem>
-            <ThemeSwitcher
-              size="md"
-              color={
-                theme === "light"
-                  ? themeSwitcherColor.light
-                  : themeSwitcherColor.dark
-              }
-            />
+            <div className="scale-75 md:scale-100">
+              <ThemeSwitcher
+                size="md"
+                color={
+                  theme === "light"
+                    ? themeSwitcherColor.light
+                    : themeSwitcherColor.dark
+                }
+              />
+            </div>
           </NavbarItem>
         </NavbarContent>
       )}

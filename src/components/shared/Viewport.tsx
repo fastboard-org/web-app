@@ -7,11 +7,13 @@ import {
   previewRefreshTokenState,
 } from "@/atoms/editor";
 import useNavigation from "@/hooks/useNavigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getLayout } from "../editor/fastboard-components/utils";
-import { Spinner } from "@nextui-org/react";
+import { Spinner, Button } from "@nextui-org/react";
 import { AxiosError } from "axios";
 import { notFound } from "next/navigation";
+import { HambergerMenu } from "iconsax-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Viewport({
   mode,
@@ -24,6 +26,7 @@ export default function Viewport({
   const setPreviewAccessToken = useSetRecoilState(previewAccessTokenState);
   const setPreviewRefreshToken = useSetRecoilState(previewRefreshTokenState);
   const { currentPage } = useNavigation();
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (mode === "editor" && dashboard?.metadata?.auth?.previewAccessToken) {
@@ -34,6 +37,11 @@ export default function Viewport({
       setPreviewRefreshToken(dashboard.metadata.auth.previewRefreshToken);
     }
   }, [dashboard]);
+
+  // Close mobile sidebar when page changes
+  useEffect(() => {
+    setIsMobileSidebarOpen(false);
+  }, [currentPage]);
 
   const sidebarVisible = dashboard?.metadata?.sidebar?.visible ?? false;
   const isHeaderVisible = dashboard?.metadata?.header?.isVisible ?? false;
@@ -90,14 +98,38 @@ export default function Viewport({
           />
         </div>
       )}
+      
+      {/* Hamburger menu button for mobile */}
+      {sidebar && sidebarVisible && (
+        <motion.div
+          whileTap={{ scale: 0.9 }}
+          className="md:hidden fixed top-4 left-4 z-50"
+        >
+          <Button
+            isIconOnly
+            variant="flat"
+            className="bg-background shadow-lg"
+            onPress={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+          >
+            <motion.div
+              animate={{ rotate: isMobileSidebarOpen ? 90 : 0 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+            >
+              <HambergerMenu size={24} />
+            </motion.div>
+          </Button>
+        </motion.div>
+      )}
+
       <div
         className="flex flex-row h-full w-full"
         style={{
           height: layoutsHeight,
         }}
       >
+        {/* Desktop sidebar - hidden on mobile */}
         {sidebar && sidebarVisible && (
-          <div className="w-64 h-full">
+          <div className="hidden md:block min-w-[256px] h-full">
             <FastboardComponent
               id={sidebar.id}
               name="sidebar"
@@ -111,7 +143,50 @@ export default function Viewport({
             />
           </div>
         )}
-        <div className="min-w-96 h-full" style={{ width: layoutsWidth }}>
+
+        {/* Mobile sidebar overlay */}
+        <AnimatePresence>
+          {sidebar && sidebarVisible && isMobileSidebarOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="md:hidden fixed inset-0 bg-black/50 z-40"
+                onClick={() => setIsMobileSidebarOpen(false)}
+              />
+              {/* Sidebar drawer */}
+              <motion.div
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 300, 
+                  damping: 30,
+                  mass: 0.8
+                }}
+                className="md:hidden fixed left-0 top-0 h-full w-64 z-50 shadow-xl"
+              >
+                <FastboardComponent
+                  id={sidebar.id}
+                  name="sidebar"
+                  type={sidebar.type}
+                  properties={sidebar.properties}
+                  context={{
+                    type: "sidebar",
+                  }}
+                  canDelete={false}
+                  mode={mode === "editor" ? "editable" : "view"}
+                />
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        <div className="w-full md:min-w-96 h-full " style={{ width: mode === "editor" ? layoutsWidth : undefined }}>
           {dashboard?.metadata?.pages[selectedPage].map((layout, index) =>
             getLayout(
               layout,

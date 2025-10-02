@@ -23,6 +23,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { propertiesDrawerState } from "@/atoms/editor";
 import { useTheme } from "next-themes";
 import { generatePalette } from "@/lib/colors";
+import useIsMobile from "@/hooks/useIsMobile";
 
 const groupData = (data: any[], groupBy: string) => {
   return data.reduce((acc, item) => {
@@ -98,6 +99,8 @@ const BarChartComponent = ({
   showBarYAxis: boolean;
   displayKeys: DisplayKey[];
 }) => {
+  const isMobile = useIsMobile();
+
   // Determinar qué barras renderizar
   const barsToRender = displayKeys.length > 0
     ? displayKeys
@@ -109,28 +112,61 @@ const BarChartComponent = ({
 
   return (
     <ChartContainer config={chartConfig} className={"w-full h-full"}>
-      <BarChart accessibilityLayer data={groupBy ? countedData : []}>
+      <BarChart 
+        accessibilityLayer 
+        data={groupBy ? countedData : []}
+        layout={isMobile ? "vertical" : "horizontal"}
+      >
         <CartesianGrid
-          vertical={false}
+          vertical={isMobile}
+          horizontal={!isMobile}
           stroke={"hsl(var(--nextui-foreground-400))"}
           strokeOpacity={0.2}
         />
-        <XAxis
-          dataKey={"label"}
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-          tickFormatter={
-            minimizedLabels ? (value) => value.slice(0, 5) + "..." : undefined
-          }
-        />
-        {showBarYAxis && (
-          <YAxis
-            tickLine={false}
-            tickMargin={20}
-            width={50}
-            axisLine={false}
-          />
+        {isMobile ? (
+          <>
+            <YAxis
+              dataKey={"label"}
+              type="category"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              width={40}
+              
+              
+              tickFormatter={
+                minimizedLabels ? (value) => value.slice(0, 8) + "..." : undefined
+              }
+            />
+            {showBarYAxis && (
+              <XAxis
+                type="number"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            <XAxis
+              dataKey={"label"}
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={
+                minimizedLabels ? (value) => value.slice(0, 5) + "..." : undefined
+              }
+            />
+            {showBarYAxis && (
+              <YAxis
+                tickLine={false}
+                tickMargin={20}
+                width={50}
+                axisLine={false}
+              />
+            )}
+          </>
         )}
 
         <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
@@ -174,6 +210,8 @@ const PieChartComponent = ({
   customDisplayKey: string | null;
   customDisplayKeyLabel: string | null;
 }) => {
+  const isMobile = useIsMobile();
+
   const filteredCountedData = countedData.filter((data) => data[customDisplayKeyLabel || customDisplayKey || "count"] > 0);
   const pieChartConfig = Object.values(filteredCountedData).reduce((acc, item) => {
     return {
@@ -233,11 +271,12 @@ const PieChartComponent = ({
             }
             dataKey={customDisplayKeyLabel || customDisplayKey || "count"}
             nameKey={"label"}
-            innerRadius={"50%"}
+            innerRadius={isMobile ? "60%" : "50%"}
           >
             <Label
               content={({ viewBox }) => {
                 if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                  const total = Math.round(filteredCountedData.reduce((acc, item) => acc + item[customDisplayKeyLabel || customDisplayKey || "count"], 0) );
                   return (
                     <text
                       x={viewBox.cx}
@@ -248,14 +287,14 @@ const PieChartComponent = ({
                       <tspan
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        className="fill-foreground text-5xl"
+                        className={isMobile ? "fill-foreground text-3xl md:text-5xl" : "fill-foreground text-5xl"}
                       >
-                        {filteredCountedData.reduce((acc, item) => acc + item[customDisplayKeyLabel || customDisplayKey || "count"], 0).toFixed(2)}
+                        {total}
                       </tspan>
                       <tspan
                         x={viewBox.cx}
-                        y={(viewBox.cy || 0) + 35}
-                        className="fill-foreground text-lg"
+                        y={(viewBox.cy || 0) + (isMobile ? 25 : 35)}
+                        className={isMobile ? "fill-foreground text-sm md:text-lg" : "fill-foreground text-lg"}
                       >
                         Total
                       </tspan>
@@ -360,8 +399,8 @@ const FastboardGroupChart = ({
         className={"w-full h-full flex flex-col p-3 relative justify-between"}
       >
         <div className={"flex mb-2 gap-1 flex-col h-[65px]"}>
-          <h3 className={"text-4xl"}>{title}</h3>
-          <h4 className={"opacity-40 italic"}>{subtitle}</h4>
+          <h3 className={"text-2xl md:text-4xl"}>{title}</h3>
+          <h4 className={"text-xs md:text-base opacity-40 italic"}>{subtitle}</h4>
         </div>
         <CustomSkeleton
           isLoaded={!dataLoading}

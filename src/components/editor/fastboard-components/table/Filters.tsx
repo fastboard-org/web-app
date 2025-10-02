@@ -20,7 +20,7 @@ export function StringFilter({
   return (
     <Input
       aria-label="String filter input"
-      className="w-40"
+      className="w-full md:w-40"
       classNames={{
         mainWrapper: "flex justify-end",
         label: "truncate",
@@ -46,7 +46,7 @@ export function NumberFilter({
   const { label } = properties;
 
   return (
-    <div className="flex flex-col w-40 justify-end gap-y-2">
+    <div className="flex flex-col w-full md:w-40 justify-end gap-y-2">
       <h2 className="text-sm truncate">{label}</h2>
       <div className="flex flex-row items-end gap-x-1">
         <Input
@@ -84,7 +84,7 @@ export default function Filters({
   const columns = table.getAllColumns();
 
   return (
-    <div className="flex flex-wrap gap-x-5 gap-y-2 h-full">
+    <div className="flex flex-col md:flex-row md:flex-wrap gap-2 md:gap-x-5 w-full md:w-auto">
       {filters.map((filter, index) => {
         const column = columns.find((column) => column.id === filter.columnKey);
 

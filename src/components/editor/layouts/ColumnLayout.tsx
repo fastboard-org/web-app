@@ -13,8 +13,8 @@ export default function ColumnLayout({
   mode?: "editable" | "view";
 }) {
   return (
-    <div className="flex flex-row h-full w-full">
-      <div className="h-full w-1/2">
+    <div className="flex flex-col md:flex-row h-full w-full">
+      <div className="h-full w-full md:w-1/2">
         <Container
           index={{
             page: pageIndex,
@@ -23,10 +23,10 @@ export default function ColumnLayout({
           }}
           componentId={properties.component1}
           mode={mode}
-          className="h-full py-5 pl-5 pr-1"
+          className="h-full py-5 md:pl-5 px-5 md:pr-1"
         />
       </div>
-      <div className="h-full w-1/2">
+      <div className="h-full w-full md:w-1/2">
         <Container
           index={{
             page: pageIndex,
@@ -35,7 +35,7 @@ export default function ColumnLayout({
           }}
           componentId={properties.component2}
           mode={mode}
-          className="h-full py-5 pr-5 pl-1"
+          className="h-full py-5 px-5 md:pr-5 md:pl-1"
         />
       </div>
     </div>
