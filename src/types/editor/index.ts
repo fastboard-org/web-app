@@ -74,6 +74,7 @@ export class DashboardMetadata {
     home: [Layout.of(LayoutType.Full)],
   };
   auth: DashboardAuth = DashboardAuth.default();
+  queryErrorMessagePath?: string;
   pageTitle: string = "";
   pageIcon: string = "";
   defaultTheme: "light" | "dark" = "light";

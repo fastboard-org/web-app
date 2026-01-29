@@ -55,6 +55,8 @@ const useData = (componentId: string, queryData: QueryData | null) => {
         },
         previewRefreshToken,
         dashboard?.metadata?.auth as DashboardAuth | undefined,
+        true,
+        dashboard?.metadata?.queryErrorMessagePath,
       );
       let responseData = response?.body;
 

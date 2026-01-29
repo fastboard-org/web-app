@@ -61,6 +61,18 @@ const previewQuery = async (
   return response.data;
 };
 
+function getValueByPath(obj: unknown, path: string): unknown {
+  if (!path || typeof obj !== "object" || obj === null) return undefined;
+  const keys = path.trim().split(".");
+  let current: unknown = obj;
+  for (const key of keys) {
+    if (current === null || current === undefined) return undefined;
+    if (typeof current !== "object") return undefined;
+    current = (current as Record<string, unknown>)[key];
+  }
+  return current;
+}
+
 async function executeQuery(
   queryId: string | null,
   dashboardId: string,
@@ -70,7 +82,8 @@ async function executeQuery(
   previewRefreshToken?: string,
   dashboardAuth?: DashboardAuth | null,
   shouldRefresh = true,
-) {
+  queryErrorMessagePath?: string,
+): Promise<any> {
   try {
     if (!queryId) {
       return null;
@@ -130,6 +143,7 @@ async function executeQuery(
               previewRefreshToken,
               dashboardAuth,
               false, // Prevent further refresh attempts
+              queryErrorMessagePath,
             );
           }
         }
@@ -143,8 +157,15 @@ async function executeQuery(
       }
 
       const error = response.data?.body?.error;
+      let errorMessage = error?.description ?? "";
+      if (queryErrorMessagePath?.trim()) {
+        const mapped = getValueByPath(response.data, queryErrorMessagePath);
+        if (typeof mapped === "string" && mapped.trim()) {
+          errorMessage = mapped;
+        }
+      }
       throw new Error(
-        `Error ${response.data.status_code}: ${error?.description ?? ""}`,
+        `Error ${response.data.status_code}: ${errorMessage}`,
       );
     }
     return response.data;

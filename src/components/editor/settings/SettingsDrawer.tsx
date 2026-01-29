@@ -53,6 +53,21 @@ export default function SettingsDrawer() {
             }));
           }}
         />
+        <Input
+          label="Error message field (path)"
+          labelPlacement="outside"
+          placeholder="e.g. body.error.message"
+          value={dashboard?.metadata?.queryErrorMessagePath ?? ""}
+          onValueChange={(value) => {
+            updateDashboard((prev) => ({
+              ...prev,
+              metadata: {
+                ...prev.metadata,
+                queryErrorMessagePath: value,
+              },
+            }));
+          }}
+        />
         <Select
           label="Default theme"
           labelPlacement="outside"

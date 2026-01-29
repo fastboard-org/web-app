@@ -58,6 +58,8 @@ const useExecuteQuery = ({
         config,
         previewRefreshToken,
         dashboard?.metadata?.auth as DashboardAuth | null,
+        true,
+        dashboard?.metadata?.queryErrorMessagePath,
       );
     },
     onSuccess: (data, variables) => {

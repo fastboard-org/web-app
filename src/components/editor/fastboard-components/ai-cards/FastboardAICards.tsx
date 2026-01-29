@@ -136,7 +136,9 @@ export default function FastboardAICards({
     dashboardId: dashboardId as string,
     onError: (error) => {
       console.error("Error executing query", error);
-      toast.error("Error fetching data, try again later.");
+      toast.error("Error fetching data, try again later.", {
+        description: error?.message,
+      });
     },
   });
 
